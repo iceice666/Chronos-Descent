@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bhd7tdl7w20e0"
-path="res://.godot/imported/start_menu_bg.png-0d6d372a4026bb60f16217eb00306b97.ctex"
+uid="uid://rme7x74eyinu"
+path="res://.godot/imported/Soldier-Death.png-248cf3ca70b3785132090c6bbc50b1fa.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/start_menu_bg.png"
-dest_files=["res://.godot/imported/start_menu_bg.png-0d6d372a4026bb60f16217eb00306b97.ctex"]
+source_file="res://Assets/Tiny RPG Character Asset Pack v1.03 -Free Soldier&Orc/Characters(100x100)/Soldier/Soldier with shadows/Soldier-Death.png"
+dest_files=["res://.godot/imported/Soldier-Death.png-248cf3ca70b3785132090c6bbc50b1fa.ctex"]
 
 [params]
 
