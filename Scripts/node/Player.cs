@@ -4,6 +4,13 @@ namespace ChronosDescent.Scripts.node;
 
 public partial class Player : Entity
 {
+
+    public override void _Ready()
+    {
+        base._Ready();
+        AddToGroup("Player");
+    }
+    
     public override void _PhysicsProcess(double delta)
     {
         var direction = new Vector2(

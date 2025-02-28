@@ -7,9 +7,6 @@
 [ext_resource type="Script" path="res://Scripts/node/Component/StatsComponent.cs" id="5_ef8pe"]
 [ext_resource type="Script" path="res://Scripts/node/Component/AnimationComponent.cs" id="6_iv6k8"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_2ivh0"]
-radius = 7.0
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_0grkt"]
 atlas = ExtResource("5_dq8j7")
 region = Rect2(0, 600, 100, 100)
@@ -113,7 +110,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_fnlie")
 }],
-"loop": true,
+"loop": false,
 "name": &"death",
 "speed": 8.0
 }, {
@@ -130,7 +127,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_by6r7")
 }],
-"loop": true,
+"loop": false,
 "name": &"hurt",
 "speed": 8.0
 }, {
@@ -187,20 +184,12 @@ animations = [{
 "speed": 16.0
 }]
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_2ivh0"]
+radius = 7.0
+
 [node name="Player" type="CharacterBody2D"]
 scale = Vector2(4, 4)
 script = ExtResource("1_vxxhj")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_2ivh0")
-metadata/_edit_lock_ = true
-
-[node name="EffectTriggerDetector" type="Area2D" parent="."]
-metadata/_edit_lock_ = true
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="EffectTriggerDetector"]
-shape = SubResource("CircleShape2D_2ivh0")
-metadata/_edit_lock_ = true
 
 [node name="CombatComponent" type="Node" parent="."]
 script = ExtResource("3_jd6qi")
@@ -213,8 +202,17 @@ script = ExtResource("5_ef8pe")
 
 [node name="AnimationComponent" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_72fkf")
-animation = &"death"
+animation = &"idle"
 autoplay = "idle"
-frame = 1
-frame_progress = 0.926515
 script = ExtResource("6_iv6k8")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_2ivh0")
+metadata/_edit_lock_ = true
+
+[node name="EffectTriggerDetector" type="Area2D" parent="."]
+metadata/_edit_lock_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EffectTriggerDetector"]
+shape = SubResource("CircleShape2D_2ivh0")
+metadata/_edit_lock_ = true
