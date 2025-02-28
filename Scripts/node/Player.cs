@@ -10,14 +10,17 @@ public partial class Player : Entity
             Input.GetActionStrength("move_right") - Input.GetActionStrength("move_left"),
             Input.GetActionStrength("move_down") - Input.GetActionStrength("move_up")
         );
-        
+
         if (direction.Length() > 1.0)
         {
             direction = direction.Normalized();
         }
-        
-        Velocity = direction * (float)MoveSpeed;
-        
+
+        var velocity = direction * (float)Stats.GetMoveSpeed();
+        Animation.UpdateAnimation(velocity);
+
+        Velocity = velocity;
+
         MoveAndSlide();
     }
 }

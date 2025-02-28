@@ -1,0 +1,114 @@
+[gd_scene load_steps=8 format=3 uid="uid://cwx1wpnqhiio8"]
+
+[ext_resource type="PackedScene" uid="uid://bpuhyc475sgxd" path="res://Scenes/entity/player.tscn" id="1_6bl8q"]
+[ext_resource type="Script" path="res://Scripts/node/EffectTrigger.cs" id="2_xei7x"]
+[ext_resource type="Script" path="res://Scripts/resource/EffectKind/PoisonEffect.cs" id="3_ohthn"]
+[ext_resource type="Script" path="res://Scripts/resource/EffectKind/SpeedBoostEffect.cs" id="3_r0ms2"]
+
+[sub_resource type="Resource" id="Resource_uqlpv"]
+script = ExtResource("3_ohthn")
+Name = "Poison Effect"
+Description = ""
+Duration = 5.0
+IsStackable = true
+MaxStacks = 5
+IsPermanent = false
+HealthModifier = 0.0
+ManaModifier = 0.0
+DefenseModifier = 0.0
+StrengthModifier = 0.0
+IntelligenceModifier = 0.0
+CriticalChanceModifier = 0.0
+CriticalDamageModifier = 0.0
+AttackSpeedModifier = 0.0
+MoveSpeedModifier = 0.0
+TickInterval = 1.0
+Type = 0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ioixo"]
+size = Vector2(51.25, 45.25)
+
+[sub_resource type="Resource" id="Resource_luav2"]
+script = ExtResource("3_r0ms2")
+Name = "Speed Effect"
+Description = ""
+Duration = 5.0
+IsStackable = false
+MaxStacks = 1
+IsPermanent = false
+HealthModifier = 0.0
+ManaModifier = 0.0
+DefenseModifier = 0.0
+StrengthModifier = 0.0
+IntelligenceModifier = 0.0
+CriticalChanceModifier = 0.0
+CriticalDamageModifier = 0.0
+AttackSpeedModifier = 0.0
+MoveSpeedModifier = 500.0
+TickInterval = 1.0
+Type = 0
+
+[node name="BattleScene" type="Node2D"]
+
+[node name="Player" parent="." instance=ExtResource("1_6bl8q")]
+z_index = 114
+position = Vector2(294, 244)
+
+[node name="PoisonTrigger" type="Area2D" parent="."]
+position = Vector2(122, 105)
+scale = Vector2(4, 4)
+script = ExtResource("2_xei7x")
+Effect = SubResource("Resource_uqlpv")
+OneTimeUse = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PoisonTrigger"]
+shape = SubResource("RectangleShape2D_ioixo")
+metadata/_edit_lock_ = true
+
+[node name="ColorRect" type="ColorRect" parent="PoisonTrigger"]
+offset_left = -26.0
+offset_top = -23.0
+offset_right = 26.0
+offset_bottom = 22.0
+metadata/_edit_lock_ = true
+
+[node name="RichTextLabel" type="RichTextLabel" parent="PoisonTrigger"]
+offset_left = -26.0
+offset_top = -23.25
+offset_right = 92.0
+offset_bottom = 20.75
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+text = "Poison
+Trigger"
+fit_content = true
+metadata/_edit_lock_ = true
+
+[node name="SpeedTriger" type="Area2D" parent="."]
+position = Vector2(123, 370)
+scale = Vector2(4, 4)
+script = ExtResource("2_xei7x")
+Effect = SubResource("Resource_luav2")
+OneTimeUse = false
+
+[node name="ColorRect" type="ColorRect" parent="SpeedTriger"]
+offset_left = -26.0
+offset_top = -23.0
+offset_right = 26.0
+offset_bottom = 22.0
+metadata/_edit_lock_ = true
+
+[node name="RichTextLabel" type="RichTextLabel" parent="SpeedTriger"]
+offset_left = -26.25
+offset_top = -24.0
+offset_right = 91.75
+offset_bottom = 22.0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+text = "Speed
+Trigger
+"
+fit_content = true
+metadata/_edit_lock_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SpeedTriger"]
+shape = SubResource("RectangleShape2D_ioixo")
+metadata/_edit_lock_ = true
