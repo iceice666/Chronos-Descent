@@ -1,32 +1,79 @@
 # Chronos Descent
 
-## How would you pitch your game in one line?
-It's like Minecraft Dungeons meets Hades, but with a unique time-rewind mechanic that gives players a second chance in intense combat.
-## What is the key mechanic(s) that make it fun?
-- Time Rewind Ability:
-Players have a limited-use ability to rewind seconds of gameplay,
-allowing them to dodge fatal attacks, retry a missed combo, or escape a tough situation.
-This creates a thrilling risk-reward dynamic where players must strategically decide when to use their time rewind,
-adding a layer of tactical depth to fast-paced combat.
-- Procedural Dungeon Generation:
-Each run generates a unique dungeon layout,
-ensuring no two playthroughs are exactly the same.
-Randomized room designs, enemy placements, and loot distributions keep the experience fresh and unpredictable,
-encouraging multiple runs and exploration.
-- Loot-Based Progression:
-Players collect increasingly powerful weapons and armor with unique properties.
-The equipment system allows for diverse playstyles, with gear that can dramatically change combat approaches –
-from lightning-fast daggers to powerful area-of-effect magical weapons.
-## How does the game actually play? (Core Game Loop)
-1. Players enter a procedurally generated dungeon with a specific equipment loadout.
-2. Navigate through randomized rooms, battling various enemy types and avoiding traps.
-3. Collect loot, upgrade equipment, and strategically use the time rewind ability during challenging encounters.
-4. Defeat progressively difficult enemies and mini-bosses, each room presenting new tactical challenges.
-5. Reach the final boss of the dungeon, using all acquired skills and equipment to overcome the ultimate challenge.
-6. Complete the run, unlock new equipment or abilities, and prepare for the next randomized adventure.
-## How will you keep players engaged for 30 minutes? What's the general scope of your game (will change as you go)?
-- Varied Combat Encounters: Different enemy types with unique attack patterns that require strategic thinking and skillful use of the time rewind mechanic.
-- Continuous Progression: A robust loot system that constantly provides new and exciting equipment, motivating players to explore and experiment.
-- Increasing Difficulty: Dungeons that scale in complexity and challenge, ensuring that players are always tested and improving their skills.
-- Replayability: Procedural generation and the time rewind mechanic ensure that each run feels unique and exciting.
-- Short, Intense Runs: Design philosophy focused on 20-30 minute dungeon experiences that are perfect for quick play sessions while still providing a sense of accomplishment and progression.
+> This game still work in progress!!!
+
+A roguelike action-adventure game where time is your most powerful weapon.
+
+## 🎮 Game Overview
+
+Chronos Descent is a fast-paced action roguelike that combines the accessibility of Minecraft Dungeons
+with the intense combat of Hades, all enhanced by a unique time-rewind mechanic.
+Navigate through procedurally generated dungeons, battle challenging enemies, collect powerful loot,
+and use your ability to manipulate time to overcome seemingly impossible situations.
+
+## ⏱️ Core Mechanics
+
+### Time Rewind Ability
+- Limited-use ability to rewind seconds of gameplay
+- Dodge fatal attacks, retry missed combos, or escape tough situations
+- Strategic decision-making adds tactical depth to combat
+
+### Procedural Dungeon Generation
+- Unique dungeon layouts on every run
+- Randomized room designs, enemy placements, and loot distributions
+- Fresh, unpredictable experience encouraging multiple playthroughs
+
+### Loot-Based Progression
+- Collect increasingly powerful weapons and armor with unique properties
+- Equipment system supporting diverse playstyles
+- From lightning-fast daggers to powerful area-of-effect magical weapons
+
+## 🔄 Game Loop
+
+1. Enter a procedurally generated dungeon with your chosen equipment
+2. Navigate through randomized rooms filled with enemies and traps
+3. Collect loot and strategically use your time rewind ability
+4. Overcome progressively difficult enemies and mini-bosses
+5. Face the final boss, utilizing all your acquired skills and equipment
+6. Complete the run, unlock new gear, and prepare for your next adventure
+
+## 🛠️ Technical Implementation
+
+- **Game Engine**: Godot Engine
+- **Programming Language**: C# (.NET 9)
+- **Development Approach**: Focused on replayability and tight gameplay loops
+- **Session Length**: Designed for 20-30 minute dungeon runs
+
+## 🚀 Development Roadmap
+
+- [ ] Core gameplay mechanics implementation
+- [ ] Procedural dungeon generation system
+- [ ] Enemy AI and combat systems
+- [ ] Time rewind mechanic
+- [ ] Loot and progression systems
+- [ ] UI and player feedback
+- [ ] Audio implementation
+- [ ] Polish and balancing
+
+<!-- ## 💻 Getting Started
+
+### Prerequisites
+- Godot Engine (latest version)
+- .NET 9 SDK
+
+### Installation
+1. Clone this repository
+2. Open the project in Godot Engine
+3. Build and run the game
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. -->
+
+<!-- ## 📜 License
+
+This project is licensed under the [MIT License](LICENSE). -->
+
+---
+
+*Chronos Descent - Where every second counts... twice.*
