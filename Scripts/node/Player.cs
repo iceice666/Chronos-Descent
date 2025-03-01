@@ -12,7 +12,7 @@ public partial class Player : Entity
         base._Ready();
         AddToGroup("Player");
         
-        _input =  GetNode<UserInputManager>("UserInputManager");
+        _input =  GetNode<UserInputManager>("/root/Autoload/UserInputManager");
     }
     
     public override void _PhysicsProcess(double delta)

@@ -1,12 +1,15 @@
 // ReSharper disable MemberCanBePrivate.Global
+
+using System;
 using Godot;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ChronosDescent.Scripts.node;
 
 /// <summary>
 /// A versatile input component that handles keyboard/mouse, controller, and virtual joystick inputs.
-/// Attach this to a player or input manager node and configure your desired input actions.
+/// This improved version directly tracks vector inputs and provides a more flexible keybinding system.
 /// </summary>
 [GlobalClass]
 public partial class UserInputManager : Control
@@ -22,6 +25,9 @@ public partial class UserInputManager : Control
     [Signal]
     public delegate void JoystickDisconnectedEventHandler(int deviceId);
 
+    [Signal]
+    public delegate void ActionMappingChangedEventHandler(string actionName);
+
     #endregion
 
     #region Enums
@@ -31,6 +37,13 @@ public partial class UserInputManager : Control
         KeyboardMouse,
         Controller,
         VirtualJoystick
+    }
+
+    public enum InputType
+    {
+        Button,
+        Axis,
+        Vector
     }
 
     #endregion
@@ -61,9 +74,12 @@ public partial class UserInputManager : Control
     private Control _leftVirtualJoystick;
     private Control _rightVirtualJoystick;
     private readonly Dictionary<string, InputAction> _inputActions = new();
+    private readonly Dictionary<string, InputType> _actionTypes = new();
+    private readonly List<string> _registeredActions = [];
     private ConfigFile _configFile = new();
     private bool _waitingForRemap;
     private string _actionToRemap = "";
+    private Vector2 _center;
 
     #endregion
 
@@ -72,18 +88,11 @@ public partial class UserInputManager : Control
     /// </summary>
     private class InputAction
     {
-        public string Name { get; set; }
         public bool IsPressed { get; set; }
         public bool JustPressed { get; set; }
         public bool JustReleased { get; set; }
         public float AnalogValue { get; set; }
-        public Vector2 Vector { get; set; }
-
-        public InputAction(string name)
-        {
-            Name = name;
-            Reset();
-        }
+        public Vector2 Vector { get; set; } = Vector2.Zero;
 
         public void Reset()
         {
@@ -92,66 +101,6 @@ public partial class UserInputManager : Control
             // Don't reset IsPressed or AnalogValue as they should persist between frames
         }
     }
-
-    #region Lifecycle Methods
-
-    public override void _Ready()
-    {
-        // Set initial input source
-        _currentInputSource = DefaultInputSource;
-
-        // Connect joystick signals
-        Input.JoyConnectionChanged += OnJoyConnectionChanged;
-
-        // Get virtual joystick nodes if specified
-        if (!string.IsNullOrEmpty(LeftVirtualJoystickPath))
-            _leftVirtualJoystick = GetNode<Control>(LeftVirtualJoystickPath);
-
-        if (!string.IsNullOrEmpty(RightVirtualJoystickPath))
-            _rightVirtualJoystick = GetNode<Control>(RightVirtualJoystickPath);
-
-        // Register default input actions
-        RegisterDefaultActions();
-
-        // Load any saved input mappings
-        LoadInputMappings();
-
-        // Print connected controllers
-        foreach (var deviceId in Input.GetConnectedJoypads())
-        {
-            GD.Print($"Joystick connected: {Input.GetJoyName(deviceId)}");
-        }
-    }
-
-    public override void _Process(double delta)
-    {
-        // Auto-detect input source changes if enabled
-        if (AutoSwitchInputDevice)
-            DetectInputSourceChange();
-    }
-
-    public override void _PhysicsProcess(double delta)
-    {
-        // Update all registered input actions
-        UpdateInputActions();
-    }
-
-    public override void _Input(InputEvent @event)
-    {
-        // Handle input remapping if active
-        if (_waitingForRemap)
-        {
-            HandleRemapping(@event);
-        }
-    }
-
-    public override void _ExitTree()
-    {
-        // Clean up signals
-        Input.JoyConnectionChanged -= OnJoyConnectionChanged;
-    }
-
-    #endregion
 
     #region Public Methods
 
@@ -188,16 +137,27 @@ public partial class UserInputManager : Control
     }
 
     /// <summary>
-    /// Gets a Vector2 value for a pre-configured vector action
+    /// Gets a Vector2 value for a vector action
     /// </summary>
     public Vector2 GetVector(string vectorActionName)
     {
         return _inputActions.TryGetValue(vectorActionName, out var inputAction) ? inputAction.Vector : Vector2.Zero;
     }
 
+    /// <summary>
+    /// Gets the movement vector (convenience method)
+    /// </summary>
     public Vector2 GetMovementVector()
     {
         return GetVector("movement");
+    }
+
+    /// <summary>
+    /// Gets the look vector (convenience method)
+    /// </summary>
+    public Vector2 GetLookVector()
+    {
+        return GetVector("look");
     }
 
     /// <summary>
@@ -217,6 +177,12 @@ public partial class UserInputManager : Control
     /// </summary>
     public void StartRemapping(string actionName)
     {
+        if (!_registeredActions.Contains(actionName))
+        {
+            GD.PrintErr($"Cannot remap unregistered action: {actionName}");
+            return;
+        }
+
         _waitingForRemap = true;
         _actionToRemap = actionName;
         GD.Print($"Waiting for input to remap action: {actionName}");
@@ -283,37 +249,41 @@ public partial class UserInputManager : Control
         return IsControllerConnected(deviceId) ? Input.GetJoyName(deviceId) : "Not Connected";
     }
 
+    /// <summary>
+    /// Get a list of all registered action names
+    /// </summary>
+    public IReadOnlyList<string> GetRegisteredActions()
+    {
+        return _registeredActions;
+    }
+
+    /// <summary>
+    /// Get the input type of specific action
+    /// </summary>
+    public InputType GetActionType(string actionName)
+    {
+        return _actionTypes.GetValueOrDefault(actionName, InputType.Button);
+    }
+
     #endregion
 
     #region Private Methods
 
-    // ### CUSTOMIZE ### First set desired action here
     private void RegisterDefaultActions()
     {
-        // Movement actions
-        _inputActions["move_left"] = new InputAction("move_left");
-        _inputActions["move_right"] = new InputAction("move_right");
-        _inputActions["move_up"] = new InputAction("move_up");
-        _inputActions["move_down"] = new InputAction("move_down");
+        // Register vector actions directly
+        RegisterVectorAction("movement");
+        RegisterVectorAction("look");
 
-        // Direction vector (combines movement actions)
-        _inputActions["movement"] = new InputAction("movement");
+        // Register axis actions
+        RegisterAxisAction("left_trigger");
+        RegisterAxisAction("right_trigger");
 
-        // Camera/Look actions
-        _inputActions["look_left"] = new InputAction("look_left");
-        _inputActions["look_right"] = new InputAction("look_right");
-        _inputActions["look_up"] = new InputAction("look_up");
-        _inputActions["look_down"] = new InputAction("look_down");
-
-        // Look vector (combines look actions)
-        _inputActions["look"] = new InputAction("look");
-
-        // Triggers
-        _inputActions["left_trigger"] = new InputAction("left_trigger");
-        _inputActions["right_trigger"] = new InputAction("right_trigger");
-
-        // Action buttons
-        _inputActions["attack"] = new InputAction("attack");
+        // Register button actions
+        RegisterButtonAction("attack");
+        RegisterButtonAction("use_item_1");
+        RegisterButtonAction("use_item_2");
+        RegisterButtonAction("use_item_3");
     }
 
     private void UpdateInputActions()
@@ -336,68 +306,41 @@ public partial class UserInputManager : Control
             case InputSource.VirtualJoystick:
                 UpdateVirtualJoystickInput();
                 break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
-
-        // Update derived vector inputs
-        UpdateVectorInputs();
     }
-
-
-    private void UpdateActionFromJoyStickButton(string buttonName, int device, JoyButton button)
-    {
-        var buttonPressed = Input.IsJoyButtonPressed(device, button);
-        var buttonJustPressed = buttonPressed && !_inputActions[buttonName].IsPressed;
-        var buttonJustReleased = !buttonPressed && _inputActions[buttonName].IsPressed;
-        UpdateActionFromInput(buttonName, buttonPressed, buttonJustPressed, buttonJustReleased);
-    }
-
 
     private void UpdateControllerInput()
     {
         // Get the first connected controller
-        int deviceId;
-        if (Input.GetConnectedJoypads().Count > 0)
-            deviceId = Input.GetConnectedJoypads()[0];
-        else
+        if (Input.GetConnectedJoypads().Count == 0)
             return; // No controller connected
 
-        // Left stick (Movement)
-        var leftX = Input.GetJoyAxis(deviceId, JoyAxis.LeftX);
-        var leftY = Input.GetJoyAxis(deviceId, JoyAxis.LeftY);
+        int deviceId = Input.GetConnectedJoypads()[0];
 
-        // Apply deadzone
-        if (Mathf.Abs(leftX) < JoystickDeadzone) leftX = 0;
-        if (Mathf.Abs(leftY) < JoystickDeadzone) leftY = 0;
+        // Handle Vector2 inputs directly
+        UpdateVectorFromController("movement", deviceId, JoyAxis.LeftX, JoyAxis.LeftY);
+        UpdateVectorFromController("look", deviceId, JoyAxis.RightX, JoyAxis.RightY);
 
-        // Update movement actions based on left stick
-        UpdateActionFromInput("move_left", leftX < -JoystickDeadzone, false, false, Mathf.Abs(Mathf.Min(0, leftX)));
-        UpdateActionFromInput("move_right", leftX > JoystickDeadzone, false, false, Mathf.Max(0, leftX));
-        UpdateActionFromInput("move_up", leftY < -JoystickDeadzone, false, false, Mathf.Abs(Mathf.Min(0, leftY)));
-        UpdateActionFromInput("move_down", leftY > JoystickDeadzone, false, false, Mathf.Max(0, leftY));
-
-        // Right stick (Look)
-        var rightX = Input.GetJoyAxis(deviceId, JoyAxis.RightX);
-        var rightY = Input.GetJoyAxis(deviceId, JoyAxis.RightY);
-
-        // Apply deadzone
-        if (Mathf.Abs(rightX) < JoystickDeadzone) rightX = 0;
-        if (Mathf.Abs(rightY) < JoystickDeadzone) rightY = 0;
-
-        // Update look actions based on right stick
-        UpdateActionFromInput("look_left", rightX < -JoystickDeadzone, false, false, Mathf.Abs(Mathf.Min(0, rightX)));
-        UpdateActionFromInput("look_right", rightX > JoystickDeadzone, false, false, Mathf.Max(0, rightX));
-        UpdateActionFromInput("look_up", rightY < -JoystickDeadzone, false, false, Mathf.Abs(Mathf.Min(0, rightY)));
-        UpdateActionFromInput("look_down", rightY > JoystickDeadzone, false, false, Mathf.Max(0, rightY));
-
-        // Triggers
+        // Handle trigger axes
         var leftTrigger = Input.GetJoyAxis(deviceId, JoyAxis.TriggerLeft);
         var rightTrigger = Input.GetJoyAxis(deviceId, JoyAxis.TriggerRight);
 
         UpdateActionFromInput("left_trigger", leftTrigger > JoystickDeadzone, false, false, leftTrigger);
         UpdateActionFromInput("right_trigger", rightTrigger > JoystickDeadzone, false, false, rightTrigger);
 
-        // ### CUSTOMIZE ### Face buttons - adapt these based on your game's needs
-        UpdateActionFromJoyStickButton("attack", deviceId, JoyButton.X);
+        // Update button actions
+        foreach (var action in _registeredActions)
+        {
+            if (_actionTypes[action] != InputType.Button) continue;
+
+            // Handle action through the input system if mapped
+            if (InputMap.HasAction(action))
+            {
+                UpdateActionFromInputSystem(action);
+            }
+        }
     }
 
     private void UpdateActionFromInputSystem(string buttonName)
@@ -408,20 +351,30 @@ public partial class UserInputManager : Control
 
     private void UpdateKeyboardMouseInput()
     {
-        // Update basic movement actions
-        UpdateActionFromInputSystem("move_left");
-        UpdateActionFromInputSystem("move_right");
-        UpdateActionFromInputSystem("move_up");
-        UpdateActionFromInputSystem("move_down");
+        // Handle movement directly as a vector
+        var movementVector = new Vector2(
+            Input.GetActionStrength("move_right") - Input.GetActionStrength("move_left"),
+            Input.GetActionStrength("move_down") - Input.GetActionStrength("move_up")
+        ).LimitLength();
 
-        // ### CUSTOMIZE ### Update action buttons
-        UpdateActionFromInputSystem("attack");
+        UpdateActionVector("movement", movementVector);
 
+        // Handle look using mouse position relative to center
+        var mousePosition = GetViewport().GetMousePosition();
+        var relativePosition = mousePosition - _center;
+        var lookVector = relativePosition.Normalized();
+        var lookStrength = relativePosition.Length() / 100.0f; // Adjust divisor based on your needs
+        lookStrength = Mathf.Min(lookStrength, 1.0f);
 
-        // TODO:
-        //  Mouse look - get mouse motion for this frame
-        //  Note: This requires handling _Input() for mouse motion events,
-        //  or using the InputEventMouseMotion in _Input if you need full mouse handling
+        UpdateActionVector("look", lookVector * lookStrength);
+
+        // Update all registered button actions
+        foreach (var action in _registeredActions
+                     .Where(action => _actionTypes[action] == InputType.Button)
+                     .Where(action => InputMap.HasAction(action)))
+        {
+            UpdateActionFromInputSystem(action);
+        }
     }
 
     private void UpdateVirtualJoystickInput()
@@ -431,72 +384,68 @@ public partial class UserInputManager : Control
             return;
 
         // Retrieve output values from virtual joystick nodes
-        // This assumes your virtual joystick implements a GetOutput() method
-        // Adjust based on your actual implementation
-        var leftJoystickOutput = Vector2.Zero;
-        var rightJoystickOutput = Vector2.Zero;
+        var leftJoystickOutput = GetJoystickOutput(_leftVirtualJoystick);
+        var rightJoystickOutput = GetJoystickOutput(_rightVirtualJoystick);
 
-        // TODO: use specific method to get actual output
-        // Try to get the output using different common property names
-        // This makes it work with different virtual joystick implementations
-        if (_leftVirtualJoystick.HasMethod("GetOutput"))
-            leftJoystickOutput = (Vector2)_leftVirtualJoystick.Call("GetOutput");
-        else if ((bool)_leftVirtualJoystick.Get("Output"))
-            leftJoystickOutput = (Vector2)_leftVirtualJoystick.Get("Output");
-        else if ((bool)_leftVirtualJoystick.Get("Value"))
-            leftJoystickOutput = (Vector2)_leftVirtualJoystick.Get("Value");
+        // Update vector actions directly
+        UpdateActionVector("movement", leftJoystickOutput);
+        UpdateActionVector("look", rightJoystickOutput);
 
-        if (_rightVirtualJoystick.HasMethod("GetOutput"))
-            rightJoystickOutput = (Vector2)_rightVirtualJoystick.Call("GetOutput");
-        else if ((bool)_rightVirtualJoystick.Get("Output"))
-            rightJoystickOutput = (Vector2)_rightVirtualJoystick.Get("Output");
-        else if ((bool)_rightVirtualJoystick.Get("Value"))
-            rightJoystickOutput = (Vector2)_rightVirtualJoystick.Get("Value");
-
-        // Update movement actions based on left virtual joystick
-        UpdateActionFromInput("move_left", leftJoystickOutput.X < -JoystickDeadzone, false, false,
-            Mathf.Abs(Mathf.Min(0, leftJoystickOutput.X)));
-        UpdateActionFromInput("move_right", leftJoystickOutput.X > JoystickDeadzone, false, false,
-            Mathf.Max(0, leftJoystickOutput.X));
-        UpdateActionFromInput("move_up", leftJoystickOutput.Y < -JoystickDeadzone, false, false,
-            Mathf.Abs(Mathf.Min(0, leftJoystickOutput.Y)));
-        UpdateActionFromInput("move_down", leftJoystickOutput.Y > JoystickDeadzone, false, false,
-            Mathf.Max(0, leftJoystickOutput.Y));
-
-        // Update look actions based on right virtual joystick
-        UpdateActionFromInput("look_left", rightJoystickOutput.X < -JoystickDeadzone, false, false,
-            Mathf.Abs(Mathf.Min(0, rightJoystickOutput.X)));
-        UpdateActionFromInput("look_right", rightJoystickOutput.X > JoystickDeadzone, false, false,
-            Mathf.Max(0, rightJoystickOutput.X));
-        UpdateActionFromInput("look_up", rightJoystickOutput.Y < -JoystickDeadzone, false, false,
-            Mathf.Abs(Mathf.Min(0, rightJoystickOutput.Y)));
-        UpdateActionFromInput("look_down", rightJoystickOutput.Y > JoystickDeadzone, false, false,
-            Mathf.Max(0, rightJoystickOutput.Y));
-
-
-        // Virtual buttons should be handled through the regular input system
-        // or by specific UI button nodes that trigger actions
-        // ### CUSTOMIZE ### Update action buttons
-        UpdateActionFromInputSystem("attack");
+        // Update all registered button actions
+        foreach (var action in _registeredActions
+                     .Where(action => _actionTypes[action] == InputType.Button)
+                     .Where(action => InputMap.HasAction(action)))
+        {
+            UpdateActionFromInputSystem(action);
+        }
     }
 
-    private void UpdateVectorInputs()
+    // TODO: replace with custom joystick node
+    private static Vector2 GetJoystickOutput(Control joystick)
     {
-        // Update the movement vector
-        _inputActions["movement"].Vector = new Vector2(
-            GetActionStrength("move_right") - GetActionStrength("move_left"),
-            GetActionStrength("move_down") - GetActionStrength("move_up")
-        ).LimitLength(); // Normalize to prevent diagonal movement being faster
+        // Try to get the output using different common property names
+        if (joystick.HasMethod("GetOutput"))
+            return (Vector2)joystick.Call("GetOutput");
 
-        // Update the look vector
-        _inputActions["look"].Vector = new Vector2(
-            GetActionStrength("look_right") - GetActionStrength("look_left"),
-            GetActionStrength("look_down") - GetActionStrength("look_up")
-        ).LimitLength();
+        if ((bool)joystick.Get("Output"))
+            return (Vector2)joystick.Get("Output");
+
+        if ((bool)joystick.Get("Value"))
+            return (Vector2)joystick.Get("Value");
+
+        return Vector2.Zero;
     }
 
-    private void UpdateActionFromInput(string actionName, bool isPressed, bool justPressed, bool justReleased,
-        float strength = 1.0f)
+    private void UpdateVectorFromController(string actionName, int deviceId, JoyAxis xAxis, JoyAxis yAxis)
+    {
+        var x = Input.GetJoyAxis(deviceId, xAxis);
+        var y = Input.GetJoyAxis(deviceId, yAxis);
+
+        // Apply deadzone
+        if (Mathf.Abs(x) < JoystickDeadzone) x = 0;
+        if (Mathf.Abs(y) < JoystickDeadzone) y = 0;
+
+        var vector = new Vector2(x, y).LimitLength();
+        UpdateActionVector(actionName, vector);
+    }
+
+    private void UpdateActionVector(string actionName, Vector2 vector)
+    {
+        if (!_inputActions.TryGetValue(actionName, out var action))
+            return;
+
+        action.Vector = vector;
+        action.IsPressed = vector.LengthSquared() > 0.01f;
+        action.AnalogValue = vector.Length();
+
+        // We don't update JustPressed/JustReleased here as those are better tracked in the physics process
+    }
+
+    private void UpdateActionFromInput(
+        string actionName,
+        bool isPressed, bool justPressed, bool justReleased,
+        float strength = 1.0f
+    )
     {
         if (!_inputActions.TryGetValue(actionName, out var action))
             return;
@@ -510,17 +459,18 @@ public partial class UserInputManager : Control
         action.AnalogValue = isPressed ? strength : 0f;
     }
 
-    // ### CUSTOMIZE ### Check used input source get detected here
     private void DetectInputSourceChange()
     {
         // Check for keyboard/mouse input
-        if (Input.IsActionJustPressed("move_left") ||
-            Input.IsActionJustPressed("move_right") ||
-            Input.IsActionJustPressed("move_up") ||
-            Input.IsActionJustPressed("move_down") ||
-            Input.IsActionJustPressed("attack") ||
-            Input.IsMouseButtonPressed(MouseButton.Left) ||
-            Input.IsMouseButtonPressed(MouseButton.Right))
+        if (_registeredActions
+            .Where(action => _actionTypes[action] == InputType.Button)
+            .Any(action => Input.IsActionJustPressed(action)))
+        {
+            SetInputSource(InputSource.KeyboardMouse);
+            return;
+        }
+
+        if (Input.IsMouseButtonPressed(MouseButton.Left) || Input.IsMouseButtonPressed(MouseButton.Right))
         {
             SetInputSource(InputSource.KeyboardMouse);
             return;
@@ -552,20 +502,9 @@ public partial class UserInputManager : Control
 
         // Check for virtual joystick input
         if (_leftVirtualJoystick == null || _rightVirtualJoystick == null) return;
-        // This would depend on your virtual joystick implementation
-        // Here's a generic check that assumes the joystick node has an "IsPressed" property
-        var leftVirtualJoystickActive = false;
-        var rightVirtualJoystickActive = false;
 
-        if ((bool)_leftVirtualJoystick.Get("IsPressed"))
-            leftVirtualJoystickActive = (bool)_leftVirtualJoystick.Get("IsPressed");
-        else if (_leftVirtualJoystick.HasMethod("IsPressed"))
-            leftVirtualJoystickActive = (bool)_leftVirtualJoystick.Call("IsPressed");
-
-        if ((bool)_rightVirtualJoystick.Get("IsPressed"))
-            rightVirtualJoystickActive = (bool)_rightVirtualJoystick.Get("IsPressed");
-        else if (_rightVirtualJoystick.HasMethod("IsPressed"))
-            rightVirtualJoystickActive = (bool)_rightVirtualJoystick.Call("IsPressed");
+        var leftVirtualJoystickActive = IsJoystickActive(_leftVirtualJoystick);
+        var rightVirtualJoystickActive = IsJoystickActive(_rightVirtualJoystick);
 
         if (leftVirtualJoystickActive || rightVirtualJoystickActive)
         {
@@ -573,10 +512,22 @@ public partial class UserInputManager : Control
         }
     }
 
+    private static bool IsJoystickActive(Control joystick)
+    {
+        // Try different methods to check if joystick is active
+        if ((bool)joystick.Get("IsPressed"))
+            return (bool)joystick.Get("IsPressed");
+
+        if (joystick.HasMethod("IsPressed"))
+            return (bool)joystick.Call("IsPressed");
+
+        // Try checking if the output vector is non-zero
+        var output = GetJoystickOutput(joystick);
+        return output.LengthSquared() > 0.01f;
+    }
+
     private void OnJoyConnectionChanged(long devId, bool connected)
     {
-        // Need to manually cast here due to:
-        // https://github.com/godotengine/godot/issues/65749
         var deviceId = (int)devId;
         if (connected)
         {
@@ -635,6 +586,7 @@ public partial class UserInputManager : Control
         if (!validRemapEvent) return;
 
         SaveInputMappings();
+        EmitSignal(SignalName.ActionMappingChanged, _actionToRemap);
         _waitingForRemap = false;
         _actionToRemap = "";
     }
@@ -735,6 +687,13 @@ public partial class UserInputManager : Control
             }
         }
 
+        // Save registered actions and their types
+        _configFile.SetValue("actions", "registered", _registeredActions.ToArray());
+        foreach (var action in _registeredActions)
+        {
+            _configFile.SetValue("action_types", action, (int)_actionTypes[action]);
+        }
+
         // Save current input source
         _configFile.SetValue("settings", "input_source", (int)_currentInputSource);
         _configFile.SetValue("settings", "deadzone", JoystickDeadzone);
@@ -771,6 +730,31 @@ public partial class UserInputManager : Control
         if (_configFile.HasSectionKey("settings", "deadzone"))
         {
             JoystickDeadzone = (float)_configFile.GetValue("settings", "deadzone");
+        }
+
+        // Load registered actions and their types
+        if (_configFile.HasSectionKey("actions", "registered"))
+        {
+            var savedActions = (Godot.Collections.Array<string>)_configFile.GetValue("actions", "registered");
+            foreach (var action in savedActions)
+            {
+                if (_configFile.HasSectionKey("action_types", action))
+                {
+                    var actionType = (InputType)(int)_configFile.GetValue("action_types", action);
+                    switch (actionType)
+                    {
+                        case InputType.Button:
+                            RegisterButtonAction(action);
+                            break;
+                        case InputType.Axis:
+                            RegisterAxisAction(action);
+                            break;
+                        case InputType.Vector:
+                            RegisterVectorAction(action);
+                            break;
+                    }
+                }
+            }
         }
 
         // Load keyboard mappings
@@ -850,6 +834,119 @@ public partial class UserInputManager : Control
         }
 
         GD.Print("Input mappings loaded successfully");
+    }
+
+    /// <summary>
+    /// Registers a new button-type action
+    /// </summary>
+    private void RegisterButtonAction(string actionName)
+    {
+        if (_inputActions.ContainsKey(actionName)) return;
+
+        _inputActions[actionName] = new InputAction();
+        _actionTypes[actionName] = InputType.Button;
+        _registeredActions.Add(actionName);
+
+        // Ensure input action exists in the InputMap
+        if (!InputMap.HasAction(actionName))
+        {
+            InputMap.AddAction(actionName);
+        }
+    }
+
+    /// <summary>
+    /// Registers a new axis-type action
+    /// </summary>
+    private void RegisterAxisAction(string actionName)
+    {
+        if (_inputActions.ContainsKey(actionName)) return;
+        _inputActions[actionName] = new InputAction();
+        _actionTypes[actionName] = InputType.Axis;
+        _registeredActions.Add(actionName);
+    }
+
+    /// <summary>
+    /// Registers a new vector-type action
+    /// </summary>
+    private void RegisterVectorAction(string actionName)
+    {
+        if (_inputActions.ContainsKey(actionName)) return;
+        _inputActions[actionName] = new InputAction();
+        _actionTypes[actionName] = InputType.Vector;
+        _registeredActions.Add(actionName);
+    }
+
+
+    private void OnWindowSizeChanged()
+    {
+        _center = GetViewport().GetVisibleRect().Size / 2;
+    }
+
+    #endregion
+
+    #region Lifecycle Methods
+
+    public override void _Ready()
+    {
+        // Set initial input source
+        _currentInputSource = DefaultInputSource;
+
+        // Connect joystick signals
+        Input.JoyConnectionChanged += OnJoyConnectionChanged;
+
+        // Get virtual joystick nodes if specified
+        if (!string.IsNullOrEmpty(LeftVirtualJoystickPath))
+            _leftVirtualJoystick = GetNode<Control>(LeftVirtualJoystickPath);
+
+        if (!string.IsNullOrEmpty(RightVirtualJoystickPath))
+            _rightVirtualJoystick = GetNode<Control>(RightVirtualJoystickPath);
+
+        // Register default input actions
+        RegisterDefaultActions();
+
+        // Load any saved input mappings
+        LoadInputMappings();
+
+        // Print connected controllers
+        foreach (var deviceId in Input.GetConnectedJoypads())
+        {
+            GD.Print($"Joystick connected: {Input.GetJoyName(deviceId)}");
+        }
+
+        // Get the initial viewport size
+        _center = GetViewport().GetVisibleRect().Size / 2;
+        GetWindow().SizeChanged += OnWindowSizeChanged;
+    }
+
+    public override void _Process(double delta)
+    {
+        // Auto-detect input source changes if enabled
+        if (AutoSwitchInputDevice) DetectInputSourceChange();
+    }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        // Update all registered input actions
+        UpdateInputActions();
+    }
+
+    public override void _Input(InputEvent @event)
+    {
+        // Handle input remapping if active
+        if (_waitingForRemap)
+        {
+            HandleRemapping(@event);
+        }
+    }
+
+    public override void _ExitTree()
+    {
+        // Clean up signals
+        Input.JoyConnectionChanged -= OnJoyConnectionChanged;
+        GetWindow().SizeChanged -= OnWindowSizeChanged;
+
+        // Save input mappings
+        SaveInputMappings();
     }
 
     #endregion

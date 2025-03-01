@@ -1,7 +1,6 @@
-[gd_scene load_steps=32 format=3 uid="uid://bpuhyc475sgxd"]
+[gd_scene load_steps=31 format=3 uid="uid://bpuhyc475sgxd"]
 
 [ext_resource type="Script" path="res://Scripts/node/Player.cs" id="1_vxxhj"]
-[ext_resource type="Script" path="res://Scripts/node/UserInputManager.cs" id="2_dlduf"]
 [ext_resource type="Script" path="res://Scripts/node/Component/CombatComponent.cs" id="3_jd6qi"]
 [ext_resource type="Script" path="res://Scripts/node/Component/EffectManagerComponent.cs" id="4_gh0aw"]
 [ext_resource type="Texture2D" uid="uid://bdhl6nigpplgi" path="res://Assets/Tiny RPG Character Asset Pack v1.03 -Free Soldier&Orc/Characters(100x100)/Soldier/Soldier/Soldier.png" id="5_dq8j7"]
@@ -191,11 +190,6 @@ radius = 7.0
 [node name="Player" type="CharacterBody2D"]
 scale = Vector2(4, 4)
 script = ExtResource("1_vxxhj")
-
-[node name="UserInputManager" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 0
-script = ExtResource("2_dlduf")
 
 [node name="CombatComponent" type="Node" parent="."]
 script = ExtResource("3_jd6qi")
