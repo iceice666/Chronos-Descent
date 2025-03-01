@@ -61,18 +61,15 @@ public partial class UserInputManager : Control
     [Export] public string SaveFilePath { get; set; } = "user://input_settings.cfg";
 
     [ExportGroup("Virtual Joystick References")]
-    [Export]
-    public NodePath LeftVirtualJoystickPath { get; set; }
-
-    [Export] public NodePath RightVirtualJoystickPath { get; set; }
 
     #endregion
 
     #region Private Variables
 
     private InputSource _currentInputSource;
-    private Control _leftVirtualJoystick;
-    private Control _rightVirtualJoystick;
+
+    private VirtualJoystick _leftVirtualVirtualJoystick;
+    private VirtualJoystick _rightVirtualVirtualJoystick;
     private readonly Dictionary<string, InputAction> _inputActions = new();
     private readonly Dictionary<string, InputType> _actionTypes = new();
     private readonly List<string> _registeredActions = [];
@@ -380,16 +377,12 @@ public partial class UserInputManager : Control
     private void UpdateVirtualJoystickInput()
     {
         // Check if virtual joystick nodes are available
-        if (_leftVirtualJoystick == null || _rightVirtualJoystick == null)
+        if (_leftVirtualVirtualJoystick == null || _rightVirtualVirtualJoystick == null)
             return;
 
-        // Retrieve output values from virtual joystick nodes
-        var leftJoystickOutput = GetJoystickOutput(_leftVirtualJoystick);
-        var rightJoystickOutput = GetJoystickOutput(_rightVirtualJoystick);
-
         // Update vector actions directly
-        UpdateActionVector("movement", leftJoystickOutput);
-        UpdateActionVector("look", rightJoystickOutput);
+        UpdateActionVector("movement", _leftVirtualVirtualJoystick);
+        UpdateActionVector("look", _rightVirtualVirtualJoystick);
 
         // Update all registered button actions
         foreach (var action in _registeredActions
@@ -437,8 +430,17 @@ public partial class UserInputManager : Control
         action.Vector = vector;
         action.IsPressed = vector.LengthSquared() > 0.01f;
         action.AnalogValue = vector.Length();
+    }
 
-        // We don't update JustPressed/JustReleased here as those are better tracked in the physics process
+    private void UpdateActionVector(string actionName, VirtualJoystick joystick)
+    {
+        if (!_inputActions.TryGetValue(actionName, out var action))
+            return;
+
+        var output = joystick.Output;
+        action.Vector = output;
+        action.IsPressed = joystick.IsPressed;
+        action.AnalogValue = output.Length();
     }
 
     private void UpdateActionFromInput(
@@ -461,6 +463,17 @@ public partial class UserInputManager : Control
 
     private void DetectInputSourceChange()
     {
+        // Check for virtual joystick input
+        if (_leftVirtualVirtualJoystick != null && _rightVirtualVirtualJoystick != null)
+        {
+            var leftVirtualJoystickActive = _leftVirtualVirtualJoystick.IsPressed;
+            var rightVirtualJoystickActive = _rightVirtualVirtualJoystick.IsPressed;
+
+            if (!leftVirtualJoystickActive && !rightVirtualJoystickActive) return;
+
+            SetInputSource(InputSource.VirtualJoystick);
+        }
+
         // Check for keyboard/mouse input
         if (_registeredActions
             .Where(action => _actionTypes[action] == InputType.Button)
@@ -496,19 +509,7 @@ public partial class UserInputManager : Control
                 Mathf.Abs(Input.GetJoyAxis(deviceId, JoyAxis.RightY)) > JoystickDeadzone)
             {
                 SetInputSource(InputSource.Controller);
-                return;
             }
-        }
-
-        // Check for virtual joystick input
-        if (_leftVirtualJoystick == null || _rightVirtualJoystick == null) return;
-
-        var leftVirtualJoystickActive = IsJoystickActive(_leftVirtualJoystick);
-        var rightVirtualJoystickActive = IsJoystickActive(_rightVirtualJoystick);
-
-        if (leftVirtualJoystickActive || rightVirtualJoystickActive)
-        {
-            SetInputSource(InputSource.VirtualJoystick);
         }
     }
 
@@ -894,12 +895,9 @@ public partial class UserInputManager : Control
         // Connect joystick signals
         Input.JoyConnectionChanged += OnJoyConnectionChanged;
 
-        // Get virtual joystick nodes if specified
-        if (!string.IsNullOrEmpty(LeftVirtualJoystickPath))
-            _leftVirtualJoystick = GetNode<Control>(LeftVirtualJoystickPath);
-
-        if (!string.IsNullOrEmpty(RightVirtualJoystickPath))
-            _rightVirtualJoystick = GetNode<Control>(RightVirtualJoystickPath);
+        // Get virtual joystick nodes 
+        _leftVirtualVirtualJoystick = GetNode<VirtualJoystick>("/root/Autoload/UI/LeftJoystick");
+        _rightVirtualVirtualJoystick = GetNode<VirtualJoystick>("/root/Autoload/UI/RightJoystick");
 
         // Register default input actions
         RegisterDefaultActions();

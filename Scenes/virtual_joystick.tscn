@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://cd2h1i3ubv7yh"]
+
+[ext_resource type="Script" path="res://Scripts/node/VirtualJoystick.cs" id="1_dfuu3"]
+[ext_resource type="Texture2D" uid="uid://ce6jaaewlgnm5" path="res://Assets/joyknobpng.png" id="2_sqj0j"]
+[ext_resource type="Texture2D" uid="uid://4ju040kujkm3" path="res://Assets/joyring.png" id="3_l1a5w"]
+
+[node name="VirtualJoystick" type="Node2D"]
+script = ExtResource("1_dfuu3")
+
+[node name="Knob" type="Sprite2D" parent="."]
+scale = Vector2(0.05, 0.05)
+texture = ExtResource("2_sqj0j")
+metadata/_edit_lock_ = true
+
+[node name="Ring" type="Sprite2D" parent="."]
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("3_l1a5w")
+metadata/_edit_lock_ = true
+
+[node name="Button" type="Button" parent="."]
+self_modulate = Color(1, 1, 1, 0)
+offset_left = -96.0
+offset_top = -96.0
+offset_right = 96.0
+offset_bottom = 96.0
+metadata/_edit_lock_ = true
