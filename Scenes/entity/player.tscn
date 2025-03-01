@@ -192,7 +192,9 @@ radius = 7.0
 scale = Vector2(4, 4)
 script = ExtResource("1_vxxhj")
 
-[node name="UserInputManager" type="Node" parent="."]
+[node name="UserInputManager" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
 script = ExtResource("2_dlduf")
 
 [node name="CombatComponent" type="Node" parent="."]

@@ -1,3 +1,4 @@
+// ReSharper disable MemberCanBePrivate.Global
 using Godot;
 using System.Collections.Generic;
 
@@ -127,7 +128,10 @@ public partial class UserInputManager : Control
         // Auto-detect input source changes if enabled
         if (AutoSwitchInputDevice)
             DetectInputSourceChange();
+    }
 
+    public override void _PhysicsProcess(double delta)
+    {
         // Update all registered input actions
         UpdateInputActions();
     }
@@ -184,24 +188,16 @@ public partial class UserInputManager : Control
     }
 
     /// <summary>
-    /// Gets a Vector2 value for directional inputs
-    /// </summary>
-    public Vector2 GetVector(string actionLeft, string actionRight, string actionUp, string actionDown)
-    {
-        return new Vector2(
-            GetActionStrength(actionRight) - GetActionStrength(actionLeft),
-            GetActionStrength(actionDown) - GetActionStrength(actionUp)
-        );
-    }
-
-    /// <summary>
     /// Gets a Vector2 value for a pre-configured vector action
     /// </summary>
     public Vector2 GetVector(string vectorActionName)
     {
-        if (_inputActions.TryGetValue(vectorActionName, out var inputAction))
-            return inputAction.Vector;
-        return Vector2.Zero;
+        return _inputActions.TryGetValue(vectorActionName, out var inputAction) ? inputAction.Vector : Vector2.Zero;
+    }
+
+    public Vector2 GetMovementVector()
+    {
+        return GetVector("movement");
     }
 
     /// <summary>
@@ -238,7 +234,7 @@ public partial class UserInputManager : Control
     /// <summary>
     /// Make the controller vibrate
     /// </summary>
-    public static void Vibrate(float weakMagnitude = 0.5f, float strongMagnitude = 0.5f, float duration = 0.5f,
+    public static void StartVibration(float weakMagnitude = 0.5f, float strongMagnitude = 0.5f, float duration = 0.5f,
         int deviceId = 0)
     {
         if (Input.GetConnectedJoypads().Contains(deviceId))
@@ -282,7 +278,7 @@ public partial class UserInputManager : Control
     /// <summary>
     /// Get the name of a connected controller
     /// </summary>
-    public string GetControllerName(int deviceId = 0)
+    public static string GetControllerName(int deviceId = 0)
     {
         return IsControllerConnected(deviceId) ? Input.GetJoyName(deviceId) : "Not Connected";
     }
@@ -291,6 +287,7 @@ public partial class UserInputManager : Control
 
     #region Private Methods
 
+    // ### CUSTOMIZE ### First set desired action here
     private void RegisterDefaultActions()
     {
         // Movement actions
@@ -301,12 +298,6 @@ public partial class UserInputManager : Control
 
         // Direction vector (combines movement actions)
         _inputActions["movement"] = new InputAction("movement");
-
-        // Action buttons
-        _inputActions["jump"] = new InputAction("jump");
-        _inputActions["attack"] = new InputAction("attack");
-        _inputActions["interact"] = new InputAction("interact");
-        _inputActions["dodge"] = new InputAction("dodge");
 
         // Camera/Look actions
         _inputActions["look_left"] = new InputAction("look_left");
@@ -321,7 +312,8 @@ public partial class UserInputManager : Control
         _inputActions["left_trigger"] = new InputAction("left_trigger");
         _inputActions["right_trigger"] = new InputAction("right_trigger");
 
-        // Add any game-specific actions here
+        // Action buttons
+        _inputActions["attack"] = new InputAction("attack");
     }
 
     private void UpdateInputActions()
@@ -350,33 +342,15 @@ public partial class UserInputManager : Control
         UpdateVectorInputs();
     }
 
-    private void UpdateKeyboardMouseInput()
+
+    private void UpdateActionFromJoyStickButton(string buttonName, int device, JoyButton button)
     {
-        // Update basic movement actions
-        UpdateActionFromInput("move_left", Input.IsActionPressed("move_left"), Input.IsActionJustPressed("move_left"),
-            Input.IsActionJustReleased("move_left"), Input.GetActionStrength("move_left"));
-        UpdateActionFromInput("move_right", Input.IsActionPressed("move_right"),
-            Input.IsActionJustPressed("move_right"), Input.IsActionJustReleased("move_right"),
-            Input.GetActionStrength("move_right"));
-        UpdateActionFromInput("move_up", Input.IsActionPressed("move_up"), Input.IsActionJustPressed("move_up"),
-            Input.IsActionJustReleased("move_up"), Input.GetActionStrength("move_up"));
-        UpdateActionFromInput("move_down", Input.IsActionPressed("move_down"), Input.IsActionJustPressed("move_down"),
-            Input.IsActionJustReleased("move_down"), Input.GetActionStrength("move_down"));
-
-        // Update action buttons
-        UpdateActionFromInput("jump", Input.IsActionPressed("jump"), Input.IsActionJustPressed("jump"),
-            Input.IsActionJustReleased("jump"));
-        UpdateActionFromInput("attack", Input.IsActionPressed("attack"), Input.IsActionJustPressed("attack"),
-            Input.IsActionJustReleased("attack"));
-        UpdateActionFromInput("interact", Input.IsActionPressed("interact"), Input.IsActionJustPressed("interact"),
-            Input.IsActionJustReleased("interact"));
-        UpdateActionFromInput("dodge", Input.IsActionPressed("dodge"), Input.IsActionJustPressed("dodge"),
-            Input.IsActionJustReleased("dodge"));
-
-        // Mouse look - get mouse motion for this frame
-        // Note: This requires handling _Input() for mouse motion events,
-        // or using the InputEventMouseMotion in _Input if you need full mouse handling
+        var buttonPressed = Input.IsJoyButtonPressed(device, button);
+        var buttonJustPressed = buttonPressed && !_inputActions[buttonName].IsPressed;
+        var buttonJustReleased = !buttonPressed && _inputActions[buttonName].IsPressed;
+        UpdateActionFromInput(buttonName, buttonPressed, buttonJustPressed, buttonJustReleased);
     }
+
 
     private void UpdateControllerInput()
     {
@@ -422,28 +396,32 @@ public partial class UserInputManager : Control
         UpdateActionFromInput("left_trigger", leftTrigger > JoystickDeadzone, false, false, leftTrigger);
         UpdateActionFromInput("right_trigger", rightTrigger > JoystickDeadzone, false, false, rightTrigger);
 
-        // Face buttons - adapt these based on your game's needs
-        var jumpPressed = Input.IsJoyButtonPressed(deviceId, JoyButton.A);
-        var jumpJustPressed = Input.IsJoyButtonPressed(deviceId, JoyButton.A) && !_inputActions["jump"].IsPressed;
-        var jumpJustReleased = !Input.IsJoyButtonPressed(deviceId, JoyButton.A) && _inputActions["jump"].IsPressed;
-        UpdateActionFromInput("jump", jumpPressed, jumpJustPressed, jumpJustReleased);
+        // ### CUSTOMIZE ### Face buttons - adapt these based on your game's needs
+        UpdateActionFromJoyStickButton("attack", deviceId, JoyButton.X);
+    }
 
-        var attackPressed = Input.IsJoyButtonPressed(deviceId, JoyButton.X);
-        var attackJustPressed = Input.IsJoyButtonPressed(deviceId, JoyButton.X) && !_inputActions["attack"].IsPressed;
-        var attackJustReleased = !Input.IsJoyButtonPressed(deviceId, JoyButton.X) && _inputActions["attack"].IsPressed;
-        UpdateActionFromInput("attack", attackPressed, attackJustPressed, attackJustReleased);
+    private void UpdateActionFromInputSystem(string buttonName)
+    {
+        UpdateActionFromInput(buttonName, Input.IsActionPressed(buttonName), Input.IsActionJustPressed(buttonName),
+            Input.IsActionJustReleased(buttonName), Input.GetActionStrength(buttonName));
+    }
 
-        var interactPressed = Input.IsJoyButtonPressed(deviceId, JoyButton.B);
-        var interactJustPressed =
-            Input.IsJoyButtonPressed(deviceId, JoyButton.B) && !_inputActions["interact"].IsPressed;
-        var interactJustReleased =
-            !Input.IsJoyButtonPressed(deviceId, JoyButton.B) && _inputActions["interact"].IsPressed;
-        UpdateActionFromInput("interact", interactPressed, interactJustPressed, interactJustReleased);
+    private void UpdateKeyboardMouseInput()
+    {
+        // Update basic movement actions
+        UpdateActionFromInputSystem("move_left");
+        UpdateActionFromInputSystem("move_right");
+        UpdateActionFromInputSystem("move_up");
+        UpdateActionFromInputSystem("move_down");
 
-        var dodgePressed = Input.IsJoyButtonPressed(deviceId, JoyButton.Y);
-        var dodgeJustPressed = Input.IsJoyButtonPressed(deviceId, JoyButton.Y) && !_inputActions["dodge"].IsPressed;
-        var dodgeJustReleased = !Input.IsJoyButtonPressed(deviceId, JoyButton.Y) && _inputActions["dodge"].IsPressed;
-        UpdateActionFromInput("dodge", dodgePressed, dodgeJustPressed, dodgeJustReleased);
+        // ### CUSTOMIZE ### Update action buttons
+        UpdateActionFromInputSystem("attack");
+
+
+        // TODO:
+        //  Mouse look - get mouse motion for this frame
+        //  Note: This requires handling _Input() for mouse motion events,
+        //  or using the InputEventMouseMotion in _Input if you need full mouse handling
     }
 
     private void UpdateVirtualJoystickInput()
@@ -458,6 +436,7 @@ public partial class UserInputManager : Control
         var leftJoystickOutput = Vector2.Zero;
         var rightJoystickOutput = Vector2.Zero;
 
+        // TODO: use specific method to get actual output
         // Try to get the output using different common property names
         // This makes it work with different virtual joystick implementations
         if (_leftVirtualJoystick.HasMethod("GetOutput"))
@@ -494,16 +473,11 @@ public partial class UserInputManager : Control
         UpdateActionFromInput("look_down", rightJoystickOutput.Y > JoystickDeadzone, false, false,
             Mathf.Max(0, rightJoystickOutput.Y));
 
+
         // Virtual buttons should be handled through the regular input system
         // or by specific UI button nodes that trigger actions
-        UpdateActionFromInput("jump", Input.IsActionPressed("jump"), Input.IsActionJustPressed("jump"),
-            Input.IsActionJustReleased("jump"));
-        UpdateActionFromInput("attack", Input.IsActionPressed("attack"), Input.IsActionJustPressed("attack"),
-            Input.IsActionJustReleased("attack"));
-        UpdateActionFromInput("interact", Input.IsActionPressed("interact"), Input.IsActionJustPressed("interact"),
-            Input.IsActionJustReleased("interact"));
-        UpdateActionFromInput("dodge", Input.IsActionPressed("dodge"), Input.IsActionJustPressed("dodge"),
-            Input.IsActionJustReleased("dodge"));
+        // ### CUSTOMIZE ### Update action buttons
+        UpdateActionFromInputSystem("attack");
     }
 
     private void UpdateVectorInputs()
@@ -536,6 +510,7 @@ public partial class UserInputManager : Control
         action.AnalogValue = isPressed ? strength : 0f;
     }
 
+    // ### CUSTOMIZE ### Check used input source get detected here
     private void DetectInputSourceChange()
     {
         // Check for keyboard/mouse input
@@ -543,9 +518,7 @@ public partial class UserInputManager : Control
             Input.IsActionJustPressed("move_right") ||
             Input.IsActionJustPressed("move_up") ||
             Input.IsActionJustPressed("move_down") ||
-            Input.IsActionJustPressed("jump") ||
             Input.IsActionJustPressed("attack") ||
-            Input.IsActionJustPressed("interact") ||
             Input.IsMouseButtonPressed(MouseButton.Left) ||
             Input.IsMouseButtonPressed(MouseButton.Right))
         {
@@ -561,11 +534,9 @@ public partial class UserInputManager : Control
             // Check any joystick button or axis
             for (var i = 0; i < (int)JoyButton.Max; i++)
             {
-                if (Input.IsJoyButtonPressed(deviceId, (JoyButton)i))
-                {
-                    SetInputSource(InputSource.Controller);
-                    return;
-                }
+                if (!Input.IsJoyButtonPressed(deviceId, (JoyButton)i)) continue;
+                SetInputSource(InputSource.Controller);
+                return;
             }
 
             // Check joystick axes
@@ -580,27 +551,25 @@ public partial class UserInputManager : Control
         }
 
         // Check for virtual joystick input
-        if (_leftVirtualJoystick != null && _rightVirtualJoystick != null)
+        if (_leftVirtualJoystick == null || _rightVirtualJoystick == null) return;
+        // This would depend on your virtual joystick implementation
+        // Here's a generic check that assumes the joystick node has an "IsPressed" property
+        var leftVirtualJoystickActive = false;
+        var rightVirtualJoystickActive = false;
+
+        if ((bool)_leftVirtualJoystick.Get("IsPressed"))
+            leftVirtualJoystickActive = (bool)_leftVirtualJoystick.Get("IsPressed");
+        else if (_leftVirtualJoystick.HasMethod("IsPressed"))
+            leftVirtualJoystickActive = (bool)_leftVirtualJoystick.Call("IsPressed");
+
+        if ((bool)_rightVirtualJoystick.Get("IsPressed"))
+            rightVirtualJoystickActive = (bool)_rightVirtualJoystick.Get("IsPressed");
+        else if (_rightVirtualJoystick.HasMethod("IsPressed"))
+            rightVirtualJoystickActive = (bool)_rightVirtualJoystick.Call("IsPressed");
+
+        if (leftVirtualJoystickActive || rightVirtualJoystickActive)
         {
-            // This would depend on your virtual joystick implementation
-            // Here's a generic check that assumes the joystick node has an "IsPressed" property
-            var leftVirtualJoystickActive = false;
-            var rightVirtualJoystickActive = false;
-
-            if ((bool)_leftVirtualJoystick.Get("IsPressed"))
-                leftVirtualJoystickActive = (bool)_leftVirtualJoystick.Get("IsPressed");
-            else if (_leftVirtualJoystick.HasMethod("IsPressed"))
-                leftVirtualJoystickActive = (bool)_leftVirtualJoystick.Call("IsPressed");
-
-            if ((bool)_rightVirtualJoystick.Get("IsPressed"))
-                rightVirtualJoystickActive = (bool)_rightVirtualJoystick.Get("IsPressed");
-            else if (_rightVirtualJoystick.HasMethod("IsPressed"))
-                rightVirtualJoystickActive = (bool)_rightVirtualJoystick.Call("IsPressed");
-
-            if (leftVirtualJoystickActive || rightVirtualJoystickActive)
-            {
-                SetInputSource(InputSource.VirtualJoystick);
-            }
+            SetInputSource(InputSource.VirtualJoystick);
         }
     }
 
