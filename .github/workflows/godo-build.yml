@@ -1,4 +1,4 @@
-name: "Godot Desktop Export"
+name: "Godot Export For Windows and Linux"
 on:
   push:
     branches: [main, master]

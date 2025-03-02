@@ -1,4 +1,4 @@
-name: "Godot Export"
+name: "Godot Export For Android"
 on:
   push:
     branches: [main, master]
