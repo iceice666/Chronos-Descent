@@ -86,7 +86,7 @@ jobs:
           echo "BUILD_TYPE=$BUILD_TYPE" >> $GITHUB_ENV
 
           echo "Building ${{ matrix.platform.name }} $BUILD_TYPE version..."
-          EXPORT_OUTPUT="$EXPORT_DIR/$EXPORT_NAME-$BUILD_TYPE.${{ matrix.platform.ext }}"
+          EXPORT_OUTPUT="$EXPORT_DIR/$EXPORT_NAME_$BUILD_TYPE.${{ matrix.platform.ext }}"
 
           # Export the build with Godot
           godot --headless --verbose $EXPORT_FLAG "${{ matrix.platform.preset }}" "$EXPORT_OUTPUT"
