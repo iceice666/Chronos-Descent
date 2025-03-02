@@ -1,6 +1,6 @@
 ﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronos-Descent", "Chronos-Descent.csproj", "{0F67444D-222B-43D0-815F-1C895AF5CBAD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronos-Descent", "Chronos-Descent.csproj", "{9C1C5B88-816C-4BCE-8FA8-F25F1369F29F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,11 +9,11 @@ Global
 	ExportRelease|Any CPU = ExportRelease|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0F67444D-222B-43D0-815F-1C895AF5CBAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0F67444D-222B-43D0-815F-1C895AF5CBAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0F67444D-222B-43D0-815F-1C895AF5CBAD}.ExportDebug|Any CPU.ActiveCfg = ExportDebug|Any CPU
-		{0F67444D-222B-43D0-815F-1C895AF5CBAD}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
-		{0F67444D-222B-43D0-815F-1C895AF5CBAD}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU
-		{0F67444D-222B-43D0-815F-1C895AF5CBAD}.ExportRelease|Any CPU.Build.0 = ExportRelease|Any CPU
+		{9C1C5B88-816C-4BCE-8FA8-F25F1369F29F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C1C5B88-816C-4BCE-8FA8-F25F1369F29F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C1C5B88-816C-4BCE-8FA8-F25F1369F29F}.ExportDebug|Any CPU.ActiveCfg = ExportDebug|Any CPU
+		{9C1C5B88-816C-4BCE-8FA8-F25F1369F29F}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
+		{9C1C5B88-816C-4BCE-8FA8-F25F1369F29F}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU
+		{9C1C5B88-816C-4BCE-8FA8-F25F1369F29F}.ExportRelease|Any CPU.Build.0 = ExportRelease|Any CPU
 	EndGlobalSection
 EndGlobal
