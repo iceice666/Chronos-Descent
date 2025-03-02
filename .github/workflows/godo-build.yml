@@ -1,11 +1,21 @@
-name: "Godot Export"
-on: [push, workflow_dispatch]
+name: "Godot Desktop Export"
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+    inputs:
+      debug:
+        description: "Build debug version"
+        type: boolean
+        default: true
+        required: false
 env:
   GODOT_VERSION: 4.3
   EXPORT_NAME: Chronos-Descent
   PROJECT_PATH: "."
+
 jobs:
-  export-platforms:
+  export-desktop:
     name: Export for ${{ matrix.platform.name }}
     runs-on: ubuntu-latest
     container:
@@ -19,32 +29,70 @@ jobs:
           - name: linux
             preset: "Linux"
             ext: "x86_64"
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           lfs: true
+
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "8.0.300"
-      - name: Setup export templates
+
+      - name: Cache Godot export templates
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/godot/export_templates
+          key: godot-templates-${{ env.GODOT_VERSION }}-${{ hashFiles('**/*.tscn') }}
+          restore-keys: godot-templates-${{ env.GODOT_VERSION }}
+
+      - name: Setup Godot export templates
         run: |
-          mkdir -v -p ~/.local/share/godot/export_templates/
-          mkdir -v -p ~/.config/
+          mkdir -p ~/.local/share/godot/export_templates/
+          mkdir -p ~/.config/godot/
           [ -d /root/.config/godot ] && mv /root/.config/godot ~/.config/godot || true
           mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable.mono ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable.mono
+
       - name: Build for ${{ matrix.platform.name }}
         shell: bash
         run: |
-          mkdir -v -p build/${{ matrix.platform.name }}
+          # Create export directory
+          mkdir -p build/${{ matrix.platform.name }}
           EXPORT_DIR="$(readlink -f build)"
+
+          # Determine if we're doing a debug or release build
+          # For workflow_dispatch, use the input parameter
+          # For push events, default to debug
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            IS_DEBUG="${{ github.event.inputs.debug == 'true' }}"
+          else
+            IS_DEBUG="true"
+          fi
+
+          # Set export flags and output file name based on build type
           cd $PROJECT_PATH
-          EXPORT_FLAG="${{ matrix.platform.debug == true && '--export-debug' || '--export-release' }}"
-          EXPORT_OUTPUT="$EXPORT_DIR/$EXPORT_NAME.${{ matrix.platform.ext }}"
-          godot --headless --verbose $EXPORT_FLAG "${{ matrix.platform.preset }}" $EXPORT_OUTPUT
+          if [ "$IS_DEBUG" == "true" ]; then
+            EXPORT_FLAG="--export-debug"
+            BUILD_TYPE="debug"
+          else
+            EXPORT_FLAG="--export-release"
+            BUILD_TYPE="release"
+          fi
+
+          echo "Building ${{ matrix.platform.name }} $BUILD_TYPE version..."
+          EXPORT_OUTPUT="$EXPORT_DIR/$EXPORT_NAME-$BUILD_TYPE.${{ matrix.platform.ext }}"
+
+          # Export the build with Godot
+          godot --headless --verbose $EXPORT_FLAG "${{ matrix.platform.preset }}" "$EXPORT_OUTPUT"
+
+          # Verify the build was created
+          ls -la $EXPORT_DIR
+          echo "Build completed: $EXPORT_OUTPUT"
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.platform.name }}${{ matrix.platform.debug == true && '_debug' || '_release' }}
-          path: build/
+          name: "${{ matrix.platform.name }}_${{ github.event_name == 'workflow_dispatch' && github.event.inputs.debug == 'true' || github.event_name != 'workflow_dispatch' ? 'debug' : 'release' }}"
+          path: build/${{ matrix.platform.name }}/
