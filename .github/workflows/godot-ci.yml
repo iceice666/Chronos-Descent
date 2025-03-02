@@ -4,6 +4,8 @@ env:
   GODOT_VERSION: 4.3
   EXPORT_NAME: Chronos-Descent
   PROJECT_PATH: "."
+  ANDROID_HOME: "/usr/lib/android-sdk"
+
 jobs:
   export-platforms:
     name: Export for ${{ matrix.platform.name }}
@@ -13,44 +15,91 @@ jobs:
     strategy:
       matrix:
         platform:
-          - name: windows
-            preset: "Windows Desktop"
-            ext: "exe"
-          - name: linux
-            preset: "Linux"
-            ext: "x86_64"
+          # - name: windows
+          #   preset: "Windows Desktop"
+          #   ext: "exe"
+          #   debug: true
+          # - name: linux
+          #   preset: "Linux"
+          #   ext: "x86_64"
+          #   debug: true
           # - name: mac
           #   preset: "macOS"
           #   ext: "zip"
-          # - name: "android"
-          #   preset: "Android"
-          #   ext: "apk"
-          #   debug: true
+          - name: "android"
+            preset: "Android"
+            ext: "apk"
+            debug: true
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           lfs: true
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "zulu"
+          java-version: "17"
+
+      - name: Setup Android SDK
+        run: |
+          mkdir -p $ANDROID_HOME/cmdline-tools/tools
+          wget https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip
+          unzip commandlinetools-linux-*_latest.zip
+          mv cmdline-tools/* $ANDROID_HOME/cmdline-tools/tools/
+          rm -rf cmdline-tools
+          rm commandlinetools-linux-*_latest.zip
+
+          export PATH=$ANDROID_HOME/cmdline-tools/tools/bin:$PATH
+
+          # Accept licenses before installing components
+          mkdir -p $ANDROID_HOME/licenses
+          echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" > $ANDROID_HOME/licenses/android-sdk-license
+
+          # Install required components
+          $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --update
+          $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0" "ndk;28.0.13004108" "cmake;3.31.5"
+
+          # Generate debug keystore
+          keytool -keyalg RSA -genkeypair -alias androiddebugkey -keypass android -keystore debug.keystore -storepass android -dname "CN=Android Debug,O=Android,C=US" -validity 9999
+          mv debug.keystore /root/debug.keystore
+
+      - name: Verify Android SDK installation
+        run: |
+          ls -la $ANDROID_HOME
+          echo "PATH components:"
+          echo $PATH
+          ls -la $ANDROID_HOME/platform-tools || echo "platform-tools not found"
+
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "8.0.300"
+
       - name: Setup export templates
         run: |
           mkdir -v -p ~/.local/share/godot/export_templates/
           mkdir -v -p ~/.config/
           [ -d /root/.config/godot ] && mv /root/.config/godot ~/.config/godot || true
           mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable.mono ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable.mono
+
       - name: Build for ${{ matrix.platform.name }}
         shell: bash
         run: |
+          # Add platform-tools to PATH
+          export PATH=$ANDROID_HOME/platform-tools:$PATH
+
           mkdir -v -p build/${{ matrix.platform.name }}
           EXPORT_DIR="$(readlink -f build)"
           cd $PROJECT_PATH
           EXPORT_FLAG="${{ matrix.platform.debug == true && '--export-debug' || '--export-release' }}"
           EXPORT_OUTPUT="$EXPORT_DIR/$EXPORT_NAME.${{ matrix.platform.ext }}"
 
+          # Export with verbose to see any issues
           godot --headless --verbose $EXPORT_FLAG "${{ matrix.platform.preset }}" $EXPORT_OUTPUT
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
