@@ -4,7 +4,8 @@ using Godot;
 namespace ChronosDescent.Scripts.resource;
 
 [GlobalClass]
-public partial class Effect : Resource
+// ReSharper disable once RedundantNameQualifier
+public partial class Effect : Godot.Resource
 {
     [Export] public string Name { get; set; } = "Effect";
     [Export] public string Description { get; set; } = "";

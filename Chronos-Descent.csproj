@@ -1,9 +1,18 @@
 <Project Sdk="Godot.NET.Sdk/4.3.0">
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
-    <TargetFramework Condition=" '$(GodotTargetPlatform)' == 'android' ">net9.0</TargetFramework>
-    <TargetFramework Condition=" '$(GodotTargetPlatform)' == 'ios' ">net9.0</TargetFramework>
+    <TargetFramework Condition=" '$(GodotTargetPlatform)' == 'android' ">net9.0-android</TargetFramework>
+    <TargetFramework Condition=" '$(GodotTargetPlatform)' == 'ios' ">net9.0-ios</TargetFramework>
     <EnableDynamicLoading>true</EnableDynamicLoading>
     <RootNamespace>ChronosDescent</RootNamespace>
+    
+    <!-- Android specific settings -->
+    <RunAOTCompilation Condition=" '$(GodotTargetPlatform)' == 'android' ">true</RunAOTCompilation>
+    <AndroidEnableProfiledAot>true</AndroidEnableProfiledAot>
+    <PublishTrimmed Condition=" '$(GodotTargetPlatform)' == 'android' ">false</PublishTrimmed>
+    
+    <!-- Additional Android settings -->
+    <SupportedOSPlatformVersion Condition=" '$(GodotTargetPlatform)' == 'android' ">21.0</SupportedOSPlatformVersion>
+    <OutputType>Library</OutputType>
   </PropertyGroup>
 </Project>
