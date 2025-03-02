@@ -56,6 +56,7 @@ jobs:
           mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable.mono ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable.mono
 
       - name: Build for ${{ matrix.platform.name }}
+        id: building
         shell: bash
         run: |
           # Create export directory
@@ -81,6 +82,9 @@ jobs:
             BUILD_TYPE="release"
           fi
 
+          # Export 'BUILD_TYPE' for later steps
+          echo "BUILD_TYPE=$BUILD_TYPE" >> $GITHUB_ENV
+
           echo "Building ${{ matrix.platform.name }} $BUILD_TYPE version..."
           EXPORT_OUTPUT="$EXPORT_DIR/$EXPORT_NAME-$BUILD_TYPE.${{ matrix.platform.ext }}"
 
@@ -94,5 +98,5 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: "${{ matrix.platform.name }}_${{ github.event_name == 'workflow_dispatch' && github.event.inputs.debug == 'true' || github.event_name != 'workflow_dispatch' ? 'debug' : 'release' }}"
-          path: build/${{ matrix.platform.name }}/
+          name: ${{ matrix.platform.name }}_${{ steps.building.outputs.BUILD_TYPE }}
+          path: build/

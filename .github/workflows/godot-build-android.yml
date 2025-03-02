@@ -109,6 +109,7 @@ jobs:
           EOF
 
       - name: Build and sign APK
+        id: building
         run: |
           # Create export directory
           mkdir -p build/android
@@ -132,6 +133,9 @@ jobs:
             EXPORT_FLAG="--export-release"
             BUILD_TYPE="release"
           fi
+
+          # Export 'BUILD_TYPE' for later steps
+          echo "BUILD_TYPE=$BUILD_TYPE" >> $GITHUB_ENV
 
           echo "Building $BUILD_TYPE version..."
           EXPORT_OUTPUT="$EXPORT_DIR/$EXPORT_NAME-$BUILD_TYPE.apk"
@@ -172,5 +176,5 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: "android_${{ github.event_name == 'workflow_dispatch' && github.event.inputs.debug == 'true' || github.event_name != 'workflow_dispatch' ? 'debug' : 'release' }}"
+          name: ${{ matrix.platform.name }}_${{ steps.building.outputs.BUILD_TYPE }}
           path: build/
