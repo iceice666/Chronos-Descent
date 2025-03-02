@@ -1,0 +1,176 @@
+name: "Godot Export"
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+    inputs:
+      debug:
+        description: "Build debug version"
+        type: boolean
+        default: true
+        required: false
+env:
+  GODOT_VERSION: 4.3
+  EXPORT_NAME: Chronos-Descent
+  PROJECT_PATH: "."
+  ANDROID_HOME: "/usr/lib/android-sdk"
+
+jobs:
+  export-android:
+    name: Export for Android
+    runs-on: ubuntu-latest
+    container:
+      image: barichello/godot-ci:mono-4.3
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Cache Android SDK
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.ANDROID_HOME }}
+          key: android-sdk-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: android-sdk-
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "zulu"
+          java-version: "17"
+
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.300"
+
+      - name: Setup Android SDK
+        run: |
+          # Create Android SDK directory structure
+          mkdir -p $ANDROID_HOME/cmdline-tools/tools
+
+          # Download and setup command line tools
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip
+          unzip -q commandlinetools-linux-*_latest.zip
+          mv cmdline-tools/* $ANDROID_HOME/cmdline-tools/tools/
+          rm -rf cmdline-tools commandlinetools-linux-*_latest.zip
+
+          # Accept licenses
+          mkdir -p $ANDROID_HOME/licenses
+          echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" > $ANDROID_HOME/licenses/android-sdk-license
+
+          # Install required components
+          $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --update
+          $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0" "ndk;28.0.13004108" "cmake;3.31.5"
+
+          # Generate debug keystore
+          mkdir -p ~/.android
+          keytool -keyalg RSA -genkeypair -alias androiddebugkey -keypass android -keystore ~/.android/debug.keystore -storepass android -dname "CN=Android Debug,O=Android,C=US" -validity 9999
+          chmod 644 ~/.android/debug.keystore
+
+          # Find build tools and save paths to environment file
+          BUILD_TOOLS_DIR=$(find $ANDROID_HOME/build-tools -type d | sort -r | head -1)
+          echo "BUILD_TOOLS_DIR=$BUILD_TOOLS_DIR" >> $GITHUB_ENV
+
+          # Find zipalign and apksigner and save to environment file
+          ZIPALIGN_PATH=$(find $ANDROID_HOME -name "zipalign" -type f | head -1)
+          APKSIGNER_PATH=$(find $ANDROID_HOME -name "apksigner" -type f | head -1)
+
+          # Print the paths for debugging
+          echo "Found zipalign at: $ZIPALIGN_PATH"
+          echo "Found apksigner at: $APKSIGNER_PATH"
+
+          # Save these paths for later steps
+          echo "ZIPALIGN_PATH=$ZIPALIGN_PATH" >> $GITHUB_ENV
+          echo "APKSIGNER_PATH=$APKSIGNER_PATH" >> $GITHUB_ENV
+
+          # Add paths to GitHub PATH
+          echo "$ANDROID_HOME/platform-tools" >> $GITHUB_PATH
+          echo "$BUILD_TOOLS_DIR" >> $GITHUB_PATH
+
+      - name: Setup Godot export templates
+        run: |
+          mkdir -p ~/.local/share/godot/export_templates/
+          mkdir -p ~/.config/godot/
+          [ -d /root/.config/godot ] && mv /root/.config/godot ~/.config/godot || true
+          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable.mono ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable.mono
+
+          # Configure Godot Android export settings
+          cat > ~/.config/godot/editor_settings-4.tres << EOF
+          [gd_resource type="EditorSettings" format=3]
+
+          [resource]
+          export/android/android_sdk_path = "$ANDROID_HOME"
+          export/android/debug_keystore = "$HOME/.android/debug.keystore"
+          export/android/debug_keystore_user = "androiddebugkey"
+          export/android/debug_keystore_pass = "android"
+          EOF
+
+      - name: Build and sign APK
+        run: |
+          # Create export directory
+          mkdir -p build/android
+          EXPORT_DIR="$(readlink -f build)"
+
+          # Determine if we're doing a debug or release build
+          # For workflow_dispatch, use the input parameter
+          # For push events, default to debug
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            IS_DEBUG="${{ github.event.inputs.debug == 'true' }}"
+          else
+            IS_DEBUG="true"
+          fi
+
+          # Set export paths and flags based on build type
+          cd $PROJECT_PATH
+          if [ "$IS_DEBUG" == "true" ]; then
+            EXPORT_FLAG="--export-debug"
+            BUILD_TYPE="debug"
+          else
+            EXPORT_FLAG="--export-release"
+            BUILD_TYPE="release"
+          fi
+
+          echo "Building $BUILD_TYPE version..."
+          EXPORT_OUTPUT="$EXPORT_DIR/$EXPORT_NAME-$BUILD_TYPE.apk"
+
+          # Export with Godot
+          godot --headless --verbose $EXPORT_FLAG "Android" $EXPORT_OUTPUT
+
+          # Verify the build was created
+          ls -la $EXPORT_DIR
+
+          # Debugging: print environment variables
+          echo "ZIPALIGN_PATH: $ZIPALIGN_PATH"
+          echo "APKSIGNER_PATH: $APKSIGNER_PATH"
+
+          # Align the APK with zipalign (using absolute path)
+          echo "Aligning APK..."
+          ALIGNED_APK="$EXPORT_DIR/${EXPORT_NAME}_aligned.apk"
+          "${ZIPALIGN_PATH}" -v 4 $EXPORT_OUTPUT $ALIGNED_APK
+
+          # Sign the aligned APK (using absolute path)
+          echo "Signing APK..."
+          SIGNED_APK="$EXPORT_DIR/${EXPORT_NAME}_signed.apk"
+          "${APKSIGNER_PATH}" sign --ks ~/.android/debug.keystore \
+                         --ks-pass pass:android \
+                         --key-pass pass:android \
+                         --out $SIGNED_APK \
+                         $ALIGNED_APK
+
+          # Verify the signature
+          "${APKSIGNER_PATH}" verify --verbose $SIGNED_APK
+
+          # Replace original APK with signed one
+          mv $SIGNED_APK $EXPORT_OUTPUT
+          rm $ALIGNED_APK
+
+          echo "Final APK is at: $EXPORT_OUTPUT"
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: "android_${{ github.event_name == 'workflow_dispatch' && github.event.inputs.debug == 'true' || github.event_name != 'workflow_dispatch' ? 'debug' : 'release' }}"
+          path: build/
