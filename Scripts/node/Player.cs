@@ -18,12 +18,17 @@ public partial class Player : Entity
     public override void _PhysicsProcess(double delta)
     {
         var direction = _input.GetMovementVector();
-
         var velocity = direction * (float)Stats.GetMoveSpeed();
-        Animation.UpdateAnimation(velocity);
-
+        
         Velocity = velocity;
+        Animation. UpdateWalkAnimation(velocity);
 
         MoveAndSlide();
+    }
+
+    public override void _Process(double delta)
+    {
+        var look = _input.GetLookVector();
+        Animation.UpdateLookAnimation(look);
     }
 }

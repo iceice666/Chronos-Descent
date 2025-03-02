@@ -126,7 +126,7 @@ public partial class UserInputManager : Control
     }
 
     /// <summary>
-    /// Gets the analog value for an action (0-1 for triggers, -1 to 1 for axes)
+    /// Gets the analog value for an action ([0,1] for triggers, [-1,1] for axes)
     /// </summary>
     public float GetActionStrength(string action)
     {

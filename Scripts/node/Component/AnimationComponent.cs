@@ -7,32 +7,24 @@ public partial class AnimationComponent : AnimatedSprite2D
 {
     private bool _disableAnimationUpdate;
 
-    /// <summary>
-    /// Update sprite flip when velocity change
-    /// </summary>
-    /// <param name="velocity">The velocity last time applied to entity.</param>
-    public void UpdateAnimation(Vector2 velocity)
+
+    public void UpdateLookAnimation(Vector2 vec)
     {
         if (_disableAnimationUpdate) return;
 
-        if (Animation == "walk" && velocity == Vector2.Zero)
+        FlipH = vec.X switch
         {
-            Animation = "idle";
-        }
-        else if (velocity.X < 0)
-        {
-            FlipH = true;
-            Animation = "walk";
-        }
-        else if (velocity.X > 0)
-        {
-            FlipH = false;
-            Animation = "walk";
-        }
-        else if (velocity.Y != 0)
-        {
-            Animation = "walk";
-        }
+            < 0 => true,
+            > 0 => false,
+            _ => FlipH
+        };
+    }
+
+    public void UpdateWalkAnimation(Vector2 vec)
+    {
+        if (_disableAnimationUpdate) return;
+
+        Animation = vec.LengthSquared() == 0 ? "idle" : "walk";
     }
 
     public void ResetAnimation()
@@ -44,6 +36,4 @@ public partial class AnimationComponent : AnimatedSprite2D
     {
         Play(animationName);
     }
-
-   
 }

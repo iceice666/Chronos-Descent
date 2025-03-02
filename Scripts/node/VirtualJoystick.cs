@@ -68,7 +68,7 @@ public partial class VirtualJoystick : Node2D
         }
         else
         {
-            _knob.GlobalPosition = Util.Lerp(_knob.GlobalPosition, GlobalPosition, (float)delta * 5);
+            _knob.GlobalPosition = _knob.GlobalPosition.Lerp( GlobalPosition, (float)delta * 5);
         }
     }
 }
