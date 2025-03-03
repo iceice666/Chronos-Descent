@@ -7,7 +7,7 @@ namespace ChronosDescent.Scripts.node;
 
 /// <summary>
 /// A versatile input component that handles keyboard/mouse, controller, and virtual joystick inputs.
-/// This improved version supports multi-touch virtual joysticks and provides a more flexible keybinding system.
+/// This improved version supports multitouch virtual joysticks and provides a more flexible keybinding system.
 /// </summary>
 [GlobalClass]
 public partial class UserInputManager : Control
@@ -59,10 +59,8 @@ public partial class UserInputManager : Control
     [Export] public string SaveFilePath { get; set; } = "user://input_settings.cfg";
 
     [ExportGroup("Virtual Joystick References")]
-    [Export]
-    public NodePath LeftJoystickPath { get; set; }
-
-    [Export] public NodePath RightJoystickPath { get; set; }
+    [Export] public string LeftJoystickPath { get; set; }
+    [Export] public string RightJoystickPath { get; set; }
 
     #endregion
 
@@ -208,6 +206,17 @@ public partial class UserInputManager : Control
             Input.StartJoyVibration(deviceId, weakMagnitude, strongMagnitude, duration);
         }
     }
+    
+    /// <summary>
+    /// Notify that touch input has been detected
+    /// </summary>
+    public void NotifyTouchInputDetected()
+    {
+        if (_currentInputSource != InputSource.VirtualJoystick && AutoSwitchInputDevice)
+        {
+            SetInputSource(InputSource.VirtualJoystick);
+        }
+    }
 
     /// <summary>
     /// Stop controller vibration
@@ -311,7 +320,7 @@ public partial class UserInputManager : Control
             default:
                 throw new ArgumentOutOfRangeException();
         }
-
+        
         // Update just pressed/released states based on state changes
         foreach (var pair in _inputActions)
         {
@@ -449,11 +458,11 @@ public partial class UserInputManager : Control
         action.AnalogValue = isPressed ? strength : 0f;
     }
 
-    private void DetectInputSourceChange(InputEvent @event)
+    private void DetectInputSourceChange()
     {
         if (!AutoSwitchInputDevice)
             return;
-
+            
         // Check for virtual joystick input
         if (_leftVirtualJoystick != null && _rightVirtualJoystick != null)
         {
@@ -464,12 +473,8 @@ public partial class UserInputManager : Control
             }
         }
 
-        // Check for touch input directly (for mobile devices)
-        if (@event is InputEventScreenTouch or InputEventScreenDrag)
-        {
-            SetInputSource(InputSource.VirtualJoystick);
-            return;
-        }
+        // We can't directly check touch count in Godot, so we rely on 
+        // checking if the virtual joysticks are being pressed instead
 
         // Check for keyboard/mouse input
         if (_registeredActions
@@ -880,7 +885,7 @@ public partial class UserInputManager : Control
         // Get virtual joystick nodes using the exported paths
         if (!string.IsNullOrEmpty(LeftJoystickPath))
             _leftVirtualJoystick = GetNode<VirtualJoystick>(LeftJoystickPath);
-
+        
         if (!string.IsNullOrEmpty(RightJoystickPath))
             _rightVirtualJoystick = GetNode<VirtualJoystick>(RightJoystickPath);
 
@@ -901,6 +906,12 @@ public partial class UserInputManager : Control
         GetWindow().SizeChanged += OnWindowSizeChanged;
     }
 
+    public override void _Process(double delta)
+    {
+        // Auto-detect input source changes if enabled
+        if (AutoSwitchInputDevice) DetectInputSourceChange();
+    }
+
     public override void _PhysicsProcess(double delta)
     {
         // Update all registered input actions
@@ -910,9 +921,10 @@ public partial class UserInputManager : Control
     public override void _Input(InputEvent @event)
     {
         // Handle input remapping if active
-        if (_waitingForRemap) HandleRemapping(@event);
-        // Auto-detect input source changes if enabled
-        else if (AutoSwitchInputDevice) DetectInputSourceChange(@event);
+        if (_waitingForRemap)
+        {
+            HandleRemapping(@event);
+        }
     }
 
     public override void _ExitTree()
