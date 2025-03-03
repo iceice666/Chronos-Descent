@@ -86,8 +86,10 @@ RUN bash /setup_godot.sh
 RUN godot -v -e --quit --headless ${GODOT_TEST_ARGS}
 
 # Godot editor settings
-ADD editor_settings.tres ~/editor_settings.tres
-RUN mv ~/editor_settings.tres ~/.config/godot/editor_settings-${GODOT_VERSION:0:3}.tres
+ADD editor_settings.tres /editor_settings.tres
+RUN mkdir -p ~/.config/godot/ \
+    && ls /editor_settings.tres \
+    && mv /editor_settings.tres ~/.config/godot/editor_settings-${GODOT_VERSION:0:3}.tres
 
 # Load the build script
 COPY godot_export.sh /build.sh
