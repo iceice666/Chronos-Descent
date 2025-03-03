@@ -1,5 +1,3 @@
-// ReSharper disable MemberCanBePrivate.Global
-
 using System;
 using Godot;
 using System.Collections.Generic;
@@ -9,7 +7,7 @@ namespace ChronosDescent.Scripts.node;
 
 /// <summary>
 /// A versatile input component that handles keyboard/mouse, controller, and virtual joystick inputs.
-/// This improved version directly tracks vector inputs and provides a more flexible keybinding system.
+/// This improved version supports multi-touch virtual joysticks and provides a more flexible keybinding system.
 /// </summary>
 [GlobalClass]
 public partial class UserInputManager : Control
@@ -61,6 +59,10 @@ public partial class UserInputManager : Control
     [Export] public string SaveFilePath { get; set; } = "user://input_settings.cfg";
 
     [ExportGroup("Virtual Joystick References")]
+    [Export]
+    public NodePath LeftJoystickPath { get; set; }
+
+    [Export] public NodePath RightJoystickPath { get; set; }
 
     #endregion
 
@@ -68,8 +70,8 @@ public partial class UserInputManager : Control
 
     private InputSource _currentInputSource;
 
-    private VirtualJoystick _leftVirtualVirtualJoystick;
-    private VirtualJoystick _rightVirtualVirtualJoystick;
+    private VirtualJoystick _leftVirtualJoystick;
+    private VirtualJoystick _rightVirtualJoystick;
     private readonly Dictionary<string, InputAction> _inputActions = new();
     private readonly Dictionary<string, InputType> _actionTypes = new();
     private readonly List<string> _registeredActions = [];
@@ -90,6 +92,7 @@ public partial class UserInputManager : Control
         public bool JustReleased { get; set; }
         public float AnalogValue { get; set; }
         public Vector2 Vector { get; set; } = Vector2.Zero;
+        public bool WasPressedLastFrame { get; set; } // Added to track state between frames
 
         public void Reset()
         {
@@ -288,6 +291,8 @@ public partial class UserInputManager : Control
         // Reset just pressed/released states
         foreach (var action in _inputActions.Values)
         {
+            // Store the current state before resetting
+            action.WasPressedLastFrame = action.IsPressed;
             action.Reset();
         }
 
@@ -305,6 +310,16 @@ public partial class UserInputManager : Control
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
+        }
+
+        // Update just pressed/released states based on state changes
+        foreach (var pair in _inputActions)
+        {
+            var action = pair.Value;
+            if (action.IsPressed && !action.WasPressedLastFrame)
+                action.JustPressed = true;
+            else if (!action.IsPressed && action.WasPressedLastFrame)
+                action.JustReleased = true;
         }
     }
 
@@ -377,12 +392,12 @@ public partial class UserInputManager : Control
     private void UpdateVirtualJoystickInput()
     {
         // Check if virtual joystick nodes are available
-        if (_leftVirtualVirtualJoystick == null || _rightVirtualVirtualJoystick == null)
+        if (_leftVirtualJoystick == null || _rightVirtualJoystick == null)
             return;
 
-        // Update vector actions directly
-        UpdateActionVector("movement", _leftVirtualVirtualJoystick);
-        UpdateActionVector("look", _rightVirtualVirtualJoystick);
+        // Update vector actions directly with the joystick output values
+        UpdateActionVector("movement", _leftVirtualJoystick.Output);
+        UpdateActionVector("look", _rightVirtualJoystick.Output);
 
         // Update all registered button actions
         foreach (var action in _registeredActions
@@ -391,22 +406,6 @@ public partial class UserInputManager : Control
         {
             UpdateActionFromInputSystem(action);
         }
-    }
-
-    // TODO: replace with custom joystick node
-    private static Vector2 GetJoystickOutput(Control joystick)
-    {
-        // Try to get the output using different common property names
-        if (joystick.HasMethod("GetOutput"))
-            return (Vector2)joystick.Call("GetOutput");
-
-        if ((bool)joystick.Get("Output"))
-            return (Vector2)joystick.Get("Output");
-
-        if ((bool)joystick.Get("Value"))
-            return (Vector2)joystick.Get("Value");
-
-        return Vector2.Zero;
     }
 
     private void UpdateVectorFromController(string actionName, int deviceId, JoyAxis xAxis, JoyAxis yAxis)
@@ -432,17 +431,6 @@ public partial class UserInputManager : Control
         action.AnalogValue = vector.Length();
     }
 
-    private void UpdateActionVector(string actionName, VirtualJoystick joystick)
-    {
-        if (!_inputActions.TryGetValue(actionName, out var action))
-            return;
-
-        var output = joystick.Output;
-        action.Vector = output;
-        action.IsPressed = joystick.IsPressed;
-        action.AnalogValue = output.Length();
-    }
-
     private void UpdateActionFromInput(
         string actionName,
         bool isPressed, bool justPressed, bool justReleased,
@@ -461,17 +449,26 @@ public partial class UserInputManager : Control
         action.AnalogValue = isPressed ? strength : 0f;
     }
 
-    private void DetectInputSourceChange()
+    private void DetectInputSourceChange(InputEvent @event)
     {
+        if (!AutoSwitchInputDevice)
+            return;
+
         // Check for virtual joystick input
-        if (_leftVirtualVirtualJoystick != null && _rightVirtualVirtualJoystick != null)
+        if (_leftVirtualJoystick != null && _rightVirtualJoystick != null)
         {
-            var leftVirtualJoystickActive = _leftVirtualVirtualJoystick.IsPressed;
-            var rightVirtualJoystickActive = _rightVirtualVirtualJoystick.IsPressed;
+            if (_leftVirtualJoystick.IsPressed || _rightVirtualJoystick.IsPressed)
+            {
+                SetInputSource(InputSource.VirtualJoystick);
+                return;
+            }
+        }
 
-            if (!leftVirtualJoystickActive && !rightVirtualJoystickActive) return;
-
+        // Check for touch input directly (for mobile devices)
+        if (@event is InputEventScreenTouch or InputEventScreenDrag)
+        {
             SetInputSource(InputSource.VirtualJoystick);
+            return;
         }
 
         // Check for keyboard/mouse input
@@ -511,20 +508,6 @@ public partial class UserInputManager : Control
                 SetInputSource(InputSource.Controller);
             }
         }
-    }
-
-    private static bool IsJoystickActive(Control joystick)
-    {
-        // Try different methods to check if joystick is active
-        if ((bool)joystick.Get("IsPressed"))
-            return (bool)joystick.Get("IsPressed");
-
-        if (joystick.HasMethod("IsPressed"))
-            return (bool)joystick.Call("IsPressed");
-
-        // Try checking if the output vector is non-zero
-        var output = GetJoystickOutput(joystick);
-        return output.LengthSquared() > 0.01f;
     }
 
     private void OnJoyConnectionChanged(long devId, bool connected)
@@ -877,7 +860,6 @@ public partial class UserInputManager : Control
         _registeredActions.Add(actionName);
     }
 
-
     private void OnWindowSizeChanged()
     {
         _center = GetViewport().GetVisibleRect().Size / 2;
@@ -895,9 +877,12 @@ public partial class UserInputManager : Control
         // Connect joystick signals
         Input.JoyConnectionChanged += OnJoyConnectionChanged;
 
-        // Get virtual joystick nodes 
-        _leftVirtualVirtualJoystick = GetNode<VirtualJoystick>("/root/Autoload/UI/LeftJoystick");
-        _rightVirtualVirtualJoystick = GetNode<VirtualJoystick>("/root/Autoload/UI/RightJoystick");
+        // Get virtual joystick nodes using the exported paths
+        if (!string.IsNullOrEmpty(LeftJoystickPath))
+            _leftVirtualJoystick = GetNode<VirtualJoystick>(LeftJoystickPath);
+
+        if (!string.IsNullOrEmpty(RightJoystickPath))
+            _rightVirtualJoystick = GetNode<VirtualJoystick>(RightJoystickPath);
 
         // Register default input actions
         RegisterDefaultActions();
@@ -916,12 +901,6 @@ public partial class UserInputManager : Control
         GetWindow().SizeChanged += OnWindowSizeChanged;
     }
 
-    public override void _Process(double delta)
-    {
-        // Auto-detect input source changes if enabled
-        if (AutoSwitchInputDevice) DetectInputSourceChange();
-    }
-
     public override void _PhysicsProcess(double delta)
     {
         // Update all registered input actions
@@ -931,10 +910,9 @@ public partial class UserInputManager : Control
     public override void _Input(InputEvent @event)
     {
         // Handle input remapping if active
-        if (_waitingForRemap)
-        {
-            HandleRemapping(@event);
-        }
+        if (_waitingForRemap) HandleRemapping(@event);
+        // Auto-detect input source changes if enabled
+        else if (AutoSwitchInputDevice) DetectInputSourceChange(@event);
     }
 
     public override void _ExitTree()

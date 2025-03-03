@@ -17,8 +17,10 @@ scale = Vector2(0.1, 0.1)
 texture = ExtResource("3_l1a5w")
 metadata/_edit_lock_ = true
 
-[node name="Button" type="Button" parent="."]
+[node name="TouchArea" type="Control" parent="."]
 self_modulate = Color(1, 1, 1, 0)
+layout_mode = 3
+anchors_preset = 0
 offset_left = -96.0
 offset_top = -96.0
 offset_right = 96.0
