@@ -1,102 +1,115 @@
-name: "Godot Export For Windows and Linux"
+name: "Godot Export"
 on:
   push:
     branches: [main, master]
   workflow_dispatch:
     inputs:
+      platform:
+        description: "Build platform (all, Android, Windows, Linux)"
+        type: choice
+        options:
+          - all
+          - Android
+          - Windows
+          - Linux
+        default: all
+        required: true
       debug:
         description: "Build debug version"
         type: boolean
         default: true
         required: false
-env:
-  GODOT_VERSION: 4.3
-  EXPORT_NAME: Chronos-Descent
-  PROJECT_PATH: "."
 
 jobs:
-  export-desktop:
-    name: Export for ${{ matrix.platform.name }}
-    runs-on: ubuntu-latest
-    container:
-      image: barichello/godot-ci:mono-4.3
-    strategy:
-      matrix:
-        platform:
-          - name: windows
-            preset: "Windows Desktop"
-            ext: "exe"
-          - name: linux
-            preset: "Linux"
-            ext: "x86_64"
-
+  build-docker-image:
+    name: Build Docker Image
+    runs-on: ubuntu-24.04
+    outputs:
+      build_platforms: ${{ steps.set-platforms.outputs.platforms }}
+    
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           lfs: true
-
-      - name: Setup .NET Core SDK
-        uses: actions/setup-dotnet@v4
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
         with:
-          dotnet-version: "8.0.300"
+          context: ./Builder
+          push: false
+          load: true
+          tags: chronos-descent-builder:latest
+          
+      - name: Set platforms to build
+        id: set-platforms
+        run: |
+          if [ "${{ github.event.inputs.platform }}" == "all" ] || [ "${{ github.event.inputs.platform }}" == "" ]; then
+            echo "platforms=[\"Android\", \"Windows\", \"Linux\"]" >> $GITHUB_OUTPUT
+          else
+            echo "platforms=[\"${{ github.event.inputs.platform }}\"]" >> $GITHUB_OUTPUT
+          fi
 
-      - name: Cache Godot export templates
-        uses: actions/cache@v4
+  export-platform:
+    name: Export for ${{ matrix.platform }}
+    needs: build-docker-image
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        platform: ${{ fromJson(needs.build-docker-image.outputs.build_platforms) }}
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          path: ~/.local/share/godot/export_templates
-          key: godot-templates-${{ env.GODOT_VERSION }}-${{ hashFiles('**/*.tscn') }}
-          restore-keys: godot-templates-${{ env.GODOT_VERSION }}
-
-      - name: Setup Godot export templates
+          lfs: true
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./Builder
+          push: false
+          load: true
+          tags: chronos-descent-builder:latest
+      
+      - name: Run ${{ matrix.platform }} build
+        id: build
         run: |
-          mkdir -p ~/.local/share/godot/export_templates/
-          mkdir -p ~/.config/godot/
-          [ -d /root/.config/godot ] && mv /root/.config/godot ~/.config/godot || true
-          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable.mono ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable.mono
-
-      - name: Build for ${{ matrix.platform.name }}
-        id: building
-        shell: bash
-        run: |
-          # Create export directory
-          mkdir -p build/${{ matrix.platform.name }}
-          EXPORT_DIR="$(readlink -f build)"
-
           # Determine if we're doing a debug or release build
-          # For workflow_dispatch, use the input parameter
-          # For push events, default to debug
           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
             IS_DEBUG="${{ github.event.inputs.debug == 'true' }}"
           else
             IS_DEBUG="true"
           fi
-
-          # Set export flags and output file name based on build type
-          cd $PROJECT_PATH
+          
+          # Create build directory
+          mkdir -p build
+          
+          # Run the Docker container with the appropriate command
           if [ "$IS_DEBUG" == "true" ]; then
-            EXPORT_FLAG="--export-debug"
-            BUILD_TYPE="debug"
+            docker run --rm -v ${{ github.workspace }}:/project -v ${{ github.workspace }}/build:/project/build chronos-descent-builder ${{ matrix.platform }}
           else
-            EXPORT_FLAG="--export-release"
-            BUILD_TYPE="release"
+            docker run --rm -v ${{ github.workspace }}:/project -v ${{ github.workspace }}/build:/project/build chronos-descent-builder ${{ matrix.platform }} release
           fi
-
-          # Export 'BUILD_TYPE' for later steps
-          echo "BUILD_TYPE=$BUILD_TYPE" >> $GITHUB_ENV
-
-          echo "Building ${{ matrix.platform.name }} $BUILD_TYPE version..."
-          EXPORT_OUTPUT="$EXPORT_DIR/$EXPORT_NAME_$BUILD_TYPE.${{ matrix.platform.ext }}"
-
-          # Export the build with Godot
-          godot --headless --verbose $EXPORT_FLAG "${{ matrix.platform.preset }}" "$EXPORT_OUTPUT"
-
-          # Verify the build was created
-          ls -la $EXPORT_DIR
-          echo "Build completed: $EXPORT_OUTPUT"
-
+          
+          # Save build type for artifact upload
+          if [ "$IS_DEBUG" == "true" ]; then
+            echo "BUILD_TYPE=debug" >> $GITHUB_ENV
+          else
+            echo "BUILD_TYPE=release" >> $GITHUB_ENV
+          fi
+          
+          # Verify build output
+          ls -la build/
+          
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.platform.name }}_${{ steps.building.outputs.BUILD_TYPE }}
+          name: Chronos-Descent_${{ matrix.platform }}_${{ env.BUILD_TYPE }}
           path: build/
