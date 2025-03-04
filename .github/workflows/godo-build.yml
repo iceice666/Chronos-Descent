@@ -21,45 +21,14 @@ on:
         required: false
 
 jobs:
-  build-docker-image:
-    name: Build Docker Image
+  export-game:
+    name: Export for ${{ matrix.platform }} (${{ matrix.build_type }})
     runs-on: ubuntu-24.04
-    outputs:
-      build_platforms: ${{ steps.set-platforms.outputs.platforms }}
     
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          lfs: true
-      
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      
-      - name: Build Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: ./Builder
-          push: false
-          load: true
-          tags: chronos-descent-builder:latest
-          
-      - name: Set platforms to build
-        id: set-platforms
-        run: |
-          if [ "${{ github.event.inputs.platform }}" == "all" ] || [ "${{ github.event.inputs.platform }}" == "" ]; then
-            echo "platforms=[\"Android\", \"Windows\", \"Linux\"]" >> $GITHUB_OUTPUT
-          else
-            echo "platforms=[\"${{ github.event.inputs.platform }}\"]" >> $GITHUB_OUTPUT
-          fi
-
-  export-platform:
-    name: Export for ${{ matrix.platform }}
-    needs: build-docker-image
-    runs-on: ubuntu-24.04
     strategy:
       matrix:
-        platform: ${{ fromJson(needs.build-docker-image.outputs.build_platforms) }}
+        platform: ${{ (github.event.inputs.platform == 'all' || github.event.inputs.platform == '') && fromJson('["Android", "Windows", "Linux"]') || fromJson(format('["{0}"]', github.event.inputs.platform)) }}
+        build_type: ${{ (github.event_name != 'workflow_dispatch' || github.event.inputs.debug == 'true') && fromJson('["debug"]') || fromJson('["release"]') }}
     
     steps:
       - name: Checkout
@@ -70,6 +39,14 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ hashFiles('Builder/**') }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+      
       - name: Build Docker image
         uses: docker/build-push-action@v5
         with:
@@ -77,39 +54,28 @@ jobs:
           push: false
           load: true
           tags: chronos-descent-builder:latest
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
       
-      - name: Run ${{ matrix.platform }} build
-        id: build
+      - name: Move cache
         run: |
-          # Determine if we're doing a debug or release build
-          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            IS_DEBUG="${{ github.event.inputs.debug == 'true' }}"
-          else
-            IS_DEBUG="true"
-          fi
-          
-          # Create build directory
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+      
+      - name: Run build for ${{ matrix.platform }}
+        run: |
           mkdir -p build
           
-          # Run the Docker container with the appropriate command
-          if [ "$IS_DEBUG" == "true" ]; then
-            docker run --rm -v ${{ github.workspace }}:/project -v ${{ github.workspace }}/build:/project/build chronos-descent-builder ${{ matrix.platform }}
+          if [ "${{ matrix.build_type }}" == "debug" ]; then
+            docker run --rm -v ${{ github.workspace }}:/project -v ${{ github.workspace }}/build:/project/build chronos-descent-builder:latest ${{ matrix.platform }}
           else
-            docker run --rm -v ${{ github.workspace }}:/project -v ${{ github.workspace }}/build:/project/build chronos-descent-builder ${{ matrix.platform }} release
+            docker run --rm -v ${{ github.workspace }}:/project -v ${{ github.workspace }}/build:/project/build chronos-descent-builder:latest ${{ matrix.platform }} release
           fi
           
-          # Save build type for artifact upload
-          if [ "$IS_DEBUG" == "true" ]; then
-            echo "BUILD_TYPE=debug" >> $GITHUB_ENV
-          else
-            echo "BUILD_TYPE=release" >> $GITHUB_ENV
-          fi
-          
-          # Verify build output
           ls -la build/
-          
+      
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Chronos-Descent_${{ matrix.platform }}_${{ env.BUILD_TYPE }}
+          name: Chronos-Descent_${{ matrix.platform }}_${{ matrix.build_type }}
           path: build/
