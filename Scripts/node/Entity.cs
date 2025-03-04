@@ -13,7 +13,7 @@ public partial class Entity : CharacterBody2D
     public StatsComponent Stats;
     protected EffectManagerComponent EffectManager;
     protected AnimationComponent Animation;
-    protected CombatComponent Combat;
+    public CombatComponent Combat;
 
     public override void _Ready()
     {
@@ -22,11 +22,11 @@ public partial class Entity : CharacterBody2D
         EffectManager = GetNode<EffectManagerComponent>("EffectManagerComponent");
         Animation = GetNode<AnimationComponent>("AnimationComponent");
         Combat = GetNode<CombatComponent>("CombatComponent");
-        
+
         // Setup component connections
         EffectManager.Initialize(Stats);
         Combat.Initialize(Stats, Animation);
-        
+
         AddToGroup("Entity");
     }
 
@@ -38,7 +38,7 @@ public partial class Entity : CharacterBody2D
     {
         // Movement logic would go here or in a separate MovementComponent
     }
-    
+
     // Public methods that delegate to components
     public void TakeDamage(double amount) => Combat.TakeDamage(amount);
     public void Heal(double amount) => Combat.Heal(amount);
@@ -49,12 +49,9 @@ public partial class Entity : CharacterBody2D
 
     public void UpdateStats()
     {
-        Stats.UpdateStats(stats =>
-        {
-            
-        });
+        Stats.UpdateStats(stats => { });
     }
-    
+
     // Virtual method for derived classes to override
     public virtual void OnEntityDeath()
     {

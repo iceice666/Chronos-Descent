@@ -10,7 +10,7 @@ public partial class CombatComponent : Node
     private AnimationComponent _animation;
 
     [Signal]
-    public delegate void DeathEventHandler(Entity entity);
+    public delegate void DeathEventHandler();
 
     public void Initialize(StatsComponent stats, AnimationComponent animation)
     {

@@ -4,24 +4,24 @@ namespace ChronosDescent.Scripts.node;
 
 public partial class Player : Entity
 {
-    
     private UserInputManager _input;
 
     public override void _Ready()
     {
         base._Ready();
         AddToGroup("Player");
-        
-        _input =  GetNode<UserInputManager>("/root/Autoload/UserInputManager");
+
+        _input = GetNode<UserInputManager>("/root/Autoload/UserInputManager");
+        GetNode<Camera>("/root/Autoload/Camera").SwitchTarget(this);
     }
-    
+
     public override void _PhysicsProcess(double delta)
     {
         var direction = _input.MovementInput;
         var velocity = direction * (float)Stats.GetMoveSpeed();
-        
+
         Velocity = velocity;
-        Animation. UpdateWalkAnimation(velocity);
+        Animation.UpdateWalkAnimation(velocity);
 
         MoveAndSlide();
     }
