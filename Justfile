@@ -12,6 +12,9 @@ build-image:
 android-debug:
     docker run -v .:/project chronos-descent-builder Android
 
+android-debug-install: android-debug
+    adb install build/Chronos-Descent_Android_debug.apk
+
 android-release:
     docker run -v .:/project chronos-descent-builder Android release
 

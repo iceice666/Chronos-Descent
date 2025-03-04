@@ -2,224 +2,123 @@ using Godot;
 
 namespace ChronosDescent.Scripts.node;
 
-/// <summary>
-/// A virtual joystick component that supports multitouch, allowing multiple joysticks 
-/// to be used simultaneously on touchscreen devices.
-/// </summary>
-[GlobalClass]
 public partial class VirtualJoystick : Control
 {
-    #region Export variables
-
-    [Export] public JoystickMovementMode MovementMode { get; set; } = JoystickMovementMode.Fixed;
-    [Export] public JoystickVisibilityMode VisibilityMode { get; set; } = JoystickVisibilityMode.Always;
-
-    [Export] public Color PressedColor { get; set; } = Colors.Gray;
-
-    #endregion
-
-    #region Public
-
-    /// <summary>
-    /// Whether the joystick is currently being pressed/touched
-    /// </summary>
+    // Public interface
     public bool IsPressed { get; private set; }
+    public Vector2 Output { get; private set; } = Vector2.Zero;
 
-    /// <summary>
-    /// The current output vector, normalized with magnitude between 0-1
-    /// </summary>
-    public Vector2 Output { get; private set; }
+    // References to child nodes
+    private Sprite2D _ring;
+    private Sprite2D _knob;
 
-    #endregion
-
-    #region Enum
-
-    public enum JoystickMovementMode
-    {
-        Fixed, // The joystick doesn't move.
-        Dynamic, // Every time the joystick area is pressed, the joystick position is set on the touched position.
-        Following // When the finger moves outside the joystick area, the joystick will follow it.
-    }
-
-    public enum JoystickVisibilityMode
-    {
-        Always, // Always visible
-        WhenTouched // Visible only when touched
-    }
-
-    #endregion
-
-    #region Private variables
-
-    private TextureRect _ring;
-    private TextureRect _knob;
+    // Touch tracking
     private int _touchIndex = -1;
-
-    private Vector2 _knobDefaultPosition;
-    private Vector2 _ringDefaultPosition;
-    private Color _defaultColor;
-
-    #endregion
-
-    #region Lifecycle methods
+    private Vector2 _centerPosition;
+    private float _maxRadius;
 
     public override void _Ready()
     {
-        if (VisibilityMode == JoystickVisibilityMode.WhenTouched)
-            Hide();
+        // Get references to child nodes
+        _ring = GetNode<Sprite2D>("Ring");
+        _knob = GetNode<Sprite2D>("Knob");
 
-        _knob = GetNode<TextureRect>("Knob");
-        _ring = GetNode<TextureRect>("Ring");
+        // Initialize the joystick
+        UpdateJoystickLayout();
 
-        _knobDefaultPosition = _knob.Position;
-        _ringDefaultPosition = _ring.Position;
-        _defaultColor = _knob.Modulate;
+        // Make sure this control can receive input events
+        MouseFilter = MouseFilterEnum.Stop;
     }
 
-    public override void _Input(InputEvent @event)
+    public override void _Notification(int what)
     {
-        // Early return if the event is not relevant
-        if (@event is not (InputEventScreenTouch or InputEventScreenDrag))
-            return;
+        // If the size of the control changes, update the joystick layout
+        if (what == NotificationResized)
+        {
+            UpdateJoystickLayout();
+        }
+    }
+
+    private void UpdateJoystickLayout()
+    {
+        // Set center position to the center of our control
+        _centerPosition = new Vector2(Size.X / 2, Size.Y / 2);
+
+        // Position the ring and knob at the center
+        _ring.Position = _centerPosition;
+        _knob.Position = _centerPosition;
+
+        // Calculate maximum radius based on control size
+        _maxRadius = Mathf.Min(Size.X, Size.Y) / 2.5f;
+    }
+
+    public override void _GuiInput(InputEvent @event)
+    {
+        // Note: InputEvents in _GuiInput are already in control-local coordinates
 
         switch (@event)
         {
             // Handle touch events
             case InputEventScreenTouch touchEvent:
-            {
-                if (touchEvent.Pressed)
-                {
-                    // Handle touch press
-                    HandleTouchPress(touchEvent);
-                }
-                else if (touchEvent.Index == _touchIndex)
-                {
-                    // Handle touch release for tracked touch
-                    Reset();
-                    if (VisibilityMode == JoystickVisibilityMode.WhenTouched)
-                    {
-                        Hide();
-                    }
-
-                    GetViewport().SetInputAsHandled();
-                }
-
-                return;
-            }
-            // Handle drag events - only process if it's the tracked touch
-            case InputEventScreenDrag dragEvent when dragEvent.Index == _touchIndex:
-                UpdateJoystick(dragEvent.Position);
-                GetViewport().SetInputAsHandled();
+                HandleTouchEvent(touchEvent);
+                break;
+            // Handle touch drag/motion events
+            case InputEventScreenDrag dragEvent:
+                HandleDragEvent(dragEvent);
                 break;
         }
     }
 
-    #endregion
-
-    public void Reset()
+    private void HandleTouchEvent(InputEventScreenTouch touchEvent)
     {
-        IsPressed = false;
-        Output = Vector2.Zero;
-        _touchIndex = -1;
-        _knob.Modulate = _defaultColor;
-        _knob.Position = _knobDefaultPosition;
-        _ring.Position = _ringDefaultPosition;
-    }
-
-    #region Private methods
-
-    private void HandleTouchPress(InputEventScreenTouch touchEvent)
-    {
-        var eventPos = touchEvent.Position;
-
-        // Check if this is a valid touch to start tracking
-        var isValidTouch = _touchIndex == -1 && IsPointInsideJoystickArea(eventPos);
-        if (!isValidTouch)
-            return;
-
-        var shouldActivate = MovementMode is JoystickMovementMode.Dynamic or JoystickMovementMode.Following ||
-                             (MovementMode == JoystickMovementMode.Fixed && IsPointInsideRing(eventPos));
-
-        if (!shouldActivate)
-            return;
-
-        // Adjust joystick position for dynamic modes
-        if (MovementMode is JoystickMovementMode.Dynamic or JoystickMovementMode.Following)
+        switch (touchEvent.Pressed)
         {
-            MoveRing(eventPos);
-        }
+            // If it's a touch press, and we're not yet tracking a touch
+            case true when _touchIndex == -1:
 
-        // Show joystick if needed
-        if (VisibilityMode == JoystickVisibilityMode.WhenTouched)
-        {
-            Show();
-        }
+                // Start tracking this touch
+                _touchIndex = touchEvent.Index;
+                IsPressed = true;
 
-        // Update tracking and visual state
-        _touchIndex = touchEvent.Index;
-        _knob.Modulate = PressedColor;
-        UpdateJoystick(eventPos);
-        GetViewport().SetInputAsHandled();
-    }
-
-    private void MoveRing(Vector2 newPosition)
-    {
-        _ring.GlobalPosition = newPosition - _ring.PivotOffset * GetGlobalTransformWithCanvas().Scale;
-    }
-
-    private void MoveKnob(Vector2 newPosition)
-    {
-        _knob.GlobalPosition = newPosition - _knob.PivotOffset * _ring.GetGlobalTransformWithCanvas().Scale;
-    }
-
-    private Vector2 GetRingRadius()
-    {
-        return _ring.Size * _ring.GetGlobalTransformWithCanvas().Scale / 2;
-    }
-
-    private bool IsPointInsideJoystickArea(Vector2 point)
-    {
-        var scale = GetGlobalTransformWithCanvas().Scale;
-
-        var x = point.X >= GlobalPosition.X && point.X <= GlobalPosition.X + (Size.X * scale.X);
-        var y = point.Y >= GlobalPosition.Y && point.Y <= GlobalPosition.Y + (Size.Y * scale.Y);
-        return x && y;
-    }
-
-    private bool IsPointInsideRing(Vector2 point)
-    {
-        var ringRadius = GetRingRadius();
-        var center = _ring.GlobalPosition + ringRadius;
-        var vector = point - center;
-
-        return vector.LengthSquared() <= ringRadius.X * ringRadius.X;
-    }
-
-    private void UpdateJoystick(Vector2 touchPosition)
-    {
-        var baseRadius = GetRingRadius();
-        var center = _ring.GlobalPosition + baseRadius;
-        var vector = (touchPosition - center).LimitLength(100);
+                // Update knob position based on touch position
+                UpdateKnobPosition(touchEvent.Position);
 
 
-        if (MovementMode == JoystickMovementMode.Following && touchPosition.DistanceSquaredTo(center) > 100 * 100)
-        {
-            MoveRing(touchPosition - vector);
-        }
+                break;
+            // If it's a touch release, and it's the touch we're tracking
+            case false when touchEvent.Index == _touchIndex:
 
-        MoveKnob(center + vector);
+                // Stop tracking this touch
+                _touchIndex = -1;
+                IsPressed = false;
 
-        if (vector.LengthSquared() > 0)
-        {
-            IsPressed = true;
-            Output = vector;
-        }
-        else
-        {
-            IsPressed = false;
-            Output = Vector2.Zero;
+                // Reset knob position and output
+                _knob.Position = _centerPosition;
+                Output = Vector2.Zero;
+
+                break;
         }
     }
 
-    #endregion
+    private void HandleDragEvent(InputEventScreenDrag dragEvent)
+    {
+        // Only process drag events for the touch we're tracking
+        if (dragEvent.Index != _touchIndex) return;
+
+
+        // Update knob position based on drag position
+        UpdateKnobPosition(dragEvent.Position);
+    }
+
+    private void UpdateKnobPosition(Vector2 position)
+    {
+        // Calculate vector from the center to touch position and clamp position to max radius
+        var direction = (position - _centerPosition).LimitLength(_maxRadius);
+
+        // Update knob position
+        _knob.Position = _centerPosition + direction;
+
+        // Calculate and update output (normalized -1 to 1 range)
+        Output = direction.Normalized();
+    }
 }

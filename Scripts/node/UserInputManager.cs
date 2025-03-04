@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Godot;
 
 namespace ChronosDescent.Scripts.node;
@@ -9,7 +8,8 @@ namespace ChronosDescent.Scripts.node;
 /// Manages input from different sources (keyboard/mouse, controller, touchscreen)
 /// and provides a unified interface for accessing input state
 /// </summary>
-public partial class UserInputManager : Node
+[GlobalClass]
+public partial class UserInputManager : Control
 {
     [Signal]
     public delegate void InputSourceChangedEventHandler(InputSource newSource);
@@ -23,7 +23,7 @@ public partial class UserInputManager : Node
     }
 
     // Current active input source
-    public InputSource CurrentInputSource { get; private set; } = InputSource.KeyboardMouse;
+    public InputSource CurrentInputSource { get; private set; }
 
     // Registered button actions
     private readonly Dictionary<string, ButtonAction> _buttonActions = new();
@@ -40,8 +40,15 @@ public partial class UserInputManager : Node
     public Vector2 MovementInput { get; private set; } = Vector2.Zero;
     public Vector2 AimInput { get; private set; } = Vector2.Zero;
 
+    // Optimize with static readonly fields for common checks
+    private static readonly Key[] CommonKeyboardKeys =
+    [
+        Key.W, Key.A, Key.S, Key.D,
+        Key.Space, Key.Enter, Key.Escape, Key.Tab
+    ];
+
     // Button action state tracker
-    private class ButtonAction(string name)
+    private sealed class ButtonAction(string name)
     {
         public readonly string Name = name;
         public bool IsPressed { get; private set; }
@@ -58,7 +65,12 @@ public partial class UserInputManager : Node
 
     public override void _Ready()
     {
-        // Get reference to virtual input container
+        // Initialize the input source based on device capabilities
+        CurrentInputSource = DisplayServer.IsTouchscreenAvailable()
+            ? InputSource.VirtualJoystick
+            : InputSource.KeyboardMouse;
+
+        // Get reference to virtual input container using the node path
         _virtualInputContainer = GetNode<Control>("/root/Autoload/UI/VirtualInput");
         _leftVirtualJoystick = _virtualInputContainer.GetNode<VirtualJoystick>("LeftJoystick");
         _rightVirtualJoystick = _virtualInputContainer.GetNode<VirtualJoystick>("RightJoystick");
@@ -91,10 +103,7 @@ public partial class UserInputManager : Node
     /// </summary>
     public void UnregisterButtonAction(string actionName)
     {
-        if (_buttonActions.ContainsKey(actionName))
-        {
-            _buttonActions.Remove(actionName);
-        }
+        _buttonActions.Remove(actionName);
     }
 
     /// <summary>
@@ -126,16 +135,8 @@ public partial class UserInputManager : Node
     /// </summary>
     private void DetectInputSource()
     {
-        // Check if using controller
-        if (Input.GetConnectedJoypads().Count > 0 && (
-                Input.IsJoyButtonPressed(0, JoyButton.A) ||
-                Input.IsJoyButtonPressed(0, JoyButton.B) ||
-                Input.IsJoyButtonPressed(0, JoyButton.X) ||
-                Input.IsJoyButtonPressed(0, JoyButton.Y) ||
-                Math.Abs(Input.GetJoyAxis(0, JoyAxis.LeftX)) > JoystickDeadzone ||
-                Math.Abs(Input.GetJoyAxis(0, JoyAxis.LeftY)) > JoystickDeadzone ||
-                Math.Abs(Input.GetJoyAxis(0, JoyAxis.RightX)) > JoystickDeadzone ||
-                Math.Abs(Input.GetJoyAxis(0, JoyAxis.RightY)) > JoystickDeadzone))
+        // Check if using controller (optimization: early returns)
+        if (IsControllerActive())
         {
             SwitchInputSource(InputSource.Controller);
             return;
@@ -158,11 +159,34 @@ public partial class UserInputManager : Node
     }
 
     /// <summary>
+    /// Checks if controller is active based on button presses or joystick movement
+    /// </summary>
+    private bool IsControllerActive()
+    {
+        if (Input.GetConnectedJoypads().Count == 0)
+            return false;
+
+        // Check common controller buttons
+        if (Input.IsJoyButtonPressed(0, JoyButton.A) ||
+            Input.IsJoyButtonPressed(0, JoyButton.B) ||
+            Input.IsJoyButtonPressed(0, JoyButton.X) ||
+            Input.IsJoyButtonPressed(0, JoyButton.Y))
+            return true;
+
+        // Check joystick axes
+        return Math.Abs(Input.GetJoyAxis(0, JoyAxis.LeftX)) > JoystickDeadzone ||
+               Math.Abs(Input.GetJoyAxis(0, JoyAxis.LeftY)) > JoystickDeadzone ||
+               Math.Abs(Input.GetJoyAxis(0, JoyAxis.RightX)) > JoystickDeadzone ||
+               Math.Abs(Input.GetJoyAxis(0, JoyAxis.RightY)) > JoystickDeadzone;
+    }
+
+    /// <summary>
     /// Switches the current input source and updates UI accordingly
     /// </summary>
     private void SwitchInputSource(InputSource newSource)
     {
         if (CurrentInputSource == newSource) return;
+
         CurrentInputSource = newSource;
         UpdateVirtualInputVisibility();
         EmitSignal(SignalName.InputSourceChanged, (int)CurrentInputSource);
@@ -181,126 +205,122 @@ public partial class UserInputManager : Node
     /// </summary>
     private void ProcessMovementInput()
     {
-        MovementInput = Vector2.Zero;
-
-        switch (CurrentInputSource)
+        MovementInput = CurrentInputSource switch
         {
-            case InputSource.KeyboardMouse:
-                // Use WASD or arrow keys
-                MovementInput = new Vector2(
-                    Input.GetAxis("move_left", "move_right"),
-                    Input.GetAxis("move_up", "move_down")
-                );
-                break;
-
-            case InputSource.Controller:
-                // Use left joystick
-                MovementInput = new Vector2(
-                    Input.GetJoyAxis(0, JoyAxis.LeftX),
-                    Input.GetJoyAxis(0, JoyAxis.LeftY)
-                );
-
-                // Apply deadzone
-                if (MovementInput.Length() < JoystickDeadzone)
-                {
-                    MovementInput = Vector2.Zero;
-                }
-                else
-                {
-                    MovementInput = MovementInput.Normalized() *
-                                    ((MovementInput.Length() - JoystickDeadzone) / (1.0f - JoystickDeadzone));
-                }
-
-                break;
-
-            case InputSource.VirtualJoystick:
-                if (_leftVirtualJoystick.IsPressed)
-                {
-                    MovementInput = _leftVirtualJoystick.Output;
-
-                    // Apply deadzone
-                    if (MovementInput.Length() < JoystickDeadzone)
-                    {
-                        MovementInput = Vector2.Zero;
-                    }
-                    else
-                    {
-                        MovementInput = MovementInput.Normalized() *
-                                        ((MovementInput.Length() - JoystickDeadzone) / (1.0f - JoystickDeadzone));
-                    }
-                }
-
-                break;
-        }
+            InputSource.KeyboardMouse => GetKeyboardMovementInput(),
+            InputSource.Controller => GetControllerMovementInput(),
+            InputSource.VirtualJoystick => GetVirtualJoystickMovementInput(),
+            _ => Vector2.Zero
+        };
     }
 
     /// <summary>
-    /// Processes aim input from current input source
+    /// Gets keyboard movement input
+    /// </summary>
+    private Vector2 GetKeyboardMovementInput()
+    {
+        return new Vector2(
+            Input.GetAxis("move_left", "move_right"),
+            Input.GetAxis("move_up", "move_down")
+        );
+    }
+
+    /// <summary>
+    /// Gets controller movement input with deadzone handling
+    /// </summary>
+    private Vector2 GetControllerMovementInput()
+    {
+        var input = new Vector2(
+            Input.GetJoyAxis(0, JoyAxis.LeftX),
+            Input.GetJoyAxis(0, JoyAxis.LeftY)
+        );
+
+        return ApplyDeadzone(input);
+    }
+
+    /// <summary>
+    /// Gets virtual joystick movement input with deadzone handling
+    /// </summary>
+    private Vector2 GetVirtualJoystickMovementInput()
+    {
+        if (!_leftVirtualJoystick.IsPressed)
+            return Vector2.Zero;
+
+        return ApplyDeadzone(_leftVirtualJoystick.Output);
+    }
+
+    /// <summary>
+    /// Processes aim input from the current input source
     /// </summary>
     private void ProcessAimInput()
     {
-        AimInput = Vector2.Zero;
-
-        switch (CurrentInputSource)
+        AimInput = CurrentInputSource switch
         {
-            case InputSource.KeyboardMouse:
-                // Use mouse position relative to the screen center
-                var screenCenter = GetViewport().GetVisibleRect().Size / 2;
-                AimInput = GetViewport().GetMousePosition() - screenCenter;
-                if (AimInput.Length() > 0)
-                {
-                    AimInput = AimInput.Normalized();
-                }
-
-                break;
-
-            case InputSource.Controller:
-                // Use right joystick
-                AimInput = new Vector2(
-                    Input.GetJoyAxis(0, JoyAxis.RightX),
-                    Input.GetJoyAxis(0, JoyAxis.RightY)
-                );
-
-                // Apply deadzone
-                if (AimInput.Length() < JoystickDeadzone)
-                {
-                    AimInput = Vector2.Zero;
-                }
-                else
-                {
-                    AimInput = AimInput.Normalized() *
-                               ((AimInput.Length() - JoystickDeadzone) / (1.0f - JoystickDeadzone));
-                }
-
-                break;
-
-            case InputSource.VirtualJoystick:
-                // Using same joystick for both movement and aiming in this implementation
-                AimInput = MovementInput;
-                break;
-        }
+            InputSource.KeyboardMouse => GetMouseAimInput(),
+            InputSource.Controller => GetControllerAimInput(),
+            InputSource.VirtualJoystick => GetVirtualJoystickAimInput(),
+            _ => Vector2.Zero
+        };
     }
 
     /// <summary>
-    /// Processes all registered button actions using LINQ
+    /// Gets mouse aim input
+    /// </summary>
+    private Vector2 GetMouseAimInput()
+    {
+        var screenCenter = GetViewport().GetVisibleRect().Size / 2;
+        var input = GetViewport().GetMousePosition() - screenCenter;
+
+        return input.Length() > 0 ? input.Normalized() : Vector2.Zero;
+    }
+
+    /// <summary>
+    /// Gets controller aim input with deadzone handling
+    /// </summary>
+    private Vector2 GetControllerAimInput()
+    {
+        var input = new Vector2(
+            Input.GetJoyAxis(0, JoyAxis.RightX),
+            Input.GetJoyAxis(0, JoyAxis.RightY)
+        );
+
+        return ApplyDeadzone(input);
+    }
+
+    /// <summary>
+    /// Gets virtual joystick aim input with deadzone handling
+    /// </summary>
+    private Vector2 GetVirtualJoystickAimInput()
+    {
+        if (!_rightVirtualJoystick.IsPressed)
+            return Vector2.Zero;
+
+        return ApplyDeadzone(_rightVirtualJoystick.Output);
+    }
+
+    /// <summary>
+    /// Applies deadzone to an input vector
+    /// </summary>
+    private Vector2 ApplyDeadzone(Vector2 input)
+    {
+        var length = input.Length();
+
+        if (length < JoystickDeadzone)
+            return Vector2.Zero;
+
+        // Smoothly scale input from deadzone to 1.0
+        return input.Normalized() * ((length - JoystickDeadzone) / (1.0f - JoystickDeadzone));
+    }
+
+    /// <summary>
+    /// Processes all registered button actions
     /// </summary>
     private void ProcessButtonActions()
     {
-        _buttonActions.Values.ToList().ForEach(action =>
+        foreach (var action in _buttonActions.Values)
         {
-            var isPressed = Input.IsActionPressed(action.Name);
-
-            action.Update(isPressed);
-        });
-    }
-
-
-    /// <summary>
-    /// Resets the virtual joystick state
-    /// </summary>
-    public void ResetVirtualJoystick()
-    {
-        _leftVirtualJoystick?.Reset();
+            action.Update(Input.IsActionPressed(action.Name));
+        }
     }
 
     /// <summary>
@@ -308,15 +328,12 @@ public partial class UserInputManager : Node
     /// </summary>
     private bool IsAnyKeyboardInputActive()
     {
-        // Check common WASD keys
-        if (Input.IsKeyPressed(Key.W) || Input.IsKeyPressed(Key.A) ||
-            Input.IsKeyPressed(Key.S) || Input.IsKeyPressed(Key.D))
-            return true;
-
-        // Check action keys
-        if (Input.IsKeyPressed(Key.Space) || Input.IsKeyPressed(Key.Enter) ||
-            Input.IsKeyPressed(Key.Escape) || Input.IsKeyPressed(Key.Tab))
-            return true;
+        // Check common keys
+        foreach (var key in CommonKeyboardKeys)
+        {
+            if (Input.IsKeyPressed(key))
+                return true;
+        }
 
         // Check number keys for items
         for (var i = (int)Key.Key1; i <= (int)Key.Key9; i++)

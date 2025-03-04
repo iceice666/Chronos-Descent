@@ -3,20 +3,27 @@ using Godot;
 
 namespace ChronosDescent.Scripts;
 
-public partial class VirtualInput : Container
+public partial class VirtualInput : Control
 {
-    private node.UserInputManager _userInputManager;
+    private Label _sourceIndicator;
+    private UserInputManager _inputManager;
 
     public override void _Ready()
     {
-        _userInputManager = GetNode<node.UserInputManager>("/root/Autoload/UserInputManager");
-        _userInputManager.InputSourceChanged += OnInputSourceChange;
+        _sourceIndicator = GetNode<Label>("../SourceIndicator");
+        _inputManager = GetNode<UserInputManager>("/root/Autoload/UserInputManager");
+        _inputManager.InputSourceChanged += OnSourceChanged;
+        
+        _sourceIndicator.Text = _inputManager.CurrentInputSource.ToString();
     }
 
-    private void OnInputSourceChange(node.UserInputManager.InputSource newSource)
+    public override void _ExitTree()
     {
-        Visible = newSource == node.UserInputManager.InputSource.VirtualJoystick;
+        _inputManager.InputSourceChanged -= OnSourceChanged;
     }
 
-
+    private void OnSourceChanged(UserInputManager.InputSource newSource)
+    {
+        _sourceIndicator.Text = newSource.ToString();
+    }
 }
