@@ -26,7 +26,7 @@ public partial class CombatComponent : Node
         _stats.UpdateStats(stats => stats.Health -= amount);
         _animation?.PlayAnimation("hurt");
 
-        if (_stats.GetHealth() <= 0)
+        if (_stats.Health <= 0)
         {
             HandleDeath();
         }

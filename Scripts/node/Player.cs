@@ -18,7 +18,7 @@ public partial class Player : Entity
     public override void _PhysicsProcess(double delta)
     {
         var direction = _input.MovementInput;
-        var velocity = direction * (float)Stats.GetMoveSpeed();
+        var velocity = direction * (float)Stats.MoveSpeed;
 
         Velocity = velocity;
         Animation.UpdateWalkAnimation(velocity);

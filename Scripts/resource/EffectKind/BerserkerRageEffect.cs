@@ -19,7 +19,7 @@ public partial class BerserkerRageEffect : Effect
     public override void OnTick(Entity target)
     {
         // Calculate buff based on missing health percentage
-        var healthPercentage = target.Stats.GetHealth() / target.Stats.GetMaxHealth();
+        var healthPercentage = target.Stats.Health / target.Stats.MaxHealth;
 
         if (healthPercentage > _healthThreshold) return;
         

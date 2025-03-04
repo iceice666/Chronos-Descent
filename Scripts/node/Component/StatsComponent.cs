@@ -11,17 +11,20 @@ public partial class StatsComponent : Node
     private BaseStats _currentStats = new();
 
     // Getter methods that expose CurrentStats properties
-    public double GetHealth() => _currentStats.Health;
-    public double GetMaxHealth() => _currentStats.MaxHealth;
-    public double GetMana() => _currentStats.Mana;
-    public double GetMaxMana() => _currentStats.MaxMana;
-    public double GetDefense() => _currentStats.Defense;
-    public double GetStrength() => _currentStats.Strength;
-    public double GetIntelligence() => _currentStats.Intelligence;
-    public double GetCriticalChance() => _currentStats.CriticalChance;
-    public double GetCriticalDamage() => _currentStats.CriticalDamage;
-    public double GetAttackSpeed() => _currentStats.AttackSpeed;
-    public double GetMoveSpeed() => _currentStats.MoveSpeed;
+    public double Health => _currentStats.Health;
+    public double MaxHealth => _currentStats.MaxHealth;
+    public double Mana => _currentStats.Mana;
+    public double MaxMana => _currentStats.MaxMana;
+    public double Defense => _currentStats.Defense;
+    public double Strength => _currentStats.Strength;
+    public double Intelligence => _currentStats.Intelligence;
+    public double CriticalChance=> _currentStats.CriticalChance;
+    public double CriticalDamage => _currentStats.CriticalDamage;
+    public double AttackSpeed => _currentStats.AttackSpeed;
+
+    public double MoveSpeed => _currentStats.MoveSpeed <= MaxMoveSpeed
+        ? _currentStats.MoveSpeed
+        : MaxMoveSpeed;
 
     private const double MaxMoveSpeed = 1000;
 
