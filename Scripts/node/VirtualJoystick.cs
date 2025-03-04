@@ -7,237 +7,219 @@ namespace ChronosDescent.Scripts.node;
 /// to be used simultaneously on touchscreen devices.
 /// </summary>
 [GlobalClass]
-public partial class VirtualJoystick : Node2D
+public partial class VirtualJoystick : Control
 {
-    #region Export Variables
-    
-    [ExportGroup("Joystick Settings")]
-    [Export] public float MaxLength { get; set; } = 100f;
-    [Export] public float DeadZone { get; set; } = 0.1f;
-    [Export] public bool ReturnToCenter { get; set; } = true;
-    [Export] public float ReturnSpeed { get; set; } = 10f;
-    [Export] public bool DynamicPosition { get; set; }
-    
-    [ExportGroup("References")]
-    [Export] public NodePath UserInputManagerPath { get; set; }
-    
+    #region Export variables
+
+    [Export] public JoystickMovementMode MovementMode { get; set; } = JoystickMovementMode.Fixed;
+    [Export] public JoystickVisibilityMode VisibilityMode { get; set; } = JoystickVisibilityMode.Always;
+
+    [Export] public Color PressedColor { get; set; } = Colors.Gray;
+
     #endregion
-    
-    #region Public Properties
-    
+
+    #region Public
+
     /// <summary>
     /// Whether the joystick is currently being pressed/touched
     /// </summary>
     public bool IsPressed { get; private set; }
-    
+
     /// <summary>
     /// The current output vector, normalized with magnitude between 0-1
     /// </summary>
-    public Vector2 Output => GetOutput();
-    
-    /// <summary>
-    /// The touch ID currently controlling this joystick, or -1 if not active
-    /// </summary>
-    public int TouchIndex { get; private set; } = -1;
+    public Vector2 Output { get; private set; }
 
     #endregion
-    
-    #region Private Variables
-    
-    private Node2D _knob;
-    private Control _touchArea;
-    private float _maxLengthSquared;
-    private Vector2 _basePosition;
-    private Vector2 _initialPosition;
-    private UserInputManager _userInputManager;
-    
+
+    #region Enum
+
+    public enum JoystickMovementMode
+    {
+        Fixed, // The joystick doesn't move.
+        Dynamic, // Every time the joystick area is pressed, the joystick position is set on the touched position.
+        Following // When the finger moves outside the joystick area, the joystick will follow it.
+    }
+
+    public enum JoystickVisibilityMode
+    {
+        Always, // Always visible
+        WhenTouched // Visible only when touched
+    }
+
     #endregion
-    
-    #region Lifecycle Methods
-    
+
+    #region Private variables
+
+    private TextureRect _ring;
+    private TextureRect _knob;
+    private int _touchIndex = -1;
+
+    private Vector2 _knobDefaultPosition;
+    private Vector2 _ringDefaultPosition;
+    private Color _defaultColor;
+
+    #endregion
+
+    #region Lifecycle methods
+
     public override void _Ready()
     {
-        _knob = GetNode<Node2D>("Knob");
-        _touchArea = GetNode<Control>("TouchArea");
-        
-        _initialPosition = GlobalPosition;
-        _basePosition = GlobalPosition;
-        _maxLengthSquared = MaxLength * MaxLength;
-        
-        // Get the UserInputManager reference if specified
-        if (!string.IsNullOrEmpty(UserInputManagerPath))
-        {
-            _userInputManager = GetNode<UserInputManager>(UserInputManagerPath);
-        }
+        if (VisibilityMode == JoystickVisibilityMode.WhenTouched)
+            Hide();
+
+        _knob = GetNode<TextureRect>("Knob");
+        _ring = GetNode<TextureRect>("Ring");
+
+        _knobDefaultPosition = _knob.Position;
+        _ringDefaultPosition = _ring.Position;
+        _defaultColor = _knob.Modulate;
     }
-    
+
     public override void _Input(InputEvent @event)
     {
-        // Handle touch events
-        if (@event is InputEventScreenTouch touchEvent)
+        // Early return if the event is not relevant
+        if (@event is not (InputEventScreenTouch or InputEventScreenDrag))
+            return;
+
+        switch (@event)
         {
-            HandleTouchEvent(touchEvent);
-            
-            // Signal to UserInputManager that touch input is happening
-            if (touchEvent.Pressed && TouchIndex == -1 && IsPositionInTouchArea(touchEvent.Position))
+            // Handle touch events
+            case InputEventScreenTouch touchEvent:
             {
-                // Notify any linked UserInputManager (can be set in the inspector)
-                if (_userInputManager != null)
+                if (touchEvent.Pressed)
                 {
-                    _userInputManager.NotifyTouchInputDetected();
+                    // Handle touch press
+                    HandleTouchPress(touchEvent);
                 }
-            }
-        }
-        // Handle touch drag events
-        else if (@event is InputEventScreenDrag dragEvent)
-        {
-            HandleDragEvent(dragEvent);
-        }
-    }
-    
-    public override void _PhysicsProcess(double delta)
-    {
-        // Return to center when not pressed
-        if (!IsPressed && ReturnToCenter)
-        {
-            _knob.GlobalPosition = _knob.GlobalPosition.Lerp(_basePosition, (float)delta * ReturnSpeed);
-            
-            // Snap to center if very close
-            if (_knob.GlobalPosition.DistanceSquaredTo(_basePosition) < 1)
-            {
-                _knob.GlobalPosition = _basePosition;
-            }
-        }
-    }
-    
-    #endregion
-    
-    #region Input Handling Methods
-    
-    private void HandleTouchEvent(InputEventScreenTouch touchEvent)
-    {
-        var touchPosition = touchEvent.Position;
-        
-        // Touch pressed
-        if (touchEvent.Pressed)
-        {
-            // Only consider this touch if we're not already tracking one
-            // and if the touch is within our touch area
-            if (TouchIndex == -1 && IsPositionInTouchArea(touchPosition))
-            {
-                // Start tracking this touch
-                TouchIndex = touchEvent.Index;
-                IsPressed = true;
-                
-                if (DynamicPosition)
+                else if (touchEvent.Index == _touchIndex)
                 {
-                    // Set base position to touch position for dynamic joystick
-                    _basePosition = touchPosition;
-                    GlobalPosition = touchPosition;
+                    // Handle touch release for tracked touch
+                    Reset();
+                    if (VisibilityMode == JoystickVisibilityMode.WhenTouched)
+                    {
+                        Hide();
+                    }
+
+                    GetViewport().SetInputAsHandled();
                 }
-                
-                // Set knob position to touch position
-                UpdateKnobPosition(touchPosition);
+
+                return;
             }
-        }
-        // Touch released - only care about our tracked touch
-        else if (touchEvent.Index == TouchIndex)
-        {
-            // Stop tracking this touch
-            TouchIndex = -1;
-            IsPressed = false;
-            
-            if (DynamicPosition)
-            {
-                // Reset position for dynamic joystick
-                GlobalPosition = _initialPosition;
-                _basePosition = _initialPosition;
-            }
+            // Handle drag events - only process if it's the tracked touch
+            case InputEventScreenDrag dragEvent when dragEvent.Index == _touchIndex:
+                UpdateJoystick(dragEvent.Position);
+                GetViewport().SetInputAsHandled();
+                break;
         }
     }
-    
-    private void HandleDragEvent(InputEventScreenDrag dragEvent)
-    {
-        // Only process drag events for our tracked touch
-        if (dragEvent.Index == TouchIndex)
-        {
-            UpdateKnobPosition(dragEvent.Position);
-        }
-    }
-    
+
     #endregion
-    
-    #region Helper Methods
-    
-    private bool IsPositionInTouchArea(Vector2 position)
-    {
-        // Convert position to local coordinates of the touch area
-        var localPos = _touchArea.GetGlobalTransform().AffineInverse() * position;
-        
-        // Check if the position is within the touch area's bounds
-        return _touchArea.GetRect().HasPoint(localPos);
-    }
-    
-    private void UpdateKnobPosition(Vector2 targetPosition)
-    {
-        // Calculate vector from joystick center to target position
-        var direction = targetPosition - _basePosition;
-        
-        // Apply distance constraint if needed
-        if (direction.LengthSquared() > _maxLengthSquared)
-        {
-            direction = direction.Normalized() * MaxLength;
-        }
-        
-        // Update knob position
-        _knob.GlobalPosition = _basePosition + direction;
-    }
-    
-    /// <summary>
-    /// Get the current joystick output vector
-    /// </summary>
-    private Vector2 GetOutput()
-    {
-        if (!IsPressed)
-            return Vector2.Zero;
-        
-        // Calculate direction vector
-        var direction = _knob.GlobalPosition - _basePosition;
-        
-        // Convert to 0 to 1 range
-        var output = direction / MaxLength;
-        
-        // Apply deadzone
-        var length = output.Length();
-        if (length < DeadZone)
-        {
-            return Vector2.Zero;
-        }
-        
-        // Normalize output accounting for deadzone
-        if (length > 0)
-        {
-            output = output.Normalized() * ((length - DeadZone) / (1 - DeadZone));
-            
-            // Ensure magnitude doesn't exceed 1
-            if (output.Length() > 1.0f)
-            {
-                output = output.Normalized();
-            }
-        }
-        
-        return output;
-    }
-    
-    /// <summary>
-    /// Reset the joystick to its initial state
-    /// </summary>
+
     public void Reset()
     {
         IsPressed = false;
-        TouchIndex = -1;
-        _knob.GlobalPosition = _basePosition;
+        Output = Vector2.Zero;
+        _touchIndex = -1;
+        _knob.Modulate = _defaultColor;
+        _knob.Position = _knobDefaultPosition;
+        _ring.Position = _ringDefaultPosition;
     }
-    
+
+    #region Private methods
+
+    private void HandleTouchPress(InputEventScreenTouch touchEvent)
+    {
+        var eventPos = touchEvent.Position;
+
+        // Check if this is a valid touch to start tracking
+        var isValidTouch = _touchIndex == -1 && IsPointInsideJoystickArea(eventPos);
+        if (!isValidTouch)
+            return;
+
+        var shouldActivate = MovementMode is JoystickMovementMode.Dynamic or JoystickMovementMode.Following ||
+                             (MovementMode == JoystickMovementMode.Fixed && IsPointInsideRing(eventPos));
+
+        if (!shouldActivate)
+            return;
+
+        // Adjust joystick position for dynamic modes
+        if (MovementMode is JoystickMovementMode.Dynamic or JoystickMovementMode.Following)
+        {
+            MoveRing(eventPos);
+        }
+
+        // Show joystick if needed
+        if (VisibilityMode == JoystickVisibilityMode.WhenTouched)
+        {
+            Show();
+        }
+
+        // Update tracking and visual state
+        _touchIndex = touchEvent.Index;
+        _knob.Modulate = PressedColor;
+        UpdateJoystick(eventPos);
+        GetViewport().SetInputAsHandled();
+    }
+
+    private void MoveRing(Vector2 newPosition)
+    {
+        _ring.GlobalPosition = newPosition - _ring.PivotOffset * GetGlobalTransformWithCanvas().Scale;
+    }
+
+    private void MoveKnob(Vector2 newPosition)
+    {
+        _knob.GlobalPosition = newPosition - _knob.PivotOffset * _ring.GetGlobalTransformWithCanvas().Scale;
+    }
+
+    private Vector2 GetRingRadius()
+    {
+        return _ring.Size * _ring.GetGlobalTransformWithCanvas().Scale / 2;
+    }
+
+    private bool IsPointInsideJoystickArea(Vector2 point)
+    {
+        var scale = GetGlobalTransformWithCanvas().Scale;
+
+        var x = point.X >= GlobalPosition.X && point.X <= GlobalPosition.X + (Size.X * scale.X);
+        var y = point.Y >= GlobalPosition.Y && point.Y <= GlobalPosition.Y + (Size.Y * scale.Y);
+        return x && y;
+    }
+
+    private bool IsPointInsideRing(Vector2 point)
+    {
+        var ringRadius = GetRingRadius();
+        var center = _ring.GlobalPosition + ringRadius;
+        var vector = point - center;
+
+        return vector.LengthSquared() <= ringRadius.X * ringRadius.X;
+    }
+
+    private void UpdateJoystick(Vector2 touchPosition)
+    {
+        var baseRadius = GetRingRadius();
+        var center = _ring.GlobalPosition + baseRadius;
+        var vector = (touchPosition - center).LimitLength(100);
+
+
+        if (MovementMode == JoystickMovementMode.Following && touchPosition.DistanceSquaredTo(center) > 100 * 100)
+        {
+            MoveRing(touchPosition - vector);
+        }
+
+        MoveKnob(center + vector);
+
+        if (vector.LengthSquared() > 0)
+        {
+            IsPressed = true;
+            Output = vector;
+        }
+        else
+        {
+            IsPressed = false;
+            Output = Vector2.Zero;
+        }
+    }
+
     #endregion
 }

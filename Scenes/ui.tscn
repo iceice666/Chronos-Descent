@@ -10,7 +10,7 @@ visible = false
 script = ExtResource("1_p4kak")
 
 [node name="LeftJoystick" parent="VirtualInput" instance=ExtResource("1_x3hch")]
-position = Vector2(108, 444)
+layout_mode = 2
 
 [node name="RightJoystick" parent="VirtualInput" instance=ExtResource("1_x3hch")]
-position = Vector2(864, 444)
+layout_mode = 2

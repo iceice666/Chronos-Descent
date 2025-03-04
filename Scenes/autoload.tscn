@@ -12,7 +12,6 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("1_5wbsh")
-RightJoystickPath = "UI/VirtualInput/RightJoystick"
 
 [node name="UI" parent="." instance=ExtResource("2_euvdl")]
 
