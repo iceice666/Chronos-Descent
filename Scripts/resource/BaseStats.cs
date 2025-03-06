@@ -8,10 +8,19 @@ public partial class BaseStats : Resource
     [Export] public double Health = 100;
     [Export] public double MaxHealth = 100;
     [Export] public double Defense = 100;
-    [Export] public double Strength = 10;
-    [Export] public double Intelligence = 10;
     [Export] public double CriticalChance = 50;
     [Export] public double CriticalDamage = 100;
     [Export] public double AttackSpeed = 4;
     [Export] public double MoveSpeed = 300;
+
+    public enum Specifier
+    {
+        Health,
+        MaxHealth,
+        Defense,
+        CriticalChance,
+        CriticalDamage,
+        AttackSpeed,
+        MoveSpeed
+    }
 }

@@ -14,8 +14,6 @@ public partial class StatsComponent : Node
     public double Health => _currentStats.Health;
     public double MaxHealth => _currentStats.MaxHealth;
     public double Defense => _currentStats.Defense;
-    public double Strength => _currentStats.Strength;
-    public double Intelligence => _currentStats.Intelligence;
     public double CriticalChance=> _currentStats.CriticalChance;
     public double CriticalDamage => _currentStats.CriticalDamage;
     public double AttackSpeed => _currentStats.AttackSpeed;
@@ -49,15 +47,5 @@ public partial class StatsComponent : Node
         EmitSignal(SignalName.StatsChanged);
     }
 
-    public void PrintStats()
-    {
-        GD.Print($"Health: {_currentStats.Health}/{_currentStats.MaxHealth}");
-        GD.Print($"Defense: {_currentStats.Defense}");
-        GD.Print($"Strength: {_currentStats.Strength}");
-        GD.Print($"Intelligence: {_currentStats.Intelligence}");
-        GD.Print($"Critical Chance: {_currentStats.CriticalChance}%");
-        GD.Print($"Critical Damage: {_currentStats.CriticalDamage}%");
-        GD.Print($"Attack Speed: {_currentStats.AttackSpeed} times/sec");
-        GD.Print($"Move Speed: {_currentStats.MoveSpeed} units/sec");
-    }
+
 }

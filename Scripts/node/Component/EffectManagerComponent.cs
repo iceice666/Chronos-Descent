@@ -138,8 +138,6 @@ public partial class EffectManagerComponent : Node
                 {
                     stats.Health += effect.HealthModifier * stacks;
                     stats.Defense += effect.DefenseModifier * stacks;
-                    stats.Strength += effect.StrengthModifier * stacks;
-                    stats.Intelligence += effect.IntelligenceModifier * stacks;
                     stats.CriticalChance += effect.CriticalChanceModifier * stacks;
                     stats.CriticalDamage += effect.CriticalDamageModifier * stacks;
                     stats.AttackSpeed += effect.AttackSpeedModifier * stacks;
