@@ -13,8 +13,6 @@ public partial class StatsComponent : Node
     // Getter methods that expose CurrentStats properties
     public double Health => _currentStats.Health;
     public double MaxHealth => _currentStats.MaxHealth;
-    public double Mana => _currentStats.Mana;
-    public double MaxMana => _currentStats.MaxMana;
     public double Defense => _currentStats.Defense;
     public double Strength => _currentStats.Strength;
     public double Intelligence => _currentStats.Intelligence;
@@ -54,7 +52,6 @@ public partial class StatsComponent : Node
     public void PrintStats()
     {
         GD.Print($"Health: {_currentStats.Health}/{_currentStats.MaxHealth}");
-        GD.Print($"Mana: {_currentStats.Mana}/{_currentStats.MaxMana}");
         GD.Print($"Defense: {_currentStats.Defense}");
         GD.Print($"Strength: {_currentStats.Strength}");
         GD.Print($"Intelligence: {_currentStats.Intelligence}");

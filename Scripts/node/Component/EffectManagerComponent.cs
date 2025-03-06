@@ -137,7 +137,6 @@ public partial class EffectManagerComponent : Node
             _stats.UpdateStats(stats =>
                 {
                     stats.Health += effect.HealthModifier * stacks;
-                    stats.Mana += effect.ManaModifier * stacks;
                     stats.Defense += effect.DefenseModifier * stacks;
                     stats.Strength += effect.StrengthModifier * stacks;
                     stats.Intelligence += effect.IntelligenceModifier * stacks;

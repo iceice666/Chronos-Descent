@@ -10,8 +10,8 @@ public partial class EffectInstance : RefCounted
     public Effect BaseEffect { get; private set; }
     public double RemainingDuration { get; set; }
     public int CurrentStacks { get; private set; } = 1;
-    public double NextTickTime { get; set; }
-    public Entity Target { get; private set; }
+    private double NextTickTime { get; set; }
+    private Entity Target { get; set; }
 
     public EffectInstance(Effect effect, Entity target)
     {

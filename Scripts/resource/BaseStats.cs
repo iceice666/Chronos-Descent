@@ -7,8 +7,6 @@ public partial class BaseStats : Resource
     // Basic stats with private backing fields and public properties
     [Export] public double Health = 100;
     [Export] public double MaxHealth = 100;
-    [Export] public double Mana = 100;
-    [Export] public double MaxMana = 100;
     [Export] public double Defense = 100;
     [Export] public double Strength = 10;
     [Export] public double Intelligence = 10;
