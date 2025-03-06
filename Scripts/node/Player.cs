@@ -31,7 +31,7 @@ public partial class Player : Entity
 
     public override void _Process(double delta)
     {
-        var look = _input.AimInput;
-        Animation.UpdateLookAnimation(look);
+        AimDirection = _input.AimInput;
+        Animation.UpdateLookAnimation(AimDirection);
     }
 }

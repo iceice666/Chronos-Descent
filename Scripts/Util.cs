@@ -24,7 +24,7 @@ public class Util
         {
             // a or b is zero or both are extremely close to it
             // relative error is less meaningful here
-            return diff < (epsilon * minNormal);
+            return diff < epsilon * minNormal;
         }
 
         {

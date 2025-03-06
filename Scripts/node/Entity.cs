@@ -1,4 +1,3 @@
-using System;
 using Godot;
 using ChronosDescent.Scripts.node.Component;
 using ChronosDescent.Scripts.resource;
@@ -12,9 +11,13 @@ public partial class Entity : CharacterBody2D
     // Component references
     public StatsComponent Stats;
     protected EffectManagerComponent EffectManager;
-    protected AnimationComponent Animation;
+    public AnimationComponent Animation;
     public CombatComponent Combat;
     public TimeManipulationComponent TimeManipulation;
+    public AbilityManagerComponent AbilityManager;
+
+
+    public Vector2 AimDirection;
 
     public override void _Ready()
     {
@@ -23,6 +26,8 @@ public partial class Entity : CharacterBody2D
         EffectManager = GetNode<EffectManagerComponent>("EffectManagerComponent");
         Animation = GetNode<AnimationComponent>("AnimationComponent");
         Combat = GetNode<CombatComponent>("CombatComponent");
+        TimeManipulation = GetNode<TimeManipulationComponent>("TimeManipulationComponent");
+        AbilityManager = GetNode<AbilityManagerComponent>("AbilityManagerComponent");
 
         // Setup component connections
         EffectManager.Initialize(Stats);
@@ -50,9 +55,21 @@ public partial class Entity : CharacterBody2D
     public void RemoveAllEffects() => EffectManager.RemoveAllEffects();
     public bool HasEffect(string effectName) => EffectManager.HasEffect(effectName);
 
+
+    public void ActivateAbility(AbilityManagerComponent.Slot slot) => AbilityManager.ActivateAbility(slot);
+    public void ReleaseChargedAbility(AbilityManagerComponent.Slot slot) => AbilityManager.ReleaseChargedAbility(slot);
+    public void CancelChargedAbility(AbilityManagerComponent.Slot slot) => AbilityManager.CancelChargedAbility(slot);
+
+    public void InterruptChannelingAbility(AbilityManagerComponent.Slot slot) =>
+        AbilityManager.InterruptChannelingAbility(slot);
+
+    public bool IsAbilityReady(AbilityManagerComponent.Slot slot) => AbilityManager.IsAbilityReady(slot);
+    public void ToggleAbility(AbilityManagerComponent.Slot slot) => AbilityManager.ToggleAbility(slot);
+
+
     public void UpdateStats()
     {
-        Stats.UpdateStats(stats => { });
+        Stats.UpdateStats(_ => { });
     }
 
     // Virtual method for derived classes to override
