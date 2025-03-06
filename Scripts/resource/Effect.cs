@@ -40,15 +40,6 @@ public partial class Effect : Godot.Resource
 
     [Export] public EffectType Type { get; set; } = EffectType.Buff;
 
-    public void DebugPrint()
-    {
-        GD.Print($"{Name}: {Description}");
-        GD.Print($"Duration: {Duration} secs");
-        GD.Print($"IsStackable: {IsStackable}");
-        GD.Print($"Stacks: {MaxStacks}");
-        GD.Print($"IsPermanent: {IsPermanent}");
-    }
-
     // Optional callback for custom effect logic
     public virtual void OnApply(Entity target)
     {

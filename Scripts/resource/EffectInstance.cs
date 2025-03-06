@@ -9,7 +9,7 @@ public partial class EffectInstance : RefCounted
 {
     public Effect BaseEffect { get; private set; }
     public double RemainingDuration { get; set; }
-    public int CurrentStacks { get; set; } = 1;
+    public int CurrentStacks { get; private set; } = 1;
     public double NextTickTime { get; set; }
     public Entity Target { get; private set; }
 
@@ -19,6 +19,10 @@ public partial class EffectInstance : RefCounted
         Target = target;
         RemainingDuration = effect.Duration;
         NextTickTime = effect.TickInterval;
+    }
+
+    public EffectInstance()
+    {
     }
 
     public void Update(double delta)
