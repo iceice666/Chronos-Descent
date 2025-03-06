@@ -55,7 +55,7 @@ z_index = 114
 position = Vector2(294, 244)
 
 [node name="PoisonTrigger" type="Area2D" parent="."]
-position = Vector2(122, 105)
+position = Vector2(123, 105)
 scale = Vector2(4, 4)
 script = ExtResource("2_xei7x")
 Effect = SubResource("Resource_uqlpv")

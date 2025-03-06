@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c5f8sm1ij5ie1"
-path="res://.godot/imported/joyknob.png-312f7dd7032bf07d6ab009a3ed324a39.ctex"
+uid="uid://dna0dkcg61ouf"
+path="res://.godot/imported/MissingIcon.png-fca330e16d8b4b3b36b214265da19af0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/joyknob.png"
-dest_files=["res://.godot/imported/joyknob.png-312f7dd7032bf07d6ab009a3ed324a39.ctex"]
+source_file="res://Assets/Ability/MissingIcon.png"
+dest_files=["res://.godot/imported/MissingIcon.png-fca330e16d8b4b3b36b214265da19af0.ctex"]
 
 [params]
 
