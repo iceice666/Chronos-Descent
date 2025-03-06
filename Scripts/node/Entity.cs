@@ -14,6 +14,7 @@ public partial class Entity : CharacterBody2D
     protected EffectManagerComponent EffectManager;
     protected AnimationComponent Animation;
     public CombatComponent Combat;
+    public TimeManipulationComponent TimeManipulation;
 
     public override void _Ready()
     {
@@ -38,6 +39,8 @@ public partial class Entity : CharacterBody2D
     {
         // Movement logic would go here or in a separate MovementComponent
     }
+
+    public bool Moveable = true;
 
     // Public methods that delegate to components
     public void TakeDamage(double amount) => Combat.TakeDamage(amount);
