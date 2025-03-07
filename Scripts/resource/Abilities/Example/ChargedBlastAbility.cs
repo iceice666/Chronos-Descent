@@ -1,7 +1,7 @@
 using ChronosDescent.Scripts.node;
 using Godot;
 
-namespace ChronosDescent.Scripts.resource.Abilities;
+namespace ChronosDescent.Scripts.resource.Abilities.Example;
 
 [GlobalClass]
 public partial class ChargedBlastAbility : Ability

@@ -4,7 +4,7 @@ using ChronosDescent.Scripts.node;
 using ChronosDescent.Scripts.node.Component;
 using Godot;
 
-namespace ChronosDescent.Scripts.resource.Abilities;
+namespace ChronosDescent.Scripts.resource.Abilities.Example;
 
 [GlobalClass]
 public partial class TimeRewindAbility : Ability

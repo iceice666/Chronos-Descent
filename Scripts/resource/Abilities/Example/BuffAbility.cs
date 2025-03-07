@@ -1,12 +1,12 @@
 using ChronosDescent.Scripts.node;
 using Godot;
 
-namespace ChronosDescent.Scripts.resource.Abilities;
+namespace ChronosDescent.Scripts.resource.Abilities.Example;
 
 [GlobalClass]
 public partial class BuffAbility : Ability
 {
-    [Export] public Effect BuffEffect { get; set; }
+    [Export] public Effects.Effect BuffEffect { get; set; }
     [Export] public bool TargetSelf { get; set; } = true;
     [Export] public double Range { get; set; } = 150.0;
     [Export] public double AreaOfEffect { get; set; } // 0 means single target

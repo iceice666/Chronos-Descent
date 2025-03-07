@@ -3,31 +3,42 @@ using Godot;
 
 namespace ChronosDescent.Scripts.resource;
 
+
+
 [GlobalClass]
 // ReSharper disable once RedundantNameQualifier
 public partial class Effect : Godot.Resource
 {
-    [Export] public string Name { get; set; } = "Effect";
+    [ExportGroup("Metadata")] [Export] public string Name { get; set; } = "Effect";
     [Export] public string Description { get; set; } = "";
     [Export] public Texture2D Icon { get; set; }
-    [Export] public double Duration { get; set; } = 5.0; // In seconds, -1 for infinite
+    [Export] public double TickInterval { get; set; } = 1.0; // How often the effect ticks
+    [Export] public double Duration { get; set; } = 5.0;
+    [Export] public bool IsPermanent { get; set; }
     [Export] public bool IsStackable { get; set; }
     [Export] public int MaxStacks { get; set; } = 1;
-    [Export] public bool IsPermanent { get; set; }
-    // Effect properties for various stats
-    [Export] public double HealthModifier { get; set; }
-    [Export] public double ManaModifier { get; set; }
-    [Export] public double DefenseModifier { get; set; }
-    [Export] public double StrengthModifier { get; set; }
-    [Export] public double IntelligenceModifier { get; set; }
-    [Export] public double CriticalChanceModifier { get; set; }
-    [Export] public double CriticalDamageModifier { get; set; }
-    [Export] public double AttackSpeedModifier { get; set; }
-    [Export] public double MoveSpeedModifier { get; set; }
 
-    // Periodic effect properties 
-    [Export] public double TickInterval { get; set; } = 1.0; // How often the effect ticks
-   
+
+    
+    [GlobalClass]
+    public partial class EffectModifier : Resource
+    {
+        [Export] private Effect.ModifierType _type;
+        [Export] private BaseStats.Specifier _specifier;
+    }
+
+    [ExportGroup("Modifiers")]
+    // Effect properties for various stats
+    [Export]
+    public EffectModifier[] Modifiers { get; set; } = [];
+
+
+    public enum ModifierType
+    {
+        Additive,
+        Multiplicative,
+    }
+
 
     // Custom effect type for special effects
     public enum EffectType
@@ -57,3 +68,4 @@ public partial class Effect : Godot.Resource
     {
     }
 }
+
