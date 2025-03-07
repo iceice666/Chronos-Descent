@@ -1,7 +1,7 @@
 using System;
-using Godot.Collections;
 using ChronosDescent.Scripts.node;
 using Godot;
+using Godot.Collections;
 
 namespace ChronosDescent.Scripts.resource.Effects;
 
@@ -34,6 +34,15 @@ public partial class Effect : Resource
 
     public Entity Target { get; set; }
 
+    // Helper properties
+    public bool HasStatModifiers =>
+        Behaviors.HasFlag(EffectBehavior.StatModifier) &&
+        (AdditiveModifiers.Count > 0 || MultiplicativeModifiers.Count > 0);
+
+    public bool NeedsTicking => Behaviors.HasFlag(EffectBehavior.PeriodicTick);
+
+    public bool IsControlEffect => Behaviors.HasFlag(EffectBehavior.ControlEffect);
+
     //  methods that derived classes must implement
     public virtual void OnApply() { }
     public virtual void OnRemove() { }
@@ -43,13 +52,4 @@ public partial class Effect : Resource
     public virtual void OnTick(double delta, int currentStacks) { }
 
     public virtual void OnStack(int currentStacks) { }
-
-    // Helper properties
-    public bool HasStatModifiers =>
-        Behaviors.HasFlag(EffectBehavior.StatModifier) &&
-        (AdditiveModifiers.Count > 0 || MultiplicativeModifiers.Count > 0);
-
-    public bool NeedsTicking => Behaviors.HasFlag(EffectBehavior.PeriodicTick);
-
-    public bool IsControlEffect => Behaviors.HasFlag(EffectBehavior.ControlEffect);
 }

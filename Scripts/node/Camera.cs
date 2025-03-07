@@ -4,8 +4,8 @@ namespace ChronosDescent.Scripts.node;
 
 public partial class Camera : Node2D
 {
-    private Entity _target;
     private Vector2 _offset = new(0, 0);
+    private Entity _target;
 
     public override void _PhysicsProcess(double delta)
     {

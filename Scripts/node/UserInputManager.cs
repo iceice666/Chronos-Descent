@@ -5,8 +5,8 @@ using Godot;
 namespace ChronosDescent.Scripts.node;
 
 /// <summary>
-/// Manages input from different sources (keyboard/mouse, controller, touchscreen)
-/// and provides a unified interface for accessing input state
+///     Manages input from different sources (keyboard/mouse, controller, touchscreen)
+///     and provides a unified interface for accessing input state
 /// </summary>
 [GlobalClass]
 public partial class UserInputManager : Control
@@ -22,24 +22,6 @@ public partial class UserInputManager : Control
         VirtualJoystick
     }
 
-    // Current active input source
-    public InputSource CurrentInputSource { get; private set; }
-
-    // Registered button actions
-    private readonly Dictionary<string, ButtonAction> _buttonActions = new();
-
-    // Joystick deadzone threshold
-    [Export] public float JoystickDeadzone { get; set; } = 0.2f;
-
-    // References to UI components
-    private Control _virtualInputContainer;
-    private VirtualJoystick _leftVirtualJoystick;
-    private VirtualJoystick _rightVirtualJoystick;
-
-    // Input vectors for movement and aiming
-    public Vector2 MovementInput { get; private set; } = Vector2.Zero;
-    public Vector2 AimInput { get; private set; } = Vector2.Zero;
-
     // Optimize with static readonly fields for common checks
     private static readonly Key[] CommonKeyboardKeys =
     [
@@ -47,21 +29,23 @@ public partial class UserInputManager : Control
         Key.Space, Key.Enter, Key.Escape, Key.Tab
     ];
 
-    // Button action state tracker
-    private sealed class ButtonAction(string name)
-    {
-        public readonly string Name = name;
-        public bool IsPressed { get; private set; }
-        public bool IsJustPressed { get; private set; }
-        public bool IsJustReleased { get; private set; }
+    // Registered button actions
+    private readonly Dictionary<string, ButtonAction> _buttonActions = new();
+    private VirtualJoystick _leftVirtualJoystick;
+    private VirtualJoystick _rightVirtualJoystick;
 
-        public void Update(bool pressed)
-        {
-            IsJustPressed = pressed && !IsPressed;
-            IsJustReleased = !pressed && IsPressed;
-            IsPressed = pressed;
-        }
-    }
+    // References to UI components
+    private Control _virtualInputContainer;
+
+    // Current active input source
+    public InputSource CurrentInputSource { get; private set; }
+
+    // Joystick deadzone threshold
+    [Export] public float JoystickDeadzone { get; set; } = 0.2f;
+
+    // Input vectors for movement and aiming
+    public Vector2 MovementInput { get; private set; } = Vector2.Zero;
+    public Vector2 AimInput { get; private set; } = Vector2.Zero;
 
     public override void _Ready()
     {
@@ -88,18 +72,15 @@ public partial class UserInputManager : Control
     }
 
     /// <summary>
-    /// Registers a button action to be tracked by the input system
+    ///     Registers a button action to be tracked by the input system
     /// </summary>
     public void RegisterButtonAction(string actionName)
     {
-        if (!_buttonActions.ContainsKey(actionName))
-        {
-            _buttonActions[actionName] = new ButtonAction(actionName);
-        }
+        if (!_buttonActions.ContainsKey(actionName)) _buttonActions[actionName] = new ButtonAction(actionName);
     }
 
     /// <summary>
-    /// Unregisters a button action from the input system
+    ///     Unregisters a button action from the input system
     /// </summary>
     public void UnregisterButtonAction(string actionName)
     {
@@ -107,7 +88,7 @@ public partial class UserInputManager : Control
     }
 
     /// <summary>
-    /// Checks if a button is currently pressed
+    ///     Checks if a button is currently pressed
     /// </summary>
     public bool IsButtonPressed(string actionName)
     {
@@ -115,7 +96,7 @@ public partial class UserInputManager : Control
     }
 
     /// <summary>
-    /// Checks if a button was just pressed this frame
+    ///     Checks if a button was just pressed this frame
     /// </summary>
     public bool IsButtonJustPressed(string actionName)
     {
@@ -123,7 +104,7 @@ public partial class UserInputManager : Control
     }
 
     /// <summary>
-    /// Checks if a button was just released this frame
+    ///     Checks if a button was just released this frame
     /// </summary>
     public bool IsButtonJustReleased(string actionName)
     {
@@ -131,7 +112,7 @@ public partial class UserInputManager : Control
     }
 
     /// <summary>
-    /// Detects which input source is currently being used
+    ///     Detects which input source is currently being used
     /// </summary>
     private void DetectInputSource()
     {
@@ -153,13 +134,11 @@ public partial class UserInputManager : Control
         // Check if using keyboard/mouse
         if (IsAnyKeyboardInputActive() || Input.IsMouseButtonPressed(MouseButton.Left) ||
             Input.IsMouseButtonPressed(MouseButton.Right))
-        {
             SwitchInputSource(InputSource.KeyboardMouse);
-        }
     }
 
     /// <summary>
-    /// Checks if controller is active based on button presses or joystick movement
+    ///     Checks if controller is active based on button presses or joystick movement
     /// </summary>
     private bool IsControllerActive()
     {
@@ -181,7 +160,7 @@ public partial class UserInputManager : Control
     }
 
     /// <summary>
-    /// Switches the current input source and updates UI accordingly
+    ///     Switches the current input source and updates UI accordingly
     /// </summary>
     private void SwitchInputSource(InputSource newSource)
     {
@@ -193,7 +172,7 @@ public partial class UserInputManager : Control
     }
 
     /// <summary>
-    /// Updates visibility of virtual joystick based on the current input source
+    ///     Updates visibility of virtual joystick based on the current input source
     /// </summary>
     private void UpdateVirtualInputVisibility()
     {
@@ -201,7 +180,7 @@ public partial class UserInputManager : Control
     }
 
     /// <summary>
-    /// Processes movement input from current input source
+    ///     Processes movement input from current input source
     /// </summary>
     private void ProcessMovementInput()
     {
@@ -215,7 +194,7 @@ public partial class UserInputManager : Control
     }
 
     /// <summary>
-    /// Gets keyboard movement input
+    ///     Gets keyboard movement input
     /// </summary>
     private Vector2 GetKeyboardMovementInput()
     {
@@ -226,7 +205,7 @@ public partial class UserInputManager : Control
     }
 
     /// <summary>
-    /// Gets controller movement input with deadzone handling
+    ///     Gets controller movement input with deadzone handling
     /// </summary>
     private Vector2 GetControllerMovementInput()
     {
@@ -239,7 +218,7 @@ public partial class UserInputManager : Control
     }
 
     /// <summary>
-    /// Gets virtual joystick movement input with deadzone handling
+    ///     Gets virtual joystick movement input with deadzone handling
     /// </summary>
     private Vector2 GetVirtualJoystickMovementInput()
     {
@@ -250,7 +229,7 @@ public partial class UserInputManager : Control
     }
 
     /// <summary>
-    /// Processes aim input from the current input source
+    ///     Processes aim input from the current input source
     /// </summary>
     private void ProcessAimInput()
     {
@@ -264,7 +243,7 @@ public partial class UserInputManager : Control
     }
 
     /// <summary>
-    /// Gets mouse aim input
+    ///     Gets mouse aim input
     /// </summary>
     private Vector2 GetMouseAimInput()
     {
@@ -275,7 +254,7 @@ public partial class UserInputManager : Control
     }
 
     /// <summary>
-    /// Gets controller aim input with deadzone handling
+    ///     Gets controller aim input with deadzone handling
     /// </summary>
     private Vector2 GetControllerAimInput()
     {
@@ -288,7 +267,7 @@ public partial class UserInputManager : Control
     }
 
     /// <summary>
-    /// Gets virtual joystick aim input with deadzone handling
+    ///     Gets virtual joystick aim input with deadzone handling
     /// </summary>
     private Vector2 GetVirtualJoystickAimInput()
     {
@@ -299,7 +278,7 @@ public partial class UserInputManager : Control
     }
 
     /// <summary>
-    /// Applies deadzone to an input vector
+    ///     Applies deadzone to an input vector
     /// </summary>
     private Vector2 ApplyDeadzone(Vector2 input)
     {
@@ -313,35 +292,44 @@ public partial class UserInputManager : Control
     }
 
     /// <summary>
-    /// Processes all registered button actions
+    ///     Processes all registered button actions
     /// </summary>
     private void ProcessButtonActions()
     {
-        foreach (var action in _buttonActions.Values)
-        {
-            action.Update(Input.IsActionPressed(action.Name));
-        }
+        foreach (var action in _buttonActions.Values) action.Update(Input.IsActionPressed(action.Name));
     }
 
     /// <summary>
-    /// Checks if any relevant keyboard input is active
+    ///     Checks if any relevant keyboard input is active
     /// </summary>
     private bool IsAnyKeyboardInputActive()
     {
         // Check common keys
         foreach (var key in CommonKeyboardKeys)
-        {
             if (Input.IsKeyPressed(key))
                 return true;
-        }
 
         // Check number keys for items
         for (var i = (int)Key.Key1; i <= (int)Key.Key9; i++)
-        {
             if (Input.IsKeyPressed((Key)i))
                 return true;
-        }
 
         return false;
+    }
+
+    // Button action state tracker
+    private sealed class ButtonAction(string name)
+    {
+        public readonly string Name = name;
+        public bool IsPressed { get; private set; }
+        public bool IsJustPressed { get; private set; }
+        public bool IsJustReleased { get; private set; }
+
+        public void Update(bool pressed)
+        {
+            IsJustPressed = pressed && !IsPressed;
+            IsJustReleased = !pressed && IsPressed;
+            IsPressed = pressed;
+        }
     }
 }

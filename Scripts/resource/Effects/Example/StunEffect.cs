@@ -1,15 +1,13 @@
 // Scripts/resource/Effects/Example/StunEffect.cs
 
-using ChronosDescent.Scripts.node;
 using Godot;
-using Godot.Collections;
 
 namespace ChronosDescent.Scripts.resource.Effects.Example;
 
 [GlobalClass]
 public sealed partial class StunEffect : Effect
 {
-   public StunEffect()
+    public StunEffect()
     {
         Identifier = "stun";
         Name = "Stun";

@@ -12,16 +12,6 @@ namespace ChronosDescent.Scripts.node.Component;
 [GlobalClass]
 public partial class EffectManagerComponent : Node
 {
-    private readonly Dictionary<string, EffectInstance> _activeEffects = new();
-    private StatsComponent _stats;
-    private bool _statsAreDirty;
-
-    private Entity _entity;
-
-    // Lists for optimization
-    private readonly List<EffectInstance> _tickingEffects = [];
-    private readonly List<EffectInstance> _controlEffects = [];
-
     // Signal for UI updates
     [Signal]
     public delegate void EffectAppliedEventHandler(Effect effect, int stacks);
@@ -31,6 +21,16 @@ public partial class EffectManagerComponent : Node
 
     [Signal]
     public delegate void EffectUpdatedEventHandler(Effect effect, int stacks, double remainingDuration);
+
+    private readonly Dictionary<string, EffectInstance> _activeEffects = new();
+    private readonly List<EffectInstance> _controlEffects = [];
+
+    // Lists for optimization
+    private readonly List<EffectInstance> _tickingEffects = [];
+
+    private Entity _entity;
+    private StatsComponent _stats;
+    private bool _statsAreDirty;
 
     public void Initialize(StatsComponent statsComponent)
     {
@@ -50,28 +50,18 @@ public partial class EffectManagerComponent : Node
 
             // Check if effect has expired
             if (effectInstance.IsExpired())
-            {
                 effectsToRemove.Add(effectName);
-            }
             else
-            {
                 // Emit update signal for UI
                 EmitSignal(SignalName.EffectUpdated, effectInstance.BaseEffect,
                     effectInstance.CurrentStacks, effectInstance.RemainingDuration);
-            }
         }
 
         // Remove expired effects
-        foreach (var effectName in effectsToRemove)
-        {
-            RemoveEffect(effectName);
-        }
+        foreach (var effectName in effectsToRemove) RemoveEffect(effectName);
 
         // Update only effects that need ticking
-        foreach (var effect in _tickingEffects.ToList())
-        {
-            effect.UpdateTick(delta);
-        }
+        foreach (var effect in _tickingEffects.ToList()) effect.UpdateTick(delta);
 
         // Only recalculate stats when necessary
         if (_statsAreDirty)
@@ -100,10 +90,7 @@ public partial class EffectManagerComponent : Node
                 existingEffect.AddStack();
 
                 // Mark stats as dirty if this is a stat modifier effect
-                if (effect.HasStatModifiers)
-                {
-                    _statsAreDirty = true;
-                }
+                if (effect.HasStatModifiers) _statsAreDirty = true;
 
                 // Call the stack callback
                 effect.OnStack(currentStacks + 1);
@@ -133,24 +120,15 @@ public partial class EffectManagerComponent : Node
             _activeEffects[effectName] = newEffectInstance;
 
             // Add to specialized lists based on behavior
-            if (effect.NeedsTicking)
-            {
-                _tickingEffects.Add(newEffectInstance);
-            }
+            if (effect.NeedsTicking) _tickingEffects.Add(newEffectInstance);
 
-            if (effect.IsControlEffect)
-            {
-                _controlEffects.Add(newEffectInstance);
-            }
+            if (effect.IsControlEffect) _controlEffects.Add(newEffectInstance);
 
             // Apply the effect
             effect.OnApply();
 
             // Mark stats as dirty if this is a stat modifier effect
-            if (effect.HasStatModifiers)
-            {
-                _statsAreDirty = true;
-            }
+            if (effect.HasStatModifiers) _statsAreDirty = true;
 
             // Emit signal for UI
             EmitSignal(SignalName.EffectApplied, effect, 1);
@@ -170,24 +148,15 @@ public partial class EffectManagerComponent : Node
         effect.OnRemove();
 
         // Remove from specialized lists
-        if (effect.NeedsTicking)
-        {
-            _tickingEffects.Remove(effectInstance);
-        }
+        if (effect.NeedsTicking) _tickingEffects.Remove(effectInstance);
 
-        if (effect.IsControlEffect)
-        {
-            _controlEffects.Remove(effectInstance);
-        }
+        if (effect.IsControlEffect) _controlEffects.Remove(effectInstance);
 
         // Remove from active effects
         _activeEffects.Remove(effectName);
 
         // Mark stats as dirty if this was a stat modifier effect
-        if (effect.HasStatModifiers)
-        {
-            _statsAreDirty = true;
-        }
+        if (effect.HasStatModifiers) _statsAreDirty = true;
 
         // Emit signal for UI
         EmitSignal(SignalName.EffectRemoved, effectName);
@@ -198,10 +167,7 @@ public partial class EffectManagerComponent : Node
         // Create a copy of the keys to avoid modification during iteration
         var effectNames = _activeEffects.Keys.ToList();
 
-        foreach (var effectName in effectNames)
-        {
-            RemoveEffect(effectName);
-        }
+        foreach (var effectName in effectNames) RemoveEffect(effectName);
     }
 
     public bool HasEffect(string effectName)
@@ -271,7 +237,6 @@ public partial class EffectManagerComponent : Node
 
 
         foreach (var (stat, value) in multiplicativeTotal)
-        {
             switch (stat)
             {
                 case BaseStats.Specifier.Health:
@@ -304,10 +269,8 @@ public partial class EffectManagerComponent : Node
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-        }
 
         foreach (var (stat, value) in additiveTotal)
-        {
             switch (stat)
             {
                 case BaseStats.Specifier.Health:
@@ -340,8 +303,7 @@ public partial class EffectManagerComponent : Node
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-        }
-        
+
         _stats.Current = stats;
     }
 }

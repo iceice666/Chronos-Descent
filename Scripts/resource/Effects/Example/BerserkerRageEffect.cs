@@ -1,6 +1,5 @@
 ﻿// Scripts/resource/Effects/Example/BerserkerRageEffect.cs
 
-using ChronosDescent.Scripts.node.Component;
 using Godot;
 using Godot.Collections;
 
@@ -9,6 +8,8 @@ namespace ChronosDescent.Scripts.resource.Effects.Example;
 [GlobalClass]
 public sealed partial class BerserkerRageEffect : Effect
 {
+    private double _lastCalculatedBonus;
+
     public BerserkerRageEffect()
     {
         Identifier = "berserker_rage";
@@ -21,14 +22,12 @@ public sealed partial class BerserkerRageEffect : Effect
         AdditiveModifiers = new Dictionary<BaseStats.Specifier, double>
         {
             { BaseStats.Specifier.CriticalChance, 10 },
-            { BaseStats.Specifier.CriticalDamage, 0 },
+            { BaseStats.Specifier.CriticalDamage, 0 }
         };
     }
 
     [Export] public double HealthThreshold { get; set; } = 0.3; // 30% health
     [Export] public double MaxStrengthBonus { get; set; } = 50.0; // Max strength bonus
-
-    private double _lastCalculatedBonus;
 
 
     public override void OnApply()

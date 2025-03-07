@@ -1,5 +1,4 @@
-﻿using System;
-using ChronosDescent.Scripts.resource;
+﻿using ChronosDescent.Scripts.resource;
 using Godot;
 
 namespace ChronosDescent.Scripts.node.Component;
@@ -7,9 +6,14 @@ namespace ChronosDescent.Scripts.node.Component;
 [GlobalClass]
 public partial class StatsComponent : Node
 {
+    // Events
+    [Signal]
+    public delegate void StatsChangedEventHandler();
+
+    private const double MaxMoveSpeed = 1000;
+    public BaseStats Current;
     [Export] public BaseStats Base { get; private set; } = new();
-    public BaseStats Current ;
-    
+
 
     // Getter methods that expose CurrentStats properties
     public double Health
@@ -67,12 +71,6 @@ public partial class StatsComponent : Node
     }
 
     public double MoveSpeed => Mathf.Clamp(Current.MoveSpeed, 0, MaxMoveSpeed);
-
-    private const double MaxMoveSpeed = 1000;
-
-    // Events
-    [Signal]
-    public delegate void StatsChangedEventHandler();
 
 
     public override void _Ready()

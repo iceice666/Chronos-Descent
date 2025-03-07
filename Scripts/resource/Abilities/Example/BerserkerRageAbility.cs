@@ -6,9 +6,6 @@ namespace ChronosDescent.Scripts.resource.Abilities.Example;
 [GlobalClass]
 public partial class BerserkerRageAbility : Ability
 {
-    [Export] public double HealthThreshold { get; set; } = 0.3; // 30% health
-    [Export] public double MaxStrengthBonus { get; set; } = 50.0; // Maximum strength bonus
-
     private BerserkerRageEffect _rageEffect;
 
     public BerserkerRageAbility()
@@ -20,6 +17,9 @@ public partial class BerserkerRageAbility : Ability
 
         _rageEffect = new BerserkerRageEffect();
     }
+
+    [Export] public double HealthThreshold { get; set; } = 0.3; // 30% health
+    [Export] public double MaxStrengthBonus { get; set; } = 50.0; // Maximum strength bonus
 
     protected override void OnPassiveTick(double delta)
     {

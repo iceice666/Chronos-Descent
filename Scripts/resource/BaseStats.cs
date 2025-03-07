@@ -9,20 +9,8 @@ public partial class BaseStats : Resource, ICloneable
     {
         Mana,
         Ammo,
-        Energy,
+        Energy
     }
-    
-    // Basic stats with private backing fields and public properties
-    [Export] public double Health = 100;
-    [Export] public double MaxHealth = 100;
-    [Export] public CombatResource ResourceType { get; set; } = CombatResource.Energy;
-    [Export] public double CurrentResource { get; set; } = 100;
-    [Export] public double MaxResource { get; set; } = 100;
-    [Export] public double Defense = 100;
-    [Export] public double CriticalChance = 50;
-    [Export] public double CriticalDamage = 100;
-    [Export] public double AttackSpeed = 4;
-    [Export] public double MoveSpeed = 300;
 
     public enum Specifier
     {
@@ -37,24 +25,37 @@ public partial class BaseStats : Resource, ICloneable
         MoveSpeed
     }
 
+    [Export] public double AttackSpeed = 4;
+    [Export] public double CriticalChance = 50;
+    [Export] public double CriticalDamage = 100;
+    [Export] public double Defense = 100;
+
+    // Basic stats with private backing fields and public properties
+    [Export] public double Health = 100;
+    [Export] public double MaxHealth = 100;
+    [Export] public double MoveSpeed = 300;
+    [Export] public CombatResource ResourceType { get; set; } = CombatResource.Energy;
+    [Export] public double CurrentResource { get; set; } = 100;
+    [Export] public double MaxResource { get; set; } = 100;
+
     // Implement ICloneable interface
     public object Clone()
     {
         return new BaseStats
         {
-            Health = this.Health,
-            MaxHealth = this.MaxHealth,
-            ResourceType = this.ResourceType,
-            CurrentResource = this.CurrentResource,
-            MaxResource = this.MaxResource,
-            Defense = this.Defense,
-            CriticalChance = this.CriticalChance,
-            CriticalDamage = this.CriticalDamage,
-            AttackSpeed = this.AttackSpeed,
-            MoveSpeed = this.MoveSpeed
+            Health = Health,
+            MaxHealth = MaxHealth,
+            ResourceType = ResourceType,
+            CurrentResource = CurrentResource,
+            MaxResource = MaxResource,
+            Defense = Defense,
+            CriticalChance = CriticalChance,
+            CriticalDamage = CriticalDamage,
+            AttackSpeed = AttackSpeed,
+            MoveSpeed = MoveSpeed
         };
     }
-    
+
     // Convenience method to create typed clone
     public BaseStats DeepCopy()
     {

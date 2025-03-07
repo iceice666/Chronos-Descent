@@ -5,15 +5,15 @@ namespace ChronosDescent.Scripts;
 
 public partial class VirtualInput : Control
 {
-    private Label _sourceIndicator;
     private UserInputManager _inputManager;
+    private Label _sourceIndicator;
 
     public override void _Ready()
     {
         _sourceIndicator = GetNode<Label>("../SourceIndicator");
         _inputManager = GetNode<UserInputManager>("/root/Autoload/UserInputManager");
         _inputManager.InputSourceChanged += OnSourceChanged;
-        
+
         _sourceIndicator.Text = _inputManager.CurrentInputSource.ToString();
     }
 

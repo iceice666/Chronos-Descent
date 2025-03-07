@@ -4,18 +4,19 @@ namespace ChronosDescent.Scripts.node;
 
 public partial class VirtualJoystick : Control
 {
-    // Public interface
-    public bool IsPressed { get; private set; }
-    public Vector2 Output { get; private set; } = Vector2.Zero;
+    private Vector2 _centerPosition;
+    private Sprite2D _knob;
+    private float _maxRadius;
 
     // References to child nodes
     private Sprite2D _ring;
-    private Sprite2D _knob;
 
     // Touch tracking
     private int _touchIndex = -1;
-    private Vector2 _centerPosition;
-    private float _maxRadius;
+
+    // Public interface
+    public bool IsPressed { get; private set; }
+    public Vector2 Output { get; private set; } = Vector2.Zero;
 
     public override void _Ready()
     {
@@ -33,10 +34,7 @@ public partial class VirtualJoystick : Control
     public override void _Notification(int what)
     {
         // If the size of the control changes, update the joystick layout
-        if (what == NotificationResized)
-        {
-            UpdateJoystickLayout();
-        }
+        if (what == NotificationResized) UpdateJoystickLayout();
     }
 
     private void UpdateJoystickLayout()

@@ -7,23 +7,14 @@ namespace ChronosDescent.Scripts.node.Component;
 [GlobalClass]
 public partial class TimeManipulationComponent : Node
 {
-    public struct PositionSpan(
-        double deltaTime,
-        Vector2 position
-    )
-    {
-        public readonly double DeltaTime = deltaTime;
-        public readonly Vector2 Position = position;
-    }
+    private readonly LinkedList<PositionSpan> _positionHistory = [];
 
     private double _currentTime;
     private Entity _entity;
 
     [Export] public double MaxPeriod = 10.0f;
-    
-    public bool NeedRecording;
 
-    private readonly LinkedList<PositionSpan> _positionHistory = [];
+    public bool NeedRecording;
 
     public override void _Ready()
     {
@@ -42,7 +33,6 @@ public partial class TimeManipulationComponent : Node
 
     public override void _PhysicsProcess(double delta)
     {
-        
         _currentTime += delta;
         var newPosition = new PositionSpan(_currentTime, _entity.Position);
 
@@ -53,10 +43,7 @@ public partial class TimeManipulationComponent : Node
         }
 
         var last = _positionHistory.Last!.Value.DeltaTime;
-        if (delta - last > MaxPeriod)
-        {
-            _positionHistory.RemoveLast();
-        }
+        if (delta - last > MaxPeriod) _positionHistory.RemoveLast();
 
         _positionHistory.AddFirst(newPosition);
     }
@@ -88,5 +75,14 @@ public partial class TimeManipulationComponent : Node
     {
         _positionHistory.Clear();
         _currentTime = 0;
+    }
+
+    public struct PositionSpan(
+        double deltaTime,
+        Vector2 position
+    )
+    {
+        public readonly double DeltaTime = deltaTime;
+        public readonly Vector2 Position = position;
     }
 }

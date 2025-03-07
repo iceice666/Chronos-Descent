@@ -7,15 +7,10 @@ namespace ChronosDescent.Scripts.resource.Abilities.Example;
 [GlobalClass]
 public partial class DashAbility : Ability
 {
-    [Export] public double DashDistance { get; set; } = 200.0;
-    [Export] public double DashSpeed { get; set; } = 1000.0;
-    [Export] public bool DamageOnDash { get; set; }
-    [Export] public double DashDamage { get; set; } = 15.0;
-    [Export] public double DamageRadius { get; set; } = 50.0;
-
-    private bool _isDashing;
     private Vector2 _dashDirection = Vector2.Zero;
     private Vector2 _dashTarget = Vector2.Zero;
+
+    private bool _isDashing;
     private bool _processing = true;
 
     public DashAbility()
@@ -25,6 +20,12 @@ public partial class DashAbility : Ability
         Type = AbilityType.Active;
         Cooldown = 3.0;
     }
+
+    [Export] public double DashDistance { get; set; } = 200.0;
+    [Export] public double DashSpeed { get; set; } = 1000.0;
+    [Export] public bool DamageOnDash { get; set; }
+    [Export] public double DashDamage { get; set; } = 15.0;
+    [Export] public double DamageRadius { get; set; } = 50.0;
 
     public override void Activate()
     {
@@ -38,18 +39,13 @@ public partial class DashAbility : Ability
             // For player, use the aim direction
             direction = player.GetNode<UserInputManager>("/root/Autoload/UserInputManager").AimInput;
             if (direction == Vector2.Zero)
-            {
                 direction = Vector2.Right * (player.GetNode<AnimationComponent>("AnimationComponent").FlipH ? -1 : 1);
-            }
         }
         else
         {
             // For other entities, use velocity or default direction
             direction = Caster.Velocity.Normalized();
-            if (direction == Vector2.Zero)
-            {
-                direction = Vector2.Right;
-            }
+            if (direction == Vector2.Zero) direction = Vector2.Right;
         }
 
         // Set up the dash
@@ -66,11 +62,11 @@ public partial class DashAbility : Ability
         GD.Print($"{Caster.Name} activated {Name} in direction {_dashDirection}");
     }
 
-    
+
     public override void Update(double delta)
     {
         UpdateState(delta);
-        
+
         if (!_isDashing || Caster == null) return;
 
         // Calculate movement distance this frame
@@ -92,10 +88,7 @@ public partial class DashAbility : Ability
             Caster.Position += _dashDirection * (float)moveDistance;
 
             // Check for damage on dash if enabled
-            if (DamageOnDash)
-            {
-                DealDashDamage();
-            }
+            if (DamageOnDash) DealDashDamage();
         }
     }
 
@@ -104,10 +97,7 @@ public partial class DashAbility : Ability
         if (Caster == null) return;
 
         // Deal final damage if enabled
-        if (DamageOnDash)
-        {
-            DealDashDamage();
-        }
+        if (DamageOnDash) DealDashDamage();
 
         // Re-enable movement
         Caster.Moveable = true;
@@ -134,10 +124,7 @@ public partial class DashAbility : Ability
 
             var distance = Caster.GlobalPosition.DistanceTo(target.GlobalPosition);
 
-            if (distance <= DamageRadius)
-            {
-                target.TakeDamage(DashDamage);
-            }
+            if (distance <= DamageRadius) target.TakeDamage(DashDamage);
         }
     }
 

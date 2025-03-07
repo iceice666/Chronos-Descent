@@ -6,11 +6,6 @@ namespace ChronosDescent.Scripts.resource.Abilities.Example;
 [GlobalClass]
 public partial class ChargedBlastAbility : Ability
 {
-    [Export] public double BaseDamage { get; set; } = 30.0;
-    [Export] public double MinRadius { get; set; } = 50.0;
-    [Export] public double MaxRadius { get; set; } = 200.0;
-    [Export] public double Range { get; set; } = 300.0;
-
     public ChargedBlastAbility()
     {
         Name = "Charged Blast";
@@ -20,6 +15,11 @@ public partial class ChargedBlastAbility : Ability
         MaxChargeTime = 2.0;
         MinChargeTime = 0.3;
     }
+
+    [Export] public double BaseDamage { get; set; } = 30.0;
+    [Export] public double MinRadius { get; set; } = 50.0;
+    [Export] public double MaxRadius { get; set; } = 200.0;
+    [Export] public double Range { get; set; } = 300.0;
 
     public override void Activate()
     {
@@ -69,7 +69,6 @@ public partial class ChargedBlastAbility : Ability
         var targets = Caster.GetTree().GetNodesInGroup("Entity");
 
         foreach (var node in targets)
-        {
             if (node is Entity target && target != Caster)
             {
                 var distance = targetPosition.DistanceTo(target.GlobalPosition);
@@ -86,7 +85,6 @@ public partial class ChargedBlastAbility : Ability
                     GD.Print($"{Name} hit {target.Name} for {finalDamage} damage");
                 }
             }
-        }
     }
 
     public override void CancelCharge()

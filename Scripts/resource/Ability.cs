@@ -137,10 +137,7 @@ public partial class Ability : Resource
             case AbilityType.Charged:
             {
                 CurrentChargeTime += delta;
-                if (CurrentChargeTime >= MaxChargeTime && AutoCastWhenFull)
-                {
-                    ReleaseCharge();
-                }
+                if (CurrentChargeTime >= MaxChargeTime && AutoCastWhenFull) ReleaseCharge();
 
                 break;
             }
@@ -153,10 +150,7 @@ public partial class Ability : Resource
                 CurrentChannelingTime += delta;
                 OnChannelingTick(delta);
 
-                if (CurrentChannelingTime >= ChannelingDuration)
-                {
-                    CompleteChanneling();
-                }
+                if (CurrentChannelingTime >= ChannelingDuration) CompleteChanneling();
 
                 break;
             }
@@ -282,14 +276,10 @@ public partial class Ability : Resource
         GD.Print($"Ability {Name} toggled OFF");
     }
 
-    protected virtual void OnToggleTick(double delta)
-    {
-    }
+    protected virtual void OnToggleTick(double delta) { }
 
     // Passive ability callback
-    protected virtual void OnPassiveTick(double delta)
-    {
-    }
+    protected virtual void OnPassiveTick(double delta) { }
 
     // Channeling ability callbacks
     protected virtual void OnChannelingStart()
@@ -297,9 +287,7 @@ public partial class Ability : Resource
         GD.Print($"Started channeling {Name}");
     }
 
-    protected virtual void OnChannelingTick(double delta)
-    {
-    }
+    protected virtual void OnChannelingTick(double delta) { }
 
     protected virtual void OnChannelingComplete()
     {

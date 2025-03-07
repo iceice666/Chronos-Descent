@@ -1,12 +1,22 @@
 using System.Collections.Generic;
-using Godot;
 using ChronosDescent.Scripts.resource;
+using Godot;
 
 namespace ChronosDescent.Scripts.node.Component;
 
 [GlobalClass]
 public partial class AbilityManagerComponent : Node
 {
+    // Signals
+    [Signal]
+    public delegate void AbilityActivatedEventHandler(Ability ability);
+
+    [Signal]
+    public delegate void AbilityCooldownChangedEventHandler(Ability ability, double cooldown);
+
+    [Signal]
+    public delegate void AbilityStateChangedEventHandler(Ability ability, string state);
+
     public enum Slot
     {
         Primary,
@@ -20,16 +30,6 @@ public partial class AbilityManagerComponent : Node
 
     // Reference to the entity this component is attached to
     private Entity _caster;
-
-    // Signals
-    [Signal]
-    public delegate void AbilityActivatedEventHandler(Ability ability);
-
-    [Signal]
-    public delegate void AbilityCooldownChangedEventHandler(Ability ability, double cooldown);
-
-    [Signal]
-    public delegate void AbilityStateChangedEventHandler(Ability ability, string state);
 
     public override void _Ready()
     {
@@ -50,24 +50,16 @@ public partial class AbilityManagerComponent : Node
 
             // Emit signals for state changes
             if (!Util.NearlyEqual(oldCooldown, ability.CurrentCooldown))
-            {
                 EmitSignal(SignalName.AbilityCooldownChanged, ability, ability.CurrentCooldown);
-            }
 
             if (wasCharging != ability.IsCharging)
-            {
                 EmitSignal(SignalName.AbilityStateChanged, ability, ability.IsCharging ? "charging" : "idle");
-            }
 
             if (wasChanneling != ability.IsChanneling)
-            {
                 EmitSignal(SignalName.AbilityStateChanged, ability, ability.IsChanneling ? "channeling" : "idle");
-            }
 
             if (wasToggled != ability.IsToggled)
-            {
                 EmitSignal(SignalName.AbilityStateChanged, ability, ability.IsToggled ? "toggled_on" : "toggled_off");
-            }
         }
     }
 
@@ -88,10 +80,16 @@ public partial class AbilityManagerComponent : Node
     }
 
     // Get an ability by name
-    public Ability GetAbility(Slot slot) => _abilities[(int)slot];
+    public Ability GetAbility(Slot slot)
+    {
+        return _abilities[(int)slot];
+    }
 
     // Get all abilities
-    public IEnumerable<Ability> GetAbilities() => _abilities;
+    public IEnumerable<Ability> GetAbilities()
+    {
+        return _abilities;
+    }
 
 
     // Activate an ability by name
@@ -114,44 +112,38 @@ public partial class AbilityManagerComponent : Node
     public void ReleaseChargedAbility(Slot slot)
     {
         var ability = GetAbility(slot);
-        if (ability is { IsCharging: true })
-        {
-            ability.ReleaseCharge();
-        }
+        if (ability is { IsCharging: true }) ability.ReleaseCharge();
     }
 
     // Cancel a charging ability
     public void CancelChargedAbility(Slot slot)
     {
         var ability = GetAbility(slot);
-        if (ability is { IsCharging: true })
-        {
-            ability.CancelCharge();
-        }
+        if (ability is { IsCharging: true }) ability.CancelCharge();
     }
 
     // Interrupt a channeling ability
     public void InterruptChannelingAbility(Slot slot)
     {
         var ability = GetAbility(slot);
-        if (ability is { IsChanneling: true })
-        {
-            ability.InterruptChanneling();
-        }
+        if (ability is { IsChanneling: true }) ability.InterruptChanneling();
     }
 
     // Toggle an ability
     public void ToggleAbility(Slot slot)
     {
         var ability = GetAbility(slot);
-        if (ability is { Type: Ability.AbilityType.Toggle })
-        {
-            ability.Activate(); // For toggle abilities, Activate toggles them
-        }
+        if (ability is
+            {
+                Type: Ability.AbilityType.Toggle
+            }) ability.Activate(); // For toggle abilities, Activate toggles them
     }
 
     // Get the cooldown of an ability
-    public double GetAbilityCooldown(Slot slot) => GetAbility(slot)?.CurrentCooldown ?? 0.0;
+    public double GetAbilityCooldown(Slot slot)
+    {
+        return GetAbility(slot)?.CurrentCooldown ?? 0.0;
+    }
 
     // Get the cooldown percentage of an ability
     public double GetAbilityCooldownPercentage(Slot slot)
@@ -162,9 +154,28 @@ public partial class AbilityManagerComponent : Node
         return ability.CurrentCooldown / ability.Cooldown;
     }
 
-    public bool IsAbilityReady(Slot slot) => GetAbility(slot)?.CanActivate() ?? false;
-    public bool IsAbilityCharging(Slot slot) => GetAbility(slot)?.IsCharging ?? false;
-    public bool IsAbilityChanneling(Slot slot) => GetAbility(slot)?.IsChanneling ?? false;
-    public bool IsAbilityOnCooldown(Slot slot) => GetAbility(slot)?.IsOnCooldown ?? false;
-    public bool IsAbilityToggled(Slot slot) => GetAbility(slot)?.IsToggled ?? false;
+    public bool IsAbilityReady(Slot slot)
+    {
+        return GetAbility(slot)?.CanActivate() ?? false;
+    }
+
+    public bool IsAbilityCharging(Slot slot)
+    {
+        return GetAbility(slot)?.IsCharging ?? false;
+    }
+
+    public bool IsAbilityChanneling(Slot slot)
+    {
+        return GetAbility(slot)?.IsChanneling ?? false;
+    }
+
+    public bool IsAbilityOnCooldown(Slot slot)
+    {
+        return GetAbility(slot)?.IsOnCooldown ?? false;
+    }
+
+    public bool IsAbilityToggled(Slot slot)
+    {
+        return GetAbility(slot)?.IsToggled ?? false;
+    }
 }

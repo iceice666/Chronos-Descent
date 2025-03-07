@@ -6,11 +6,11 @@ namespace ChronosDescent.Scripts.node.Component;
 [GlobalClass]
 public partial class CombatComponent : Node
 {
-    private StatsComponent _stats;
-    private AnimationComponent _animation;
-
     [Signal]
     public delegate void DeathEventHandler();
+
+    private AnimationComponent _animation;
+    private StatsComponent _stats;
 
     public void Initialize(StatsComponent stats, AnimationComponent animation)
     {
@@ -26,17 +26,14 @@ public partial class CombatComponent : Node
         _stats.Health -= amount;
         _animation?.PlayAnimation("hurt");
 
-        if (_stats.Health <= 0)
-        {
-            HandleDeath();
-        }
+        if (_stats.Health <= 0) HandleDeath();
     }
 
     public void Heal(double amount)
     {
         if (_stats == null) return;
-        
-        _stats.Health =  Math.Min(_stats.Health + amount, _stats.MaxHealth);
+
+        _stats.Health = Math.Min(_stats.Health + amount, _stats.MaxHealth);
     }
 
     public async void HandleDeath()

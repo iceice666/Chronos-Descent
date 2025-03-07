@@ -4,9 +4,6 @@ namespace ChronosDescent.Scripts.resource.Effects;
 
 public class EffectInstance
 {
-    public Effect BaseEffect { get; }
-    public double RemainingDuration { get; set; }
-    public int CurrentStacks { get; private set; } = 1;
     private double _timeSinceLastTick;
 
 
@@ -17,13 +14,14 @@ public class EffectInstance
         RemainingDuration = effect.Duration;
     }
 
+    public Effect BaseEffect { get; }
+    public double RemainingDuration { get; set; }
+    public int CurrentStacks { get; private set; } = 1;
+
 
     public void Update(double delta)
     {
-        if (!BaseEffect.IsPermanent)
-        {
-            RemainingDuration -= delta;
-        }
+        if (!BaseEffect.IsPermanent) RemainingDuration -= delta;
     }
 
     public void UpdateTick(double delta)

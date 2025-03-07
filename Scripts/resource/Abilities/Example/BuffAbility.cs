@@ -1,4 +1,5 @@
 using ChronosDescent.Scripts.node;
+using ChronosDescent.Scripts.resource.Effects;
 using Godot;
 
 namespace ChronosDescent.Scripts.resource.Abilities.Example;
@@ -6,11 +7,6 @@ namespace ChronosDescent.Scripts.resource.Abilities.Example;
 [GlobalClass]
 public partial class BuffAbility : Ability
 {
-    [Export] public Effects.Effect BuffEffect { get; set; }
-    [Export] public bool TargetSelf { get; set; } = true;
-    [Export] public double Range { get; set; } = 150.0;
-    [Export] public double AreaOfEffect { get; set; } // 0 means single target
-
     public BuffAbility()
     {
         Name = "Buff";
@@ -19,20 +15,19 @@ public partial class BuffAbility : Ability
         Cooldown = 1.0; // Short cooldown for toggle abilities
     }
 
+    [Export] public Effect BuffEffect { get; set; }
+    [Export] public bool TargetSelf { get; set; } = true;
+    [Export] public double Range { get; set; } = 150.0;
+    [Export] public double AreaOfEffect { get; set; } // 0 means single target
+
     protected override void ExecuteEffect()
     {
         if (BuffEffect == null) return;
 
         // For active abilities, apply the effect once
-        if (TargetSelf)
-        {
-            ApplyEffectToTarget(Caster);
-        }
+        if (TargetSelf) ApplyEffectToTarget(Caster);
 
-        if (AreaOfEffect > 0)
-        {
-            ApplyEffectToArea();
-        }
+        if (AreaOfEffect > 0) ApplyEffectToArea();
     }
 
     protected override void OnToggleOn()
@@ -40,15 +35,9 @@ public partial class BuffAbility : Ability
         if (BuffEffect == null) return;
 
         // Apply buff when toggled on
-        if (TargetSelf)
-        {
-            ApplyEffectToTarget(Caster);
-        }
+        if (TargetSelf) ApplyEffectToTarget(Caster);
 
-        if (AreaOfEffect > 0)
-        {
-            ApplyEffectToArea();
-        }
+        if (AreaOfEffect > 0) ApplyEffectToArea();
 
         GD.Print($"{Caster.Name} activated {Name}");
     }
@@ -58,15 +47,9 @@ public partial class BuffAbility : Ability
         if (BuffEffect == null) return;
 
         // Remove buff when toggled off
-        if (TargetSelf)
-        {
-            RemoveEffectFromTarget(Caster);
-        }
+        if (TargetSelf) RemoveEffectFromTarget(Caster);
 
-        if (AreaOfEffect > 0)
-        {
-            RemoveEffectFromArea();
-        }
+        if (AreaOfEffect > 0) RemoveEffectFromArea();
 
         GD.Print($"{Caster.Name} deactivated {Name}");
     }
@@ -77,16 +60,11 @@ public partial class BuffAbility : Ability
         if (BuffEffect == null) return;
 
         // Reapply the effect if needed
-        if (TargetSelf && !Caster.HasEffect(BuffEffect.Name))
-        {
-            ApplyEffectToTarget(Caster);
-        }
+        if (TargetSelf && !Caster.HasEffect(BuffEffect.Name)) ApplyEffectToTarget(Caster);
 
         // Could also periodically reapply to area if needed
         if (AreaOfEffect > 0 && Mathf.FloorToInt(CurrentChannelingTime) % 2 == 0) // Every 2 seconds
-        {
             ApplyEffectToArea();
-        }
     }
 
     protected override void OnPassiveTick(double delta)
@@ -94,26 +72,17 @@ public partial class BuffAbility : Ability
         // For passive abilities, ensure the effect is always active
         if (BuffEffect == null) return;
 
-        if (!Caster.HasEffect(BuffEffect.Name))
-        {
-            ApplyEffectToTarget(Caster);
-        }
+        if (!Caster.HasEffect(BuffEffect.Name)) ApplyEffectToTarget(Caster);
     }
 
     private void ApplyEffectToTarget(Entity target)
     {
-        if (BuffEffect != null)
-        {
-            target.ApplyEffect(BuffEffect);
-        }
+        if (BuffEffect != null) target.ApplyEffect(BuffEffect);
     }
 
     private void RemoveEffectFromTarget(Entity target)
     {
-        if (BuffEffect != null)
-        {
-            target.RemoveEffect(BuffEffect.Name);
-        }
+        if (BuffEffect != null) target.RemoveEffect(BuffEffect.Name);
     }
 
     private void ApplyEffectToArea()
@@ -141,8 +110,10 @@ public partial class BuffAbility : Ability
     }
 
 
-    private bool CheckEntityInRange(Node node) =>
-        node is Entity target &&
-        (target != Caster || TargetSelf) &&
-        Caster.GlobalPosition.DistanceTo(target.GlobalPosition) <= Range;
+    private bool CheckEntityInRange(Node node)
+    {
+        return node is Entity target &&
+               (target != Caster || TargetSelf) &&
+               Caster.GlobalPosition.DistanceTo(target.GlobalPosition) <= Range;
+    }
 }

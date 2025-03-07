@@ -1,6 +1,5 @@
 ﻿// Scripts/resource/Effects/Example/SpeedBoostEffect.cs
 
-using ChronosDescent.Scripts.node;
 using Godot;
 using Godot.Collections;
 
@@ -21,7 +20,7 @@ public sealed partial class SpeedBoostEffect : Effect
 
         MultiplicativeModifiers = new Dictionary<BaseStats.Specifier, double>
         {
-            { BaseStats.Specifier.MoveSpeed, SpeedMultiplier },
+            { BaseStats.Specifier.MoveSpeed, SpeedMultiplier }
         };
     }
 

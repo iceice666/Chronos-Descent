@@ -8,16 +8,19 @@ namespace ChronosDescent.Scripts.node;
 [GlobalClass]
 public partial class Entity : CharacterBody2D
 {
-    // Component references
-    public StatsComponent Stats;
-    public EffectManagerComponent EffectManager;
-    public AnimationComponent Animation;
-    public CombatComponent Combat;
-    public TimeManipulationComponent TimeManipulation;
     public AbilityManagerComponent AbilityManager;
 
 
     public Vector2 AimDirection;
+    public AnimationComponent Animation;
+    public CombatComponent Combat;
+    public EffectManagerComponent EffectManager;
+
+    public bool Moveable = true;
+
+    // Component references
+    public StatsComponent Stats;
+    public TimeManipulationComponent TimeManipulation;
 
     public override void _Ready()
     {
@@ -43,26 +46,67 @@ public partial class Entity : CharacterBody2D
         // Movement logic would go here or in a separate MovementComponent
     }
 
-    public bool Moveable = true;
-
     // Public methods that delegate to components
-    public void TakeDamage(double amount) => Combat.TakeDamage(amount);
-    public void Heal(double amount) => Combat.Heal(amount);
-    public void ApplyEffect(Effect effect) => EffectManager.ApplyEffect(effect);
-    public void RemoveEffect(string effectName) => EffectManager.RemoveEffect(effectName);
-    public void RemoveAllEffects() => EffectManager.RemoveAllEffects();
-    public bool HasEffect(string effectName) => EffectManager.HasEffect(effectName);
+    public void TakeDamage(double amount)
+    {
+        Combat.TakeDamage(amount);
+    }
+
+    public void Heal(double amount)
+    {
+        Combat.Heal(amount);
+    }
+
+    public void ApplyEffect(Effect effect)
+    {
+        EffectManager.ApplyEffect(effect);
+    }
+
+    public void RemoveEffect(string effectName)
+    {
+        EffectManager.RemoveEffect(effectName);
+    }
+
+    public void RemoveAllEffects()
+    {
+        EffectManager.RemoveAllEffects();
+    }
+
+    public bool HasEffect(string effectName)
+    {
+        return EffectManager.HasEffect(effectName);
+    }
 
 
-    public void ActivateAbility(AbilityManagerComponent.Slot slot) => AbilityManager.ActivateAbility(slot);
-    public void ReleaseChargedAbility(AbilityManagerComponent.Slot slot) => AbilityManager.ReleaseChargedAbility(slot);
-    public void CancelChargedAbility(AbilityManagerComponent.Slot slot) => AbilityManager.CancelChargedAbility(slot);
+    public void ActivateAbility(AbilityManagerComponent.Slot slot)
+    {
+        AbilityManager.ActivateAbility(slot);
+    }
 
-    public void InterruptChannelingAbility(AbilityManagerComponent.Slot slot) =>
+    public void ReleaseChargedAbility(AbilityManagerComponent.Slot slot)
+    {
+        AbilityManager.ReleaseChargedAbility(slot);
+    }
+
+    public void CancelChargedAbility(AbilityManagerComponent.Slot slot)
+    {
+        AbilityManager.CancelChargedAbility(slot);
+    }
+
+    public void InterruptChannelingAbility(AbilityManagerComponent.Slot slot)
+    {
         AbilityManager.InterruptChannelingAbility(slot);
+    }
 
-    public bool IsAbilityReady(AbilityManagerComponent.Slot slot) => AbilityManager.IsAbilityReady(slot);
-    public void ToggleAbility(AbilityManagerComponent.Slot slot) => AbilityManager.ToggleAbility(slot);
+    public bool IsAbilityReady(AbilityManagerComponent.Slot slot)
+    {
+        return AbilityManager.IsAbilityReady(slot);
+    }
+
+    public void ToggleAbility(AbilityManagerComponent.Slot slot)
+    {
+        AbilityManager.ToggleAbility(slot);
+    }
 
 
     // Virtual method for derived classes to override

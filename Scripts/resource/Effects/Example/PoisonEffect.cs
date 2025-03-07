@@ -1,6 +1,5 @@
 ﻿// Scripts/resource/Effects/Example/PoisonEffect.cs
 
-using ChronosDescent.Scripts.node;
 using Godot;
 using Godot.Collections;
 
