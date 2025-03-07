@@ -60,7 +60,7 @@ public partial class ChargedBlastAbility : Ability
         var radius = MinRadius + (MaxRadius - MinRadius) * powerMultiplier;
 
         // Get aim direction
-        Vector2 direction = Caster.AimDirection;
+        var direction = Caster.AimDirection;
 
         // Calculate target position
         var targetPosition = Caster.GlobalPosition + direction.Normalized() * (float)Range;

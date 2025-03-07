@@ -17,7 +17,7 @@ public partial class TimeRewindAbility : Ability
     private bool _isRewinding;
     private double _rewindProgress;
     private Entity _currentCaster;
-    private List<TimeManipulationComponent.PositionSpan> _positionHistory = new();
+    private List<TimeManipulationComponent.PositionSpan> _positionHistory = [];
     private double _originalHealth;
     private bool _processing = true;
     

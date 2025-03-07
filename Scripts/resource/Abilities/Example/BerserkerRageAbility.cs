@@ -24,7 +24,7 @@ public partial class BerserkerRageAbility : Ability
     protected override void OnPassiveTick(double delta)
     {
         // Check if health is below threshold
-        double healthPercentage = Caster.Stats.Health / Caster.Stats.MaxHealth;
+        var healthPercentage = Caster.Stats.Health / Caster.Stats.MaxHealth;
 
         if (healthPercentage <= HealthThreshold)
         {
