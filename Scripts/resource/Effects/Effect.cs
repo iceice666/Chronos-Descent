@@ -1,71 +1,55 @@
+using System;
+using Godot.Collections;
 using ChronosDescent.Scripts.node;
 using Godot;
 
-namespace ChronosDescent.Scripts.resource;
-
-
+namespace ChronosDescent.Scripts.resource.Effects;
 
 [GlobalClass]
-// ReSharper disable once RedundantNameQualifier
-public partial class Effect : Godot.Resource
+public partial class Effect : Resource
 {
-    [ExportGroup("Metadata")] [Export] public string Name { get; set; } = "Effect";
-    [Export] public string Description { get; set; } = "";
-    [Export] public Texture2D Icon { get; set; }
-    [Export] public double TickInterval { get; set; } = 1.0; // How often the effect ticks
-    [Export] public double Duration { get; set; } = 5.0;
-    [Export] public bool IsPermanent { get; set; }
-    [Export] public bool IsStackable { get; set; }
-    [Export] public int MaxStacks { get; set; } = 1;
-
-
-    
-    [GlobalClass]
-    public partial class EffectModifier : Resource
+    [Flags]
+    public enum EffectBehavior
     {
-        [Export] private Effect.ModifierType _type;
-        [Export] private BaseStats.Specifier _specifier;
+        StatModifier = 1, // Modifies stats directly
+        ControlEffect = 2, // CC effects (stun, root, etc.)
+        PeriodicTick = 4, // Needs regular updates
+        SpecialLogic = 8 // Custom game logic
     }
 
-    [ExportGroup("Modifiers")]
-    // Effect properties for various stats
-    [Export]
-    public EffectModifier[] Modifiers { get; set; } = [];
+    public string Identifier = "unknown";
+    public string Name { get; protected set; } = "Unknown Effect";
+    public string Description { get; protected set; } = "Description";
+    public Texture2D Icon { get; protected set; } = GD.Load<Texture2D>("res://Assets/Effect/MissingIcon.png");
+    public EffectBehavior Behaviors { get; protected set; }
+    public double TickInterval { get; protected set; }
+    public double Duration { get; protected set; }
+    public bool IsPermanent { get; protected set; }
+    public bool IsStackable { get; protected set; }
+    public int MaxStacks { get; protected set; } = 1;
 
+    // Modifiers dictionary - efficient lookup by stat type
+    public Dictionary<BaseStats.Specifier, double> AdditiveModifiers { get; protected set; } = [];
+    public Dictionary<BaseStats.Specifier, double> MultiplicativeModifiers { get; protected set; } = [];
 
-    public enum ModifierType
-    {
-        Additive,
-        Multiplicative,
-    }
+    public Entity Target { get; set; }
 
+    //  methods that derived classes must implement
+    public virtual void OnApply() { }
+    public virtual void OnRemove() { }
 
-    // Custom effect type for special effects
-    public enum EffectType
-    {
-        Buff,
-        Debuff,
-        OverTime,
-        Special
-    }
+    // Virtual methods that derived classes can optionally override
+    public virtual void OnTick(double delta) { }
+    public virtual void OnTick(double delta, int currentStacks) { }
 
-    [Export] public EffectType Type { get; set; } = EffectType.Buff;
+    public virtual void OnStack(int currentStacks) { }
 
-    // Optional callback for custom effect logic
-    public virtual void OnApply(Entity target)
-    {
-    }
+    // Helper properties
+    public bool HasStatModifiers =>
+        Behaviors.HasFlag(EffectBehavior.StatModifier) &&
+        (AdditiveModifiers.Count > 0 || MultiplicativeModifiers.Count > 0);
 
-    public virtual void OnRemove(Entity target)
-    {
-    }
+    public bool NeedsTicking => Behaviors.HasFlag(EffectBehavior.PeriodicTick);
 
-    public virtual void OnTick(Entity target)
-    {
-    }
-
-    public virtual void OnStack(Entity target, int currentStacks)
-    {
-    }
+    public bool IsControlEffect => Behaviors.HasFlag(EffectBehavior.ControlEffect);
 }
-

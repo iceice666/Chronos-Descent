@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3 uid="uid://bpuhyc475sgxd"]
+[gd_scene load_steps=35 format=3 uid="uid://bpuhyc475sgxd"]
 
 [ext_resource type="Script" path="res://Scripts/node/Player.cs" id="1_vxxhj"]
 [ext_resource type="Script" path="res://Scripts/node/Component/TimeManipulationComponent.cs" id="2_qnfm0"]
@@ -8,9 +8,7 @@
 [ext_resource type="Script" path="res://Scripts/node/Component/StatsComponent.cs" id="5_ef8pe"]
 [ext_resource type="Script" path="res://Scripts/node/Component/AnimationComponent.cs" id="6_iv6k8"]
 [ext_resource type="Script" path="res://Scripts/node/Component/AbilityManagerComponent.cs" id="8_swhob"]
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_2ivh0"]
-radius = 7.0
+[ext_resource type="Script" path="res://Scripts/node/Component/EffectTriggerComponent.cs" id="9_ualn7"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_0grkt"]
 atlas = ExtResource("5_dq8j7")
@@ -189,20 +187,15 @@ animations = [{
 "speed": 16.0
 }]
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_2ivh0"]
+radius = 6.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_k4hn1"]
+size = Vector2(12, 3)
+
 [node name="Player" type="CharacterBody2D"]
 scale = Vector2(4, 4)
 script = ExtResource("1_vxxhj")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_2ivh0")
-metadata/_edit_lock_ = true
-
-[node name="EffectTriggerDetector" type="Area2D" parent="."]
-metadata/_edit_lock_ = true
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="EffectTriggerDetector"]
-shape = SubResource("CircleShape2D_2ivh0")
-metadata/_edit_lock_ = true
 
 [node name="AnimationComponent" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_72fkf")
@@ -225,3 +218,17 @@ script = ExtResource("5_ef8pe")
 
 [node name="AbilityManagerComponent" type="Node" parent="."]
 script = ExtResource("8_swhob")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_2ivh0")
+debug_color = Color(0.350349, 0.812157, 0.349349, 0.42)
+metadata/_edit_lock_ = true
+
+[node name="EffectTriggerComponent" type="Area2D" parent="."]
+script = ExtResource("9_ualn7")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EffectTriggerComponent"]
+position = Vector2(0, 6.5)
+shape = SubResource("RectangleShape2D_k4hn1")
+debug_color = Color(0.57844, 0.41746, 0.925219, 0.42)
+metadata/_edit_lock_ = true

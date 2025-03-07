@@ -1,25 +1,47 @@
-﻿using ChronosDescent.Scripts.node;
-using Godot;
+﻿// Scripts/resource/Effects/Example/SpeedBoostEffect.cs
 
-namespace ChronosDescent.Scripts.resource.EffectKind;
+using ChronosDescent.Scripts.node;
+using Godot;
+using Godot.Collections;
+
+namespace ChronosDescent.Scripts.resource.Effects.Example;
 
 [GlobalClass]
-public partial class SpeedBoostEffect : Effect
+public sealed partial class SpeedBoostEffect : Effect
 {
     public SpeedBoostEffect()
     {
-        Name = "Speed Boost";
+        Identifier = "speed";
+        Name = "Speed Boost Effect";
         Description = "Increases movement speed";
-        Type = EffectType.Buff;
+        Behaviors = EffectBehavior.StatModifier;
         Duration = 5.0;
-        MoveSpeedModifier = 100; 
         IsStackable = true;
-        MaxStacks = 5;
+        MaxStacks = 3;
+
+        MultiplicativeModifiers = new Dictionary<BaseStats.Specifier, double>
+        {
+            { BaseStats.Specifier.MoveSpeed, SpeedMultiplier },
+        };
     }
 
-    public override void OnApply(Entity target)
+
+    [Export] public double SpeedMultiplier { get; set; } = 1.2;
+
+
+    public override void OnApply()
     {
-        // Could play a speed effect particle
-        GD.Print($"Speed boost applied to {target.Name}");
+        // Play speed effect particle or animation if available
+        GD.Print($"Speed boost applied to {Target.Name}");
+    }
+
+    public override void OnStack(int currentStacks)
+    {
+        GD.Print($"Speed boost stacked to level {currentStacks} on {Target.Name}");
+    }
+
+    public override void OnRemove()
+    {
+        GD.Print($"Speed boost removed from {Target.Name}");
     }
 }

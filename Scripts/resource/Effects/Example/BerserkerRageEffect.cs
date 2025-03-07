@@ -1,37 +1,88 @@
-﻿using ChronosDescent.Scripts.node;
+﻿// Scripts/resource/Effects/Example/BerserkerRageEffect.cs
+
+using ChronosDescent.Scripts.node.Component;
 using Godot;
+using Godot.Collections;
 
-namespace ChronosDescent.Scripts.resource.EffectKind;
+namespace ChronosDescent.Scripts.resource.Effects.Example;
+
 [GlobalClass]
-public partial class BerserkerRageEffect : Effect
+public sealed partial class BerserkerRageEffect : Effect
 {
-    private double _healthThreshold = 0.3; // 30% health
-
     public BerserkerRageEffect()
     {
-        Name = "Berserker Rage";
-        Description = "Increases damage as health decreases";
-        Type = EffectType.Special;
+        Identifier = "berserker_rage";
+        Name = "Berserker Rage Effect";
+        Description = "Increases damage as health decreases below threshold";
+        Behaviors = EffectBehavior.StatModifier | EffectBehavior.PeriodicTick;
         Duration = 20.0;
-        TickInterval = 0.5; // Check frequently
+        TickInterval = 0.5;
+
+        AdditiveModifiers = new Dictionary<BaseStats.Specifier, double>
+        {
+            { BaseStats.Specifier.CriticalChance, 10 },
+            { BaseStats.Specifier.CriticalDamage, 0 },
+        };
     }
 
-    public override void OnTick(Entity target)
-    {
-        // Calculate buff based on missing health percentage
-        var healthPercentage = target.Stats.Health / target.Stats.MaxHealth;
+    [Export] public double HealthThreshold { get; set; } = 0.3; // 30% health
+    [Export] public double MaxStrengthBonus { get; set; } = 50.0; // Max strength bonus
 
-        if (healthPercentage > _healthThreshold) return;
-        
-        // Dynamically adjust strength based on health percentage
-        // The lower the health, the higher the strength bonus
-        var strengthBonus = 20 * ((_healthThreshold - healthPercentage) / _healthThreshold);
-            
-        // We're using OnTick to dynamically update the strength modifier
-        StrengthModifier = strengthBonus;
-            
-        // Force recalculation of stats (normally happens when effects are applied/removed)
-        target.UpdateStats();
-        GD.Print($"Berserker strength bonus: {strengthBonus}");
+    private double _lastCalculatedBonus;
+
+
+    public override void OnApply()
+    {
+        // Set initial values
+        UpdateStrengthBonus();
+        GD.Print($"Berserker Rage applied to {Target.Name}");
+    }
+
+    public override void OnTick(double delta)
+    {
+        UpdateStrengthBonus();
+    }
+
+    private void UpdateStrengthBonus()
+    {
+        // Calculate health percentage
+        var healthPercentage = Target.Stats.Health / Target.Stats.MaxHealth;
+
+        // Only apply effects below threshold
+        if (healthPercentage <= HealthThreshold)
+        {
+            // Calculate dynamic strength bonus (more bonus as health gets lower)
+            var normalizedHealthLoss = (HealthThreshold - healthPercentage) / HealthThreshold;
+            var strengthBonus = MaxStrengthBonus * normalizedHealthLoss;
+
+            // Only update the modifier if it changed significantly (reduce unnecessary updates)
+            if (Mathf.Abs(_lastCalculatedBonus - strengthBonus) > 1.0)
+            {
+                _lastCalculatedBonus = strengthBonus;
+                AdditiveModifiers[BaseStats.Specifier.CriticalDamage] = strengthBonus;
+
+                // Mark stats for recalculation
+                Target.EffectManager.SetStatsDirty();
+
+                GD.Print(
+                    $"Berserker Rage strength bonus updated: {strengthBonus:F1}% at {healthPercentage * 100:F1}% health");
+            }
+        }
+        else if (_lastCalculatedBonus > 0)
+        {
+            // Reset bonus if health is above threshold
+            _lastCalculatedBonus = 0;
+            AdditiveModifiers[BaseStats.Specifier.CriticalDamage] = 0;
+
+            // Mark stats for recalculation
+            Target.EffectManager.SetStatsDirty();
+
+            GD.Print("Berserker Rage strength bonus deactivated");
+        }
+    }
+
+    public override void OnRemove()
+    {
+        GD.Print($"Berserker Rage removed from {Target.Name}");
     }
 }

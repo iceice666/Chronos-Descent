@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="Effect" load_steps=2 format=3 uid="uid://c1mbt4l25i1cu"]
+
+[ext_resource type="Script" path="res://Scripts/resource/Effects/Effect.cs" id="1_c65tm"]
+
+[resource]
+script = ExtResource("1_c65tm")
+Name = "Effect"
+Description = ""
+TickInterval = 1.0
+Duration = 5.0
+IsPermanent = false
+IsStackable = false
+MaxStacks = 1
+AdditiveModifiers = []
+MultiplicativeModifiers = []
+Type = 0

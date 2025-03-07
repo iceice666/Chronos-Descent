@@ -7,20 +7,66 @@ namespace ChronosDescent.Scripts.node.Component;
 [GlobalClass]
 public partial class StatsComponent : Node
 {
-    [Export] private BaseStats _baseStats = new();
-    private BaseStats _currentStats = new();
+    [Export] public BaseStats Base { get; private set; } = new();
+    public BaseStats Current ;
+    
 
     // Getter methods that expose CurrentStats properties
-    public double Health => _currentStats.Health;
-    public double MaxHealth => _currentStats.MaxHealth;
-    public double Defense => _currentStats.Defense;
-    public double CriticalChance=> _currentStats.CriticalChance;
-    public double CriticalDamage => _currentStats.CriticalDamage;
-    public double AttackSpeed => _currentStats.AttackSpeed;
+    public double Health
+    {
+        get => Current.Health;
+        set => Current.Health = value;
+    }
 
-    public double MoveSpeed => _currentStats.MoveSpeed <= MaxMoveSpeed
-        ? _currentStats.MoveSpeed
-        : MaxMoveSpeed;
+    public double MaxHealth
+    {
+        get => Current.MaxHealth;
+        set => Current.MaxHealth = value;
+    }
+
+    public double Defense
+    {
+        get => Current.Defense;
+        set => Current.Defense = value;
+    }
+
+    public BaseStats.CombatResource ResourceType
+    {
+        get => Current.ResourceType;
+        set => Current.ResourceType = value;
+    }
+
+    public double CurrentResource
+    {
+        get => Current.CurrentResource;
+        set => Current.CurrentResource = value;
+    }
+
+    public double MaxResource
+    {
+        get => Current.MaxResource;
+        set => Current.MaxResource = value;
+    }
+
+    public double CriticalChance
+    {
+        get => Current.CriticalChance;
+        set => Current.CriticalChance = value;
+    }
+
+    public double CriticalDamage
+    {
+        get => Current.CriticalDamage;
+        set => Current.CriticalDamage = value;
+    }
+
+    public double AttackSpeed
+    {
+        get => Current.AttackSpeed;
+        set => Current.AttackSpeed = value;
+    }
+
+    public double MoveSpeed => Mathf.Clamp(Current.MoveSpeed, 0, MaxMoveSpeed);
 
     private const double MaxMoveSpeed = 1000;
 
@@ -36,16 +82,8 @@ public partial class StatsComponent : Node
 
     public void ResetStatsToBase()
     {
-        _currentStats = _baseStats;
+        Current = (BaseStats)Base.Clone();
 
         EmitSignal(SignalName.StatsChanged);
     }
-
-    public void UpdateStats(Action<BaseStats> cb)
-    {
-        cb(_currentStats);
-        EmitSignal(SignalName.StatsChanged);
-    }
-
-
 }

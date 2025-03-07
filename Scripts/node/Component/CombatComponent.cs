@@ -23,7 +23,7 @@ public partial class CombatComponent : Node
         if (_stats == null) return;
 
 
-        _stats.UpdateStats(stats => stats.Health -= amount);
+        _stats.Health -= amount;
         _animation?.PlayAnimation("hurt");
 
         if (_stats.Health <= 0)
@@ -34,7 +34,9 @@ public partial class CombatComponent : Node
 
     public void Heal(double amount)
     {
-        _stats?.UpdateStats(stats => stats.Health = Math.Min(stats.Health + amount, stats.MaxHealth));
+        if (_stats == null) return;
+        
+        _stats.Health =  Math.Min(_stats.Health + amount, _stats.MaxHealth);
     }
 
     public async void HandleDeath()

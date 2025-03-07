@@ -1,64 +1,38 @@
-[gd_scene load_steps=8 format=3 uid="uid://cwx1wpnqhiio8"]
+[gd_scene load_steps=10 format=3 uid="uid://cwx1wpnqhiio8"]
 
 [ext_resource type="PackedScene" uid="uid://bpuhyc475sgxd" path="res://Scenes/entity/player.tscn" id="1_6bl8q"]
 [ext_resource type="Script" path="res://Scripts/node/EffectTrigger.cs" id="2_xei7x"]
-[ext_resource type="Script" path="res://Scripts/resource/EffectKind/PoisonEffect.cs" id="3_ohthn"]
-[ext_resource type="Script" path="res://Scripts/resource/EffectKind/SpeedBoostEffect.cs" id="3_r0ms2"]
+[ext_resource type="Script" path="res://Scripts/resource/Effects/Example/PoisonEffect.cs" id="3_ohthn"]
+[ext_resource type="Script" path="res://Scripts/resource/Effects/Example/SpeedBoostEffect.cs" id="3_r0ms2"]
+[ext_resource type="Script" path="res://Scripts/resource/Effects/Example/StunEffect.cs" id="5_wejrf"]
 
-[sub_resource type="Resource" id="Resource_uqlpv"]
+[sub_resource type="Resource" id="Resource_ygipm"]
 script = ExtResource("3_ohthn")
-Name = "Poison Effect"
-Description = ""
-Duration = 5.0
-IsStackable = true
-MaxStacks = 5
-IsPermanent = false
-HealthModifier = 0.0
-ManaModifier = 0.0
-DefenseModifier = 0.0
-StrengthModifier = 0.0
-IntelligenceModifier = 0.0
-CriticalChanceModifier = 0.0
-CriticalDamageModifier = 0.0
-AttackSpeedModifier = 0.0
-MoveSpeedModifier = 0.0
-TickInterval = 1.0
-Type = 0
+DamagePerTick = 10.0
+DefenseReduction = 5.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ioixo"]
 size = Vector2(51.25, 45.25)
 
 [sub_resource type="Resource" id="Resource_luav2"]
 script = ExtResource("3_r0ms2")
-Name = "Speed Effect"
-Description = ""
-Duration = 5.0
-IsStackable = false
-MaxStacks = 1
-IsPermanent = false
-HealthModifier = 0.0
-ManaModifier = 0.0
-DefenseModifier = 0.0
-StrengthModifier = 0.0
-IntelligenceModifier = 0.0
-CriticalChanceModifier = 0.0
-CriticalDamageModifier = 0.0
-AttackSpeedModifier = 0.0
-MoveSpeedModifier = 500.0
-TickInterval = 1.0
-Type = 0
+SpeedMultiplier = 1.2
+
+[sub_resource type="Resource" id="Resource_h8swt"]
+script = ExtResource("5_wejrf")
 
 [node name="BattleScene" type="Node2D"]
 
 [node name="Player" parent="." instance=ExtResource("1_6bl8q")]
 z_index = 114
 position = Vector2(294, 244)
+metadata/_edit_lock_ = true
 
 [node name="PoisonTrigger" type="Area2D" parent="."]
 position = Vector2(123, 105)
 scale = Vector2(4, 4)
 script = ExtResource("2_xei7x")
-Effect = SubResource("Resource_uqlpv")
+Effect = SubResource("Resource_ygipm")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PoisonTrigger"]
 shape = SubResource("RectangleShape2D_ioixo")
@@ -82,20 +56,25 @@ Trigger"
 fit_content = true
 metadata/_edit_lock_ = true
 
-[node name="SpeedTriger" type="Area2D" parent="."]
-position = Vector2(501, 106)
+[node name="SpeedTrigger" type="Area2D" parent="."]
+position = Vector2(450, 100)
 scale = Vector2(4, 4)
 script = ExtResource("2_xei7x")
 Effect = SubResource("Resource_luav2")
+metadata/_edit_lock_ = true
 
-[node name="ColorRect" type="ColorRect" parent="SpeedTriger"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SpeedTrigger"]
+shape = SubResource("RectangleShape2D_ioixo")
+metadata/_edit_lock_ = true
+
+[node name="ColorRect" type="ColorRect" parent="SpeedTrigger"]
 offset_left = -26.0
 offset_top = -23.0
 offset_right = 26.0
 offset_bottom = 22.0
 metadata/_edit_lock_ = true
 
-[node name="RichTextLabel" type="RichTextLabel" parent="SpeedTriger"]
+[node name="RichTextLabel" type="RichTextLabel" parent="SpeedTrigger"]
 offset_left = -26.25
 offset_top = -24.0
 offset_right = 91.75
@@ -107,6 +86,31 @@ Trigger
 fit_content = true
 metadata/_edit_lock_ = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="SpeedTriger"]
+[node name="StunTrigger" type="Area2D" parent="."]
+position = Vector2(740, 107)
+scale = Vector2(4, 4)
+script = ExtResource("2_xei7x")
+Effect = SubResource("Resource_h8swt")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StunTrigger"]
 shape = SubResource("RectangleShape2D_ioixo")
+metadata/_edit_lock_ = true
+
+[node name="ColorRect" type="ColorRect" parent="StunTrigger"]
+offset_left = -26.0
+offset_top = -23.0
+offset_right = 26.0
+offset_bottom = 22.0
+metadata/_edit_lock_ = true
+
+[node name="RichTextLabel" type="RichTextLabel" parent="StunTrigger"]
+offset_left = -26.25
+offset_top = -24.0
+offset_right = 91.75
+offset_bottom = 22.0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+text = "Stun
+Trigger
+"
+fit_content = true
 metadata/_edit_lock_ = true

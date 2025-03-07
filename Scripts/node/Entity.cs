@@ -1,6 +1,6 @@
-using Godot;
 using ChronosDescent.Scripts.node.Component;
-using ChronosDescent.Scripts.resource;
+using Godot;
+using Effect = ChronosDescent.Scripts.resource.Effects.Effect;
 
 namespace ChronosDescent.Scripts.node;
 
@@ -10,7 +10,7 @@ public partial class Entity : CharacterBody2D
 {
     // Component references
     public StatsComponent Stats;
-    protected EffectManagerComponent EffectManager;
+    public EffectManagerComponent EffectManager;
     public AnimationComponent Animation;
     public CombatComponent Combat;
     public TimeManipulationComponent TimeManipulation;
@@ -36,9 +36,7 @@ public partial class Entity : CharacterBody2D
         AddToGroup("Entity");
     }
 
-    public override void _Process(double delta)
-    {
-    }
+    public override void _Process(double delta) { }
 
     public override void _PhysicsProcess(double delta)
     {
@@ -66,11 +64,6 @@ public partial class Entity : CharacterBody2D
     public bool IsAbilityReady(AbilityManagerComponent.Slot slot) => AbilityManager.IsAbilityReady(slot);
     public void ToggleAbility(AbilityManagerComponent.Slot slot) => AbilityManager.ToggleAbility(slot);
 
-
-    public void UpdateStats()
-    {
-        Stats.UpdateStats(_ => { });
-    }
 
     // Virtual method for derived classes to override
     public virtual void OnEntityDeath()

@@ -1,5 +1,3 @@
-using Godot;
-
 namespace ChronosDescent.Scripts.node;
 
 public partial class Player : Entity
