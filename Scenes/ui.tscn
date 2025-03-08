@@ -1,11 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://m2gapyvjm1kt"]
+[gd_scene load_steps=4 format=3 uid="uid://m2gapyvjm1kt"]
 
-[ext_resource type="Script" path="res://Scripts/VirtualInput.cs" id="1_p4kak"]
+[ext_resource type="Script" uid="uid://w1oyo8nd8tgj" path="res://Scripts/VirtualInput.cs" id="1_p4kak"]
 [ext_resource type="PackedScene" uid="uid://cd2h1i3ubv7yh" path="res://Scenes/virtual_joystick.tscn" id="1_x3hch"]
+[ext_resource type="Script" uid="uid://duvcshfe3olhb" path="res://Scripts/EffectsContainer.cs" id="3_nf4gj"]
 
 [node name="UI" type="CanvasLayer"]
 
 [node name="VirtualInput" type="Control" parent="."]
+visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_left = 188.0
@@ -16,26 +18,29 @@ script = ExtResource("1_p4kak")
 
 [node name="LeftJoystick" parent="VirtualInput" instance=ExtResource("1_x3hch")]
 layout_mode = 2
-anchors_preset = 0
-offset_left = -189.0
-offset_top = 7.0
-offset_right = 3.0
-offset_bottom = 199.0
+offset_left = -151.0
+offset_top = 32.0
+offset_right = 37.0
+offset_bottom = 221.0
+scale = Vector2(0.75, 0.75)
 metadata/_edit_lock_ = true
 
 [node name="RightJoystick" parent="VirtualInput" instance=ExtResource("1_x3hch")]
 layout_mode = 2
-anchors_preset = 0
-offset_left = 573.0
-offset_top = 10.0
-offset_right = 765.0
-offset_bottom = 202.0
+offset_left = 605.0
+offset_top = 32.0
+offset_right = 797.0
+offset_bottom = 224.0
+scale = Vector2(0.75, 0.75)
 metadata/_edit_lock_ = true
 
-[node name="SourceIndicator" type="Label" parent="."]
-offset_left = 225.0
-offset_top = 392.0
-offset_right = 367.0
-offset_bottom = 423.0
-scale = Vector2(3.652, 4)
-text = "Inputsource"
+[node name="EntityState" type="Node" parent="."]
+
+[node name="EffectsContainer" type="VBoxContainer" parent="EntityState"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -450.0
+offset_bottom = 170.0
+grow_horizontal = 0
+script = ExtResource("3_nf4gj")

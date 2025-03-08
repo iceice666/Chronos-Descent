@@ -1,14 +1,14 @@
 [gd_scene load_steps=35 format=3 uid="uid://bpuhyc475sgxd"]
 
-[ext_resource type="Script" path="res://Scripts/node/Player.cs" id="1_vxxhj"]
-[ext_resource type="Script" path="res://Scripts/node/Component/TimeManipulationComponent.cs" id="2_qnfm0"]
-[ext_resource type="Script" path="res://Scripts/node/Component/CombatComponent.cs" id="3_jd6qi"]
-[ext_resource type="Script" path="res://Scripts/node/Component/EffectManagerComponent.cs" id="4_gh0aw"]
+[ext_resource type="Script" uid="uid://bpkkndu11dpl4" path="res://Scripts/node/Player.cs" id="1_vxxhj"]
+[ext_resource type="Script" uid="uid://ck2ek8c0u02x1" path="res://Scripts/node/Component/TimeManipulationComponent.cs" id="2_qnfm0"]
+[ext_resource type="Script" uid="uid://dkefqru8ptbxr" path="res://Scripts/node/Component/CombatComponent.cs" id="3_jd6qi"]
+[ext_resource type="Script" uid="uid://bghylo3hjyh03" path="res://Scripts/node/Component/EffectManagerComponent.cs" id="4_gh0aw"]
 [ext_resource type="Texture2D" uid="uid://bdhl6nigpplgi" path="res://Assets/Tiny RPG Character Asset Pack v1.03 -Free Soldier&Orc/Characters(100x100)/Soldier/Soldier/Soldier.png" id="5_dq8j7"]
-[ext_resource type="Script" path="res://Scripts/node/Component/StatsComponent.cs" id="5_ef8pe"]
-[ext_resource type="Script" path="res://Scripts/node/Component/AnimationComponent.cs" id="6_iv6k8"]
-[ext_resource type="Script" path="res://Scripts/node/Component/AbilityManagerComponent.cs" id="8_swhob"]
-[ext_resource type="Script" path="res://Scripts/node/Component/EffectTriggerComponent.cs" id="9_ualn7"]
+[ext_resource type="Script" uid="uid://dm1rr2m3v20ct" path="res://Scripts/node/Component/StatsComponent.cs" id="5_ef8pe"]
+[ext_resource type="Script" uid="uid://d1urpysdnl1cm" path="res://Scripts/node/Component/AnimationComponent.cs" id="6_iv6k8"]
+[ext_resource type="Script" uid="uid://cxyiy7naggcnb" path="res://Scripts/node/Component/AbilityManagerComponent.cs" id="8_swhob"]
+[ext_resource type="Script" uid="uid://bf4bfk8cc5j7p" path="res://Scripts/node/Component/EffectTriggerComponent.cs" id="9_ualn7"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_0grkt"]
 atlas = ExtResource("5_dq8j7")
