@@ -11,6 +11,8 @@ public partial class Player : Entity
 
         _input = GetNode<UserInputManager>("/root/Autoload/UserInputManager");
         GetNode<Camera>("/root/Autoload/Camera").SwitchTarget(this);
+
+        GetNode<EffectsContainer>("/root/Autoload/UI/EntityState/EffectsContainer").Init();
     }
 
     public override void _PhysicsProcess(double delta)
