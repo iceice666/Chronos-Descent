@@ -14,7 +14,7 @@ public partial class Camera : Node2D
         Position = Position.Lerp(_target.Position + _offset, (float)delta * 5.0f);
     }
 
-    private void OnPlayerDead()
+    private void OnPlayerDead(Entity _)
     {
         _target = null;
     }
@@ -23,12 +23,12 @@ public partial class Camera : Node2D
     public void SwitchTarget(Entity target)
     {
         _target = target;
-        _target.Combat.Death += OnPlayerDead;
+        _target.EntityDeath += OnPlayerDead;
         GD.Print($"Camera: Switch Target: {_target}");
     }
 
     public override void _ExitTree()
     {
-        if (_target != null) _target.Combat.Death -= OnPlayerDead;
+        if (_target != null) _target.EntityDeath -= OnPlayerDead;
     }
 }

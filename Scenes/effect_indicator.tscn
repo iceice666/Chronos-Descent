@@ -1,0 +1,40 @@
+[gd_scene load_steps=2 format=3 uid="uid://dtln1bqyo0jrc"]
+
+[ext_resource type="Script" uid="uid://114nrmeju4se" path="res://Scripts/node/UI/EffectIndicator.cs" id="1_xxxxx"]
+
+[node name="EffectIndicator" type="HBoxContainer"]
+custom_minimum_size = Vector2(64, 64)
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -95.0
+offset_bottom = 64.0
+grow_horizontal = 0
+size_flags_horizontal = 8
+size_flags_vertical = 0
+script = ExtResource("1_xxxxx")
+
+[node name="DurationLabel" type="RichTextLabel" parent="."]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_outline_size = 1
+theme_override_font_sizes/normal_font_size = 14
+bbcode_enabled = true
+text = "0.0s"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+shortcut_keys_enabled = false
+
+[node name="Icon" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+expand_mode = 2
+stretch_mode = 5
