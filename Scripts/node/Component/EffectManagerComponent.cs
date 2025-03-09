@@ -23,7 +23,7 @@ public partial class EffectManagerComponent : Node
     public delegate void EffectRefreshedEventHandler(string effectId, int currentStack);
 
     [Signal]
-    public delegate void EffectTimerUpdatedEventHandler(string effectId, double remainingDurationPercentage);
+    public delegate void EffectTimerUpdatedEventHandler(string effectId, double remainingDuration);
 
     private readonly Dictionary<string, EffectInstance> _activeEffects = new();
     private readonly List<EffectInstance> _controlEffects = [];
@@ -57,7 +57,7 @@ public partial class EffectManagerComponent : Node
             else
                 // Emit update signal for UI
                 EmitSignal(SignalName.EffectTimerUpdated, effectInstance.BaseEffect.Identifier,
-                    effectInstance.RemainingDuration / effectInstance.BaseEffect.Duration);
+                    effectInstance.RemainingDuration);
         }
 
         // Remove expired effects

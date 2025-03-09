@@ -6,8 +6,7 @@ namespace ChronosDescent.Scripts.node.Component;
 [GlobalClass]
 public partial class CombatComponent : Node
 {
-    [Signal]
-    public delegate void DeathEventHandler();
+ 
 
     private AnimationComponent _animation;
     private StatsComponent _stats;
@@ -26,7 +25,7 @@ public partial class CombatComponent : Node
         _stats.Health -= amount;
         _animation?.PlayAnimation("hurt");
 
-        if (_stats.Health <= 0) HandleDeath();
+        if (_stats.Health <= 0) GetParent<Entity>().OnEntityDeath();
     }
 
     public void Heal(double amount)
@@ -35,18 +34,5 @@ public partial class CombatComponent : Node
 
         _stats.Health = Math.Min(_stats.Health + amount, _stats.MaxHealth);
     }
-
-    public async void HandleDeath()
-    {
-        // Signal death event
-        EmitSignal(SignalName.Death);
-
-        // Play death animation
-        _animation?.PlayAnimation("death");
-
-        await ToSignal(GetTree().CreateTimer(0.5), SceneTreeTimer.SignalName.Timeout);
-
-        // Queue free the parent entity
-        GetParent().QueueFree();
-    }
+    
 }

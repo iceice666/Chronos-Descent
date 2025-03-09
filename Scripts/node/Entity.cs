@@ -8,13 +8,16 @@ namespace ChronosDescent.Scripts.node;
 [GlobalClass]
 public partial class Entity : CharacterBody2D
 {
-    public AbilityManagerComponent AbilityManager;
+    [Signal]
+    public delegate void EntityDeathEventHandler(Entity entity);
 
 
     public Vector2 AimDirection;
     public AnimationComponent Animation;
     public CombatComponent Combat;
     public EffectManagerComponent EffectManager;
+
+    public AbilityManagerComponent AbilityManager;
 
     public bool Moveable = true;
 
@@ -117,8 +120,17 @@ public partial class Entity : CharacterBody2D
     #endregion
 
     // Virtual method for derived classes to override
-    public virtual void OnEntityDeath()
+    public async virtual void OnEntityDeath()
     {
-        Combat.HandleDeath();
+        // Signal death event
+        EmitSignal(SignalName.EntityDeath, this);
+
+        // Play death animation
+        Animation.PlayAnimation("death");
+
+        await ToSignal(GetTree().CreateTimer(0.5), SceneTreeTimer.SignalName.Timeout);
+
+        // Queue free the parent entity
+        QueueFree();
     }
 }

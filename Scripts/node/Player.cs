@@ -2,6 +2,8 @@ namespace ChronosDescent.Scripts.node;
 
 public partial class Player : Entity
 {
+   
+    
     private UserInputManager _input;
 
     public override void _Ready()
@@ -11,6 +13,8 @@ public partial class Player : Entity
 
         _input = GetNode<UserInputManager>("/root/Autoload/UserInputManager");
         GetNode<Camera>("/root/Autoload/Camera").SwitchTarget(this);
+
+        GetNode<EffectsContainer>("/root/Autoload/UI/EntityState/EffectsContainer").Initialize(this);
     }
 
     public override void _PhysicsProcess(double delta)
