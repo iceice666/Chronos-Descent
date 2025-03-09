@@ -10,20 +10,12 @@ public partial class VirtualInput : Control
 
     public override void _Ready()
     {
-        _sourceIndicator = GetNode<Label>("../SourceIndicator");
         _inputManager = GetNode<UserInputManager>("/root/Autoload/UserInputManager");
-        _inputManager.InputSourceChanged += OnSourceChanged;
-
-        _sourceIndicator.Text = _inputManager.CurrentInputSource.ToString();
     }
 
     public override void _ExitTree()
     {
-        _inputManager.InputSourceChanged -= OnSourceChanged;
     }
 
-    private void OnSourceChanged(UserInputManager.InputSource newSource)
-    {
-        _sourceIndicator.Text = newSource.ToString();
-    }
+  
 }

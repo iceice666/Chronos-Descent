@@ -57,14 +57,16 @@ public partial class Entity : CharacterBody2D
         Combat.Heal(amount);
     }
 
+    #region Effect
+
     public void ApplyEffect(Effect effect)
     {
         EffectManager.ApplyEffect(effect);
     }
 
-    public void RemoveEffect(string effectName)
+    public void RemoveEffect(string effectId)
     {
-        EffectManager.RemoveEffect(effectName);
+        EffectManager.RemoveEffect(effectId);
     }
 
     public void RemoveAllEffects()
@@ -72,11 +74,15 @@ public partial class Entity : CharacterBody2D
         EffectManager.RemoveAllEffects();
     }
 
-    public bool HasEffect(string effectName)
+    public bool HasEffect(string effectId)
     {
-        return EffectManager.HasEffect(effectName);
+        return EffectManager.HasEffect(effectId);
     }
 
+    #endregion
+
+
+    #region Ability
 
     public void ActivateAbility(AbilityManagerComponent.Slot slot)
     {
@@ -108,6 +114,7 @@ public partial class Entity : CharacterBody2D
         AbilityManager.ToggleAbility(slot);
     }
 
+    #endregion
 
     // Virtual method for derived classes to override
     public virtual void OnEntityDeath()

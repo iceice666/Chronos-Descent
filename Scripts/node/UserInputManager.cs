@@ -31,8 +31,8 @@ public partial class UserInputManager : Control
 
     // Registered button actions
     private readonly Dictionary<string, ButtonAction> _buttonActions = new();
-    private VirtualJoystick _leftVirtualJoystick;
-    private VirtualJoystick _rightVirtualJoystick;
+    private UI.VirtualJoystick _leftVirtualJoystick;
+    private UI.VirtualJoystick _rightVirtualJoystick;
 
     // References to UI components
     private Control _virtualInputContainer;
@@ -56,8 +56,8 @@ public partial class UserInputManager : Control
 
         // Get reference to virtual input container using the node path
         _virtualInputContainer = GetNode<Control>("/root/Autoload/UI/VirtualInput");
-        _leftVirtualJoystick = _virtualInputContainer.GetNode<VirtualJoystick>("LeftJoystick");
-        _rightVirtualJoystick = _virtualInputContainer.GetNode<VirtualJoystick>("RightJoystick");
+        _leftVirtualJoystick = _virtualInputContainer.GetNode<UI.VirtualJoystick>("LeftJoystick");
+        _rightVirtualJoystick = _virtualInputContainer.GetNode<UI.VirtualJoystick>("RightJoystick");
 
         // Set initial visibility
         UpdateVirtualInputVisibility();

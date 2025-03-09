@@ -14,13 +14,16 @@ public partial class EffectManagerComponent : Node
 {
     // Signal for UI updates
     [Signal]
-    public delegate void EffectAppliedEventHandler(Effect effect, int stacks);
+    public delegate void EffectAppliedEventHandler(Effect effect);
 
     [Signal]
-    public delegate void EffectRemovedEventHandler(string effectName);
+    public delegate void EffectRemovedEventHandler(string effectId);
 
     [Signal]
-    public delegate void EffectUpdatedEventHandler(Effect effect, int stacks, double remainingDuration);
+    public delegate void EffectRefreshedEventHandler(string effectId, int currentStack);
+
+    [Signal]
+    public delegate void EffectTimerUpdatedEventHandler(string effectId, double remainingDurationPercentage);
 
     private readonly Dictionary<string, EffectInstance> _activeEffects = new();
     private readonly List<EffectInstance> _controlEffects = [];
@@ -44,21 +47,21 @@ public partial class EffectManagerComponent : Node
         var effectsToRemove = new List<string>();
 
         // Update duration on all effects
-        foreach (var (effectName, effectInstance) in _activeEffects)
+        foreach (var (effectId, effectInstance) in _activeEffects)
         {
             effectInstance.Update(delta);
 
-            // Check if effect has expired
+            // Check if the effect has expired
             if (effectInstance.IsExpired())
-                effectsToRemove.Add(effectName);
+                effectsToRemove.Add(effectId);
             else
                 // Emit update signal for UI
-                EmitSignal(SignalName.EffectUpdated, effectInstance.BaseEffect,
-                    effectInstance.CurrentStacks, effectInstance.RemainingDuration);
+                EmitSignal(SignalName.EffectTimerUpdated, effectInstance.BaseEffect.Identifier,
+                    effectInstance.RemainingDuration / effectInstance.BaseEffect.Duration);
         }
 
         // Remove expired effects
-        foreach (var effectName in effectsToRemove) RemoveEffect(effectName);
+        foreach (var effectId in effectsToRemove) RemoveEffect(effectId);
 
         // Update only effects that need ticking
         foreach (var effect in _tickingEffects.ToList()) effect.UpdateTick(delta);
@@ -75,11 +78,11 @@ public partial class EffectManagerComponent : Node
     {
         if (effect == null) return;
 
-        var effectName = effect.Name;
+        var effectId = effect.Identifier;
 
 
         // Check if already active
-        if (_activeEffects.TryGetValue(effectName, out var existingEffect))
+        if (_activeEffects.TryGetValue(effectId, out var existingEffect))
         {
             var currentStacks = existingEffect.CurrentStacks;
             var maxStacks = effect.MaxStacks;
@@ -96,28 +99,28 @@ public partial class EffectManagerComponent : Node
                 effect.OnStack(currentStacks + 1);
 
                 // Emit signal for UI
-                EmitSignal(SignalName.EffectUpdated, effect, currentStacks + 1, existingEffect.RemainingDuration);
+                EmitSignal(SignalName.EffectRefreshed, effectId, currentStacks + 1);
 
-                GD.Print($"Stacking Effect({effectName}) on Entity({_entity.Name}) [{currentStacks + 1}/{maxStacks}]");
+                GD.Print($"Stacking Effect({effectId}) on Entity({_entity.Name}) [{currentStacks + 1}/{maxStacks}]");
             }
             else
             {
-                // Just refresh the duration
+                // Refresh the duration
                 existingEffect.RemainingDuration = effect.Duration;
 
                 // Emit signal for UI
-                EmitSignal(SignalName.EffectUpdated, effect, currentStacks, existingEffect.RemainingDuration);
+                EmitSignal(SignalName.EffectRefreshed, effectId, currentStacks);
 
-                GD.Print($"Refreshing Effect({effectName}) on Entity({_entity.Name})");
+                GD.Print($"Refreshing Effect({effectId}) on Entity({_entity.Name})");
             }
         }
         // Add new effect
         else
         {
-            GD.Print($"Applying Effect({effectName}) on Entity({_entity.Name})");
+            GD.Print($"Applying Effect({effectId}) on Entity({_entity.Name})");
 
             var newEffectInstance = new EffectInstance(effect, _entity);
-            _activeEffects[effectName] = newEffectInstance;
+            _activeEffects[effectId] = newEffectInstance;
 
             // Add to specialized lists based on behavior
             if (effect.NeedsTicking) _tickingEffects.Add(newEffectInstance);
@@ -131,18 +134,18 @@ public partial class EffectManagerComponent : Node
             if (effect.HasStatModifiers) _statsAreDirty = true;
 
             // Emit signal for UI
-            EmitSignal(SignalName.EffectApplied, effect, 1);
+            EmitSignal(SignalName.EffectApplied, effect);
         }
     }
 
-    public void RemoveEffect(string effectName)
+    public void RemoveEffect(string effectId)
     {
-        if (!_activeEffects.TryGetValue(effectName, out var effectInstance))
+        if (!_activeEffects.TryGetValue(effectId, out var effectInstance))
             return;
 
         var effect = effectInstance.BaseEffect;
 
-        GD.Print($"Removing Effect({effectName}) from Entity({_entity.Name})");
+        GD.Print($"Removing Effect({effectId}) from Entity({_entity.Name})");
 
         // Run on-remove callback
         effect.OnRemove();
@@ -153,31 +156,31 @@ public partial class EffectManagerComponent : Node
         if (effect.IsControlEffect) _controlEffects.Remove(effectInstance);
 
         // Remove from active effects
-        _activeEffects.Remove(effectName);
+        _activeEffects.Remove(effectId);
 
         // Mark stats as dirty if this was a stat modifier effect
         if (effect.HasStatModifiers) _statsAreDirty = true;
 
         // Emit signal for UI
-        EmitSignal(SignalName.EffectRemoved, effectName);
+        EmitSignal(SignalName.EffectRemoved, effectId);
     }
 
     public void RemoveAllEffects()
     {
         // Create a copy of the keys to avoid modification during iteration
-        var effectNames = _activeEffects.Keys.ToList();
+        var effectIds = _activeEffects.Keys.ToList();
 
-        foreach (var effectName in effectNames) RemoveEffect(effectName);
+        foreach (var effectId in effectIds) RemoveEffect(effectId);
     }
 
-    public bool HasEffect(string effectName)
+    public bool HasEffect(string effectId)
     {
-        return _activeEffects.ContainsKey(effectName);
+        return _activeEffects.ContainsKey(effectId);
     }
 
-    public int GetEffectStacks(string effectName)
+    public int GetEffectStacks(string effectId)
     {
-        return _activeEffects.TryGetValue(effectName, out var effect) ? effect.CurrentStacks : 0;
+        return _activeEffects.TryGetValue(effectId, out var effect) ? effect.CurrentStacks : 0;
     }
 
     public List<Effect> GetAllActiveEffects()

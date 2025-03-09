@@ -7,40 +7,40 @@
 [node name="UI" type="CanvasLayer"]
 
 [node name="VirtualInput" type="Control" parent="."]
-visible = false
 layout_mode = 3
-anchors_preset = 0
-offset_left = 188.0
-offset_top = 332.0
-offset_right = 188.0
-offset_bottom = 332.0
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
 script = ExtResource("1_p4kak")
+metadata/_edit_lock_ = true
 
 [node name="LeftJoystick" parent="VirtualInput" instance=ExtResource("1_x3hch")]
-layout_mode = 2
-offset_left = -151.0
-offset_top = 32.0
-offset_right = 37.0
-offset_bottom = 221.0
-scale = Vector2(0.75, 0.75)
-metadata/_edit_lock_ = true
+layout_mode = 1
+offset_left = -478.0
+offset_top = -192.0
+offset_right = -286.0
+offset_bottom = 1.0
 
 [node name="RightJoystick" parent="VirtualInput" instance=ExtResource("1_x3hch")]
-layout_mode = 2
-offset_left = 605.0
-offset_top = 32.0
-offset_right = 797.0
-offset_bottom = 224.0
-scale = Vector2(0.75, 0.75)
-metadata/_edit_lock_ = true
+offset_left = 290.0
+offset_top = -192.0
+offset_right = 482.0
+offset_bottom = 1.0
 
 [node name="EntityState" type="Node" parent="."]
 
-[node name="EffectsContainer" type="VBoxContainer" parent="EntityState"]
+[node name="EffectsContainer" type="HBoxContainer" parent="EntityState"]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -450.0
-offset_bottom = 170.0
+offset_left = -449.0
+offset_top = -2.0
+offset_right = 1.0
+offset_bottom = 168.0
 grow_horizontal = 0
 script = ExtResource("3_nf4gj")
+metadata/_edit_lock_ = true

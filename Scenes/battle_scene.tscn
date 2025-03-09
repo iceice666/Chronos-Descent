@@ -24,6 +24,7 @@ script = ExtResource("5_wejrf")
 [node name="BattleScene" type="Node2D"]
 
 [node name="Player" parent="." instance=ExtResource("1_6bl8q")]
+unique_name_in_owner = true
 z_index = 114
 position = Vector2(294, 244)
 metadata/_edit_lock_ = true

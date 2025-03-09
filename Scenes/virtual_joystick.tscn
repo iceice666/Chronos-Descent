@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://cd2h1i3ubv7yh"]
 
-[ext_resource type="Script" uid="uid://cji3lrcf8ve2r" path="res://Scripts/node/VirtualJoystick.cs" id="1_dfuu3"]
+[ext_resource type="Script" uid="uid://8dclnfgb46s6" path="res://Scripts/node/UI/VirtualJoystick.cs" id="1_y6g67"]
 [ext_resource type="Texture2D" uid="uid://c5f8sm1ij5ie1" path="res://Assets/Joystick/joyknob.png" id="2_sqj0j"]
 [ext_resource type="Texture2D" uid="uid://lynb3q08vqsk" path="res://Assets/Joystick/joyring.png" id="3_l1a5w"]
 
@@ -10,14 +10,18 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 1.0
 size_flags_horizontal = 0
-script = ExtResource("1_dfuu3")
+script = ExtResource("1_y6g67")
+metadata/_custom_type_script = "uid://8dclnfgb46s6"
+metadata/_edit_lock_ = true
 
 [node name="Knob" type="Sprite2D" parent="."]
 position = Vector2(96, 96)
 scale = Vector2(0.05, 0.05)
 texture = ExtResource("2_sqj0j")
+metadata/_edit_lock_ = true
 
 [node name="Ring" type="Sprite2D" parent="."]
 position = Vector2(96, 96)
 scale = Vector2(0.1, 0.1)
 texture = ExtResource("3_l1a5w")
+metadata/_edit_lock_ = true
