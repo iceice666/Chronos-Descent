@@ -12,6 +12,7 @@ public partial class EffectIndicator : Control
     // UI nodes
     private TextureRect _iconNode;
     private RichTextLabel _durationLabel;
+    private RichTextLabel _stackLabel;
 
     // Set icon with proper scaling
     public Texture2D Icon
@@ -23,6 +24,7 @@ public partial class EffectIndicator : Control
     {
         _iconNode = GetNode<TextureRect>("Icon");
         _durationLabel = GetNode<RichTextLabel>("DurationLabel");
+        _stackLabel = GetNode<RichTextLabel>("Icon/StackLabel");
 
         // Initialize
         UpdateDurationDisplay();
@@ -57,9 +59,10 @@ public partial class EffectIndicator : Control
         var formattedDuration = RemainingDuration.ToString("F1");
 
         // Update the text with duration and stack count if applicable
-        _durationLabel.Text = MaxStack > 1
-            ? $"{CurrentStack}/{MaxStack} {formattedDuration}s"
-            : $"{formattedDuration}s";
+        _durationLabel.Text = $"{formattedDuration}s";
+
+        if (CurrentStack > 1)
+            _stackLabel.Text = $"{CurrentStack}";
     }
 
     // Called when duration is updated

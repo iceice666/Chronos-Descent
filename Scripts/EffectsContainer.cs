@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace ChronosDescent.Scripts;
 
-public partial class EffectsContainer : VBoxContainer
+public partial class EffectsContainer : HBoxContainer
 {
     // Reference to the effect indicator scene
     private PackedScene _effectIndicatorScene;
