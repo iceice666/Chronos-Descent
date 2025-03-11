@@ -4,6 +4,9 @@ namespace ChronosDescent.Scripts.node.UI;
 
 public partial class VirtualJoystick : Control
 {
+    // Joystick deadzone threshold
+    [Export] public float JoystickDeadzone { get; set; } = 0.2f;
+    
     private Vector2 _centerPosition;
     private Sprite2D _knob;
     private float _maxRadius;
@@ -111,12 +114,22 @@ public partial class VirtualJoystick : Control
     private void UpdateKnobPosition(Vector2 position)
     {
         // Calculate vector from the center to touch position and clamp position to max radius
-        var direction = (position - _centerPosition).LimitLength(_maxRadius);
+        var direction = position - _centerPosition;
 
         // Update knob position
-        _knob.Position = _centerPosition + direction;
+        _knob.Position = _centerPosition + direction.LimitLength(_maxRadius);
 
         // Calculate and update output (normalized -1 to 1 range)
-        Output = direction.Normalized();
+        Output = ApplyDeadzone(direction).LimitLength();
+    }
+    
+    
+    private Vector2 ApplyDeadzone(Vector2 input)
+    {
+        var length = input.Length();
+        if (length < JoystickDeadzone)
+            return Vector2.Zero;
+        // Smoothly scale input from deadzone to 1.0
+        return input.Normalized() * ((length - JoystickDeadzone) / (1.0f - JoystickDeadzone));
     }
 }
