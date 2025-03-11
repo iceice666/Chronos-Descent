@@ -6,10 +6,6 @@
 
 [node name="Autoload" type="Node"]
 
-[node name="UI" parent="." instance=ExtResource("2_euvdl")]
-
-[node name="Camera" parent="." instance=ExtResource("3_55vpd")]
-
 [node name="UserInputManager" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
@@ -17,3 +13,7 @@ offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("1_5wbsh")
 metadata/_custom_type_script = "uid://bbk5f1shfn220"
+
+[node name="UI" parent="." instance=ExtResource("2_euvdl")]
+
+[node name="Camera" parent="." instance=ExtResource("3_55vpd")]

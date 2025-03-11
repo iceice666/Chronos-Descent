@@ -15,7 +15,7 @@ public partial class AbilityManagerComponent : Node
     public delegate void AbilityCooldownChangedEventHandler(Ability ability, double cooldown);
 
     [Signal]
-    public delegate void AbilityStateChangedEventHandler(Ability ability, string state);
+    public delegate void AbilityStateChangedEventHandler(Ability ability, AbilityState state);
 
     public enum Slot
     {
@@ -25,8 +25,18 @@ public partial class AbilityManagerComponent : Node
         WeaponUlt
     }
 
+    public enum AbilityState
+    {
+        Default,
+        Charging,
+        Channeling,
+        ToggledOn,
+        ToggledOff,
+        Idle
+    }
+
     // List of abilities
-    private readonly Ability[] _abilities = [];
+    private readonly Ability[] _abilities = new Ability[4];
 
     // Reference to the entity this component is attached to
     private Entity _caster;
@@ -41,6 +51,8 @@ public partial class AbilityManagerComponent : Node
         // Update all abilities
         foreach (var ability in _abilities)
         {
+            if (ability == null) continue;
+
             var oldCooldown = ability.CurrentCooldown;
             var wasCharging = ability.IsCharging;
             var wasChanneling = ability.IsChanneling;
@@ -66,7 +78,7 @@ public partial class AbilityManagerComponent : Node
     // Add an ability
     public void SetAbility(Slot slot, Ability ability)
     {
-        _abilities[(int)slot] = ability;
+        _abilities.SetValue(ability, (int)slot);
         ability.Caster = _caster;
         GD.Print($"Added ability {ability.Name} to {_caster.Name}");
     }
@@ -74,16 +86,12 @@ public partial class AbilityManagerComponent : Node
     // Remove an ability
     public void RemoveAbility(Slot slot)
     {
-        _abilities[(int)slot].Caster = null;
-        _abilities[(int)slot] = null;
+        _abilities.SetValue(null, (int)slot);
         GD.Print($"Removed ability {slot}");
     }
 
     // Get an ability by name
-    public Ability GetAbility(Slot slot)
-    {
-        return _abilities[(int)slot];
-    }
+    public Ability GetAbility(Slot slot) => (Ability)_abilities.GetValue((int)slot);
 
     // Get all abilities
     public IEnumerable<Ability> GetAbilities()

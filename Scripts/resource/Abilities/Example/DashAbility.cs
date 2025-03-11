@@ -37,7 +37,7 @@ public partial class DashAbility : Ability
         if (Caster is Player player)
         {
             // For player, use the aim direction
-            direction = player.GetNode<UserInputManager>("/root/Autoload/UserInputManager").AimInput;
+            direction = UserInputManager.Instance.AimInput;
             if (direction == Vector2.Zero)
                 direction = Vector2.Right * (player.GetNode<AnimationComponent>("AnimationComponent").FlipH ? -1 : 1);
         }

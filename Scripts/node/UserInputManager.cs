@@ -11,6 +11,9 @@ namespace ChronosDescent.Scripts.node;
 [GlobalClass]
 public partial class UserInputManager : Control
 {
+    public static UserInputManager Instance { get; private set; }
+
+
     [Signal]
     public delegate void InputSourceChangedEventHandler(InputSource newSource);
 
@@ -54,6 +57,9 @@ public partial class UserInputManager : Control
 
         // Set initial visibility
         UpdateVirtualInputVisibility();
+
+
+        Instance = this;
     }
 
     public override void _Process(double delta)

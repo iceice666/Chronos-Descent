@@ -4,24 +4,23 @@ namespace ChronosDescent.Scripts.node;
 
 public partial class Player : Entity
 {
-    private UserInputManager _input;
-
     public override void _Ready()
     {
         base._Ready();
         AddToGroup("Player");
 
-        _input = GetNode<UserInputManager>("/root/Autoload/UserInputManager");
-        GetNode<Camera>("/root/Autoload/Camera").SwitchTarget(this);
 
-        GetNode<Scripts.UI.EffectsContainer>("/root/Autoload/UI/EntityState/EffectsContainer").Initialize(this);
+        GetNode<Camera>("/root/Autoload/Camera").SwitchTarget(this);
+        GetNode<UI.EffectsContainer>("/root/Autoload/UI/EffectsContainer").Initialize(this);
+        GetNode<UI.AbilityContainer>("/root/Autoload/UI/AbilityContainer").Initialize(this);
     }
 
     public override void _PhysicsProcess(double delta)
     {
+        // Handle movements
         if (Moveable)
         {
-            var direction = _input.MovementInput;
+            var direction = UserInputManager.Instance.MovementInput;
             var velocity = direction * (float)Stats.MoveSpeed;
 
             Velocity = velocity;
@@ -33,7 +32,7 @@ public partial class Player : Entity
 
     public override void _Process(double delta)
     {
-        AimDirection = _input.AimInput;
+        AimDirection = UserInputManager.Instance.AimInput;
         Animation.UpdateLookAnimation(AimDirection);
     }
 }

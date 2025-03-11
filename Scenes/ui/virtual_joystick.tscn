@@ -11,7 +11,6 @@ anchors_preset = 0
 offset_right = 1.0
 size_flags_horizontal = 0
 script = ExtResource("1_y6g67")
-metadata/_custom_type_script = "uid://8dclnfgb46s6"
 metadata/_edit_lock_ = true
 
 [node name="Knob" type="Sprite2D" parent="."]
