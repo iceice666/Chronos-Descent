@@ -38,6 +38,11 @@ jobs:
       should_run: ${{ steps.check.outputs.should_run }}
       version: ${{ steps.extract.outputs.version }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
       - name: Check commit message
         id: check
         run: |
@@ -69,11 +74,6 @@ jobs:
         build_type: ${{ (github.event_name != 'workflow_dispatch' || github.event.inputs.debug == 'true') && fromJson('["debug"]') || fromJson('["release"]') }}
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          lfs: true
-
       - name: Set environment variables
         id: set-env
         run: |
