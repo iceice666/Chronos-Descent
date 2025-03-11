@@ -2,8 +2,6 @@ namespace ChronosDescent.Scripts.node;
 
 public partial class Player : Entity
 {
-   
-    
     private UserInputManager _input;
 
     public override void _Ready()

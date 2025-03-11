@@ -6,8 +6,6 @@ namespace ChronosDescent.Scripts.node.Component;
 [GlobalClass]
 public partial class CombatComponent : Node
 {
- 
-
     private AnimationComponent _animation;
     private StatsComponent _stats;
 
@@ -34,5 +32,4 @@ public partial class CombatComponent : Node
 
         _stats.Health = Math.Min(_stats.Health + amount, _stats.MaxHealth);
     }
-    
 }

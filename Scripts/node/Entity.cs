@@ -11,13 +11,13 @@ public partial class Entity : CharacterBody2D
     [Signal]
     public delegate void EntityDeathEventHandler(Entity entity);
 
+    public AbilityManagerComponent AbilityManager;
+
 
     public Vector2 AimDirection;
     public AnimationComponent Animation;
     public CombatComponent Combat;
     public EffectManagerComponent EffectManager;
-
-    public AbilityManagerComponent AbilityManager;
 
     public bool Moveable = true;
 
@@ -58,6 +58,21 @@ public partial class Entity : CharacterBody2D
     public void Heal(double amount)
     {
         Combat.Heal(amount);
+    }
+
+    // Virtual method for derived classes to override
+    public virtual async void OnEntityDeath()
+    {
+        // Signal death event
+        EmitSignal(SignalName.EntityDeath, this);
+
+        // Play death animation
+        Animation.PlayAnimation("death");
+
+        await ToSignal(GetTree().CreateTimer(0.5), SceneTreeTimer.SignalName.Timeout);
+
+        // Queue free the parent entity
+        QueueFree();
     }
 
     #region Effect
@@ -118,19 +133,4 @@ public partial class Entity : CharacterBody2D
     }
 
     #endregion
-
-    // Virtual method for derived classes to override
-    public async virtual void OnEntityDeath()
-    {
-        // Signal death event
-        EmitSignal(SignalName.EntityDeath, this);
-
-        // Play death animation
-        Animation.PlayAnimation("death");
-
-        await ToSignal(GetTree().CreateTimer(0.5), SceneTreeTimer.SignalName.Timeout);
-
-        // Queue free the parent entity
-        QueueFree();
-    }
 }

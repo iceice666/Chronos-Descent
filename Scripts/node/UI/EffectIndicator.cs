@@ -4,15 +4,15 @@ namespace ChronosDescent.Scripts.node.UI;
 
 public partial class EffectIndicator : Control
 {
-    // Properties
-    public int CurrentStack { get; set; } = 1;
-    public int MaxStack { get; set; } = 1;
-    public double RemainingDuration { get; set; }
-
     // UI nodes
     private TextureRect _iconNode;
     private RichTextLabel _durationLabel;
     private RichTextLabel _stackLabel;
+
+    // Properties
+    public int CurrentStack { get; set; } = 1;
+    public int MaxStack { get; set; } = 1;
+    public double RemainingDuration { get; set; }
 
     // Set icon with proper scaling
     public Texture2D Icon

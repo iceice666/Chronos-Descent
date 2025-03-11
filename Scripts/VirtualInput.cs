@@ -13,9 +13,5 @@ public partial class VirtualInput : Control
         _inputManager = GetNode<UserInputManager>("/root/Autoload/UserInputManager");
     }
 
-    public override void _ExitTree()
-    {
-    }
-
-  
+    public override void _ExitTree() { }
 }

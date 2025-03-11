@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using ChronosDescent.Scripts.node.UI;
 using Godot;
 
 namespace ChronosDescent.Scripts.node;
@@ -31,8 +33,8 @@ public partial class UserInputManager : Control
 
     // Registered button actions
     private readonly Dictionary<string, ButtonAction> _buttonActions = new();
-    private UI.VirtualJoystick _leftVirtualJoystick;
-    private UI.VirtualJoystick _rightVirtualJoystick;
+    private VirtualJoystick _leftVirtualJoystick;
+    private VirtualJoystick _rightVirtualJoystick;
 
     // References to UI components
     private Control _virtualInputContainer;
@@ -56,8 +58,8 @@ public partial class UserInputManager : Control
 
         // Get reference to virtual input container using the node path
         _virtualInputContainer = GetNode<Control>("/root/Autoload/UI/VirtualInput");
-        _leftVirtualJoystick = _virtualInputContainer.GetNode<UI.VirtualJoystick>("LeftJoystick");
-        _rightVirtualJoystick = _virtualInputContainer.GetNode<UI.VirtualJoystick>("RightJoystick");
+        _leftVirtualJoystick = _virtualInputContainer.GetNode<VirtualJoystick>("LeftJoystick");
+        _rightVirtualJoystick = _virtualInputContainer.GetNode<VirtualJoystick>("RightJoystick");
 
         // Set initial visibility
         UpdateVirtualInputVisibility();
@@ -184,19 +186,19 @@ public partial class UserInputManager : Control
     /// </summary>
     private void ProcessMovementInput()
     {
-        MovementInput = CurrentInputSource switch
+        MovementInput = (CurrentInputSource switch
         {
             InputSource.KeyboardMouse => GetKeyboardMovementInput(),
             InputSource.Controller => GetControllerMovementInput(),
             InputSource.VirtualJoystick => GetVirtualJoystickMovementInput(),
             _ => Vector2.Zero
-        };
+        }).LimitLength();
     }
 
     /// <summary>
     ///     Gets keyboard movement input
     /// </summary>
-    private Vector2 GetKeyboardMovementInput()
+    private static Vector2 GetKeyboardMovementInput()
     {
         return new Vector2(
             Input.GetAxis("move_left", "move_right"),
@@ -222,10 +224,7 @@ public partial class UserInputManager : Control
     /// </summary>
     private Vector2 GetVirtualJoystickMovementInput()
     {
-        if (!_leftVirtualJoystick.IsPressed)
-            return Vector2.Zero;
-
-        return ApplyDeadzone(_leftVirtualJoystick.Output);
+        return !_leftVirtualJoystick.IsPressed ? Vector2.Zero : ApplyDeadzone(_leftVirtualJoystick.Output);
     }
 
     /// <summary>
@@ -233,13 +232,13 @@ public partial class UserInputManager : Control
     /// </summary>
     private void ProcessAimInput()
     {
-        AimInput = CurrentInputSource switch
+        AimInput = (CurrentInputSource switch
         {
             InputSource.KeyboardMouse => GetMouseAimInput(),
             InputSource.Controller => GetControllerAimInput(),
             InputSource.VirtualJoystick => GetVirtualJoystickAimInput(),
             _ => Vector2.Zero
-        };
+        }).LimitLength();
     }
 
     /// <summary>
@@ -271,10 +270,7 @@ public partial class UserInputManager : Control
     /// </summary>
     private Vector2 GetVirtualJoystickAimInput()
     {
-        if (!_rightVirtualJoystick.IsPressed)
-            return Vector2.Zero;
-
-        return ApplyDeadzone(_rightVirtualJoystick.Output);
+        return !_rightVirtualJoystick.IsPressed ? Vector2.Zero : ApplyDeadzone(_rightVirtualJoystick.Output);
     }
 
     /// <summary>
@@ -304,17 +300,8 @@ public partial class UserInputManager : Control
     /// </summary>
     private bool IsAnyKeyboardInputActive()
     {
-        // Check common keys
-        foreach (var key in CommonKeyboardKeys)
-            if (Input.IsKeyPressed(key))
-                return true;
-
-        // Check number keys for items
-        for (var i = (int)Key.Key1; i <= (int)Key.Key9; i++)
-            if (Input.IsKeyPressed((Key)i))
-                return true;
-
-        return false;
+        // Check keys
+        return CommonKeyboardKeys.Any(Input.IsKeyPressed);
     }
 
     // Button action state tracker

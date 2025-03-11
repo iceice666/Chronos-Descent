@@ -19,9 +19,9 @@ public partial class AbilityManagerComponent : Node
 
     public enum Slot
     {
+        NormalAttack,
         Primary,
         Secondary,
-        Tertiary,
         WeaponUlt
     }
 

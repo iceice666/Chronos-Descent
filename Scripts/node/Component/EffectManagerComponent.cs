@@ -17,10 +17,10 @@ public partial class EffectManagerComponent : Node
     public delegate void EffectAppliedEventHandler(Effect effect);
 
     [Signal]
-    public delegate void EffectRemovedEventHandler(string effectId);
+    public delegate void EffectRefreshedEventHandler(string effectId, int currentStack);
 
     [Signal]
-    public delegate void EffectRefreshedEventHandler(string effectId, int currentStack);
+    public delegate void EffectRemovedEventHandler(string effectId);
 
     [Signal]
     public delegate void EffectTimerUpdatedEventHandler(string effectId, double remainingDuration);
