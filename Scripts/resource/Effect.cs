@@ -3,7 +3,7 @@ using ChronosDescent.Scripts.node;
 using Godot;
 using Godot.Collections;
 
-namespace ChronosDescent.Scripts.resource.Effects;
+namespace ChronosDescent.Scripts.resource;
 
 [GlobalClass]
 public partial class Effect : Resource

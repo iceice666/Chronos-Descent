@@ -6,6 +6,7 @@ using System.Linq;
 using ChronosDescent.Scripts.resource;
 using ChronosDescent.Scripts.resource.Effects;
 using Godot;
+using Effect = ChronosDescent.Scripts.resource.Effect;
 
 namespace ChronosDescent.Scripts.node.Component;
 

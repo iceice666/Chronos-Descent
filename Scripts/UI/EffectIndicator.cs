@@ -1,6 +1,6 @@
 using Godot;
 
-namespace ChronosDescent.Scripts.node.UI;
+namespace ChronosDescent.Scripts.UI;
 
 public partial class EffectIndicator : Control
 {

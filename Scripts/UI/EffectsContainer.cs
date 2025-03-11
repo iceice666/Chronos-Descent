@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using ChronosDescent.Scripts.node;
 using ChronosDescent.Scripts.node.Component;
-using ChronosDescent.Scripts.node.UI;
-using ChronosDescent.Scripts.resource.Effects;
+using ChronosDescent.Scripts.resource;
 using Godot;
 
-namespace ChronosDescent.Scripts;
+namespace ChronosDescent.Scripts.UI;
 
 public partial class EffectsContainer : HBoxContainer
 {
@@ -21,7 +20,7 @@ public partial class EffectsContainer : HBoxContainer
     public override void _Ready()
     {
         // Load the effect indicator scene
-        _effectIndicatorScene = GD.Load<PackedScene>("res://Scenes/effect_indicator.tscn");
+        _effectIndicatorScene = GD.Load<PackedScene>("res://Scenes/ui/effect_indicator.tscn");
 
         // Set theme constants for proper spacing
         AddThemeConstantOverride("separation", 4);

@@ -1,6 +1,6 @@
 using ChronosDescent.Scripts.node.Component;
 using Godot;
-using Effect = ChronosDescent.Scripts.resource.Effects.Effect;
+using Effect = ChronosDescent.Scripts.resource.Effect;
 
 namespace ChronosDescent.Scripts.node;
 

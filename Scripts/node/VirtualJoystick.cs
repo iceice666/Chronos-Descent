@@ -1,6 +1,6 @@
 using Godot;
 
-namespace ChronosDescent.Scripts.node.UI;
+namespace ChronosDescent.Scripts.node;
 
 public partial class VirtualJoystick : Control
 {

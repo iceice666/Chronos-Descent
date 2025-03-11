@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://b1tyahwcajxk3"]
 
 [ext_resource type="Script" uid="uid://bbk5f1shfn220" path="res://Scripts/node/UserInputManager.cs" id="1_5wbsh"]
-[ext_resource type="PackedScene" uid="uid://m2gapyvjm1kt" path="res://Scenes/ui.tscn" id="2_euvdl"]
+[ext_resource type="PackedScene" uid="uid://m2gapyvjm1kt" path="res://Scenes/ui/ui.tscn" id="2_euvdl"]
 [ext_resource type="PackedScene" uid="uid://bbnwwmxrpqa6" path="res://Scenes/camera.tscn" id="3_55vpd"]
 
 [node name="Autoload" type="Node"]

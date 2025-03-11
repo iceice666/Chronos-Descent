@@ -1,5 +1,5 @@
 using System;
-using ChronosDescent.Scripts.node.UI;
+using ChronosDescent.Scripts.node;
 using Godot;
 
 namespace ChronosDescent.Scripts.node;

@@ -1,6 +1,6 @@
 ﻿using ChronosDescent.Scripts.node;
 
-namespace ChronosDescent.Scripts.resource.Effects;
+namespace ChronosDescent.Scripts.resource;
 
 public class EffectInstance
 {
