@@ -33,7 +33,7 @@ jobs:
   check-commit:
     name: Check commit message
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     outputs:
       should_run: ${{ steps.check.outputs.should_run }}
       version: ${{ steps.extract.outputs.version }}
@@ -48,7 +48,7 @@ jobs:
         run: |
           COMMIT_MSG=$(git log -1 --pretty=format:%s ${{ github.sha }})
           echo "Commit message: $COMMIT_MSG"
-          if [[ $COMMIT_MSG =~ ^Release:[[:space:]][0-9]+\.[0-9]+\.[0-9]+ ]]; then
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" || $COMMIT_MSG =~ ^Release:[[:space:]][0-9]+\.[0-9]+\.[0-9]+ ]]; then
             echo "should_run=true" >> $GITHUB_OUTPUT
           else
             echo "should_run=false" >> $GITHUB_OUTPUT
@@ -59,13 +59,17 @@ jobs:
         if: steps.check.outputs.should_run == 'true'
         run: |
           COMMIT_MSG=$(git log -1 --pretty=format:%s ${{ github.sha }})
-          VERSION=$(echo $COMMIT_MSG | sed -E 's/^Release:[[:space:]]([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            VERSION=$(echo $COMMIT_MSG | sed -E 's/^Release:[[:space:]]([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
+          fi
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
   export-game:
     name: Export for ${{ matrix.platform }} (${{ matrix.build_type }})
     needs: [check-commit]
-    if: github.event_name == 'workflow_dispatch' || needs.check-commit.outputs.should_run == 'true'
+    if: needs.check-commit.outputs.should_run == 'true'
     runs-on: ubuntu-24.04
 
     strategy:
@@ -74,15 +78,18 @@ jobs:
         build_type: ${{ (github.event_name != 'workflow_dispatch' || github.event.inputs.debug == 'true') && fromJson('["debug"]') || fromJson('["release"]') }}
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
       - name: Set environment variables
         id: set-env
         run: |
           SHORT_SHA=$(git rev-parse --short HEAD)
-          VERSION="${{ github.event_name == 'workflow_dispatch' && github.event.inputs.version || needs.check-commit.outputs.version }}"
           ARTIFACT_NAME="Chronos-Descent_${{ matrix.platform }}_${{ matrix.build_type }}-${VERSION}+${SHORT_SHA}"
           echo "artifact_name=$ARTIFACT_NAME" >> $GITHUB_OUTPUT
           echo "short_sha=$SHORT_SHA" >> $GITHUB_OUTPUT
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
