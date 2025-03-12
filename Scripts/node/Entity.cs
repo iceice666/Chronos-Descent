@@ -107,9 +107,9 @@ public partial class Entity : CharacterBody2D
         AbilityManager.ActivateAbility(slot);
     }
 
-    public void ReleaseChargedAbility()
+    public void ReleaseChargedAbility(AbilityManagerComponent.Slot slot)
     {
-        AbilityManager.ReleaseChargedAbility();
+        AbilityManager.ReleaseChargedAbility( slot);
     }
 
     public void CancelChargedAbility()

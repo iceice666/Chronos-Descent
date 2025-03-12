@@ -59,9 +59,8 @@ public partial class AbilityManagerComponent : Node
 
     private void UpdateAbilities(double delta)
     {
-        for (var i = 0; i < 4; i++)
+        foreach (var ability in _abilities)
         {
-            var ability = _abilities[i];
             if (ability == null) continue;
 
             var oldCooldown = ability.CurrentCooldown;
@@ -107,7 +106,15 @@ public partial class AbilityManagerComponent : Node
     {
         if (slot == Slot.Unknown || ability == null) return;
 
+        // If slot already has an ability, clean it up first
+        var existingAbility = GetAbility(slot);
+        if (existingAbility != null)
+        {
+            existingAbility.Caster = null;
+        }
+
         ability.Caster = _caster;
+        ability.Initialize();
         _abilities.SetValue(ability, (int)slot);
 
         EmitSignalAbilityChanged(ability, slot);
@@ -127,6 +134,12 @@ public partial class AbilityManagerComponent : Node
         ability.Caster = null;
         _abilities.SetValue(null, index);
 
+        // Clear active slot if removing active ability
+        if (_currentActiveSlot == slot)
+        {
+            _currentActiveSlot = Slot.Unknown;
+        }
+
         EmitSignalAbilityChanged(null, slot);
         GD.Print($"Removed ability {ability.Name} from slot {slot}");
     }
@@ -134,7 +147,7 @@ public partial class AbilityManagerComponent : Node
     // Get an ability by slot
     public Ability GetAbility(Slot slot)
     {
-        if (slot == Slot.Unknown) return null;
+        if (slot == Slot.Unknown || (int)slot >= _abilities.Length) return null;
 
         return (Ability)_abilities.GetValue((int)slot);
     }
@@ -178,66 +191,62 @@ public partial class AbilityManagerComponent : Node
     }
 
     // Release a charged ability
-    public void ReleaseChargedAbility()
+    public void ReleaseChargedAbility(Slot slot)
     {
-        if (_currentActiveSlot != Slot.Unknown)
+        if (slot != Slot.Unknown && slot != _currentActiveSlot)
         {
-            var ability = GetAbility(_currentActiveSlot);
-            if (ability?.IsCharging != true) return;
-
-            ability.ReleaseCharge();
-
-            _currentActiveSlot = Slot.Unknown;
-
-
-            GD.Print($"Released charge of {ability.Name}");
+            // Only process if the requested slot is the active one
+            return;
         }
-        else
+
+        if (_currentActiveSlot == Slot.Unknown)
         {
-            Util.PrintWarning($"Attempting to release a unknown charged ability: {_currentActiveSlot}");
+            Util.PrintWarning("Attempting to release a unknown charged ability");
+            return;
         }
+
+        var ability = GetAbility(_currentActiveSlot);
+        if (ability?.IsCharging != true) return;
+
+        ability.ReleaseCharge();
+        _currentActiveSlot = Slot.Unknown;
+        GD.Print($"Released charge of {ability.Name}");
     }
 
 
     // Cancel a charging ability
     public void CancelChargedAbility()
     {
-        if (_currentActiveSlot != Slot.Unknown)
+        if (_currentActiveSlot == Slot.Unknown)
         {
-            var ability = GetAbility(_currentActiveSlot);
-            if (ability?.IsCharging != true) return;
-
-            ability.CancelCharge();
-
-            _currentActiveSlot = Slot.Unknown;
-            GD.Print($"Canceled charge of {ability.Name}");
+            Util.PrintWarning("Attempting to cancel a unknown charged ability");
+            return;
         }
-        else
-        {
-            Util.PrintWarning($"Attempting to cancel a unknown charged ability: {_currentActiveSlot}");
-        }
+
+        var ability = GetAbility(_currentActiveSlot);
+        if (ability?.IsCharging != true) return;
+
+        ability.CancelCharge();
+        _currentActiveSlot = Slot.Unknown;
+        GD.Print($"Canceled charge of {ability.Name}");
     }
 
 
     // Interrupt a channeling ability
     public void InterruptChannelingAbility()
     {
-        if (_currentActiveSlot != Slot.Unknown)
+        if (_currentActiveSlot == Slot.Unknown)
         {
-            var ability = GetAbility(_currentActiveSlot);
-            if (ability?.IsChanneling != true) return;
-            ability.InterruptChanneling();
-
-
-            _currentActiveSlot = Slot.Unknown;
-
-
-            GD.Print($"Interrupted channeling of {ability.Name}");
+            Util.PrintWarning("Attempting to interrupt a unknown channeling ability");
+            return;
         }
-        else
-        {
-            Util.PrintWarning($"Attempting to interrupt a unknown charged ability: {_currentActiveSlot}");
-        }
+
+        var ability = GetAbility(_currentActiveSlot);
+        if (ability?.IsChanneling != true) return;
+
+        ability.InterruptChanneling();
+        _currentActiveSlot = Slot.Unknown;
+        GD.Print($"Interrupted channeling of {ability.Name}");
     }
 
     #region Ability State Helpers
