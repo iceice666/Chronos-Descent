@@ -38,6 +38,7 @@ public partial class AbilityContainer : HBoxContainer
         _abilityManager.AbilityActivated += OnAbilityActivated;
         _abilityManager.AbilityCooldownChanged += OnAbilityCooldownChanged;
         _abilityManager.AbilityStateChanged += OnAbilityStateChanged;
+        _abilityManager.AbilityChanged += OnAbilityChanged;
         UserInputManager.Instance.InputSourceChanged += OnInputSourceChanged;
 
         // Initialize all slots with current abilities
@@ -115,15 +116,21 @@ public partial class AbilityContainer : HBoxContainer
         }
     }
 
-    private void OnAbilityStateChanged(Ability ability, int state)
+    private void OnAbilityStateChanged(Ability ability, AbilityManagerComponent.AbilityState state)
     {
         // Find the slot for this ability
         foreach (var slot in _abilitySlots)
         {
             if (_abilityManager.GetAbility(slot.SlotType) != ability) continue;
-            slot.UpdateState((AbilityManagerComponent.AbilityState)state);
+            slot.UpdateState(state);
             break;
         }
+    }
+
+    private void OnAbilityChanged(Ability ability, AbilityManagerComponent.Slot slot)
+    {
+        var abilitySlot = _abilitySlots[(int)slot];
+        abilitySlot.UpdateAbility(ability);
     }
 
     private void OnInputSourceChanged(UserInputManager.InputSource _)

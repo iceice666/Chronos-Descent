@@ -29,11 +29,9 @@ public class Util
         }
     }
 
-    public static Vector2 Lerp(Vector2 from, Vector2 to, float weight)
+    public static void PrintWarning(string warning)
     {
-        var x = from.X + (to.X - from.X) * weight;
-        var y = from.Y + (to.Y - from.Y) * weight;
-        return new Vector2(x, y);
+        GD.PrintRich($"[color=YELLOW]{warning}");
     }
 
     /// <summary>

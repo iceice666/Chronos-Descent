@@ -1,19 +1,26 @@
 using ChronosDescent.Scripts.node.Component;
+using ChronosDescent.Scripts.resource;
+using ChronosDescent.Scripts.resource.Abilities.Example;
 using Godot;
 
 namespace ChronosDescent.Scripts.node;
 
 public partial class Player : Entity
 {
+    private Ability _ability1 = new DashAbility();
+    private Ability _ability2 = new ChargedBlastAbility();
+
     public override void _Ready()
     {
         base._Ready();
         AddToGroup("Player");
 
-
         GetNode<Camera>("/root/Autoload/Camera").SwitchTarget(this);
         GetNode<UI.EffectsContainer>("/root/Autoload/UI/EffectsContainer").Initialize(this);
         GetNode<UI.AbilityContainer>("/root/Autoload/UI/AbilityContainer").Initialize(this);
+
+        AbilityManager.SetAbility(AbilityManagerComponent.Slot.Primary, _ability1);
+        AbilityManager.SetAbility(AbilityManagerComponent.Slot.Secondary, _ability2);
     }
 
     public override void _PhysicsProcess(double delta)

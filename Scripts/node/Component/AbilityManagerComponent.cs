@@ -14,7 +14,10 @@ public partial class AbilityManagerComponent : Node
     public delegate void AbilityCooldownChangedEventHandler(Ability ability, double cooldown);
 
     [Signal]
-    public delegate void AbilityStateChangedEventHandler(Ability ability, int state);
+    public delegate void AbilityStateChangedEventHandler(Ability ability, AbilityState state);
+
+    [Signal]
+    public delegate void AbilityChangedEventHandler(Ability ability, Slot slot);
 
     public enum Slot
     {
@@ -71,7 +74,7 @@ public partial class AbilityManagerComponent : Node
             // Emit signals for state changes
             if (!Util.NearlyEqual(oldCooldown, ability.CurrentCooldown))
             {
-                EmitSignal(SignalName.AbilityCooldownChanged, ability, ability.CurrentCooldown);
+                EmitSignalAbilityCooldownChanged(ability, ability.CurrentCooldown);
             }
 
             UpdateAbilityStateSignals(ability, wasCharging, wasChanneling, wasToggled);
@@ -83,31 +86,31 @@ public partial class AbilityManagerComponent : Node
         if (wasCharging != ability.IsCharging)
         {
             var newState = ability.IsCharging ? AbilityState.Charging : AbilityState.Idle;
-            EmitSignal(SignalName.AbilityStateChanged, ability, (int)newState);
+            EmitSignalAbilityStateChanged(ability, newState);
         }
 
         else if (wasChanneling != ability.IsChanneling)
         {
             var newState = ability.IsChanneling ? AbilityState.Channeling : AbilityState.Idle;
-            EmitSignal(SignalName.AbilityStateChanged, ability, (int)newState);
+            EmitSignalAbilityStateChanged(ability, newState);
         }
 
         else if (wasToggled != ability.IsToggled)
         {
             var newState = ability.IsToggled ? AbilityState.ToggledOn : AbilityState.ToggledOff;
-            EmitSignal(SignalName.AbilityStateChanged, ability, (int)newState);
+            EmitSignalAbilityStateChanged(ability, newState);
         }
     }
 
     // Add an ability
     public void SetAbility(Slot slot, Ability ability)
     {
-        if (slot == Slot.Unknown) return;
-
-        _abilities.SetValue(ability, (int)slot);
-
+        if (slot == Slot.Unknown || ability == null) return;
 
         ability.Caster = _caster;
+        _abilities.SetValue(ability, (int)slot);
+
+        EmitSignalAbilityChanged(ability, slot);
         GD.Print($"Added ability {ability.Name} to {_caster.Name}");
     }
 
@@ -123,6 +126,8 @@ public partial class AbilityManagerComponent : Node
 
         ability.Caster = null;
         _abilities.SetValue(null, index);
+
+        EmitSignalAbilityChanged(null, slot);
         GD.Print($"Removed ability {ability.Name} from slot {slot}");
     }
 
@@ -168,7 +173,7 @@ public partial class AbilityManagerComponent : Node
             _currentActiveSlot = slot;
         }
 
-        EmitSignal(SignalName.AbilityActivated, ability);
+        EmitSignalAbilityActivated(ability);
         GD.Print($"Activated ability {ability.Name}");
     }
 
@@ -189,7 +194,7 @@ public partial class AbilityManagerComponent : Node
         }
         else
         {
-            GD.PushWarning($"Attempting to release a unknown charged ability: {_currentActiveSlot}");
+            Util.PrintWarning($"Attempting to release a unknown charged ability: {_currentActiveSlot}");
         }
     }
 
@@ -209,7 +214,7 @@ public partial class AbilityManagerComponent : Node
         }
         else
         {
-            GD.PushWarning($"Attempting to cancel a unknown charged ability: {_currentActiveSlot}");
+            Util.PrintWarning($"Attempting to cancel a unknown charged ability: {_currentActiveSlot}");
         }
     }
 
@@ -231,7 +236,7 @@ public partial class AbilityManagerComponent : Node
         }
         else
         {
-            GD.PushWarning($"Attempting to interrupt a unknown charged ability: {_currentActiveSlot}");
+            Util.PrintWarning($"Attempting to interrupt a unknown charged ability: {_currentActiveSlot}");
         }
     }
 

@@ -67,12 +67,12 @@ public partial class DashAbility : Ability
     {
         UpdateState(delta);
 
-        if (!_isDashing || Caster == null) return;
+        if (!_isDashing) return;
 
         // Calculate movement distance this frame
         var moveDistance = DashSpeed * delta;
 
-        // Calculate direction to target
+        // Calculate the direction to target
         var currentPosition = Caster.Position;
         var distanceToTarget = currentPosition.DistanceTo(_dashTarget);
 
@@ -104,7 +104,6 @@ public partial class DashAbility : Ability
 
         // Clean up
         _isDashing = false;
-        Caster = null;
 
         // Stop processing
         _processing = false;
