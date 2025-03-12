@@ -63,5 +63,7 @@ public partial class Player : Entity
 
         if (Input.IsActionJustPressed("weapon_ult")) ActivateAbility(AbilityManagerComponent.Slot.WeaponUlt);
         else if (Input.IsActionJustReleased("weapon_ult")) ReleaseChargedAbility(AbilityManagerComponent.Slot.WeaponUlt);
+        
+        if (Input.IsActionJustPressed("cancel_ability")) CancelChargedAbility();
     }
 }

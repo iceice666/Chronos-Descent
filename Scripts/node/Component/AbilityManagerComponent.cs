@@ -217,18 +217,18 @@ public partial class AbilityManagerComponent : Node
     // Cancel a charging ability
     public void CancelChargedAbility()
     {
-        if (_currentActiveSlot == Slot.Unknown)
+        if (_currentActiveSlot != Slot.Unknown)
         {
-            Util.PrintWarning("Attempting to cancel a unknown charged ability");
-            return;
+            var ability = GetAbility(_currentActiveSlot);
+            if (ability?.IsCharging == true)
+            {
+                ability.CancelCharge();
+                _currentActiveSlot = Slot.Unknown;
+            }
         }
 
-        var ability = GetAbility(_currentActiveSlot);
-        if (ability?.IsCharging != true) return;
 
-        ability.CancelCharge();
-        _currentActiveSlot = Slot.Unknown;
-        GD.Print($"Canceled charge of {ability.Name}");
+        Util.PrintWarning("No ability is charging");
     }
 
 
