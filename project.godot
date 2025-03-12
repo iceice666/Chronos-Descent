@@ -13,7 +13,7 @@ config_version=5
 config/name="Chronos-Descent"
 run/main_scene="res://Scenes/battle_scene.tscn"
 config/features=PackedStringArray("4.4", "C#", "Mobile")
-config/icon="res://icon.svg"
+config/icon="uid://3e85i6qn22hr"
 
 [autoload]
 
@@ -97,6 +97,11 @@ weapon_ult={
 "deadzone": 0.5,
 "events": [Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"button_index":1,"pressure":0.0,"pressed":true,"script":null)
 , Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":82,"key_label":0,"unicode":114,"location":0,"echo":false,"script":null)
+]
+}
+cancel_ability={
+"deadzone": 0.2,
+"events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":2,"position":Vector2(185, 19),"global_position":Vector2(194, 67),"factor":1.0,"button_index":2,"canceled":false,"pressed":true,"double_click":false,"script":null)
 ]
 }
 
