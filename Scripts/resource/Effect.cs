@@ -23,7 +23,7 @@ public partial class Effect : Resource
     public Texture2D Icon { get; protected set; } = GD.Load<Texture2D>("res://Assets/Effect/MissingIcon.png");
     public EffectBehavior Behaviors { get; protected set; }
     public double TickInterval { get; protected set; }
-    public double Duration { get; protected set; }
+    public double Duration { get; set; }
     public bool IsPermanent { get; protected set; }
     public bool IsStackable { get; protected set; }
     public int MaxStacks { get; protected set; } = 1;

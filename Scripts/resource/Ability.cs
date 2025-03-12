@@ -59,6 +59,8 @@ public partial class Ability : Resource
 
     // Whether the ability is on cooldown
     public bool IsOnCooldown => CurrentCooldown > 0.0;
+    
+    public virtual void Initialize() {}
 
     // Whether the ability can be activated
     public virtual bool CanActivate()

@@ -20,14 +20,12 @@ public partial class BuffAbility : Ability
     [Export] public double Range { get; set; } = 150.0;
     [Export] public double AreaOfEffect { get; set; } // 0 means single target
 
-    protected override void ExecuteEffect()
+    [Export] public double TickThreshold { get; set; } = 1.0;
+    private double _lastTick;
+
+    public override void Initialize()
     {
-        if (BuffEffect == null) return;
-
-        // For active abilities, apply the effect once
-        if (TargetSelf) ApplyEffectToTarget(Caster);
-
-        if (AreaOfEffect > 0) ApplyEffectToArea();
+        BuffEffect.Duration = 1.1;
     }
 
     protected override void OnToggleOn()
@@ -59,11 +57,17 @@ public partial class BuffAbility : Ability
         // For toggle abilities, ensure the effect is maintained
         if (BuffEffect == null) return;
 
+        _lastTick += delta;
+
+        if (_lastTick < TickThreshold) return;
+
+        _lastTick = 0;
+        
         // Reapply the effect if needed
         if (TargetSelf && !Caster.HasEffect(BuffEffect.Name)) ApplyEffectToTarget(Caster);
 
-        // Could also periodically reapply to area if needed
-        if (AreaOfEffect > 0 && Mathf.FloorToInt(CurrentChannelingTime) % 2 == 0) // Every 2 seconds
+
+        if (AreaOfEffect > 0)
             ApplyEffectToArea();
     }
 
@@ -82,7 +86,7 @@ public partial class BuffAbility : Ability
 
     private void RemoveEffectFromTarget(Entity target)
     {
-        if (BuffEffect != null) target.RemoveEffect(BuffEffect.Name);
+        if (BuffEffect != null) target.RemoveEffect(BuffEffect.Identifier);
     }
 
     private void ApplyEffectToArea()
