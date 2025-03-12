@@ -49,20 +49,25 @@ public partial class AbilityContainer : HBoxContainer
     private void CreateAbilitySlots()
     {
         // Create a slot for each ability type
-        foreach (AbilityManagerComponent.Slot slotType in System.Enum.GetValues(typeof(AbilityManagerComponent.Slot)))
-        {
-            var slot = _abilitySlotScene.Instantiate<AbilitySlot>();
-            AddChild(slot);
+        CreateAbilitySlot(AbilityManagerComponent.Slot.NormalAttack);
+        CreateAbilitySlot(AbilityManagerComponent.Slot.Primary);
+        CreateAbilitySlot(AbilityManagerComponent.Slot.Secondary);
+        CreateAbilitySlot(AbilityManagerComponent.Slot.WeaponUlt);
+    }
 
-            // Set up the slot
-            slot.Name = $"Slot_{slotType}";
-            slot.SlotType = slotType;
-            slot.UpdateHotKeyLabel();
+    private void CreateAbilitySlot(AbilityManagerComponent.Slot slotType)
+    {
+        var slot = _abilitySlotScene.Instantiate<AbilitySlot>();
+        AddChild(slot);
+
+        // Set up the slot
+        slot.Name = $"Slot_{slotType}";
+        slot.SlotType = slotType;
+        slot.UpdateHotKeyLabel();
 
 
-            // Store reference
-            _abilitySlots.SetValue(slot, (int)slotType);
-        }
+        // Store reference
+        _abilitySlots.SetValue(slot, (int)slotType);
     }
 
     private void UpdateAllSlots()
@@ -110,13 +115,13 @@ public partial class AbilityContainer : HBoxContainer
         }
     }
 
-    private void OnAbilityStateChanged(Ability ability, AbilityManagerComponent.AbilityState state)
+    private void OnAbilityStateChanged(Ability ability, int state)
     {
         // Find the slot for this ability
         foreach (var slot in _abilitySlots)
         {
             if (_abilityManager.GetAbility(slot.SlotType) != ability) continue;
-            slot.UpdateState(state);
+            slot.UpdateState((AbilityManagerComponent.AbilityState)state);
             break;
         }
     }

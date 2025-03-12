@@ -81,8 +81,6 @@ public partial class Ability : Resource
     // Activate the ability
     public virtual void Activate()
     {
-        if (!CanActivate()) return;
-
 
         // Handle different ability types
         switch (Type)

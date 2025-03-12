@@ -107,29 +107,19 @@ public partial class Entity : CharacterBody2D
         AbilityManager.ActivateAbility(slot);
     }
 
-    public void ReleaseChargedAbility(AbilityManagerComponent.Slot slot)
+    public void ReleaseChargedAbility()
     {
-        AbilityManager.ReleaseChargedAbility(slot);
+        AbilityManager.ReleaseChargedAbility();
     }
 
-    public void CancelChargedAbility(AbilityManagerComponent.Slot slot)
+    public void CancelChargedAbility()
     {
-        AbilityManager.CancelChargedAbility(slot);
+        AbilityManager.CancelChargedAbility();
     }
 
-    public void InterruptChannelingAbility(AbilityManagerComponent.Slot slot)
+    public void InterruptChannelingAbility()
     {
-        AbilityManager.InterruptChannelingAbility(slot);
-    }
-
-    public bool IsAbilityReady(AbilityManagerComponent.Slot slot)
-    {
-        return AbilityManager.IsAbilityReady(slot);
-    }
-
-    public void ToggleAbility(AbilityManagerComponent.Slot slot)
-    {
-        AbilityManager.ToggleAbility(slot);
+        AbilityManager.InterruptChannelingAbility();
     }
 
     #endregion
