@@ -1,4 +1,3 @@
-using System;
 using ChronosDescent.Scripts.node;
 using ChronosDescent.Scripts.node.Component;
 using ChronosDescent.Scripts.resource;
@@ -13,11 +12,15 @@ public partial class AbilitySlot : Panel
     private Label _hotKeyLabel;
     private Label _nameLabel;
     private ColorRect _cooldownOverlay;
-    private TextureProgressBar _chargeBar;
+    private Label _cooldownText;
+    
+    // Animation
+    private AnimationPlayer _animationPlayer;
 
     // Slot properties
     public AbilityManagerComponent.Slot SlotType { get; set; }
     private Ability _currentAbility;
+    private AbilityManagerComponent.AbilityState _currentState = AbilityManagerComponent.AbilityState.Default;
 
     public override void _Ready()
     {
@@ -26,12 +29,26 @@ public partial class AbilitySlot : Panel
         _hotKeyLabel = GetNode<Label>("HotKey");
         _nameLabel = GetNode<Label>("Name");
         _cooldownOverlay = GetNode<ColorRect>("CooldownOverlay");
-        _chargeBar = GetNode<TextureProgressBar>("ChargeBar");
-
+        _cooldownText = GetNode<Label>("CooldownText");
+        
         // Initialize with empty state
         _cooldownOverlay.Visible = false;
-        _chargeBar.Visible = false;
-        _chargeBar.Value = 0;
+        
+        // Add animation player (optional)
+        _animationPlayer = new AnimationPlayer
+        {
+            Name = "AnimationPlayer"
+        };
+        AddChild(_animationPlayer);
+        
+        // Create animations
+        CreateAnimations();
+    }
+    
+    private void CreateAnimations()
+    {
+        // Optional: Create animations for different states
+        // (You can add animations for activation, charging, etc.)
     }
 
     public void UpdateHotKeyLabel()
@@ -83,13 +100,15 @@ public partial class AbilitySlot : Panel
             _iconNode.Texture = null;
             _nameLabel.Text = "";
             _cooldownOverlay.Visible = false;
-            _chargeBar.Visible = false;
             return;
         }
 
         // Update with ability info
         _iconNode.Texture = ability.Icon;
         _nameLabel.Text = ability.Name;
+        
+        // Reset state
+        UpdateState(AbilityManagerComponent.AbilityState.Default);
     }
 
     public void UpdateCooldown(double currentCooldown, double maxCooldown)
@@ -100,6 +119,7 @@ public partial class AbilitySlot : Panel
         {
             // Ability is ready
             _cooldownOverlay.Visible = false;
+            _cooldownText.Text = "";
         }
         else
         {
@@ -112,50 +132,61 @@ public partial class AbilitySlot : Panel
 
             // Position cooldown overlay from bottom to top
             _cooldownOverlay.Position = new Vector2(0, GetRect().Size.Y * (1 - cooldownRatio));
+            
+            // Update cooldown text
+            _cooldownText.Text = currentCooldown.ToString("F1");
         }
     }
-
 
     public void UpdateState(AbilityManagerComponent.AbilityState state)
     {
         if (_currentAbility == null) return;
+        
+        // Only update if state has changed
+        if (_currentState == state) return;
+        
+        _currentState = state;
 
+        // Reset previous state visuals
+        Modulate = new Color(1, 1, 1);
+        
+        // Apply visual state based on current state
         switch (state)
         {
+            case AbilityManagerComponent.AbilityState.Default:
+                // Default state - normal appearance
+                break;
+                
             case AbilityManagerComponent.AbilityState.Charging:
-                // Show and update charge bar
-                _chargeBar.Visible = true;
-                _chargeBar.Value = (float)(_currentAbility.CurrentChargeTime / _currentAbility.MaxChargeTime * 100);
+                // Visual indicator for charging
+                Modulate = new Color(1.2f, 1.2f, 0.8f);
                 break;
-
+                
             case AbilityManagerComponent.AbilityState.Channeling:
-                // Show and update channeling indicator
-                _chargeBar.Visible = true;
-                _chargeBar.Value =
-                    (float)(_currentAbility.CurrentChannelingTime / _currentAbility.ChannelingDuration * 100);
+                // Visual indicator for channeling
+                Modulate = new Color(0.8f, 1.2f, 1.2f);
                 break;
-
+                
             case AbilityManagerComponent.AbilityState.ToggledOn:
-                // Show toggled state
+                // Visual indicator for toggled on
                 Modulate = new Color(1.2f, 1.2f, 1.5f);
                 break;
-
+                
             case AbilityManagerComponent.AbilityState.ToggledOff:
-            case AbilityManagerComponent.AbilityState.Idle:
-            case AbilityManagerComponent.AbilityState.Default:
-                // Reset to normal state
-                _chargeBar.Visible = false;
-                Modulate = new Color(1, 1, 1);
+                // Visual indicator for toggled off
                 break;
-
-            default:
-                throw new ArgumentOutOfRangeException(nameof(state), state, null);
+                
+            case AbilityManagerComponent.AbilityState.Cooldown:
+                // Cooldown is handled by UpdateCooldown method
+                break;
         }
     }
 
     public void OnActivated()
     {
-        // Visual feedback when ability is activated
+        // Visual feedback when ability is activated - only if not on cooldown
+        if (_currentState == AbilityManagerComponent.AbilityState.Cooldown) return;
+        
         var tween = CreateTween();
         tween.TweenProperty(this, "modulate", new Color(1.5f, 1.5f, 1.5f), 0.1);
         tween.TweenProperty(this, "modulate", new Color(1, 1, 1), 0.1);

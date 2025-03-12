@@ -66,9 +66,8 @@ public partial class AbilityContainer : HBoxContainer
         slot.SlotType = slotType;
         slot.UpdateHotKeyLabel();
 
-
         // Store reference
-        _abilitySlots.SetValue(slot, (int)slotType);
+        _abilitySlots[(int)slotType] = slot;
     }
 
     private void UpdateAllSlots()
@@ -77,8 +76,9 @@ public partial class AbilityContainer : HBoxContainer
 
         foreach (var slot in _abilitySlots)
         {
+            if (slot == null) continue;
+            
             var ability = _abilityManager.GetAbility(slot.SlotType);
-
             slot.UpdateAbility(ability);
 
             if (ability == null) continue;
@@ -87,10 +87,19 @@ public partial class AbilityContainer : HBoxContainer
             slot.UpdateCooldown(ability.CurrentCooldown, ability.Cooldown);
 
             // Set initial state
-            if (ability.IsCharging) slot.UpdateState(AbilityManagerComponent.AbilityState.Charging);
-            else if (ability.IsChanneling) slot.UpdateState(AbilityManagerComponent.AbilityState.Channeling);
-            else if (ability.IsToggled) slot.UpdateState(AbilityManagerComponent.AbilityState.ToggledOn);
-            else slot.UpdateState(AbilityManagerComponent.AbilityState.Idle);
+            AbilityManagerComponent.AbilityState state;
+            if (ability.IsCharging) 
+                state = AbilityManagerComponent.AbilityState.Charging;
+            else if (ability.IsChanneling) 
+                state = AbilityManagerComponent.AbilityState.Channeling;
+            else if (ability.IsToggled) 
+                state = AbilityManagerComponent.AbilityState.ToggledOn;
+            else if (ability.IsOnCooldown)
+                state = AbilityManagerComponent.AbilityState.Cooldown;
+            else 
+                state = AbilityManagerComponent.AbilityState.Default;
+                
+            slot.UpdateState(state);
         }
     }
 
@@ -99,6 +108,8 @@ public partial class AbilityContainer : HBoxContainer
         // Find the slot for this ability
         foreach (var slot in _abilitySlots)
         {
+            if (slot == null) continue;
+            
             if (_abilityManager.GetAbility(slot.SlotType) != ability) continue;
             slot.OnActivated();
             break;
@@ -110,6 +121,8 @@ public partial class AbilityContainer : HBoxContainer
         // Find the slot for this ability
         foreach (var slot in _abilitySlots)
         {
+            if (slot == null) continue;
+            
             if (_abilityManager.GetAbility(slot.SlotType) != ability) continue;
             slot.UpdateCooldown(cooldown, ability.Cooldown);
             break;
@@ -121,15 +134,19 @@ public partial class AbilityContainer : HBoxContainer
         // Find the slot for this ability
         foreach (var slot in _abilitySlots)
         {
+            if (slot == null) continue;
+            
             if (_abilityManager.GetAbility(slot.SlotType) != ability) continue;
             slot.UpdateState(state);
             break;
         }
     }
 
-    private void OnAbilityChanged(Ability ability, AbilityManagerComponent.Slot slot)
+    private void OnAbilityChanged(Ability ability, AbilityManagerComponent.Slot slotType)
     {
-        var abilitySlot = _abilitySlots[(int)slot];
+        if ((int)slotType >= _abilitySlots.Length || _abilitySlots[(int)slotType] == null) return;
+        
+        var abilitySlot = _abilitySlots[(int)slotType];
         abilitySlot.UpdateAbility(ability);
     }
 
@@ -149,6 +166,7 @@ public partial class AbilityContainer : HBoxContainer
         _abilityManager.AbilityActivated -= OnAbilityActivated;
         _abilityManager.AbilityCooldownChanged -= OnAbilityCooldownChanged;
         _abilityManager.AbilityStateChanged -= OnAbilityStateChanged;
+        _abilityManager.AbilityChanged -= OnAbilityChanged;
         UserInputManager.Instance.InputSourceChanged -= OnInputSourceChanged;
     }
 }

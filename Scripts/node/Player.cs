@@ -8,9 +8,6 @@ namespace ChronosDescent.Scripts.node;
 
 public partial class Player : Entity
 {
-    private Ability _ability1 ;
-    private Ability _ability2 = new ChargedBlastAbility();
-
     public override void _Ready()
     {
         base._Ready();
@@ -19,15 +16,11 @@ public partial class Player : Entity
         GetNode<Camera>("/root/Autoload/Camera").SwitchTarget(this);
         GetNode<UI.EffectsContainer>("/root/Autoload/UI/EffectsContainer").Initialize(this);
         GetNode<UI.AbilityContainer>("/root/Autoload/UI/AbilityContainer").Initialize(this);
+        GetNode<UI.AbilityIndicator>("/root/Autoload/UI/AbilityIndicator").Initialize(this);
 
-        
-        var buff =  new BuffAbility();
-        buff.BuffEffect = new StunEffect();
-        buff.TargetSelf = true;
-        
-        
-        AbilityManager.SetAbility(AbilityManagerComponent.Slot.Primary, buff);
-        AbilityManager.SetAbility(AbilityManagerComponent.Slot.Secondary, _ability2);
+
+        AbilityManager.SetAbility(AbilityManagerComponent.Slot.Primary, new TimeRewindAbility());
+        AbilityManager.SetAbility(AbilityManagerComponent.Slot.Secondary, new ChargedBlastAbility());
     }
 
     public override void _PhysicsProcess(double delta)
@@ -53,7 +46,8 @@ public partial class Player : Entity
 
         // Handle Ability inputs
         if (Input.IsActionJustPressed("normal_attack")) ActivateAbility(AbilityManagerComponent.Slot.NormalAttack);
-        else if (Input.IsActionJustReleased("normal_attack")) ReleaseChargedAbility(AbilityManagerComponent.Slot.NormalAttack);
+        else if (Input.IsActionJustReleased("normal_attack"))
+            ReleaseChargedAbility(AbilityManagerComponent.Slot.NormalAttack);
 
         if (Input.IsActionJustPressed("ability_1")) ActivateAbility(AbilityManagerComponent.Slot.Primary);
         else if (Input.IsActionJustReleased("ability_1")) ReleaseChargedAbility(AbilityManagerComponent.Slot.Primary);
@@ -62,8 +56,9 @@ public partial class Player : Entity
         else if (Input.IsActionJustReleased("ability_2")) ReleaseChargedAbility(AbilityManagerComponent.Slot.Secondary);
 
         if (Input.IsActionJustPressed("weapon_ult")) ActivateAbility(AbilityManagerComponent.Slot.WeaponUlt);
-        else if (Input.IsActionJustReleased("weapon_ult")) ReleaseChargedAbility(AbilityManagerComponent.Slot.WeaponUlt);
-        
+        else if (Input.IsActionJustReleased("weapon_ult"))
+            ReleaseChargedAbility(AbilityManagerComponent.Slot.WeaponUlt);
+
         if (Input.IsActionJustPressed("cancel_ability")) CancelChargedAbility();
     }
 }

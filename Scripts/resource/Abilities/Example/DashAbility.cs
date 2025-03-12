@@ -29,9 +29,6 @@ public partial class DashAbility : Ability
 
     public override void Activate()
     {
-        if (!CanActivate()) return;
-
-
         // Get the direction to dash
         Vector2 direction;
         if (Caster is Player player)

@@ -87,7 +87,7 @@ public partial class ChargedBlastAbility : Ability
             }
     }
 
-    public override void CancelCharge()
+    protected override void OnChargingCanceled()
     {
         if (!IsCharging) return;
 
