@@ -5,7 +5,7 @@ using Godot;
 namespace ChronosDescent.Scripts.resource.Effects.Example;
 
 [GlobalClass]
-public sealed partial class StunEffect : resource.Effect
+public sealed partial class StunEffect : Effect
 {
     public StunEffect()
     {

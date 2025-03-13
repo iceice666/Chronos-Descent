@@ -7,7 +7,6 @@ namespace ChronosDescent.Scripts.node.Component;
 public partial class StatsComponent : Node
 {
     // Events
-    [Signal]
     public delegate void StatsChangedEventHandler();
 
     private const double MaxMoveSpeed = 1000;
@@ -71,6 +70,12 @@ public partial class StatsComponent : Node
     }
 
     public double MoveSpeed => Mathf.Clamp(Current.MoveSpeed, 0, MaxMoveSpeed);
+    public event StatsChangedEventHandler StatsChanged;
+
+    protected virtual void OnStatsChanged()
+    {
+        StatsChanged?.Invoke();
+    }
 
 
     public override void _Ready()
@@ -82,6 +87,6 @@ public partial class StatsComponent : Node
     {
         Current = (BaseStats)Base.Clone();
 
-        EmitSignal(SignalName.StatsChanged);
+        OnStatsChanged();
     }
 }

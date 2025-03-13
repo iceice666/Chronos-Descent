@@ -1,7 +1,6 @@
 using ChronosDescent.Scripts.node.Component;
-using ChronosDescent.Scripts.resource;
 using ChronosDescent.Scripts.resource.Abilities.Example;
-using ChronosDescent.Scripts.resource.Effects.Example;
+using ChronosDescent.Scripts.UI;
 using Godot;
 
 namespace ChronosDescent.Scripts.node;
@@ -14,9 +13,9 @@ public partial class Player : Entity
         AddToGroup("Player");
 
         GetNode<Camera>("/root/Autoload/Camera").SwitchTarget(this);
-        GetNode<UI.EffectsContainer>("/root/Autoload/UI/EffectsContainer").Initialize(this);
-        GetNode<UI.AbilityContainer>("/root/Autoload/UI/AbilityContainer").Initialize(this);
-        GetNode<UI.AbilityIndicator>("/root/Autoload/UI/AbilityIndicator").Initialize(this);
+        GetNode<EffectsContainer>("/root/Autoload/UI/EffectsContainer").Initialize(this);
+        GetNode<AbilityContainer>("/root/Autoload/UI/AbilityContainer").Initialize(this);
+        GetNode<AbilityIndicator>("/root/Autoload/UI/AbilityIndicator").Initialize(this);
 
 
         AbilityManager.SetAbility(AbilityManagerComponent.Slot.Primary, new TimeRewindAbility());

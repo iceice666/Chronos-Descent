@@ -44,12 +44,24 @@ public partial class Effect : Resource
     public bool IsControlEffect => Behaviors.HasFlag(EffectBehavior.ControlEffect);
 
     //  methods that derived classes must implement
-    public virtual void OnApply() { }
-    public virtual void OnRemove() { }
+    public virtual void OnApply()
+    {
+    }
+
+    public virtual void OnRemove()
+    {
+    }
 
     // Virtual methods that derived classes can optionally override
-    public virtual void OnTick(double delta) { }
-    public virtual void OnTick(double delta, int currentStacks) { }
+    public virtual void OnTick(double delta)
+    {
+    }
 
-    public virtual void OnStack(int currentStacks) { }
+    public virtual void OnTick(double delta, int currentStacks)
+    {
+    }
+
+    public virtual void OnStack(int currentStacks)
+    {
+    }
 }

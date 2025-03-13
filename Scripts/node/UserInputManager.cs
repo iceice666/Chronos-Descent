@@ -1,5 +1,4 @@
 using System;
-using ChronosDescent.Scripts.node;
 using Godot;
 
 namespace ChronosDescent.Scripts.node;
@@ -11,10 +10,6 @@ namespace ChronosDescent.Scripts.node;
 [GlobalClass]
 public partial class UserInputManager : Control
 {
-    public static UserInputManager Instance { get; private set; }
-
-
-    [Signal]
     public delegate void InputSourceChangedEventHandler(InputSource newSource);
 
     // Input sources enum
@@ -25,21 +20,29 @@ public partial class UserInputManager : Control
         VirtualJoystick
     }
 
+    private int _controllerIndex;
+
     private VirtualJoystick _leftVirtualJoystick;
     private VirtualJoystick _rightVirtualJoystick;
 
     // References to UI components
     private Control _virtualInputContainer;
+    public static UserInputManager Instance { get; private set; }
 
     // Current active input source
     public InputSource CurrentInputSource { get; private set; }
-
-    private int _controllerIndex;
 
 
     // Input vectors for movement and aiming
     public Vector2 MovementInput { get; private set; } = Vector2.Zero;
     public Vector2 AimInput { get; private set; } = Vector2.Zero;
+
+    public event InputSourceChangedEventHandler InputSourceChanged;
+
+    protected virtual void OnInputSourceChanged(InputSource inputSource)
+    {
+        InputSourceChanged?.Invoke(inputSource);
+    }
 
     public override void _Ready()
     {
@@ -100,22 +103,16 @@ public partial class UserInputManager : Control
     {
         // Check if using controller (optimization: early returns)
         if (IsControllerActive())
-        {
             SwitchInputSource(InputSource.Controller);
-        }
         // Check if using touch/virtual joystick
         else if (DisplayServer.IsTouchscreenAvailable() &&
                  (_leftVirtualJoystick.IsPressed || _rightVirtualJoystick.IsPressed))
-        {
             SwitchInputSource(InputSource.VirtualJoystick);
-        }
         // Check if using keyboard/mouse
         else if (IsAnyKeyboardInputActive() ||
                  Input.IsMouseButtonPressed(MouseButton.Left) ||
                  Input.IsMouseButtonPressed(MouseButton.Right))
-        {
             SwitchInputSource(InputSource.KeyboardMouse);
-        }
     }
 
     /// <summary>
@@ -138,7 +135,7 @@ public partial class UserInputManager : Control
 
         CurrentInputSource = newSource;
         UpdateVirtualInputVisibility();
-        EmitSignal(SignalName.InputSourceChanged, (int)CurrentInputSource);
+        OnInputSourceChanged(CurrentInputSource);
     }
 
     /// <summary>
@@ -191,6 +188,8 @@ public partial class UserInputManager : Control
     /// <summary>
     ///     Checks if any relevant keyboard input is active
     /// </summary>
-    private bool IsAnyKeyboardInputActive() =>
-        Input.IsKeyPressed(Key.Space) || Input.IsKeyPressed(Key.Escape);
+    private bool IsAnyKeyboardInputActive()
+    {
+        return Input.IsKeyPressed(Key.Space) || Input.IsKeyPressed(Key.Escape);
+    }
 }

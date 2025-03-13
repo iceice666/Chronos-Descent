@@ -7,20 +7,21 @@ namespace ChronosDescent.Scripts.UI;
 
 public partial class AbilitySlot : Panel
 {
-    // UI components
-    private TextureRect _iconNode;
-    private Label _hotKeyLabel;
-    private Label _nameLabel;
-    private ColorRect _cooldownOverlay;
-    private Label _cooldownText;
-    
     // Animation
     private AnimationPlayer _animationPlayer;
+    private ColorRect _cooldownOverlay;
+    private Label _cooldownText;
+    private Ability _currentAbility;
+    private Ability.AbilityState _currentState = Ability.AbilityState.Default;
+
+    private Label _hotKeyLabel;
+
+    // UI components
+    private TextureRect _iconNode;
+    private Label _nameLabel;
 
     // Slot properties
     public AbilityManagerComponent.Slot SlotType { get; set; }
-    private Ability _currentAbility;
-    private Ability.AbilityState _currentState = Ability.AbilityState.Default;
 
     public override void _Ready()
     {
@@ -30,21 +31,21 @@ public partial class AbilitySlot : Panel
         _nameLabel = GetNode<Label>("Name");
         _cooldownOverlay = GetNode<ColorRect>("CooldownOverlay");
         _cooldownText = GetNode<Label>("CooldownText");
-        
+
         // Initialize with empty state
         _cooldownOverlay.Visible = false;
-        
+
         // Add animation player (optional)
         _animationPlayer = new AnimationPlayer
         {
             Name = "AnimationPlayer"
         };
         AddChild(_animationPlayer);
-        
+
         // Create animations
         CreateAnimations();
     }
-    
+
     private void CreateAnimations()
     {
         // Optional: Create animations for different states
@@ -106,7 +107,7 @@ public partial class AbilitySlot : Panel
         // Update with ability info
         _iconNode.Texture = ability.Icon;
         _nameLabel.Text = ability.Name;
-        
+
         // Reset state
         UpdateState(Ability.AbilityState.Default);
     }
@@ -132,7 +133,7 @@ public partial class AbilitySlot : Panel
 
             // Position cooldown overlay from bottom to top
             _cooldownOverlay.Position = new Vector2(0, GetRect().Size.Y * (1 - cooldownRatio));
-            
+
             // Update cooldown text
             _cooldownText.Text = currentCooldown.ToString("F1");
         }
@@ -141,41 +142,41 @@ public partial class AbilitySlot : Panel
     public void UpdateState(Ability.AbilityState state)
     {
         if (_currentAbility == null) return;
-        
+
         // Only update if state has changed
         if (_currentState == state) return;
-        
+
         _currentState = state;
 
         // Reset previous state visuals
         Modulate = new Color(1, 1, 1);
-        
+
         // Apply visual state based on current state
         switch (state)
         {
             case Ability.AbilityState.Default:
                 // Default state - normal appearance
                 break;
-                
+
             case Ability.AbilityState.Charging:
                 // Visual indicator for charging
                 Modulate = new Color(1.2f, 1.2f, 0.8f);
                 break;
-                
+
             case Ability.AbilityState.Channeling:
                 // Visual indicator for channeling
                 Modulate = new Color(0.8f, 1.2f, 1.2f);
                 break;
-                
+
             case Ability.AbilityState.ToggledOn:
                 // Visual indicator for toggled on
                 Modulate = new Color(1.2f, 1.2f, 1.5f);
                 break;
-                
+
             case Ability.AbilityState.ToggledOff:
                 // Visual indicator for toggled off
                 break;
-                
+
             case Ability.AbilityState.Cooldown:
                 // Cooldown is handled by UpdateCooldown method
                 break;
@@ -186,7 +187,7 @@ public partial class AbilitySlot : Panel
     {
         // Visual feedback when ability is activated - only if not on cooldown
         if (_currentState == Ability.AbilityState.Cooldown) return;
-        
+
         var tween = CreateTween();
         tween.TweenProperty(this, "modulate", new Color(1.5f, 1.5f, 1.5f), 0.1);
         tween.TweenProperty(this, "modulate", new Color(1, 1, 1), 0.1);

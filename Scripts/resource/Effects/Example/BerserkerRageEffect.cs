@@ -6,7 +6,7 @@ using Godot.Collections;
 namespace ChronosDescent.Scripts.resource.Effects.Example;
 
 [GlobalClass]
-public sealed partial class BerserkerRageEffect : resource.Effect
+public sealed partial class BerserkerRageEffect : Effect
 {
     private double _lastCalculatedBonus;
 

@@ -8,77 +8,32 @@ namespace ChronosDescent.Scripts.node.Component;
 [GlobalClass]
 public partial class AbilityManagerComponent : Node
 {
-    // C# events instead of Godot signals
-    public event EventHandler<AbilityEventArgs> AbilityActivated;
-    public event EventHandler<AbilityCooldownEventArgs> AbilityCooldownChanged;
-    public event EventHandler<AbilityStateEventArgs> AbilityStateChanged;
-    public event EventHandler<AbilitySlotEventArgs> AbilityChanged;
-
-    // Custom event args
-    public class AbilityEventArgs : EventArgs
-    {
-        public Ability Ability { get; }
-
-        public AbilityEventArgs(Ability ability)
-        {
-            Ability = ability;
-        }
-    }
-
-    public class AbilityCooldownEventArgs : EventArgs
-    {
-        public Ability Ability { get; }
-        public double Cooldown { get; }
-
-        public AbilityCooldownEventArgs(Ability ability, double cooldown)
-        {
-            Ability = ability;
-            Cooldown = cooldown;
-        }
-    }
-
-    public class AbilityStateEventArgs : EventArgs
-    {
-        public Ability Ability { get; }
-        public Ability.AbilityState State { get; }
-
-        public AbilityStateEventArgs(Ability ability, Ability.AbilityState state)
-        {
-            Ability = ability;
-            State = state;
-        }
-    }
-
-    public class AbilitySlotEventArgs : EventArgs
-    {
-        public Ability Ability { get; }
-        public Slot SlotValue { get; }
-
-        public AbilitySlotEventArgs(Ability ability, Slot slot)
-        {
-            Ability = ability;
-            SlotValue = slot;
-        }
-    }
-
     public enum Slot
     {
         NormalAttack = 0,
         Primary = 1,
         Secondary = 2,
         WeaponUlt = 3,
-        Unknown = 8,
+        Unknown = 8
     }
 
     // List of abilities - sized to match enum values
     private readonly Ability[] _abilities = new Ability[4];
-    
+
+    private readonly Dictionary<Ability, EventHandler<Ability.AbilityCooldownEventArgs>> _cooldownChangedHandlers =
+        new();
+
     // Dictionary to store references to event handlers for unsubscribing
     private readonly Dictionary<Ability, EventHandler<Ability.AbilityStateEventArgs>> _stateChangedHandlers = new();
-    private readonly Dictionary<Ability, EventHandler<Ability.AbilityCooldownEventArgs>> _cooldownChangedHandlers = new();
 
     // Track currently active ability slot
     private Slot _currentActiveSlot = Slot.Unknown;
+
+    // C# events instead of Godot signals
+    public event EventHandler<AbilityEventArgs> AbilityActivated;
+    public event EventHandler<AbilityCooldownEventArgs> AbilityCooldownChanged;
+    public event EventHandler<AbilityStateEventArgs> AbilityStateChanged;
+    public event EventHandler<AbilitySlotEventArgs> AbilityChanged;
 
     public override void _Ready()
     {
@@ -91,10 +46,7 @@ public partial class AbilityManagerComponent : Node
 
     private void UpdateAbilities(double delta)
     {
-        foreach (var ability in _abilities)
-        {
-            ability?.Update(delta);
-        }
+        foreach (var ability in _abilities) ability?.Update(delta);
     }
 
     // Add an ability
@@ -138,10 +90,7 @@ public partial class AbilityManagerComponent : Node
         _abilities[index] = null;
 
         // Clear active slot if removing active ability
-        if (_currentActiveSlot == slot)
-        {
-            _currentActiveSlot = Slot.Unknown;
-        }
+        if (_currentActiveSlot == slot) _currentActiveSlot = Slot.Unknown;
 
         OnAbilityChanged(new AbilitySlotEventArgs(null, slot));
         GD.Print($"Removed ability {ability.Name} from slot {slot}");
@@ -151,17 +100,17 @@ public partial class AbilityManagerComponent : Node
     private void SubscribeToAbilityEvents(Ability ability, Slot slot)
     {
         // Create handler for state changed
-        EventHandler<Ability.AbilityStateEventArgs> stateHandler = (sender, e) => 
+        EventHandler<Ability.AbilityStateEventArgs> stateHandler = (sender, e) =>
             HandleAbilityStateChanged(ability, slot);
-        
+
         // Create handler for cooldown changed
-        EventHandler<Ability.AbilityCooldownEventArgs> cooldownHandler = (sender, e) => 
+        EventHandler<Ability.AbilityCooldownEventArgs> cooldownHandler = (sender, e) =>
             HandleAbilityCooldownChanged(ability);
-        
+
         // Store handlers for later unsubscription
         _stateChangedHandlers[ability] = stateHandler;
         _cooldownChangedHandlers[ability] = cooldownHandler;
-        
+
         // Subscribe to events
         ability.StateChanged += stateHandler;
         ability.CooldownChanged += cooldownHandler;
@@ -175,7 +124,7 @@ public partial class AbilityManagerComponent : Node
             ability.StateChanged -= stateHandler;
             _stateChangedHandlers.Remove(ability);
         }
-        
+
         if (_cooldownChangedHandlers.TryGetValue(ability, out var cooldownHandler))
         {
             ability.CooldownChanged -= cooldownHandler;
@@ -213,10 +162,7 @@ public partial class AbilityManagerComponent : Node
         else if (!ability.IsCharging && !ability.IsChanneling)
         {
             // If ability was active and is no longer active, clear the slot
-            if (GetSlotForAbility(ability) == _currentActiveSlot)
-            {
-                _currentActiveSlot = Slot.Unknown;
-            }
+            if (GetSlotForAbility(ability) == _currentActiveSlot) _currentActiveSlot = Slot.Unknown;
         }
 
         OnAbilityStateChanged(new AbilityStateEventArgs(ability, state));
@@ -250,12 +196,8 @@ public partial class AbilityManagerComponent : Node
     private Slot GetSlotForAbility(Ability ability)
     {
         for (var i = 0; i < _abilities.Length; i++)
-        {
             if (_abilities[i] == ability)
-            {
                 return (Slot)i;
-            }
-        }
 
         return Slot.Unknown;
     }
@@ -295,10 +237,8 @@ public partial class AbilityManagerComponent : Node
         OnAbilityActivated(new AbilityEventArgs(ability));
 
         if (ability.Type == Ability.AbilityType.Active)
-        {
             // For active abilities, immediately emit cooldown state
             OnAbilityStateChanged(new AbilityStateEventArgs(ability, Ability.AbilityState.Cooldown));
-        }
 
         if (ability.Type is Ability.AbilityType.Channeled or Ability.AbilityType.Charged)
             ((Entity)Owner).Moveable = false;
@@ -310,10 +250,8 @@ public partial class AbilityManagerComponent : Node
     public void ReleaseChargedAbility(Slot slot)
     {
         if (slot != _currentActiveSlot && slot != Slot.Unknown)
-        {
             // Only process if the requested slot is the active one
             return;
-        }
 
         if (_currentActiveSlot == Slot.Unknown)
         {
@@ -372,35 +310,84 @@ public partial class AbilityManagerComponent : Node
         GD.Print($"Interrupted channeling of {ability.Name}");
     }
 
+    // Custom event args
+    public class AbilityEventArgs : EventArgs
+    {
+        public AbilityEventArgs(Ability ability)
+        {
+            Ability = ability;
+        }
+
+        public Ability Ability { get; }
+    }
+
+    public class AbilityCooldownEventArgs : EventArgs
+    {
+        public AbilityCooldownEventArgs(Ability ability, double cooldown)
+        {
+            Ability = ability;
+            Cooldown = cooldown;
+        }
+
+        public Ability Ability { get; }
+        public double Cooldown { get; }
+    }
+
+    public class AbilityStateEventArgs : EventArgs
+    {
+        public AbilityStateEventArgs(Ability ability, Ability.AbilityState state)
+        {
+            Ability = ability;
+            State = state;
+        }
+
+        public Ability Ability { get; }
+        public Ability.AbilityState State { get; }
+    }
+
+    public class AbilitySlotEventArgs : EventArgs
+    {
+        public AbilitySlotEventArgs(Ability ability, Slot slot)
+        {
+            Ability = ability;
+            SlotValue = slot;
+        }
+
+        public Ability Ability { get; }
+        public Slot SlotValue { get; }
+    }
+
     #region Event Invokers
-    
+
     protected virtual void OnAbilityActivated(AbilityEventArgs e)
     {
         AbilityActivated?.Invoke(this, e);
     }
-    
+
     protected virtual void OnAbilityCooldownChanged(AbilityCooldownEventArgs e)
     {
         AbilityCooldownChanged?.Invoke(this, e);
     }
-    
+
     protected virtual void OnAbilityStateChanged(AbilityStateEventArgs e)
     {
         AbilityStateChanged?.Invoke(this, e);
     }
-    
+
     protected virtual void OnAbilityChanged(AbilitySlotEventArgs e)
     {
         AbilityChanged?.Invoke(this, e);
     }
-    
+
     #endregion
 
     #region Ability State Helpers
 
     // Get the cooldown of an ability
     public double GetAbilityCooldown(Slot slot)
-        => GetAbility(slot)?.CurrentCooldown ?? 0.0;
+    {
+        return GetAbility(slot)?.CurrentCooldown ?? 0.0;
+    }
 
     // Get the cooldown percentage of an ability
     public double GetAbilityCooldownPercentage(Slot slot)
@@ -412,25 +399,39 @@ public partial class AbilityManagerComponent : Node
     }
 
     public bool IsAbilityReady(Slot slot)
-        => GetAbility(slot)?.CanActivate() ?? false;
+    {
+        return GetAbility(slot)?.CanActivate() ?? false;
+    }
 
     public bool IsAbilityCharging(Slot slot)
-        => GetAbility(slot)?.IsCharging ?? false;
+    {
+        return GetAbility(slot)?.IsCharging ?? false;
+    }
 
     public bool IsAbilityChanneling(Slot slot)
-        => GetAbility(slot)?.IsChanneling ?? false;
+    {
+        return GetAbility(slot)?.IsChanneling ?? false;
+    }
 
     public bool IsAbilityOnCooldown(Slot slot)
-        => GetAbility(slot)?.IsOnCooldown ?? false;
+    {
+        return GetAbility(slot)?.IsOnCooldown ?? false;
+    }
 
     public bool IsAbilityToggled(Slot slot)
-        => GetAbility(slot)?.IsToggled ?? false;
+    {
+        return GetAbility(slot)?.IsToggled ?? false;
+    }
 
     public Slot GetCurrentActiveSlot()
-        => _currentActiveSlot;
+    {
+        return _currentActiveSlot;
+    }
 
     public bool HasActiveAbility()
-        => _currentActiveSlot != Slot.Unknown;
+    {
+        return _currentActiveSlot != Slot.Unknown;
+    }
 
     #endregion
 }

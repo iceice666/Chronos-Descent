@@ -8,12 +8,12 @@ namespace ChronosDescent.Scripts.UI;
 public partial class AbilityIndicator : Control
 {
     private AbilityManagerComponent _abilityManager;
-    private ProgressBar _progressBar;
-    private Label _chargingLabel;
     private Label _channelingLabel;
+    private Label _chargingLabel;
 
     private Ability _currentAbility;
     private Ability.AbilityState _currentState;
+    private ProgressBar _progressBar;
 
     public override void _Ready()
     {
@@ -30,11 +30,11 @@ public partial class AbilityIndicator : Control
 
         _abilityManager = entity.AbilityManager;
         _abilityManager.AbilityStateChanged += OnAbilityStateChanged;
-        
+
         // Add ability activated handler to catch state changes
         _abilityManager.AbilityActivated += OnAbilityActivated;
     }
-    
+
     private void OnAbilityActivated(object sender, AbilityManagerComponent.AbilityEventArgs e)
     {
         // When an ability is activated, check if we need to hide the indicator
@@ -44,7 +44,7 @@ public partial class AbilityIndicator : Control
             ability.IsCharging ||
             ability.IsChanneling ||
             (!ability.IsOnCooldown && ability.Type != Ability.AbilityType.Active)) return;
-        
+
         _currentAbility = null;
         Visible = false;
     }
@@ -52,7 +52,7 @@ public partial class AbilityIndicator : Control
     public override void _Process(double delta)
     {
         if (!Visible || _currentAbility == null) return;
-        
+
         // Check for state changes that might have happened
         if ((_currentState == Ability.AbilityState.Charging && !_currentAbility.IsCharging) ||
             (_currentState == Ability.AbilityState.Channeling && !_currentAbility.IsChanneling))
@@ -62,7 +62,7 @@ public partial class AbilityIndicator : Control
             Visible = false;
             return;
         }
-        
+
         UpdateProgress();
     }
 
@@ -70,14 +70,14 @@ public partial class AbilityIndicator : Control
     {
         var ability = e.Ability;
         var state = e.State;
-        
+
         // Show the indicator only for charging and channeling states
         if (state is not (Ability.AbilityState.Charging
             or Ability.AbilityState.Channeling))
         {
             // If this is our current ability, hide the indicator
             if (_currentAbility != ability) return;
-            
+
             _currentAbility = null;
             Visible = false;
             return;
@@ -117,7 +117,7 @@ public partial class AbilityIndicator : Control
     public override void _ExitTree()
     {
         if (_abilityManager == null) return;
-        
+
         _abilityManager.AbilityStateChanged -= OnAbilityStateChanged;
         _abilityManager.AbilityActivated -= OnAbilityActivated;
     }

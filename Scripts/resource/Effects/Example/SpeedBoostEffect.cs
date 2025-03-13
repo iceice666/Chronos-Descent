@@ -6,7 +6,7 @@ using Godot.Collections;
 namespace ChronosDescent.Scripts.resource.Effects.Example;
 
 [GlobalClass]
-public sealed partial class SpeedBoostEffect : resource.Effect
+public sealed partial class SpeedBoostEffect : Effect
 {
     public SpeedBoostEffect()
     {

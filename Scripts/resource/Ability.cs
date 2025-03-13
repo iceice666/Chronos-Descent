@@ -7,16 +7,6 @@ namespace ChronosDescent.Scripts.resource;
 [GlobalClass]
 public partial class Ability : Resource
 {
-    // Ability type
-    public enum AbilityType
-    {
-        Active, // Standard one-time use ability
-        Passive, // Always active ability
-        Toggle, // Can be turned on/off
-        Charged, // Hold to charge up, release to activate
-        Channeled // Continuous effect while channeling
-    }
-    
     public enum AbilityState
     {
         Default = 0,
@@ -27,32 +17,24 @@ public partial class Ability : Resource
         Cooldown = 5
     }
 
-    // C# events instead of Godot signals
-    public event EventHandler<AbilityStateEventArgs> StateChanged;
-    public event EventHandler<AbilityCooldownEventArgs> CooldownChanged;
-
-    // Custom event args
-    public class AbilityStateEventArgs : EventArgs
+    // Ability type
+    public enum AbilityType
     {
-        public Ability Ability { get; }
-        public AbilityState State { get; }
-
-        public AbilityStateEventArgs(Ability ability, AbilityState state)
-        {
-            Ability = ability;
-            State = state;
-        }
+        Active, // Standard one-time use ability
+        Passive, // Always active ability
+        Toggle, // Can be turned on/off
+        Charged, // Hold to charge up, release to activate
+        Channeled // Continuous effect while channeling
     }
 
-    public class AbilityCooldownEventArgs : EventArgs
-    {
-        public Ability Ability { get; }
+    private double _currentCooldown;
 
-        public AbilityCooldownEventArgs(Ability ability)
-        {
-            Ability = ability;
-        }
-    }
+    private bool _isChanneling;
+
+    private bool _isCharging;
+
+    // Toggle state for Toggle abilities
+    private bool _isToggled;
 
     // Entity that owns this ability
     public Entity Caster;
@@ -67,7 +49,6 @@ public partial class Ability : Resource
 
     // Cooldown and cost properties
     [Export] public double Cooldown { get; set; } = 5.0; // In seconds
-    private double _currentCooldown;
 
     public double CurrentCooldown
     {
@@ -82,9 +63,6 @@ public partial class Ability : Resource
 
     [Export] public AbilityType Type { get; set; } = AbilityType.Active;
 
-    // Toggle state for Toggle abilities
-    private bool _isToggled;
-
     public bool IsToggled
     {
         get => _isToggled;
@@ -92,7 +70,8 @@ public partial class Ability : Resource
         {
             if (_isToggled == value) return;
             _isToggled = value;
-            OnStateChanged(new AbilityStateEventArgs(this, _isToggled ? AbilityState.ToggledOn : AbilityState.ToggledOff));
+            OnStateChanged(new AbilityStateEventArgs(this,
+                _isToggled ? AbilityState.ToggledOn : AbilityState.ToggledOff));
         }
     }
 
@@ -105,8 +84,6 @@ public partial class Ability : Resource
     [Export] public double MinChargeTime { get; set; } = 0.2;
 
     public double CurrentChargeTime { get; protected set; }
-
-    private bool _isCharging;
 
     public bool IsCharging
     {
@@ -126,8 +103,6 @@ public partial class Ability : Resource
 
     public double CurrentChannelingTime { get; protected set; }
 
-    private bool _isChanneling;
-
     public bool IsChanneling
     {
         get => _isChanneling;
@@ -135,12 +110,17 @@ public partial class Ability : Resource
         {
             if (_isChanneling == value) return;
             _isChanneling = value;
-            OnStateChanged(new AbilityStateEventArgs(this, _isChanneling ? AbilityState.Channeling : AbilityState.Default));
+            OnStateChanged(new AbilityStateEventArgs(this,
+                _isChanneling ? AbilityState.Channeling : AbilityState.Default));
         }
     }
 
     // Whether the ability is on cooldown
     public bool IsOnCooldown => CurrentCooldown > 0.0;
+
+    // C# events instead of Godot signals
+    public event EventHandler<AbilityStateEventArgs> StateChanged;
+    public event EventHandler<AbilityCooldownEventArgs> CooldownChanged;
 
     public virtual void Initialize()
     {
@@ -220,10 +200,7 @@ public partial class Ability : Resource
             case AbilityType.Charged:
             {
                 CurrentChargeTime += delta;
-                if (CurrentChargeTime >= MaxChargeTime && AutoCastWhenFull)
-                {
-                    ReleaseCharge();
-                }
+                if (CurrentChargeTime >= MaxChargeTime && AutoCastWhenFull) ReleaseCharge();
 
                 break;
             }
@@ -236,10 +213,7 @@ public partial class Ability : Resource
                 CurrentChannelingTime += delta;
                 OnChannelingTick(delta);
 
-                if (CurrentChannelingTime >= ChannelingDuration)
-                {
-                    CompleteChanneling();
-                }
+                if (CurrentChannelingTime >= ChannelingDuration) CompleteChanneling();
 
                 break;
             }
@@ -408,5 +382,28 @@ public partial class Ability : Resource
     protected virtual void OnCooldownChanged(AbilityCooldownEventArgs e)
     {
         CooldownChanged?.Invoke(this, e);
+    }
+
+    // Custom event args
+    public class AbilityStateEventArgs : EventArgs
+    {
+        public AbilityStateEventArgs(Ability ability, AbilityState state)
+        {
+            Ability = ability;
+            State = state;
+        }
+
+        public Ability Ability { get; }
+        public AbilityState State { get; }
+    }
+
+    public class AbilityCooldownEventArgs : EventArgs
+    {
+        public AbilityCooldownEventArgs(Ability ability)
+        {
+            Ability = ability;
+        }
+
+        public Ability Ability { get; }
     }
 }

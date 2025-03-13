@@ -4,9 +4,6 @@ namespace ChronosDescent.Scripts.node;
 
 public partial class VirtualJoystick : Control
 {
-    // Joystick deadzone threshold
-    [Export] public float JoystickDeadzone { get; set; } = 0.2f;
-    
     private Vector2 _centerPosition;
     private Sprite2D _knob;
     private float _maxRadius;
@@ -16,6 +13,9 @@ public partial class VirtualJoystick : Control
 
     // Touch tracking
     private int _touchIndex = -1;
+
+    // Joystick deadzone threshold
+    [Export] public float JoystickDeadzone { get; set; } = 0.2f;
 
     // Public interface
     public bool IsPressed { get; private set; }
@@ -122,8 +122,8 @@ public partial class VirtualJoystick : Control
         // Calculate and update output (normalized -1 to 1 range)
         Output = ApplyDeadzone(direction).LimitLength();
     }
-    
-    
+
+
     private Vector2 ApplyDeadzone(Vector2 input)
     {
         var length = input.Length();

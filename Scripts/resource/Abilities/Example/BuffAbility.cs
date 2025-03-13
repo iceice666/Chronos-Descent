@@ -1,5 +1,4 @@
 using ChronosDescent.Scripts.node;
-using ChronosDescent.Scripts.resource.Effects;
 using Godot;
 
 namespace ChronosDescent.Scripts.resource.Abilities.Example;
@@ -7,6 +6,8 @@ namespace ChronosDescent.Scripts.resource.Abilities.Example;
 [GlobalClass]
 public partial class BuffAbility : Ability
 {
+    private double _lastTick;
+
     public BuffAbility()
     {
         Name = "Buff";
@@ -21,7 +22,6 @@ public partial class BuffAbility : Ability
     [Export] public double AreaOfEffect { get; set; } // 0 means single target
 
     [Export] public double TickThreshold { get; set; } = 1.0;
-    private double _lastTick;
 
     public override void Initialize()
     {
@@ -62,7 +62,7 @@ public partial class BuffAbility : Ability
         if (_lastTick < TickThreshold) return;
 
         _lastTick = 0;
-        
+
         // Reapply the effect if needed
         if (TargetSelf && !Caster.HasEffect(BuffEffect.Name)) ApplyEffectToTarget(Caster);
 

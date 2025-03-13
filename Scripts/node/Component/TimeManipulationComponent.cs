@@ -41,12 +41,9 @@ public partial class TimeManipulationComponent : Node
             _positionHistory.AddFirst(newPosition);
             return;
         }
-        
+
         var last = _positionHistory.Last!.Value.DeltaTime;
-        if (_currentTime - last > MaxPeriod)
-        {
-            _positionHistory.RemoveLast();
-        }
+        if (_currentTime - last > MaxPeriod) _positionHistory.RemoveLast();
         _positionHistory.AddFirst(newPosition);
     }
 
@@ -66,15 +63,13 @@ public partial class TimeManipulationComponent : Node
 
         var target = _positionHistory.First!.Value.DeltaTime - seconds;
         if (target < 0.0) target = 0.0;
-        
-        
+
+
         var result = new List<PositionSpan>();
 
         foreach (var positionHistory in _positionHistory)
-        {
             if (positionHistory.DeltaTime >= target) result.Add(positionHistory);
             else break;
-        }
 
         return result;
     }

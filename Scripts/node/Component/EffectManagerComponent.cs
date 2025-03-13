@@ -1,10 +1,7 @@
-﻿// Scripts/node/Component/EffectManagerComponent.cs
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using ChronosDescent.Scripts.resource;
-using ChronosDescent.Scripts.resource.Effects;
 using Godot;
 using Effect = ChronosDescent.Scripts.resource.Effect;
 
@@ -14,17 +11,14 @@ namespace ChronosDescent.Scripts.node.Component;
 public partial class EffectManagerComponent : Node
 {
     // Signal for UI updates
-    [Signal]
     public delegate void EffectAppliedEventHandler(Effect effect);
 
-    [Signal]
     public delegate void EffectRefreshedEventHandler(string effectId, int currentStack);
 
-    [Signal]
     public delegate void EffectRemovedEventHandler(string effectId);
 
-    [Signal]
     public delegate void EffectTimerUpdatedEventHandler(string effectId, double remainingDuration);
+
 
     private readonly Dictionary<string, EffectInstance> _activeEffects = new();
     private readonly List<EffectInstance> _controlEffects = [];
@@ -35,6 +29,31 @@ public partial class EffectManagerComponent : Node
     private Entity _entity;
     private StatsComponent _stats;
     private bool _statsAreDirty;
+
+    public event EffectAppliedEventHandler EffectApplied;
+    public event EffectRefreshedEventHandler EffectRefreshed;
+    public event EffectRemovedEventHandler EffectRemoved;
+    public event EffectTimerUpdatedEventHandler EffectTimerUpdated;
+
+    protected virtual void OnEffectApplied(Effect effect)
+    {
+        EffectApplied?.Invoke(effect);
+    }
+
+    protected virtual void OnEffectRefreshed(string effectId, int currentStack)
+    {
+        EffectRefreshed?.Invoke(effectId, currentStack);
+    }
+
+    protected virtual void OnEffectRemoved(string effectId)
+    {
+        EffectRemoved?.Invoke(effectId);
+    }
+
+    protected virtual void OnEffectTimerUpdated(string effectId, double remainingDuration)
+    {
+        EffectTimerUpdated?.Invoke(effectId, remainingDuration);
+    }
 
     public void Initialize(StatsComponent statsComponent)
     {
@@ -57,7 +76,7 @@ public partial class EffectManagerComponent : Node
                 effectsToRemove.Add(effectId);
             else
                 // Emit update signal for UI
-                EmitSignal(SignalName.EffectTimerUpdated, effectInstance.BaseEffect.Identifier,
+                OnEffectTimerUpdated(effectInstance.BaseEffect.Identifier,
                     effectInstance.RemainingDuration);
         }
 
@@ -100,7 +119,7 @@ public partial class EffectManagerComponent : Node
                 effect.OnStack(currentStacks + 1);
 
                 // Emit signal for UI
-                EmitSignal(SignalName.EffectRefreshed, effectId, currentStacks + 1);
+                OnEffectRefreshed(effectId, currentStacks + 1);
 
                 GD.Print($"Stacking Effect({effectId}) on Entity({_entity.Name}) [{currentStacks + 1}/{maxStacks}]");
             }
@@ -110,7 +129,7 @@ public partial class EffectManagerComponent : Node
                 existingEffect.RemainingDuration = effect.Duration;
 
                 // Emit signal for UI
-                EmitSignal(SignalName.EffectRefreshed, effectId, currentStacks);
+                OnEffectRefreshed(effectId, currentStacks);
 
                 GD.Print($"Refreshing Effect({effectId}) on Entity({_entity.Name})");
             }
@@ -135,7 +154,7 @@ public partial class EffectManagerComponent : Node
             if (effect.HasStatModifiers) _statsAreDirty = true;
 
             // Emit signal for UI
-            EmitSignal(SignalName.EffectApplied, effect);
+            OnEffectApplied(effect);
         }
     }
 
@@ -163,7 +182,7 @@ public partial class EffectManagerComponent : Node
         if (effect.HasStatModifiers) _statsAreDirty = true;
 
         // Emit signal for UI
-        EmitSignal(SignalName.EffectRemoved, effectId);
+        OnEffectRemoved(effectId);
     }
 
     public void RemoveAllEffects()

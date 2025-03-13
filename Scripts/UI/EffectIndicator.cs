@@ -4,9 +4,10 @@ namespace ChronosDescent.Scripts.UI;
 
 public partial class EffectIndicator : Control
 {
+    private RichTextLabel _durationLabel;
+
     // UI nodes
     private TextureRect _iconNode;
-    private RichTextLabel _durationLabel;
     private RichTextLabel _stackLabel;
 
     // Properties

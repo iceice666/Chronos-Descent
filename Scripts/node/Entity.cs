@@ -8,7 +8,6 @@ namespace ChronosDescent.Scripts.node;
 [GlobalClass]
 public partial class Entity : CharacterBody2D
 {
-    [Signal]
     public delegate void EntityDeathEventHandler(Entity entity);
 
     public AbilityManagerComponent AbilityManager;
@@ -24,6 +23,12 @@ public partial class Entity : CharacterBody2D
     // Component references
     public StatsComponent Stats;
     public TimeManipulationComponent TimeManipulation;
+    public event EntityDeathEventHandler EntityDeath;
+
+    protected virtual void OnEntityDeath(Entity entity)
+    {
+        EntityDeath?.Invoke(entity);
+    }
 
     public override void _Ready()
     {
@@ -42,7 +47,9 @@ public partial class Entity : CharacterBody2D
         AddToGroup("Entity");
     }
 
-    public override void _Process(double delta) { }
+    public override void _Process(double delta)
+    {
+    }
 
     public override void _PhysicsProcess(double delta)
     {
@@ -64,7 +71,7 @@ public partial class Entity : CharacterBody2D
     public virtual async void OnEntityDeath()
     {
         // Signal death event
-        EmitSignal(SignalName.EntityDeath, this);
+        OnEntityDeath(this);
 
         // Play death animation
         Animation.PlayAnimation("death");
@@ -109,7 +116,7 @@ public partial class Entity : CharacterBody2D
 
     public void ReleaseChargedAbility(AbilityManagerComponent.Slot slot)
     {
-        AbilityManager.ReleaseChargedAbility( slot);
+        AbilityManager.ReleaseChargedAbility(slot);
     }
 
     public void CancelChargedAbility()

@@ -7,11 +7,11 @@ namespace ChronosDescent.Scripts.UI;
 
 public partial class AbilityContainer : HBoxContainer
 {
-    // Reference to the player's ability manager
-    private AbilityManagerComponent _abilityManager;
-
     // Dictionary to store ability UI slots
     private readonly AbilitySlot[] _abilitySlots = new AbilitySlot[4];
+
+    // Reference to the player's ability manager
+    private AbilityManagerComponent _abilityManager;
 
     // Reference to the ability slot scene
     private PackedScene _abilitySlotScene;
@@ -77,7 +77,7 @@ public partial class AbilityContainer : HBoxContainer
         foreach (var slot in _abilitySlots)
         {
             if (slot == null) continue;
-            
+
             var ability = _abilityManager.GetAbility(slot.SlotType);
             slot.UpdateAbility(ability);
 
@@ -88,17 +88,17 @@ public partial class AbilityContainer : HBoxContainer
 
             // Set initial state
             Ability.AbilityState state;
-            if (ability.IsCharging) 
+            if (ability.IsCharging)
                 state = Ability.AbilityState.Charging;
-            else if (ability.IsChanneling) 
+            else if (ability.IsChanneling)
                 state = Ability.AbilityState.Channeling;
-            else if (ability.IsToggled) 
+            else if (ability.IsToggled)
                 state = Ability.AbilityState.ToggledOn;
             else if (ability.IsOnCooldown)
                 state = Ability.AbilityState.Cooldown;
-            else 
+            else
                 state = Ability.AbilityState.Default;
-                
+
             slot.UpdateState(state);
         }
     }
@@ -109,7 +109,7 @@ public partial class AbilityContainer : HBoxContainer
         foreach (var slot in _abilitySlots)
         {
             if (slot == null) continue;
-            
+
             if (_abilityManager.GetAbility(slot.SlotType) != e.Ability) continue;
             slot.OnActivated();
             break;
@@ -122,7 +122,7 @@ public partial class AbilityContainer : HBoxContainer
         foreach (var slot in _abilitySlots)
         {
             if (slot == null) continue;
-            
+
             if (_abilityManager.GetAbility(slot.SlotType) != e.Ability) continue;
             slot.UpdateCooldown(e.Cooldown, e.Ability.Cooldown);
             break;
@@ -135,7 +135,7 @@ public partial class AbilityContainer : HBoxContainer
         foreach (var slot in _abilitySlots)
         {
             if (slot == null) continue;
-            
+
             if (_abilityManager.GetAbility(slot.SlotType) != e.Ability) continue;
             slot.UpdateState(e.State);
             break;
@@ -145,17 +145,14 @@ public partial class AbilityContainer : HBoxContainer
     private void OnAbilityChanged(object sender, AbilityManagerComponent.AbilitySlotEventArgs e)
     {
         if ((int)e.SlotValue >= _abilitySlots.Length || _abilitySlots[(int)e.SlotValue] == null) return;
-        
+
         var abilitySlot = _abilitySlots[(int)e.SlotValue];
         abilitySlot.UpdateAbility(e.Ability);
     }
 
     private void OnInputSourceChanged(UserInputManager.InputSource inputSource)
     {
-        foreach (var slot in _abilitySlots)
-        {
-            slot?.UpdateHotKeyLabel();
-        }
+        foreach (var slot in _abilitySlots) slot?.UpdateHotKeyLabel();
     }
 
     public override void _ExitTree()
