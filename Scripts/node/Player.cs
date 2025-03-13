@@ -31,7 +31,7 @@ public partial class Player : Entity
             var velocity = direction * (float)Stats.MoveSpeed;
 
             Velocity = velocity;
-            Animation.UpdateWalkAnimation(velocity);
+            Animation!.UpdateWalkAnimation(velocity);
 
             MoveAndSlide();
         }
@@ -41,7 +41,7 @@ public partial class Player : Entity
     {
         // Handle Animation
         AimDirection = UserInputManager.Instance.AimInput;
-        Animation.UpdateLookAnimation(AimDirection);
+        Animation!.UpdateLookAnimation(AimDirection);
 
         // Handle Ability inputs
         if (Input.IsActionJustPressed("normal_attack")) ActivateAbility(AbilityManagerComponent.Slot.NormalAttack);

@@ -28,6 +28,8 @@ public partial class TimeRewindAbility : Ability
         if (!base.CanActivate()) return false;
 
         // Check if there's enough history to rewind
+        if (Caster.TimeManipulation == null) return false;
+        
         _positionHistory = Caster.TimeManipulation.GetPositionHistory(RewindDuration).ToList();
         return _positionHistory.Count > 0;
     }
@@ -77,7 +79,7 @@ public partial class TimeRewindAbility : Ability
         if (_positionHistory.Count > 0) Caster.Position = _positionHistory[^1].Position;
 
         // Resume time recording
-        Caster.TimeManipulation?.ResumeRecording();
+        Caster.TimeManipulation.ResumeRecording();
 
         // Re-enable movement
         Caster.Moveable = true;

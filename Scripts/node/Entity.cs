@@ -11,20 +11,9 @@ public partial class Entity : CharacterBody2D
 {
     public delegate void EntityDeathEventHandler(Entity entity);
 
-    public AbilityManagerComponent AbilityManager;
-
-
     public Vector2 AimDirection;
-    public AnimationComponent Animation;
-    public CombatComponent Combat;
-    public DamageIndicatorManagerComponent DamageIndicatorManager;
-    public EffectManagerComponent EffectManager;
 
     public bool Moveable = true;
-
-    // Component references
-    public StatsComponent Stats;
-    public TimeManipulationComponent TimeManipulation;
     public event EntityDeathEventHandler EntityDeath;
 
     protected virtual void OnEntityDeath(Entity entity)
@@ -45,7 +34,7 @@ public partial class Entity : CharacterBody2D
 
         // Setup component connections
         EffectManager.Initialize(Stats);
-        Combat.Initialize(Stats, Animation);
+        Combat?.Initialize(Stats, Animation);
 
         AddToGroup("Entity");
     }
@@ -77,13 +66,27 @@ public partial class Entity : CharacterBody2D
         OnEntityDeath(this);
 
         // Play death animation
-        Animation.PlayAnimation("death");
+        Animation?.PlayAnimation("death");
 
         await ToSignal(GetTree().CreateTimer(0.5), SceneTreeTimer.SignalName.Timeout);
 
         // Queue free the parent entity
         QueueFree();
     }
+    
+    // @formatter:off
+    // Component references
+    // Must have
+    public StatsComponent Stats;
+    public CombatComponent Combat;
+    public DamageIndicatorManagerComponent DamageIndicatorManager;
+    public EffectManagerComponent EffectManager;
+
+    // Optional
+    public TimeManipulationComponent TimeManipulation;
+    public AnimationComponent Animation;
+    public AbilityManagerComponent AbilityManager;
+    // @formatter:on
 
     #region Effect
 
@@ -114,21 +117,45 @@ public partial class Entity : CharacterBody2D
 
     public void ActivateAbility(AbilityManagerComponent.Slot slot)
     {
+        if (AbilityManager == null)
+        {
+            Util.PrintWarning($"This entity({this}) has no ability manager!");
+            return;
+        }
+
         AbilityManager.ActivateAbility(slot);
     }
 
     public void ReleaseChargedAbility(AbilityManagerComponent.Slot slot)
     {
+        if (AbilityManager == null)
+        {
+            Util.PrintWarning($"This entity({this}) has no ability manager!");
+            return;
+        }
+
         AbilityManager.ReleaseChargedAbility(slot);
     }
 
     public void CancelChargedAbility()
     {
+        if (AbilityManager == null)
+        {
+            Util.PrintWarning($"This entity({this}) has no ability manager!");
+            return;
+        }
+
         AbilityManager.CancelChargedAbility();
     }
 
     public void InterruptChannelingAbility()
     {
+        if (AbilityManager == null)
+        {
+            Util.PrintWarning($"This entity({this}) has no ability manager!");
+            return;
+        }
+
         AbilityManager.InterruptChannelingAbility();
     }
 
