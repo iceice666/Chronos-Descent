@@ -8,8 +8,8 @@ namespace ChronosDescent.Scripts.node.Component;
 public partial class CombatComponent : Node
 {
     private AnimationComponent _animation;
-    private StatsComponent _stats;
     private Entity _owner;
+    private StatsComponent _stats;
 
     public void Initialize(StatsComponent stats, AnimationComponent animation)
     {
@@ -51,12 +51,10 @@ public partial class CombatComponent : Node
 
         // Show healing indicator (only if actually healed)
         if (actualHealAmount > 0)
-        {
             _owner.DamageIndicatorManager.ShowDamageIndicator(
                 _owner.GlobalPosition,
                 actualHealAmount,
                 DamageIndicator.DamageType.Healing
             );
-        }
     }
 }

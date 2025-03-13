@@ -1,9 +1,8 @@
 ﻿// Scripts/resource/Effects/Example/PoisonEffect.cs
 
+using ChronosDescent.Scripts.UI;
 using Godot;
 using Godot.Collections;
-using ChronosDescent.Scripts.node.Component;
-using ChronosDescent.Scripts.UI;
 
 namespace ChronosDescent.Scripts.resource.Effects.Example;
 

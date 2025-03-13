@@ -17,8 +17,8 @@ public partial class Entity : CharacterBody2D
     public Vector2 AimDirection;
     public AnimationComponent Animation;
     public CombatComponent Combat;
-    public EffectManagerComponent EffectManager;
     public DamageIndicatorManagerComponent DamageIndicatorManager;
+    public EffectManagerComponent EffectManager;
 
     public bool Moveable = true;
 
