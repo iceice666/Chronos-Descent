@@ -10,40 +10,73 @@ public partial class Ability : Resource
     // Ability type
     public enum AbilityType
     {
-        Active,     // Standard one-time use ability
-        Passive,    // Always active ability
-        Toggle,     // Can be turned on/off
-        Charged,    // Hold to charge up, release to activate
-        Channeled   // Continuous effect while channeling
+        Active, // Standard one-time use ability
+        Passive, // Always active ability
+        Toggle, // Can be turned on/off
+        Charged, // Hold to charge up, release to activate
+        Channeled // Continuous effect while channeling
+    }
+    
+    public enum AbilityState
+    {
+        Default = 0,
+        Charging = 1,
+        Channeling = 2,
+        ToggledOn = 3,
+        ToggledOff = 4,
+        Cooldown = 5
     }
 
-    // Delegate for state change notification
-    public delegate void StateChangeHandler(Ability ability);
-    
-    // Events for state changes
-    public event StateChangeHandler OnStateChanged;
-    public event StateChangeHandler OnCooldownChanged;
+    // C# events instead of Godot signals
+    public event EventHandler<AbilityStateEventArgs> StateChanged;
+    public event EventHandler<AbilityCooldownEventArgs> CooldownChanged;
+
+    // Custom event args
+    public class AbilityStateEventArgs : EventArgs
+    {
+        public Ability Ability { get; }
+        public AbilityState State { get; }
+
+        public AbilityStateEventArgs(Ability ability, AbilityState state)
+        {
+            Ability = ability;
+            State = state;
+        }
+    }
+
+    public class AbilityCooldownEventArgs : EventArgs
+    {
+        public Ability Ability { get; }
+
+        public AbilityCooldownEventArgs(Ability ability)
+        {
+            Ability = ability;
+        }
+    }
 
     // Entity that owns this ability
     public Entity Caster;
 
     [ExportGroup("Metadata")]
     // Basic ability properties
-    [Export] public string Name { get; set; } = "Ability";
+    [Export]
+    public string Name { get; set; } = "Ability";
+
     [Export] public string Description { get; set; } = "";
     [Export] public Texture2D Icon { get; set; }
 
     // Cooldown and cost properties
     [Export] public double Cooldown { get; set; } = 5.0; // In seconds
     private double _currentCooldown;
-    public double CurrentCooldown 
-    { 
+
+    public double CurrentCooldown
+    {
         get => _currentCooldown;
         private set
         {
             if (!(Math.Abs(_currentCooldown - value) > 0.001)) return;
             _currentCooldown = value;
-            OnCooldownChanged?.Invoke(this);
+            OnCooldownChanged(new AbilityCooldownEventArgs(this));
         }
     }
 
@@ -51,54 +84,58 @@ public partial class Ability : Resource
 
     // Toggle state for Toggle abilities
     private bool _isToggled;
-    public bool IsToggled 
-    { 
+
+    public bool IsToggled
+    {
         get => _isToggled;
         protected set
         {
             if (_isToggled == value) return;
             _isToggled = value;
-            OnStateChanged?.Invoke(this);
+            OnStateChanged(new AbilityStateEventArgs(this, _isToggled ? AbilityState.ToggledOn : AbilityState.ToggledOff));
         }
     }
 
     [ExportGroup("Charged ability properties")]
     // Charging properties for Charged abilities
-    [Export] public double MaxChargeTime { get; set; } = 1.0;
+    [Export]
+    public double MaxChargeTime { get; set; } = 1.0;
+
     [Export] public bool AutoCastWhenFull { get; set; } = true;
     [Export] public double MinChargeTime { get; set; } = 0.2;
 
     public double CurrentChargeTime { get; protected set; }
 
     private bool _isCharging;
-    public bool IsCharging 
-    { 
+
+    public bool IsCharging
+    {
         get => _isCharging;
         protected set
         {
             if (_isCharging == value) return;
             _isCharging = value;
-            OnStateChanged?.Invoke(this);
+            OnStateChanged(new AbilityStateEventArgs(this, _isCharging ? AbilityState.Charging : AbilityState.Default));
         }
     }
 
     // Channeling properties for Channeled abilities
     [ExportGroup("Channeled ability properties")]
-    [Export] public double ChannelingDuration { get; set; } = 3.0;
+    [Export]
+    public double ChannelingDuration { get; set; } = 3.0;
 
     public double CurrentChannelingTime { get; protected set; }
 
     private bool _isChanneling;
-    public bool IsChanneling 
-    { 
+
+    public bool IsChanneling
+    {
         get => _isChanneling;
         protected set
         {
-            if (_isChanneling != value)
-            {
-                _isChanneling = value;
-                OnStateChanged?.Invoke(this);
-            }
+            if (_isChanneling == value) return;
+            _isChanneling = value;
+            OnStateChanged(new AbilityStateEventArgs(this, _isChanneling ? AbilityState.Channeling : AbilityState.Default));
         }
     }
 
@@ -183,10 +220,11 @@ public partial class Ability : Resource
             case AbilityType.Charged:
             {
                 CurrentChargeTime += delta;
-                if (CurrentChargeTime >= MaxChargeTime && AutoCastWhenFull) 
+                if (CurrentChargeTime >= MaxChargeTime && AutoCastWhenFull)
                 {
                     ReleaseCharge();
                 }
+
                 break;
             }
 
@@ -202,6 +240,7 @@ public partial class Ability : Resource
                 {
                     CompleteChanneling();
                 }
+
                 break;
             }
 
@@ -355,6 +394,19 @@ public partial class Ability : Resource
     {
         GD.Print($"Channeling of {Name} interrupted");
     }
-    
-    protected virtual void OnChargingCanceled() {}
+
+    protected virtual void OnChargingCanceled()
+    {
+    }
+
+    // Event invokers
+    protected virtual void OnStateChanged(AbilityStateEventArgs e)
+    {
+        StateChanged?.Invoke(this, e);
+    }
+
+    protected virtual void OnCooldownChanged(AbilityCooldownEventArgs e)
+    {
+        CooldownChanged?.Invoke(this, e);
+    }
 }

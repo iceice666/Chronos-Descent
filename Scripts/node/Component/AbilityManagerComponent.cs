@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using ChronosDescent.Scripts.resource;
 using Godot;
 
@@ -6,18 +8,58 @@ namespace ChronosDescent.Scripts.node.Component;
 [GlobalClass]
 public partial class AbilityManagerComponent : Node
 {
-    // Signals
-    [Signal]
-    public delegate void AbilityActivatedEventHandler(Ability ability);
+    // C# events instead of Godot signals
+    public event EventHandler<AbilityEventArgs> AbilityActivated;
+    public event EventHandler<AbilityCooldownEventArgs> AbilityCooldownChanged;
+    public event EventHandler<AbilityStateEventArgs> AbilityStateChanged;
+    public event EventHandler<AbilitySlotEventArgs> AbilityChanged;
 
-    [Signal]
-    public delegate void AbilityCooldownChangedEventHandler(Ability ability, double cooldown);
+    // Custom event args
+    public class AbilityEventArgs : EventArgs
+    {
+        public Ability Ability { get; }
 
-    [Signal]
-    public delegate void AbilityStateChangedEventHandler(Ability ability, AbilityState state);
+        public AbilityEventArgs(Ability ability)
+        {
+            Ability = ability;
+        }
+    }
 
-    [Signal]
-    public delegate void AbilityChangedEventHandler(Ability ability, Slot slot);
+    public class AbilityCooldownEventArgs : EventArgs
+    {
+        public Ability Ability { get; }
+        public double Cooldown { get; }
+
+        public AbilityCooldownEventArgs(Ability ability, double cooldown)
+        {
+            Ability = ability;
+            Cooldown = cooldown;
+        }
+    }
+
+    public class AbilityStateEventArgs : EventArgs
+    {
+        public Ability Ability { get; }
+        public Ability.AbilityState State { get; }
+
+        public AbilityStateEventArgs(Ability ability, Ability.AbilityState state)
+        {
+            Ability = ability;
+            State = state;
+        }
+    }
+
+    public class AbilitySlotEventArgs : EventArgs
+    {
+        public Ability Ability { get; }
+        public Slot SlotValue { get; }
+
+        public AbilitySlotEventArgs(Ability ability, Slot slot)
+        {
+            Ability = ability;
+            SlotValue = slot;
+        }
+    }
 
     public enum Slot
     {
@@ -28,19 +70,12 @@ public partial class AbilityManagerComponent : Node
         Unknown = 8,
     }
 
-    public enum AbilityState
-    {
-        Default = 0,
-        Charging = 1,
-        Channeling = 2,
-        ToggledOn = 3,
-        ToggledOff = 4,
-        Cooldown = 5
-    }
-
     // List of abilities - sized to match enum values
     private readonly Ability[] _abilities = new Ability[4];
-
+    
+    // Dictionary to store references to event handlers for unsubscribing
+    private readonly Dictionary<Ability, EventHandler<Ability.AbilityStateEventArgs>> _stateChangedHandlers = new();
+    private readonly Dictionary<Ability, EventHandler<Ability.AbilityCooldownEventArgs>> _cooldownChangedHandlers = new();
 
     // Track currently active ability slot
     private Slot _currentActiveSlot = Slot.Unknown;
@@ -84,7 +119,7 @@ public partial class AbilityManagerComponent : Node
         // Subscribe to ability events
         SubscribeToAbilityEvents(ability, slot);
 
-        EmitSignalAbilityChanged(ability, slot);
+        OnAbilityChanged(new AbilitySlotEventArgs(ability, slot));
         GD.Print($"Added ability {ability.Name} to {caster.Name}");
     }
 
@@ -108,51 +143,72 @@ public partial class AbilityManagerComponent : Node
             _currentActiveSlot = Slot.Unknown;
         }
 
-        EmitSignalAbilityChanged(null, slot);
+        OnAbilityChanged(new AbilitySlotEventArgs(null, slot));
         GD.Print($"Removed ability {ability.Name} from slot {slot}");
     }
-
 
     // Subscribe to ability events
     private void SubscribeToAbilityEvents(Ability ability, Slot slot)
     {
-        ability.OnStateChanged += ab => HandleAbilityStateChanged(ab, slot);
-        ability.OnCooldownChanged += HandleAbilityCooldownChanged;
+        // Create handler for state changed
+        EventHandler<Ability.AbilityStateEventArgs> stateHandler = (sender, e) => 
+            HandleAbilityStateChanged(ability, slot);
+        
+        // Create handler for cooldown changed
+        EventHandler<Ability.AbilityCooldownEventArgs> cooldownHandler = (sender, e) => 
+            HandleAbilityCooldownChanged(ability);
+        
+        // Store handlers for later unsubscription
+        _stateChangedHandlers[ability] = stateHandler;
+        _cooldownChangedHandlers[ability] = cooldownHandler;
+        
+        // Subscribe to events
+        ability.StateChanged += stateHandler;
+        ability.CooldownChanged += cooldownHandler;
     }
 
     // Unsubscribe from ability events
     private void UnsubscribeFromAbilityEvents(Ability ability)
     {
-        ability.OnStateChanged -= ab => HandleAbilityStateChanged(ab, GetSlotForAbility(ab));
-        ability.OnCooldownChanged -= HandleAbilityCooldownChanged;
+        if (_stateChangedHandlers.TryGetValue(ability, out var stateHandler))
+        {
+            ability.StateChanged -= stateHandler;
+            _stateChangedHandlers.Remove(ability);
+        }
+        
+        if (_cooldownChangedHandlers.TryGetValue(ability, out var cooldownHandler))
+        {
+            ability.CooldownChanged -= cooldownHandler;
+            _cooldownChangedHandlers.Remove(ability);
+        }
     }
 
     // Handle ability state changed
     private void HandleAbilityStateChanged(Ability ability, Slot slot)
     {
-        var state = AbilityState.Default;
+        var state = Ability.AbilityState.Default;
 
         if (ability.IsOnCooldown)
         {
-            state = AbilityState.Cooldown;
+            state = Ability.AbilityState.Cooldown;
         }
         else if (ability.IsCharging)
         {
-            state = AbilityState.Charging;
+            state = Ability.AbilityState.Charging;
             _currentActiveSlot = slot;
         }
         else if (ability.IsChanneling)
         {
-            state = AbilityState.Channeling;
+            state = Ability.AbilityState.Channeling;
             _currentActiveSlot = slot;
         }
         else if (ability.IsToggled)
         {
-            state = AbilityState.ToggledOn;
+            state = Ability.AbilityState.ToggledOn;
         }
         else if (ability.Type == Ability.AbilityType.Toggle && !ability.IsToggled)
         {
-            state = AbilityState.ToggledOff;
+            state = Ability.AbilityState.ToggledOff;
         }
         else if (!ability.IsCharging && !ability.IsChanneling)
         {
@@ -163,22 +219,22 @@ public partial class AbilityManagerComponent : Node
             }
         }
 
-        EmitSignalAbilityStateChanged(ability, state);
+        OnAbilityStateChanged(new AbilityStateEventArgs(ability, state));
     }
 
     // Handle ability cooldown changed
     private void HandleAbilityCooldownChanged(Ability ability)
     {
-        EmitSignal(SignalName.AbilityCooldownChanged, ability, ability.CurrentCooldown);
+        OnAbilityCooldownChanged(new AbilityCooldownEventArgs(ability, ability.CurrentCooldown));
 
         switch (ability.CurrentCooldown)
         {
             // Also emit state changed if cooldown becomes 0
             case <= 0:
-                EmitSignalAbilityStateChanged(ability, AbilityState.Default);
+                OnAbilityStateChanged(new AbilityStateEventArgs(ability, Ability.AbilityState.Default));
                 break;
             case > 0 when !ability.IsCharging && !ability.IsChanneling && !ability.IsToggled:
-                EmitSignalAbilityStateChanged(ability, AbilityState.Cooldown);
+                OnAbilityStateChanged(new AbilityStateEventArgs(ability, Ability.AbilityState.Cooldown));
                 break;
         }
     }
@@ -236,12 +292,12 @@ public partial class AbilityManagerComponent : Node
         }
 
         ability.Activate();
-        EmitSignal(SignalName.AbilityActivated, ability);
+        OnAbilityActivated(new AbilityEventArgs(ability));
 
         if (ability.Type == Ability.AbilityType.Active)
         {
             // For active abilities, immediately emit cooldown state
-            EmitSignal(SignalName.AbilityStateChanged, ability, (int)AbilityState.Cooldown);
+            OnAbilityStateChanged(new AbilityStateEventArgs(ability, Ability.AbilityState.Cooldown));
         }
 
         if (ability.Type is Ability.AbilityType.Channeled or Ability.AbilityType.Charged)
@@ -270,7 +326,7 @@ public partial class AbilityManagerComponent : Node
 
         ability.ReleaseCharge();
         _currentActiveSlot = Slot.Unknown;
-        
+
         ((Entity)Owner).Moveable = true;
 
         GD.Print($"Released charge of {ability.Name}");
@@ -315,6 +371,30 @@ public partial class AbilityManagerComponent : Node
 
         GD.Print($"Interrupted channeling of {ability.Name}");
     }
+
+    #region Event Invokers
+    
+    protected virtual void OnAbilityActivated(AbilityEventArgs e)
+    {
+        AbilityActivated?.Invoke(this, e);
+    }
+    
+    protected virtual void OnAbilityCooldownChanged(AbilityCooldownEventArgs e)
+    {
+        AbilityCooldownChanged?.Invoke(this, e);
+    }
+    
+    protected virtual void OnAbilityStateChanged(AbilityStateEventArgs e)
+    {
+        AbilityStateChanged?.Invoke(this, e);
+    }
+    
+    protected virtual void OnAbilityChanged(AbilitySlotEventArgs e)
+    {
+        AbilityChanged?.Invoke(this, e);
+    }
+    
+    #endregion
 
     #region Ability State Helpers
 

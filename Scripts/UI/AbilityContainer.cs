@@ -34,7 +34,7 @@ public partial class AbilityContainer : HBoxContainer
 
         _abilityManager = entity.AbilityManager;
 
-        // Connect to signals
+        // Connect to C# events
         _abilityManager.AbilityActivated += OnAbilityActivated;
         _abilityManager.AbilityCooldownChanged += OnAbilityCooldownChanged;
         _abilityManager.AbilityStateChanged += OnAbilityStateChanged;
@@ -87,70 +87,70 @@ public partial class AbilityContainer : HBoxContainer
             slot.UpdateCooldown(ability.CurrentCooldown, ability.Cooldown);
 
             // Set initial state
-            AbilityManagerComponent.AbilityState state;
+            Ability.AbilityState state;
             if (ability.IsCharging) 
-                state = AbilityManagerComponent.AbilityState.Charging;
+                state = Ability.AbilityState.Charging;
             else if (ability.IsChanneling) 
-                state = AbilityManagerComponent.AbilityState.Channeling;
+                state = Ability.AbilityState.Channeling;
             else if (ability.IsToggled) 
-                state = AbilityManagerComponent.AbilityState.ToggledOn;
+                state = Ability.AbilityState.ToggledOn;
             else if (ability.IsOnCooldown)
-                state = AbilityManagerComponent.AbilityState.Cooldown;
+                state = Ability.AbilityState.Cooldown;
             else 
-                state = AbilityManagerComponent.AbilityState.Default;
+                state = Ability.AbilityState.Default;
                 
             slot.UpdateState(state);
         }
     }
 
-    private void OnAbilityActivated(Ability ability)
+    private void OnAbilityActivated(object sender, AbilityManagerComponent.AbilityEventArgs e)
     {
         // Find the slot for this ability
         foreach (var slot in _abilitySlots)
         {
             if (slot == null) continue;
             
-            if (_abilityManager.GetAbility(slot.SlotType) != ability) continue;
+            if (_abilityManager.GetAbility(slot.SlotType) != e.Ability) continue;
             slot.OnActivated();
             break;
         }
     }
 
-    private void OnAbilityCooldownChanged(Ability ability, double cooldown)
+    private void OnAbilityCooldownChanged(object sender, AbilityManagerComponent.AbilityCooldownEventArgs e)
     {
         // Find the slot for this ability
         foreach (var slot in _abilitySlots)
         {
             if (slot == null) continue;
             
-            if (_abilityManager.GetAbility(slot.SlotType) != ability) continue;
-            slot.UpdateCooldown(cooldown, ability.Cooldown);
+            if (_abilityManager.GetAbility(slot.SlotType) != e.Ability) continue;
+            slot.UpdateCooldown(e.Cooldown, e.Ability.Cooldown);
             break;
         }
     }
 
-    private void OnAbilityStateChanged(Ability ability, AbilityManagerComponent.AbilityState state)
+    private void OnAbilityStateChanged(object sender, AbilityManagerComponent.AbilityStateEventArgs e)
     {
         // Find the slot for this ability
         foreach (var slot in _abilitySlots)
         {
             if (slot == null) continue;
             
-            if (_abilityManager.GetAbility(slot.SlotType) != ability) continue;
-            slot.UpdateState(state);
+            if (_abilityManager.GetAbility(slot.SlotType) != e.Ability) continue;
+            slot.UpdateState(e.State);
             break;
         }
     }
 
-    private void OnAbilityChanged(Ability ability, AbilityManagerComponent.Slot slotType)
+    private void OnAbilityChanged(object sender, AbilityManagerComponent.AbilitySlotEventArgs e)
     {
-        if ((int)slotType >= _abilitySlots.Length || _abilitySlots[(int)slotType] == null) return;
+        if ((int)e.SlotValue >= _abilitySlots.Length || _abilitySlots[(int)e.SlotValue] == null) return;
         
-        var abilitySlot = _abilitySlots[(int)slotType];
-        abilitySlot.UpdateAbility(ability);
+        var abilitySlot = _abilitySlots[(int)e.SlotValue];
+        abilitySlot.UpdateAbility(e.Ability);
     }
 
-    private void OnInputSourceChanged(UserInputManager.InputSource _)
+    private void OnInputSourceChanged(UserInputManager.InputSource inputSource)
     {
         foreach (var slot in _abilitySlots)
         {
@@ -160,7 +160,7 @@ public partial class AbilityContainer : HBoxContainer
 
     public override void _ExitTree()
     {
-        // Disconnect signals
+        // Disconnect events
         if (_abilityManager == null) return;
 
         _abilityManager.AbilityActivated -= OnAbilityActivated;
