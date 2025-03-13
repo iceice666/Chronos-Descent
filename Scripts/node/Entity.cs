@@ -1,4 +1,5 @@
 using ChronosDescent.Scripts.node.Component;
+using ChronosDescent.Scripts.UI;
 using Godot;
 using Effect = ChronosDescent.Scripts.resource.Effect;
 
@@ -17,6 +18,7 @@ public partial class Entity : CharacterBody2D
     public AnimationComponent Animation;
     public CombatComponent Combat;
     public EffectManagerComponent EffectManager;
+    public DamageIndicatorManagerComponent DamageIndicatorManager;
 
     public bool Moveable = true;
 
@@ -39,6 +41,7 @@ public partial class Entity : CharacterBody2D
         Combat = GetNode<CombatComponent>("CombatComponent");
         TimeManipulation = GetNode<TimeManipulationComponent>("TimeManipulationComponent");
         AbilityManager = GetNode<AbilityManagerComponent>("AbilityManagerComponent");
+        DamageIndicatorManager = GetNode<DamageIndicatorManagerComponent>("DamageIndicatorManagerComponent");
 
         // Setup component connections
         EffectManager.Initialize(Stats);
@@ -57,9 +60,9 @@ public partial class Entity : CharacterBody2D
     }
 
     // Public methods that delegate to components
-    public void TakeDamage(double amount)
+    public void TakeDamage(double amount, DamageIndicator.DamageType damageType = DamageIndicator.DamageType.Normal)
     {
-        Combat.TakeDamage(amount);
+        Combat.TakeDamage(amount, damageType);
     }
 
     public void Heal(double amount)

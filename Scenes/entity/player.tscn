@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://bpuhyc475sgxd"]
+[gd_scene load_steps=36 format=3 uid="uid://bpuhyc475sgxd"]
 
 [ext_resource type="Script" uid="uid://bpkkndu11dpl4" path="res://Scripts/node/Player.cs" id="1_vxxhj"]
 [ext_resource type="Script" uid="uid://ck2ek8c0u02x1" path="res://Scripts/node/Component/TimeManipulationComponent.cs" id="2_qnfm0"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://dm1rr2m3v20ct" path="res://Scripts/node/Component/StatsComponent.cs" id="5_ef8pe"]
 [ext_resource type="Script" uid="uid://d1urpysdnl1cm" path="res://Scripts/node/Component/AnimationComponent.cs" id="6_iv6k8"]
 [ext_resource type="Script" uid="uid://cxyiy7naggcnb" path="res://Scripts/node/Component/AbilityManagerComponent.cs" id="8_swhob"]
+[ext_resource type="Script" uid="uid://by1njeut5gcst" path="res://Scripts/node/Component/DamageIndicatorManagerComponent.cs" id="9_k5mxe"]
 [ext_resource type="Script" uid="uid://bf4bfk8cc5j7p" path="res://Scripts/node/Component/EffectTriggerComponent.cs" id="9_ualn7"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_0grkt"]
@@ -217,6 +218,10 @@ script = ExtResource("5_ef8pe")
 
 [node name="AbilityManagerComponent" type="Node" parent="."]
 script = ExtResource("8_swhob")
+
+[node name="DamageIndicatorManagerComponent" type="Node" parent="."]
+script = ExtResource("9_k5mxe")
+metadata/_custom_type_script = "uid://by1njeut5gcst"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_2ivh0")

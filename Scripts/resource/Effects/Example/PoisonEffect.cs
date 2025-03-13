@@ -2,6 +2,8 @@
 
 using Godot;
 using Godot.Collections;
+using ChronosDescent.Scripts.node.Component;
+using ChronosDescent.Scripts.UI;
 
 namespace ChronosDescent.Scripts.resource.Effects.Example;
 
@@ -40,7 +42,8 @@ public sealed partial class PoisonEffect : Effect
     public override void OnTick(double delta, int stacks)
     {
         var damage = DamagePerTick * stacks;
-        Target.TakeDamage(damage);
+
+        Target.TakeDamage(damage, DamageIndicator.DamageType.Poison);
 
         GD.Print($"{Target.Name} takes {damage} poison damage ({stacks} stacks)");
     }

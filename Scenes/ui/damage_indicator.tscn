@@ -1,0 +1,24 @@
+[gd_scene load_steps=3 format=3 uid="uid://dhbxyf3dj542s"]
+
+[ext_resource type="Script" uid="uid://dujhbr0cdd7q7" path="res://Scripts/UI/DamageIndicator.cs" id="1_fnv8c"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_6fgmi"]
+font_size = 20
+outline_size = 2
+outline_color = Color(0, 0, 0, 1)
+shadow_size = 2
+shadow_color = Color(0, 0, 0, 0.4)
+
+[node name="DamageIndicator" type="Node2D"]
+z_index = 100
+script = ExtResource("1_fnv8c")
+
+[node name="Label" type="Label" parent="."]
+offset_left = -40.0
+offset_top = -15.0
+offset_right = 40.0
+offset_bottom = 15.0
+text = "-10"
+label_settings = SubResource("LabelSettings_6fgmi")
+horizontal_alignment = 1
+vertical_alignment = 1
