@@ -1,10 +1,11 @@
-[gd_scene load_steps=10 format=3 uid="uid://cwx1wpnqhiio8"]
+[gd_scene load_steps=11 format=3 uid="uid://cwx1wpnqhiio8"]
 
 [ext_resource type="PackedScene" uid="uid://bpuhyc475sgxd" path="res://Scenes/entity/player.tscn" id="1_6bl8q"]
 [ext_resource type="Script" uid="uid://f6cgxij46rgr" path="res://Scripts/node/EffectTrigger.cs" id="2_xei7x"]
 [ext_resource type="Script" uid="uid://cpr6q28wdvuy3" path="res://Scripts/resource/Effects/Example/PoisonEffect.cs" id="3_ohthn"]
 [ext_resource type="Script" uid="uid://b0t1aysaijlyn" path="res://Scripts/resource/Effects/Example/SpeedBoostEffect.cs" id="3_r0ms2"]
 [ext_resource type="Script" uid="uid://cd8sahn0d5562" path="res://Scripts/resource/Effects/Example/StunEffect.cs" id="5_wejrf"]
+[ext_resource type="PackedScene" uid="uid://bvnq7r1s2138p" path="res://Scenes/entity/dummy.tscn" id="6_gt16y"]
 
 [sub_resource type="Resource" id="Resource_ygipm"]
 script = ExtResource("3_ohthn")
@@ -22,12 +23,6 @@ SpeedMultiplier = 1.2
 script = ExtResource("5_wejrf")
 
 [node name="BattleScene" type="Node2D"]
-
-[node name="Player" parent="." instance=ExtResource("1_6bl8q")]
-z_index = 114
-position = Vector2(294, 244)
-scale = Vector2(4, 4)
-metadata/_edit_lock_ = true
 
 [node name="PoisonTrigger" type="Area2D" parent="."]
 position = Vector2(123, 105)
@@ -115,3 +110,24 @@ Trigger
 "
 fit_content = true
 metadata/_edit_lock_ = true
+
+[node name="Player" parent="." instance=ExtResource("1_6bl8q")]
+z_index = 114
+position = Vector2(288, 317)
+scale = Vector2(4, 4)
+
+[node name="Dummy" parent="." instance=ExtResource("6_gt16y")]
+position = Vector2(663, 319)
+scale = Vector2(5, 5)
+
+[node name="Dummy2" parent="." instance=ExtResource("6_gt16y")]
+position = Vector2(555, 321)
+scale = Vector2(5, 5)
+
+[node name="Dummy3" parent="." instance=ExtResource("6_gt16y")]
+position = Vector2(592, 321)
+scale = Vector2(5, 5)
+
+[node name="Dummy4" parent="." instance=ExtResource("6_gt16y")]
+position = Vector2(628, 320)
+scale = Vector2(5, 5)

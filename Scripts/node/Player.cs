@@ -1,5 +1,5 @@
 using ChronosDescent.Scripts.node.Component;
-using ChronosDescent.Scripts.resource.Abilities.Example;
+using ChronosDescent.Scripts.resource.Abilities;
 using ChronosDescent.Scripts.UI;
 using Godot;
 
@@ -19,7 +19,7 @@ public partial class Player : Entity
 
 
         AbilityManager.SetAbility(AbilityManagerComponent.Slot.Primary, new TimeRewindAbility());
-        AbilityManager.SetAbility(AbilityManagerComponent.Slot.Secondary, new ChargedBlastAbility());
+        AbilityManager.SetAbility(AbilityManagerComponent.Slot.Secondary, new DashAbility());
     }
 
     public override void _PhysicsProcess(double delta)

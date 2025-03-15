@@ -236,12 +236,16 @@ public partial class AbilityManagerComponent : Node
         ability.Activate();
         OnAbilityActivated(new AbilityEventArgs(ability));
 
-        if (ability.Type == Ability.AbilityType.Active)
+        switch (ability.Type)
+        {
             // For active abilities, immediately emit cooldown state
-            OnAbilityStateChanged(new AbilityStateEventArgs(ability, Ability.AbilityState.Cooldown));
-
-        if (ability.Type is Ability.AbilityType.Channeled or Ability.AbilityType.Charged)
-            ((Entity)Owner).Moveable = false;
+            case Ability.AbilityType.Active:
+                OnAbilityStateChanged(new AbilityStateEventArgs(ability, Ability.AbilityState.Cooldown));
+                break;
+            case Ability.AbilityType.Channeled or Ability.AbilityType.Charged:
+                ((Entity)Owner).Moveable = false;
+                break;
+        }
 
         GD.Print($"Activated ability {ability.Name}");
     }
@@ -359,22 +363,22 @@ public partial class AbilityManagerComponent : Node
 
     #region Event Invokers
 
-    protected virtual void OnAbilityActivated(AbilityEventArgs e)
+    protected void OnAbilityActivated(AbilityEventArgs e)
     {
         AbilityActivated?.Invoke(this, e);
     }
 
-    protected virtual void OnAbilityCooldownChanged(AbilityCooldownEventArgs e)
+    protected void OnAbilityCooldownChanged(AbilityCooldownEventArgs e)
     {
         AbilityCooldownChanged?.Invoke(this, e);
     }
 
-    protected virtual void OnAbilityStateChanged(AbilityStateEventArgs e)
+    protected void OnAbilityStateChanged(AbilityStateEventArgs e)
     {
         AbilityStateChanged?.Invoke(this, e);
     }
 
-    protected virtual void OnAbilityChanged(AbilitySlotEventArgs e)
+    protected void OnAbilityChanged(AbilitySlotEventArgs e)
     {
         AbilityChanged?.Invoke(this, e);
     }

@@ -3,6 +3,7 @@ using Godot;
 
 namespace ChronosDescent.Scripts.resource;
 
+[GlobalClass]
 public partial class BaseStats : Resource, ICloneable
 {
     public enum CombatResource

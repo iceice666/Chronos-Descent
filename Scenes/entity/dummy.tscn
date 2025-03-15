@@ -1,0 +1,67 @@
+[gd_scene load_steps=12 format=3 uid="uid://bvnq7r1s2138p"]
+
+[ext_resource type="Script" uid="uid://ci6m7q8srxbu4" path="res://Scripts/node/Entity.cs" id="1_jk4ue"]
+[ext_resource type="Texture2D" uid="uid://dowioby133mv0" path="res://Assets/Entity/dummy.png" id="2_vw43e"]
+[ext_resource type="Script" uid="uid://bf4bfk8cc5j7p" path="res://Scripts/node/Component/EffectTriggerComponent.cs" id="3_hw38b"]
+[ext_resource type="Script" uid="uid://dkefqru8ptbxr" path="res://Scripts/node/Component/CombatComponent.cs" id="4_a01bh"]
+[ext_resource type="Script" uid="uid://bghylo3hjyh03" path="res://Scripts/node/Component/EffectManagerComponent.cs" id="5_eh7ut"]
+[ext_resource type="Script" uid="uid://dm1rr2m3v20ct" path="res://Scripts/node/Component/StatsComponent.cs" id="6_k86i5"]
+[ext_resource type="Script" uid="uid://by1njeut5gcst" path="res://Scripts/node/Component/DamageIndicatorManagerComponent.cs" id="7_ckp21"]
+[ext_resource type="Script" uid="uid://5pq6iq2vk2fb" path="res://Scripts/resource/BaseStats.cs" id="7_eh7ut"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jk4ue"]
+size = Vector2(6, 18)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vw43e"]
+size = Vector2(12, 3)
+
+[sub_resource type="Resource" id="Resource_k86i5"]
+script = ExtResource("7_eh7ut")
+AttackSpeed = 4.0
+CriticalChance = 50.0
+CriticalDamage = 100.0
+Defense = 100.0
+Health = 114514.0
+MaxHealth = 114514.0
+MoveSpeed = 300.0
+ResourceType = 2
+CurrentResource = 100.0
+MaxResource = 100.0
+metadata/_custom_type_script = "uid://5pq6iq2vk2fb"
+
+[node name="Dummy" type="CharacterBody2D"]
+script = ExtResource("1_jk4ue")
+metadata/_custom_type_script = "uid://ci6m7q8srxbu4"
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -4)
+texture = ExtResource("2_vw43e")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -2)
+shape = SubResource("RectangleShape2D_jk4ue")
+debug_color = Color(0.350349, 0.812157, 0.349349, 0.42)
+metadata/_edit_lock_ = true
+
+[node name="EffectTriggerComponent" type="Area2D" parent="."]
+script = ExtResource("3_hw38b")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EffectTriggerComponent"]
+position = Vector2(0, 6.5)
+shape = SubResource("RectangleShape2D_vw43e")
+debug_color = Color(0.57844, 0.41746, 0.925219, 0.42)
+metadata/_edit_lock_ = true
+
+[node name="CombatComponent" type="Node" parent="."]
+script = ExtResource("4_a01bh")
+
+[node name="EffectManagerComponent" type="Node" parent="."]
+script = ExtResource("5_eh7ut")
+
+[node name="StatsComponent" type="Node" parent="."]
+script = ExtResource("6_k86i5")
+Base = SubResource("Resource_k86i5")
+
+[node name="DamageIndicatorManagerComponent" type="Node" parent="."]
+script = ExtResource("7_ckp21")
+metadata/_custom_type_script = "uid://by1njeut5gcst"

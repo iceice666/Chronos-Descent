@@ -147,103 +147,69 @@ public partial class Ability : Resource
     // Activate the ability
     public virtual void Activate()
     {
-        // Handle different ability types
-        switch (Type)
-        {
-            case AbilityType.Active:
-                ExecuteEffect();
-                StartCooldown();
-                break;
+        // AbilityType.Active:
+        //     ExecuteEffect();
+        //     StartCooldown();
 
-            case AbilityType.Passive:
-                // Passive abilities are always active
-                break;
 
-            case AbilityType.Toggle:
-                IsToggled = !IsToggled;
-                if (IsToggled)
-                    OnToggleOn();
-                else
-                    OnToggleOff();
-                break;
+        // AbilityType.Passive:
+        //     // Passive abilities are always active
 
-            case AbilityType.Charged:
-                IsCharging = true;
-                CurrentChargeTime = 0.0;
-                break;
 
-            case AbilityType.Channeled:
-                IsChanneling = true;
-                CurrentChannelingTime = 0.0;
-                OnChannelingStart();
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
+        // AbilityType.Toggle:
+        //    IsToggled = !IsToggled;
+        //    if (IsToggled)
+        //        OnToggleOn();
+        //    else
+        //        OnToggleOff();
+
+
+        // AbilityType.Charged
+        //     IsCharging = true;
+        //     CurrentChargeTime = 0.0;
+
+
+        // AbilityType.Channeled
+        //      IsChanneling = true;
+        //      CurrentChannelingTime = 0.0;
+        //      OnChannelingStart();
     }
 
-    // Update the ability state
-    protected void UpdateState(double delta)
+    protected void UpdateCooldown(double delta)
     {
-        // Update cooldown
-        if (CurrentCooldown > 0)
-        {
-            CurrentCooldown -= delta;
-            if (CurrentCooldown < 0) CurrentCooldown = 0;
-        }
+        if (CurrentCooldown <= 0) return;
 
-        switch (Type)
-        {
-            // Update charging
-            case AbilityType.Charged when !IsCharging:
-                return;
-            case AbilityType.Charged:
-            {
-                CurrentChargeTime += delta;
-                if (CurrentChargeTime >= MaxChargeTime && AutoCastWhenFull) ReleaseCharge();
-
-                break;
-            }
-
-            // Update channeling
-            case AbilityType.Channeled when !IsChanneling:
-                return;
-            case AbilityType.Channeled:
-            {
-                CurrentChannelingTime += delta;
-                OnChannelingTick(delta);
-
-                if (CurrentChannelingTime >= ChannelingDuration) CompleteChanneling();
-
-                break;
-            }
-
-            // For toggle abilities, apply effect while toggled
-            case AbilityType.Toggle:
-            {
-                if (IsToggled) OnToggleTick(delta);
-                break;
-            }
-
-            // For passive abilities, always apply effect
-            case AbilityType.Passive:
-                OnPassiveTick(delta);
-                break;
-            case AbilityType.Active:
-                break;
-
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
+        CurrentCooldown -= delta;
+        if (CurrentCooldown < 0) CurrentCooldown = 0;
     }
+
 
     public virtual void Update(double delta)
     {
-        UpdateState(delta);
+        // AbilityType.Charged:
+        // if (!IsCharging) return;
+        // CurrentChargeTime += delta;
+        // if (CurrentChargeTime >= MaxChargeTime && AutoCastWhenFull) ReleaseCharge();
+
+        // AbilityType.Channeled:
+        // if (!IsChanneling) return;
+        // CurrentChannelingTime += delta;
+        // OnChannelingTick(delta);
+        // if (CurrentChannelingTime >= ChannelingDuration) CompleteChanneling();
+
+        // AbilityType.Toggle:
+        // if (IsToggled) OnToggleTick(delta);
+
+        // AbilityType.Passive:
+        // OnPassiveTick(delta);
+
+        // AbilityType.Active
+        // // Do nothing
     }
 
+
     // Release a charged ability
-    public virtual void ReleaseCharge()
+    public void ReleaseCharge()
     {
         if (!IsCharging) return;
 
@@ -277,7 +243,7 @@ public partial class Ability : Resource
     }
 
     // Complete a channeled ability normally
-    private void CompleteChanneling()
+    public void CompleteChanneling()
     {
         if (!IsChanneling) return;
 
@@ -385,25 +351,14 @@ public partial class Ability : Resource
     }
 
     // Custom event args
-    public class AbilityStateEventArgs : EventArgs
+    public class AbilityStateEventArgs(Ability ability, AbilityState state) : EventArgs
     {
-        public AbilityStateEventArgs(Ability ability, AbilityState state)
-        {
-            Ability = ability;
-            State = state;
-        }
-
-        public Ability Ability { get; }
-        public AbilityState State { get; }
+        public Ability Ability { get; } = ability;
+        public AbilityState State { get; } = state;
     }
 
-    public class AbilityCooldownEventArgs : EventArgs
+    public class AbilityCooldownEventArgs(Ability ability) : EventArgs
     {
-        public AbilityCooldownEventArgs(Ability ability)
-        {
-            Ability = ability;
-        }
-
-        public Ability Ability { get; }
+        public Ability Ability { get; } = ability;
     }
 }

@@ -3,7 +3,7 @@ using System.Linq;
 using ChronosDescent.Scripts.node.Component;
 using Godot;
 
-namespace ChronosDescent.Scripts.resource.Abilities.Example;
+namespace ChronosDescent.Scripts.resource.Abilities;
 
 [GlobalClass]
 public partial class TimeRewindAbility : Ability
@@ -29,7 +29,7 @@ public partial class TimeRewindAbility : Ability
 
         // Check if there's enough history to rewind
         if (Caster.TimeManipulation == null) return false;
-        
+
         _positionHistory = Caster.TimeManipulation.GetPositionHistory(RewindDuration).ToList();
         return _positionHistory.Count > 0;
     }
@@ -50,6 +50,14 @@ public partial class TimeRewindAbility : Ability
         OnChannelingStart();
 
         GD.Print($"{Caster.Name} activated {Name} - rewinding {RewindDuration} seconds");
+    }
+
+    public override void Update(double delta)
+    {
+        if (!IsChanneling) return;
+        CurrentChannelingTime += delta;
+        OnChannelingTick(delta);
+        if (CurrentChannelingTime >= ChannelingDuration) CompleteChanneling();
     }
 
 

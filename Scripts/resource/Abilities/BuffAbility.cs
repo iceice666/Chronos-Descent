@@ -1,7 +1,7 @@
 using ChronosDescent.Scripts.node;
 using Godot;
 
-namespace ChronosDescent.Scripts.resource.Abilities.Example;
+namespace ChronosDescent.Scripts.resource.Abilities;
 
 [GlobalClass]
 public partial class BuffAbility : Ability
@@ -26,6 +26,11 @@ public partial class BuffAbility : Ability
     public override void Initialize()
     {
         BuffEffect.Duration = 1.1;
+    }
+
+    public override void Update(double delta)
+    {
+        if (IsToggled) OnToggleTick(delta);
     }
 
     protected override void OnToggleOn()
@@ -71,13 +76,6 @@ public partial class BuffAbility : Ability
             ApplyEffectToArea();
     }
 
-    protected override void OnPassiveTick(double delta)
-    {
-        // For passive abilities, ensure the effect is always active
-        if (BuffEffect == null) return;
-
-        if (!Caster.HasEffect(BuffEffect.Name)) ApplyEffectToTarget(Caster);
-    }
 
     private void ApplyEffectToTarget(Entity target)
     {

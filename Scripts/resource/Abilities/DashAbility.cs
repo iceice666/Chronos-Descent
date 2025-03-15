@@ -2,7 +2,7 @@ using ChronosDescent.Scripts.node;
 using ChronosDescent.Scripts.node.Component;
 using Godot;
 
-namespace ChronosDescent.Scripts.resource.Abilities.Example;
+namespace ChronosDescent.Scripts.resource.Abilities;
 
 [GlobalClass]
 public partial class DashAbility : Ability
@@ -11,7 +11,6 @@ public partial class DashAbility : Ability
     private Vector2 _dashTarget = Vector2.Zero;
 
     private bool _isDashing;
-    private bool _processing = true;
 
     public DashAbility()
     {
@@ -23,12 +22,15 @@ public partial class DashAbility : Ability
 
     [Export] public double DashDistance { get; set; } = 200.0;
     [Export] public double DashSpeed { get; set; } = 1000.0;
-    [Export] public bool DamageOnDash { get; set; }
+    [Export] public bool DamageOnDash { get; set; } = true;
     [Export] public double DashDamage { get; set; } = 15.0;
     [Export] public double DamageRadius { get; set; } = 50.0;
 
     public override void Activate()
     {
+        // Start cooldown
+        StartCooldown();
+
         // Get the direction to dash
         Vector2 direction;
         if (Caster is Player player)
@@ -50,11 +52,9 @@ public partial class DashAbility : Ability
         _dashDirection = direction.Normalized();
         _dashTarget = Caster.Position + _dashDirection * (float)DashDistance;
 
-        // Disable movement control during dash
+        // Disable collision
+        Caster.DisableCollision(true);
         Caster.Moveable = false;
-
-        // Begin process for dash movement
-        _processing = true;
 
         GD.Print($"{Caster.Name} activated {Name} in direction {_dashDirection}");
     }
@@ -62,8 +62,9 @@ public partial class DashAbility : Ability
 
     public override void Update(double delta)
     {
-        UpdateState(delta);
 
+        UpdateCooldown(delta);
+        
         if (!_isDashing) return;
 
         // Calculate movement distance this frame
@@ -102,11 +103,10 @@ public partial class DashAbility : Ability
         // Clean up
         _isDashing = false;
 
-        // Stop processing
-        _processing = false;
-
-        // Start cooldown
-        StartCooldown();
+        // Enable collision
+        Caster.DisableCollision(false);
+        
+        Caster.Moveable = true;
     }
 
     private void DealDashDamage()
@@ -122,29 +122,5 @@ public partial class DashAbility : Ability
 
             if (distance <= DamageRadius) target.TakeDamage(DashDamage);
         }
-    }
-
-    // When ability is charged
-    public override void ReleaseCharge()
-    {
-        if (!IsCharging) return;
-
-        // Calculate charge percentage
-        var chargePercentage = (CurrentChargeTime - MinChargeTime) / (MaxChargeTime - MinChargeTime);
-        chargePercentage = Mathf.Clamp(chargePercentage, 0.0, 1.0);
-
-        // Increase dash distance based on charge
-        var originalDistance = DashDistance;
-        DashDistance *= 1.0 + chargePercentage;
-
-        // Activate the dash with increased distance
-        Activate();
-
-        // Reset distance for next time
-        DashDistance = originalDistance;
-
-        // Reset charging state
-        IsCharging = false;
-        CurrentChargeTime = 0.0;
     }
 }

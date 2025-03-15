@@ -1,7 +1,7 @@
 using ChronosDescent.Scripts.node;
 using Godot;
 
-namespace ChronosDescent.Scripts.resource.Abilities.Example;
+namespace ChronosDescent.Scripts.resource.Abilities;
 
 [GlobalClass]
 public partial class ChargedBlastAbility : Ability
@@ -32,26 +32,13 @@ public partial class ChargedBlastAbility : Ability
         GD.Print($"{Caster.Name} started charging {Name}");
     }
 
-    public override void ReleaseCharge()
+    public override void Update(double delta)
     {
         if (!IsCharging) return;
-
-        // Calculate charge percentage
-        var chargePercentage = (CurrentChargeTime - MinChargeTime) / (MaxChargeTime - MinChargeTime);
-        chargePercentage = Mathf.Clamp(chargePercentage, 0.0, 1.0);
-
-        // Execute with appropriate power
-        ExecuteEffect(chargePercentage);
-
-        // Reset charging state
-        IsCharging = false;
-        CurrentChargeTime = 0.0;
-
-        // Start cooldown
-        StartCooldown();
-
-        GD.Print($"{Caster.Name} released {Name} with {chargePercentage * 100}% charge");
+        CurrentChargeTime += delta;
+        if (CurrentChargeTime >= MaxChargeTime && AutoCastWhenFull) ReleaseCharge();
     }
+
 
     protected override void ExecuteEffect(double powerMultiplier)
     {
@@ -73,17 +60,16 @@ public partial class ChargedBlastAbility : Ability
             {
                 var distance = targetPosition.DistanceTo(target.GlobalPosition);
 
-                if (distance <= radius)
-                {
-                    // Calculate damage falloff based on distance from center
-                    var distanceFactor = 1.0 - distance / radius;
-                    var finalDamage = damage * distanceFactor;
+                if ((distance >radius)) continue;
+                
+                // Calculate damage falloff based on distance from center
+                var distanceFactor = 1.0 - distance / radius;
+                var finalDamage = damage * distanceFactor;
 
-                    // Apply damage
-                    target.TakeDamage(finalDamage);
+                // Apply damage
+                target.TakeDamage(finalDamage);
 
-                    GD.Print($"{Name} hit {target.Name} for {finalDamage} damage");
-                }
+                GD.Print($"{Name} hit {target.Name} for {finalDamage} damage");
             }
     }
 

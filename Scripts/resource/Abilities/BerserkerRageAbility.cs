@@ -1,7 +1,7 @@
 using Godot;
 using BerserkerRageEffect = ChronosDescent.Scripts.resource.Effects.Example.BerserkerRageEffect;
 
-namespace ChronosDescent.Scripts.resource.Abilities.Example;
+namespace ChronosDescent.Scripts.resource.Abilities;
 
 [GlobalClass]
 public partial class BerserkerRageAbility : Ability
@@ -21,9 +21,15 @@ public partial class BerserkerRageAbility : Ability
     [Export] public double HealthThreshold { get; set; } = 0.3; // 30% health
     [Export] public double MaxStrengthBonus { get; set; } = 50.0; // Maximum strength bonus
 
+
+    public override void Update(double delta)
+    {
+        OnPassiveTick(delta);
+    }
+
     protected override void OnPassiveTick(double delta)
     {
-        // Check if health is below threshold
+        // Check if health is below the threshold
         var healthPercentage = Caster.Stats.Health / Caster.Stats.MaxHealth;
 
         if (healthPercentage <= HealthThreshold)
@@ -35,7 +41,7 @@ public partial class BerserkerRageAbility : Ability
         }
         else
         {
-            // Remove rage effect if health is above threshold
+            // Remove rage effect if health is above the threshold
             if (!Caster.HasEffect(_rageEffect.Name)) return;
             Caster.RemoveEffect(_rageEffect.Name);
             GD.Print($"{Caster.Name}'s {Name} deactivated");
