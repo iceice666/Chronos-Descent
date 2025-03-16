@@ -87,17 +87,17 @@ public partial class AbilityContainer : HBoxContainer
             slot.UpdateCooldown(ability.CurrentCooldown, ability.Cooldown);
 
             // Set initial state
-            Ability.AbilityState state;
-            if (ability.IsCharging)
-                state = Ability.AbilityState.Charging;
-            else if (ability.IsChanneling)
-                state = Ability.AbilityState.Channeling;
-            else if (ability.IsToggled)
-                state = Ability.AbilityState.ToggledOn;
+            BaseAbility.AbilityState state;
+            if (ability is BaseChargedAbility { IsCharging: true })
+                state = BaseAbility.AbilityState.Charging;
+            else if (ability is BaseChanneledAbility { IsChanneling: true })
+                state = BaseAbility.AbilityState.Channeling;
+            else if (ability is BaseToggleAbility { IsToggled: true })
+                state = BaseAbility.AbilityState.ToggledOn;
             else if (ability.IsOnCooldown)
-                state = Ability.AbilityState.Cooldown;
+                state = BaseAbility.AbilityState.Cooldown;
             else
-                state = Ability.AbilityState.Default;
+                state = BaseAbility.AbilityState.Default;
 
             slot.UpdateState(state);
         }

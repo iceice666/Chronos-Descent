@@ -4,13 +4,12 @@ using Godot;
 namespace ChronosDescent.Scripts.resource.Abilities;
 
 [GlobalClass]
-public partial class ChargedBlastAbility : Ability
+public partial class ChargedBlastAbility : BaseChargedAbility
 {
     public ChargedBlastAbility()
     {
         Name = "Charged Blast";
         Description = "Hold to charge a powerful blast. Longer charge increases radius and damage.";
-        Type = AbilityType.Charged;
         Cooldown = 8.0;
         MaxChargeTime = 2.0;
         MinChargeTime = 0.3;
@@ -20,24 +19,6 @@ public partial class ChargedBlastAbility : Ability
     [Export] public double MinRadius { get; set; } = 50.0;
     [Export] public double MaxRadius { get; set; } = 200.0;
     [Export] public double Range { get; set; } = 300.0;
-
-    public override void Activate()
-    {
-        if (!CanActivate()) return;
-
-        // Start charging
-        IsCharging = true;
-        CurrentChargeTime = 0.0;
-
-        GD.Print($"{Caster.Name} started charging {Name}");
-    }
-
-    public override void Update(double delta)
-    {
-        if (!IsCharging) return;
-        CurrentChargeTime += delta;
-        if (CurrentChargeTime >= MaxChargeTime && AutoCastWhenFull) ReleaseCharge();
-    }
 
 
     protected override void ExecuteEffect(double powerMultiplier)
@@ -60,8 +41,8 @@ public partial class ChargedBlastAbility : Ability
             {
                 var distance = targetPosition.DistanceTo(target.GlobalPosition);
 
-                if ((distance >radius)) continue;
-                
+                if (distance > radius) continue;
+
                 // Calculate damage falloff based on distance from center
                 var distanceFactor = 1.0 - distance / radius;
                 var finalDamage = damage * distanceFactor;
@@ -76,8 +57,7 @@ public partial class ChargedBlastAbility : Ability
     protected override void OnChargingCanceled()
     {
         if (!IsCharging) return;
-
-
+        
         IsCharging = false;
         CurrentChargeTime = 0.0;
 

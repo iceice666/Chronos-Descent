@@ -1,10 +1,11 @@
 using ChronosDescent.Scripts.node;
+using ChronosDescent.Scripts.resource.Effects.Example;
 using Godot;
 
 namespace ChronosDescent.Scripts.resource.Abilities;
 
 [GlobalClass]
-public partial class BuffAbility : Ability
+public partial class BuffAbility : BaseToggleAbility
 {
     private double _lastTick;
 
@@ -12,11 +13,10 @@ public partial class BuffAbility : Ability
     {
         Name = "Buff";
         Description = "Apply a beneficial effect";
-        Type = AbilityType.Toggle; // Default to toggle
         Cooldown = 1.0; // Short cooldown for toggle abilities
     }
 
-    [Export] public Effect BuffEffect { get; set; }
+    [Export] public Effect BuffEffect { get; set; } = new StunEffect();
     [Export] public bool TargetSelf { get; set; } = true;
     [Export] public double Range { get; set; } = 150.0;
     [Export] public double AreaOfEffect { get; set; } // 0 means single target
@@ -28,10 +28,6 @@ public partial class BuffAbility : Ability
         BuffEffect.Duration = 1.1;
     }
 
-    public override void Update(double delta)
-    {
-        if (IsToggled) OnToggleTick(delta);
-    }
 
     protected override void OnToggleOn()
     {

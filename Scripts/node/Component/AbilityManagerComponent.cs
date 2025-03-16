@@ -18,13 +18,17 @@ public partial class AbilityManagerComponent : Node
     }
 
     // List of abilities - sized to match enum values
-    private readonly Ability[] _abilities = new Ability[4];
+    private readonly BaseAbility[] _abilities = new BaseAbility[4];
 
-    private readonly Dictionary<Ability, EventHandler<Ability.AbilityCooldownEventArgs>> _cooldownChangedHandlers =
-        new();
+    private readonly Dictionary<BaseAbility, EventHandler<BaseAbility.AbilityCooldownEventArgs>>
+        _cooldownChangedHandlers =
+            new();
 
     // Dictionary to store references to event handlers for unsubscribing
-    private readonly Dictionary<Ability, EventHandler<Ability.AbilityStateEventArgs>> _stateChangedHandlers = new();
+    private readonly Dictionary<BaseAbility, EventHandler<BaseAbility.AbilityStateEventArgs>> _stateChangedHandlers =
+        new();
+
+    private Entity _caster;
 
     // Track currently active ability slot
     private Slot _currentActiveSlot = Slot.Unknown;
@@ -37,6 +41,7 @@ public partial class AbilityManagerComponent : Node
 
     public override void _Ready()
     {
+        _caster = GetOwner<Entity>();
     }
 
     public override void _PhysicsProcess(double delta)
@@ -50,7 +55,7 @@ public partial class AbilityManagerComponent : Node
     }
 
     // Add an ability
-    public void SetAbility(Slot slot, Ability ability)
+    public void SetAbility(Slot slot, BaseAbility ability)
     {
         if (slot == Slot.Unknown || ability == null) return;
 
@@ -97,14 +102,14 @@ public partial class AbilityManagerComponent : Node
     }
 
     // Subscribe to ability events
-    private void SubscribeToAbilityEvents(Ability ability, Slot slot)
+    private void SubscribeToAbilityEvents(BaseAbility ability, Slot slot)
     {
         // Create handler for state changed
-        EventHandler<Ability.AbilityStateEventArgs> stateHandler = (sender, e) =>
+        EventHandler<BaseAbility.AbilityStateEventArgs> stateHandler = (sender, e) =>
             HandleAbilityStateChanged(ability, slot);
 
         // Create handler for cooldown changed
-        EventHandler<Ability.AbilityCooldownEventArgs> cooldownHandler = (sender, e) =>
+        EventHandler<BaseAbility.AbilityCooldownEventArgs> cooldownHandler = (sender, e) =>
             HandleAbilityCooldownChanged(ability);
 
         // Store handlers for later unsubscription
@@ -117,7 +122,7 @@ public partial class AbilityManagerComponent : Node
     }
 
     // Unsubscribe from ability events
-    private void UnsubscribeFromAbilityEvents(Ability ability)
+    private void UnsubscribeFromAbilityEvents(BaseAbility ability)
     {
         if (_stateChangedHandlers.TryGetValue(ability, out var stateHandler))
         {
@@ -133,67 +138,76 @@ public partial class AbilityManagerComponent : Node
     }
 
     // Handle ability state changed
-    private void HandleAbilityStateChanged(Ability ability, Slot slot)
+    private void HandleAbilityStateChanged(BaseAbility ability, Slot slot)
     {
-        var state = Ability.AbilityState.Default;
+        BaseAbility.AbilityState state;
 
         if (ability.IsOnCooldown)
         {
-            state = Ability.AbilityState.Cooldown;
+            state = BaseAbility.AbilityState.Cooldown;
+            _caster.Moveable = true;
         }
-        else if (ability.IsCharging)
+        else
         {
-            state = Ability.AbilityState.Charging;
-            _currentActiveSlot = slot;
-        }
-        else if (ability.IsChanneling)
-        {
-            state = Ability.AbilityState.Channeling;
-            _currentActiveSlot = slot;
-        }
-        else if (ability.IsToggled)
-        {
-            state = Ability.AbilityState.ToggledOn;
-        }
-        else if (ability.Type == Ability.AbilityType.Toggle && !ability.IsToggled)
-        {
-            state = Ability.AbilityState.ToggledOff;
-        }
-        else if (!ability.IsCharging && !ability.IsChanneling)
-        {
-            // If ability was active and is no longer active, clear the slot
-            if (GetSlotForAbility(ability) == _currentActiveSlot) _currentActiveSlot = Slot.Unknown;
+            switch (ability)
+            {
+                case BaseChargedAbility { IsCharging: true }:
+                    state = BaseAbility.AbilityState.Charging;
+                    _currentActiveSlot = slot;
+                    break;
+                case BaseChanneledAbility { IsChanneling: true }:
+                    state = BaseAbility.AbilityState.Channeling;
+                    _currentActiveSlot = slot;
+                    break;
+                case BaseToggleAbility { IsToggled: true }:
+                    state = BaseAbility.AbilityState.ToggledOn;
+                    break;
+                case BaseToggleAbility { IsToggled: false }:
+                    state = BaseAbility.AbilityState.ToggledOff;
+                    break;
+                default:
+                {
+                    if (ability is BaseChanneledAbility { IsChanneling: false }
+                            or BaseChargedAbility { IsCharging: false }
+                        && GetSlotForAbility(ability) == _currentActiveSlot)
+                        _currentActiveSlot = Slot.Unknown;
+
+                    state = BaseAbility.AbilityState.Default;
+                    break;
+                }
+            }
         }
 
         OnAbilityStateChanged(new AbilityStateEventArgs(ability, state));
     }
 
     // Handle ability cooldown changed
-    private void HandleAbilityCooldownChanged(Ability ability)
+    private void HandleAbilityCooldownChanged(BaseAbility ability)
     {
         OnAbilityCooldownChanged(new AbilityCooldownEventArgs(ability, ability.CurrentCooldown));
 
-        switch (ability.CurrentCooldown)
+        if (ability.IsOnCooldown)
         {
-            // Also emit state changed if cooldown becomes 0
-            case <= 0:
-                OnAbilityStateChanged(new AbilityStateEventArgs(ability, Ability.AbilityState.Default));
-                break;
-            case > 0 when !ability.IsCharging && !ability.IsChanneling && !ability.IsToggled:
-                OnAbilityStateChanged(new AbilityStateEventArgs(ability, Ability.AbilityState.Cooldown));
-                break;
+            if (ability is BaseChargedAbility { IsCharging: false }
+                or BaseChanneledAbility { IsChanneling: false }
+                or BaseToggleAbility { IsToggled: false })
+                OnAbilityStateChanged(new AbilityStateEventArgs(ability, BaseAbility.AbilityState.Default));
+        }
+        else
+        {
+            OnAbilityStateChanged(new AbilityStateEventArgs(ability, BaseAbility.AbilityState.Default));
         }
     }
 
     // Get an ability by slot
-    public Ability GetAbility(Slot slot)
+    public BaseAbility GetAbility(Slot slot)
     {
         if (slot == Slot.Unknown || (int)slot >= _abilities.Length) return null;
         return _abilities[(int)slot];
     }
 
     // Get the slot for a specific ability
-    private Slot GetSlotForAbility(Ability ability)
+    private Slot GetSlotForAbility(BaseAbility ability)
     {
         for (var i = 0; i < _abilities.Length; i++)
             if (_abilities[i] == ability)
@@ -208,23 +222,25 @@ public partial class AbilityManagerComponent : Node
         if (slot == Slot.Unknown) return;
 
         var ability = GetAbility(slot);
-        if (ability == null)
+        switch (ability)
         {
-            GD.Print($"Ability slot {slot} is empty");
-            return;
-        }
-
-        // Don't allow activating a new channeled/charged ability while another is active
-        if (ability.Type is Ability.AbilityType.Channeled or Ability.AbilityType.Charged &&
-            _currentActiveSlot != Slot.Unknown && _currentActiveSlot != slot)
-        {
-            if (!IsAbilityOnCooldown(_currentActiveSlot))
-            {
-                GD.Print($"Cannot activate {ability.Name} while another ability is active");
+            case null:
+                GD.Print($"Ability slot {slot} is empty");
                 return;
-            }
 
-            _currentActiveSlot = Slot.Unknown;
+            // Don't allow activating a new channeled/charged ability while another is active
+            case BaseChanneledAbility or BaseChargedAbility when
+                _currentActiveSlot != Slot.Unknown && _currentActiveSlot != slot:
+            {
+                if (!IsAbilityOnCooldown(_currentActiveSlot))
+                {
+                    GD.Print($"Cannot activate {ability.Name} while another ability is active");
+                    return;
+                }
+
+                _currentActiveSlot = Slot.Unknown;
+                break;
+            }
         }
 
         if (!ability.CanActivate())
@@ -236,16 +252,7 @@ public partial class AbilityManagerComponent : Node
         ability.Activate();
         OnAbilityActivated(new AbilityEventArgs(ability));
 
-        switch (ability.Type)
-        {
-            // For active abilities, immediately emit cooldown state
-            case Ability.AbilityType.Active:
-                OnAbilityStateChanged(new AbilityStateEventArgs(ability, Ability.AbilityState.Cooldown));
-                break;
-            case Ability.AbilityType.Channeled or Ability.AbilityType.Charged:
-                ((Entity)Owner).Moveable = false;
-                break;
-        }
+        _caster.Moveable = false;
 
         GD.Print($"Activated ability {ability.Name}");
     }
@@ -264,9 +271,10 @@ public partial class AbilityManagerComponent : Node
         }
 
         var ability = GetAbility(_currentActiveSlot);
-        if (ability?.IsCharging != true) return;
+        if (ability is not BaseChargedAbility ab) return;
+        if (ab.IsCharging != true) return;
 
-        ability.ReleaseCharge();
+        ab.ReleaseCharge();
         _currentActiveSlot = Slot.Unknown;
 
         ((Entity)Owner).Moveable = true;
@@ -280,9 +288,10 @@ public partial class AbilityManagerComponent : Node
         if (_currentActiveSlot != Slot.Unknown)
         {
             var ability = GetAbility(_currentActiveSlot);
-            if (ability?.IsCharging == true)
+            if (ability is not BaseChargedAbility ab) return;
+            if (ab.IsCharging)
             {
-                ability.CancelCharge();
+                ab.CancelCharge();
                 _currentActiveSlot = Slot.Unknown;
             }
             else
@@ -306,9 +315,11 @@ public partial class AbilityManagerComponent : Node
         }
 
         var ability = GetAbility(_currentActiveSlot);
-        if (ability?.IsChanneling != true) return;
 
-        ability.InterruptChanneling();
+        if (ability is not BaseChanneledAbility ab) return;
+        if (ab.IsChanneling != true) return;
+
+        ab.InterruptChanneling();
         _currentActiveSlot = Slot.Unknown;
 
         GD.Print($"Interrupted channeling of {ability.Name}");
@@ -317,47 +328,47 @@ public partial class AbilityManagerComponent : Node
     // Custom event args
     public class AbilityEventArgs : EventArgs
     {
-        public AbilityEventArgs(Ability ability)
+        public AbilityEventArgs(BaseAbility ability)
         {
             Ability = ability;
         }
 
-        public Ability Ability { get; }
+        public BaseAbility Ability { get; }
     }
 
     public class AbilityCooldownEventArgs : EventArgs
     {
-        public AbilityCooldownEventArgs(Ability ability, double cooldown)
+        public AbilityCooldownEventArgs(BaseAbility ability, double cooldown)
         {
             Ability = ability;
             Cooldown = cooldown;
         }
 
-        public Ability Ability { get; }
+        public BaseAbility Ability { get; }
         public double Cooldown { get; }
     }
 
     public class AbilityStateEventArgs : EventArgs
     {
-        public AbilityStateEventArgs(Ability ability, Ability.AbilityState state)
+        public AbilityStateEventArgs(BaseAbility ability, BaseAbility.AbilityState state)
         {
             Ability = ability;
             State = state;
         }
 
-        public Ability Ability { get; }
-        public Ability.AbilityState State { get; }
+        public BaseAbility Ability { get; }
+        public BaseAbility.AbilityState State { get; }
     }
 
     public class AbilitySlotEventArgs : EventArgs
     {
-        public AbilitySlotEventArgs(Ability ability, Slot slot)
+        public AbilitySlotEventArgs(BaseAbility ability, Slot slot)
         {
             Ability = ability;
             SlotValue = slot;
         }
 
-        public Ability Ability { get; }
+        public BaseAbility Ability { get; }
         public Slot SlotValue { get; }
     }
 
@@ -385,7 +396,7 @@ public partial class AbilityManagerComponent : Node
 
     #endregion
 
-    #region Ability State Helpers
+    #region BaseAbility State Helpers
 
     // Get the cooldown of an ability
     public double GetAbilityCooldown(Slot slot)
@@ -409,12 +420,18 @@ public partial class AbilityManagerComponent : Node
 
     public bool IsAbilityCharging(Slot slot)
     {
-        return GetAbility(slot)?.IsCharging ?? false;
+        var ability = GetAbility(slot);
+        if (ability is BaseChargedAbility ab) return ab.IsCharging;
+
+        return false;
     }
 
     public bool IsAbilityChanneling(Slot slot)
     {
-        return GetAbility(slot)?.IsChanneling ?? false;
+        var ability = GetAbility(slot);
+        if (ability is BaseChanneledAbility ab) return ab.IsChanneling;
+
+        return false;
     }
 
     public bool IsAbilityOnCooldown(Slot slot)
@@ -424,7 +441,10 @@ public partial class AbilityManagerComponent : Node
 
     public bool IsAbilityToggled(Slot slot)
     {
-        return GetAbility(slot)?.IsToggled ?? false;
+        var ability = GetAbility(slot);
+        if (ability is BaseToggleAbility ab) return ab.IsToggled;
+
+        return false;
     }
 
     public Slot GetCurrentActiveSlot()

@@ -11,10 +11,11 @@ public partial class Entity : CharacterBody2D
 {
     public delegate void EntityDeathEventHandler(Entity entity);
 
+    private CollisionShape2D _collision;
+
     public Vector2 AimDirection;
 
     public bool Moveable = true;
-    private CollisionShape2D _collision;
 
     public event EntityDeathEventHandler EntityDeath;
 
@@ -23,16 +24,18 @@ public partial class Entity : CharacterBody2D
         EntityDeath?.Invoke(entity);
     }
 
+
     public override void _Ready()
     {
         // Get component references
         Stats = GetNode<StatsComponent>("StatsComponent");
         EffectManager = GetNode<EffectManagerComponent>("EffectManagerComponent");
-        Animation = GetNode<AnimationComponent>("AnimationComponent");
-        Combat = GetNode<CombatComponent>("CombatComponent");
-        TimeManipulation = GetNode<TimeManipulationComponent>("TimeManipulationComponent");
-        AbilityManager = GetNode<AbilityManagerComponent>("AbilityManagerComponent");
         DamageIndicatorManager = GetNode<DamageIndicatorManagerComponent>("DamageIndicatorManagerComponent");
+        Combat = GetNode<CombatComponent>("CombatComponent");
+
+        TimeManipulation = GetNodeOrNull<TimeManipulationComponent>("TimeManipulationComponent");
+        AbilityManager = GetNodeOrNull<AbilityManagerComponent>("AbilityManagerComponent");
+        Animation = GetNodeOrNull<AnimationComponent>("AnimationComponent");
 
         // Setup component connections
         EffectManager.Initialize(Stats);
@@ -76,6 +79,12 @@ public partial class Entity : CharacterBody2D
 
         // Queue free the parent entity
         QueueFree();
+    }
+
+
+    public void DisableCollision(bool val)
+    {
+        _collision.Disabled = val;
     }
     
     // @formatter:off
@@ -164,10 +173,4 @@ public partial class Entity : CharacterBody2D
     }
 
     #endregion
-
-
-    public void DisableCollision(bool val)
-    {
-        _collision.Disabled = val;
-    }
 }

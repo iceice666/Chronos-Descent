@@ -11,8 +11,8 @@ public partial class AbilitySlot : Panel
     private AnimationPlayer _animationPlayer;
     private ColorRect _cooldownOverlay;
     private Label _cooldownText;
-    private Ability _currentAbility;
-    private Ability.AbilityState _currentState = Ability.AbilityState.Default;
+    private BaseAbility _currentAbility;
+    private BaseAbility.AbilityState _currentState = BaseAbility.AbilityState.Default;
 
     private Label _hotKeyLabel;
 
@@ -91,7 +91,7 @@ public partial class AbilitySlot : Panel
         }
     }
 
-    public void UpdateAbility(Ability ability)
+    public void UpdateAbility(BaseAbility ability)
     {
         _currentAbility = ability;
 
@@ -109,7 +109,7 @@ public partial class AbilitySlot : Panel
         _nameLabel.Text = ability.Name;
 
         // Reset state
-        UpdateState(Ability.AbilityState.Default);
+        UpdateState(BaseAbility.AbilityState.Default);
     }
 
     public void UpdateCooldown(double currentCooldown, double maxCooldown)
@@ -139,7 +139,7 @@ public partial class AbilitySlot : Panel
         }
     }
 
-    public void UpdateState(Ability.AbilityState state)
+    public void UpdateState(BaseAbility.AbilityState state)
     {
         if (_currentAbility == null) return;
 
@@ -154,30 +154,30 @@ public partial class AbilitySlot : Panel
         // Apply visual state based on current state
         switch (state)
         {
-            case Ability.AbilityState.Default:
+            case BaseAbility.AbilityState.Default:
                 // Default state - normal appearance
                 break;
 
-            case Ability.AbilityState.Charging:
+            case BaseAbility.AbilityState.Charging:
                 // Visual indicator for charging
                 Modulate = new Color(1.2f, 1.2f, 0.8f);
                 break;
 
-            case Ability.AbilityState.Channeling:
+            case BaseAbility.AbilityState.Channeling:
                 // Visual indicator for channeling
                 Modulate = new Color(0.8f, 1.2f, 1.2f);
                 break;
 
-            case Ability.AbilityState.ToggledOn:
+            case BaseAbility.AbilityState.ToggledOn:
                 // Visual indicator for toggled on
                 Modulate = new Color(1.2f, 1.2f, 1.5f);
                 break;
 
-            case Ability.AbilityState.ToggledOff:
+            case BaseAbility.AbilityState.ToggledOff:
                 // Visual indicator for toggled off
                 break;
 
-            case Ability.AbilityState.Cooldown:
+            case BaseAbility.AbilityState.Cooldown:
                 // Cooldown is handled by UpdateCooldown method
                 break;
         }
@@ -186,7 +186,7 @@ public partial class AbilitySlot : Panel
     public void OnActivated()
     {
         // Visual feedback when ability is activated - only if not on cooldown
-        if (_currentState == Ability.AbilityState.Cooldown) return;
+        if (_currentState == BaseAbility.AbilityState.Cooldown) return;
 
         var tween = CreateTween();
         tween.TweenProperty(this, "modulate", new Color(1.5f, 1.5f, 1.5f), 0.1);

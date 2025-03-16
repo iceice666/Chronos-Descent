@@ -11,8 +11,8 @@ public partial class AbilityIndicator : Control
     private Label _channelingLabel;
     private Label _chargingLabel;
 
-    private Ability _currentAbility;
-    private Ability.AbilityState _currentState;
+    private BaseAbility _currentAbility;
+    private BaseAbility.AbilityState _currentState;
     private ProgressBar _progressBar;
 
     public override void _Ready()
@@ -41,9 +41,9 @@ public partial class AbilityIndicator : Control
         // (handles cases where an ability is auto-cast or interrupted)
         var ability = e.Ability;
         if (_currentAbility != ability ||
-            ability.IsCharging ||
-            ability.IsChanneling ||
-            (!ability.IsOnCooldown && ability.Type != Ability.AbilityType.Active)) return;
+            ability is BaseChanneledAbility { IsChanneling: true } ||
+            ability is BaseChargedAbility { IsCharging: true } ||
+            (!ability.IsOnCooldown && ability is not BaseActiveAbility)) return;
 
         _currentAbility = null;
         Visible = false;
@@ -54,8 +54,9 @@ public partial class AbilityIndicator : Control
         if (!Visible || _currentAbility == null) return;
 
         // Check for state changes that might have happened
-        if ((_currentState == Ability.AbilityState.Charging && !_currentAbility.IsCharging) ||
-            (_currentState == Ability.AbilityState.Channeling && !_currentAbility.IsChanneling))
+        if ((_currentState == BaseAbility.AbilityState.Charging && !((BaseChargedAbility)_currentAbility).IsCharging) ||
+            (_currentState == BaseAbility.AbilityState.Channeling &&
+             !((BaseChanneledAbility)_currentAbility).IsChanneling))
         {
             // The ability has stopped charging/channeling
             _currentAbility = null;
@@ -72,8 +73,8 @@ public partial class AbilityIndicator : Control
         var state = e.State;
 
         // Show the indicator only for charging and channeling states
-        if (state is not (Ability.AbilityState.Charging
-            or Ability.AbilityState.Channeling))
+        if (state is not (BaseAbility.AbilityState.Charging
+            or BaseAbility.AbilityState.Channeling))
         {
             // If this is our current ability, hide the indicator
             if (_currentAbility != ability) return;
@@ -93,23 +94,37 @@ public partial class AbilityIndicator : Control
     {
         if (_currentAbility == null) return;
 
-        var isCharging = _currentState == Ability.AbilityState.Charging;
+        var isCharging = _currentState == BaseAbility.AbilityState.Charging;
         _chargingLabel.Visible = isCharging;
         _channelingLabel.Visible = !isCharging;
     }
 
     private void UpdateProgress()
     {
+        float progress;
+
         if (_currentAbility == null) return;
 
-        var progress = _currentState switch
+        switch (_currentState)
         {
-            Ability.AbilityState.Charging =>
-                (float)(_currentAbility.CurrentChargeTime / _currentAbility.MaxChargeTime),
-            Ability.AbilityState.Channeling =>
-                (float)(_currentAbility.CurrentChannelingTime / _currentAbility.ChannelingDuration),
-            _ => 0
-        };
+            case BaseAbility.AbilityState.Charging:
+            {
+                var ab = (BaseChargedAbility)_currentAbility;
+                progress = (float)(ab.CurrentChargeTime / ab.MaxChargeTime);
+                break;
+            }
+            case BaseAbility.AbilityState.Channeling:
+            {
+                var ab = (BaseChanneledAbility)_currentAbility;
+
+                progress = (float)(ab.CurrentChannelingTime / ab.ChannelingDuration);
+                break;
+            }
+            default:
+                progress = 0;
+                break;
+        }
+
 
         _progressBar.Value = progress * 100;
     }
