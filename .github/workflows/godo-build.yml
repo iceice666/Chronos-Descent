@@ -1,0 +1,146 @@
+name: "Godot Export"
+on:
+  push:
+    branches: [main, master]
+    # Only trigger if commit message starts with "Release: x.y.z"
+    paths-ignore:
+      - "**"
+      - "!.github/workflows/godo-build.yml"
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: "Build platform (all, Android, Windows, Linux)"
+        type: choice
+        options:
+          - all
+          - Android
+          - Windows
+          - Linux
+        default: all
+        required: true
+      debug:
+        description: "Build debug version"
+        type: boolean
+        default: true
+        required: false
+      version:
+        description: "Version number (format: a.b.c)"
+        type: string
+        required: true
+        default: "0.1.0"
+
+jobs:
+  check-commit:
+    name: Check commit message
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    outputs:
+      should_run: ${{ steps.check.outputs.should_run }}
+      version: ${{ steps.extract.outputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Check commit message
+        id: check
+        run: |
+          COMMIT_MSG=$(git log -1 --pretty=format:%s ${{ github.sha }})
+          echo "Commit message: $COMMIT_MSG"
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" || $COMMIT_MSG =~ ^Release:[[:space:]][0-9]+\.[0-9]+\.[0-9]+ ]]; then
+            echo "should_run=true" >> $GITHUB_OUTPUT
+          else
+            echo "should_run=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Extract version
+        id: extract
+        if: steps.check.outputs.should_run == 'true'
+        run: |
+          COMMIT_MSG=$(git log -1 --pretty=format:%s ${{ github.sha }})
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            VERSION=$(echo $COMMIT_MSG | sed -E 's/^Release:[[:space:]]([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+  export-game:
+    name: Export for ${{ matrix.platform }} (${{ matrix.build_type }})
+    needs: [check-commit]
+    if: needs.check-commit.outputs.should_run == 'true'
+    runs-on: ubuntu-24.04
+
+    strategy:
+      matrix:
+        platform: ${{ (github.event.inputs.platform == 'all' || github.event.inputs.platform == '') && fromJson('["Android", "Windows", "Linux"]') || fromJson(format('["{0}"]', github.event.inputs.platform)) }}
+        build_type: ${{ (github.event_name != 'workflow_dispatch' || github.event.inputs.debug == 'true') && fromJson('["debug"]') || fromJson('["release"]') }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Set environment variables
+        id: set-env
+        run: |
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          ARTIFACT_NAME="Chronos-Descent_${{ matrix.platform }}_${{ matrix.build_type }}-${VERSION}+${SHORT_SHA}"
+          echo "artifact_name=$ARTIFACT_NAME" >> $GITHUB_OUTPUT
+          echo "short_sha=$SHORT_SHA" >> $GITHUB_OUTPUT
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ hashFiles('Builder/**') }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./Builder
+          push: false
+          load: true
+          tags: chronos-descent-builder:latest
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+      - name: Run build for ${{ matrix.platform }}
+        run: |
+          mkdir -p build
+
+          if [ "${{ matrix.build_type }}" == "debug" ]; then
+            docker run --rm -v ${{ github.workspace }}:/project -v ${{ github.workspace }}/build:/project/build chronos-descent-builder:latest ${{ matrix.platform }}
+          else
+            docker run --rm -v ${{ github.workspace }}:/project -v ${{ github.workspace }}/build:/project/build chronos-descent-builder:latest ${{ matrix.platform }} release
+          fi
+
+          ls -la build/
+
+          # Rename the output file with version and commit hash
+          for file in build/Chronos-Descent_${{ matrix.platform }}_${{ matrix.build_type }}.*; do
+            if [ -f "$file" ]; then
+              extension="${file##*.}"
+              new_name="build/${{ steps.set-env.outputs.artifact_name }}.$extension"
+              mv "$file" "$new_name"
+              echo "Renamed: $file → $new_name"
+            fi
+          done
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.set-env.outputs.artifact_name }}
+          path: build/${{ steps.set-env.outputs.artifact_name }}.*
