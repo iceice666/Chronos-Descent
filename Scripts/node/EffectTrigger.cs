@@ -1,4 +1,4 @@
-﻿using Godot;
+using Godot;
 using Effect = ChronosDescent.Scripts.resource.Effect;
 
 namespace ChronosDescent.Scripts.node;

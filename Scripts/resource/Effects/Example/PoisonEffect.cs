@@ -1,4 +1,4 @@
-﻿// Scripts/resource/Effects/Example/PoisonEffect.cs
+// Scripts/resource/Effects/Example/PoisonEffect.cs
 
 using ChronosDescent.Scripts.UI;
 using Godot;

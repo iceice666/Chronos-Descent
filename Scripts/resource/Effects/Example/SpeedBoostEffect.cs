@@ -1,4 +1,4 @@
-﻿// Scripts/resource/Effects/Example/SpeedBoostEffect.cs
+// Scripts/resource/Effects/Example/SpeedBoostEffect.cs
 
 using Godot;
 using Godot.Collections;

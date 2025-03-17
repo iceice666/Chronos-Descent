@@ -1,4 +1,4 @@
-﻿// Scripts/resource/Effects/Example/BerserkerRageEffect.cs
+// Scripts/resource/Effects/Example/BerserkerRageEffect.cs
 
 using Godot;
 using Godot.Collections;

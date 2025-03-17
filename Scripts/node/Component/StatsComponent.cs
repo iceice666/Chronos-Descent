@@ -1,4 +1,4 @@
-﻿using ChronosDescent.Scripts.resource;
+using ChronosDescent.Scripts.resource;
 using Godot;
 
 namespace ChronosDescent.Scripts.node.Component;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using ChronosDescent.Scripts.node;
 using ChronosDescent.Scripts.node.Component;
 using Godot;

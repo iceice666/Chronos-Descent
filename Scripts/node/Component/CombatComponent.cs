@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using ChronosDescent.Scripts.UI;
 using Godot;
 
