@@ -1,6 +1,7 @@
 using ChronosDescent.Scripts.node.Component;
 using ChronosDescent.Scripts.UI;
 using Godot;
+using AbilitySlot = ChronosDescent.Scripts.node.Component.AbilitySlot;
 using Effect = ChronosDescent.Scripts.resource.Effect;
 
 namespace ChronosDescent.Scripts.node;
@@ -15,13 +16,14 @@ public partial class Entity : CharacterBody2D
 
     public bool Moveable = true;
 
-
     public override void _Ready()
     {
         // Get component references
         Stats = GetNode<StatsComponent>("StatsComponent");
         EffectManager = GetNode<EffectManagerComponent>("EffectManagerComponent");
-        DamageIndicatorManager = GetNode<DamageIndicatorManagerComponent>("DamageIndicatorManagerComponent");
+        DamageIndicatorManager = GetNode<DamageIndicatorManagerComponent>(
+            "DamageIndicatorManagerComponent"
+        );
         Combat = GetNode<CombatComponent>("CombatComponent");
 
         TimeManipulation = GetNodeOrNull<TimeManipulationComponent>("TimeManipulationComponent");
@@ -36,7 +38,6 @@ public partial class Entity : CharacterBody2D
 
         Stats.EntityDead += OnEntityDeath;
 
-
         AddToGroup("Entity");
     }
 
@@ -45,9 +46,7 @@ public partial class Entity : CharacterBody2D
         Stats.EntityDead -= OnEntityDeath;
     }
 
-    public override void _Process(double delta)
-    {
-    }
+    public override void _Process(double delta) { }
 
     public override void _PhysicsProcess(double delta)
     {
@@ -55,7 +54,10 @@ public partial class Entity : CharacterBody2D
     }
 
     // Public methods that delegate to components
-    public void TakeDamage(double amount, DamageIndicator.DamageType damageType = DamageIndicator.DamageType.Normal)
+    public void TakeDamage(
+        double amount,
+        DamageIndicator.DamageType damageType = DamageIndicator.DamageType.Normal
+    )
     {
         Combat.TakeDamage(amount, damageType);
     }
@@ -77,12 +79,11 @@ public partial class Entity : CharacterBody2D
         QueueFree();
     }
 
-
     public void DisableCollision(bool val)
     {
         _collision.Disabled = val;
     }
-    
+
     // @formatter:off
     // Component references
     // Must have
@@ -95,6 +96,7 @@ public partial class Entity : CharacterBody2D
     public TimeManipulationComponent TimeManipulation;
     public AnimationComponent Animation;
     public AbilityManagerComponent AbilityManager;
+
     // @formatter:on
 
     #region Effect
@@ -124,7 +126,7 @@ public partial class Entity : CharacterBody2D
 
     #region Ability
 
-    public void ActivateAbility(AbilityManagerComponent.Slot slot)
+    public void ActivateAbility(AbilitySlot abilitySlot)
     {
         if (AbilityManager == null)
         {
@@ -132,10 +134,10 @@ public partial class Entity : CharacterBody2D
             return;
         }
 
-        AbilityManager.ActivateAbility(slot);
+        AbilityManager.ActivateAbility(abilitySlot);
     }
 
-    public void ReleaseChargedAbility(AbilityManagerComponent.Slot slot)
+    public void ReleaseChargedAbility(AbilitySlot abilitySlot)
     {
         if (AbilityManager == null)
         {
@@ -143,7 +145,7 @@ public partial class Entity : CharacterBody2D
             return;
         }
 
-        AbilityManager.ReleaseChargedAbility(slot);
+        AbilityManager.ReleaseChargedAbility(abilitySlot);
     }
 
     public void CancelChargedAbility()

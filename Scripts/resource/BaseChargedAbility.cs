@@ -12,22 +12,30 @@ public partial class BaseChargedAbility : BaseAbility
 
     [ExportGroup("Charged ability properties")]
     [Export]
-    public new double MaxChargeTime { get; set; } = 1.0;
+    public double MaxChargeTime { get; set; } = 1.0;
 
-    [Export] public new bool AutoCastWhenFull { get; set; } = true;
-    [Export] public new double MinChargeTime { get; set; } = 0.2;
+    [Export]
+    public bool AutoCastWhenFull { get; set; } = true;
 
-    public new double CurrentChargeTime { get; protected set; }
+    [Export]
+    public double MinChargeTime { get; set; } = 0.2;
 
-    public new bool IsCharging
+    public double CurrentChargeTime { get; protected set; }
+
+    public bool IsCharging
     {
         get => _isCharging;
         protected set
         {
-            if (_isCharging == value) return;
+            if (_isCharging == value)
+                return;
             _isCharging = value;
-            OnStateChanged(new AbilityStateEventArgs(this,
-                _isCharging ? AbilityState.Charging : AbilityState.Default));
+            OnStateChanged(
+                new AbilityStateEventArgs(
+                    this,
+                    _isCharging ? AbilityState.Charging : AbilityState.Default
+                )
+            );
         }
     }
 
@@ -38,7 +46,8 @@ public partial class BaseChargedAbility : BaseAbility
 
     public override void Activate()
     {
-        if (!CanActivate()) return;
+        if (!CanActivate())
+            return;
 
         // Start charging
         IsCharging = true;
@@ -51,22 +60,26 @@ public partial class BaseChargedAbility : BaseAbility
     {
         base.Update(delta);
 
-        if (!IsCharging) return;
+        if (!IsCharging)
+            return;
 
         CurrentChargeTime += delta;
 
-        if (CurrentChargeTime >= MaxChargeTime && AutoCastWhenFull) ReleaseCharge();
+        if (CurrentChargeTime >= MaxChargeTime && AutoCastWhenFull)
+            ReleaseCharge();
     }
 
     /// <summary>
     ///     Release a charged ability
     /// </summary>
-    public new void ReleaseCharge()
+    public void ReleaseCharge()
     {
-        if (!IsCharging) return;
+        if (!IsCharging)
+            return;
 
         // Calculate charge percentage
-        var chargePercentage = (CurrentChargeTime - MinChargeTime) / (MaxChargeTime - MinChargeTime);
+        var chargePercentage =
+            (CurrentChargeTime - MinChargeTime) / (MaxChargeTime - MinChargeTime);
         chargePercentage = Mathf.Clamp(chargePercentage, 0.0, 1.0);
 
         // Execute the ability with charge percentage
@@ -85,9 +98,10 @@ public partial class BaseChargedAbility : BaseAbility
     /// <summary>
     ///     Cancel a charging ability without executing it
     /// </summary>
-    public new void CancelCharge()
+    public void CancelCharge()
     {
-        if (!IsCharging) return;
+        if (!IsCharging)
+            return;
 
         // Reset charging state without executing
         IsCharging = false;
@@ -99,14 +113,14 @@ public partial class BaseChargedAbility : BaseAbility
     /// <summary>
     ///     Execute the ability effect with a power multiplier based on charge time
     /// </summary>
-    protected new virtual void ExecuteEffect(double powerMultiplier)
+    protected virtual void ExecuteEffect(double powerMultiplier)
     {
         // Base implementation does nothing
         // Override in derived classes
         GD.Print($"Executing ability {Name} with power {powerMultiplier}");
     }
 
-    protected new virtual void OnChargingCanceled()
+    protected virtual void OnChargingCanceled()
     {
         GD.Print($"{Name} charge canceled");
     }

@@ -34,7 +34,7 @@ public partial class BasePassiveAbility : BaseAbility
     /// <summary>
     ///     Called every frame to update the passive effect
     /// </summary>
-    protected new virtual void OnPassiveTick(double delta)
+    protected virtual void OnPassiveTick(double delta)
     {
         // Override in derived classes to provide passive effects
     }

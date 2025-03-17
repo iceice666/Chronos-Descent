@@ -5,7 +5,7 @@ using Godot;
 
 namespace ChronosDescent.Scripts.UI;
 
-public partial class AbilitySlot : Panel
+public partial class AbilityUiSlot : Panel
 {
     // Animation
     private AnimationPlayer _animationPlayer;
@@ -21,7 +21,7 @@ public partial class AbilitySlot : Panel
     private Label _nameLabel;
 
     // Slot properties
-    public AbilityManagerComponent.Slot SlotType { get; set; }
+    public AbilitySlot SlotType { get; set; }
 
     public override void _Ready()
     {
@@ -36,10 +36,7 @@ public partial class AbilitySlot : Panel
         _cooldownOverlay.Visible = false;
 
         // Add animation player (optional)
-        _animationPlayer = new AnimationPlayer
-        {
-            Name = "AnimationPlayer"
-        };
+        _animationPlayer = new AnimationPlayer { Name = "AnimationPlayer" };
         AddChild(_animationPlayer);
 
         // Create animations
@@ -54,23 +51,20 @@ public partial class AbilitySlot : Panel
 
     public void UpdateHotKeyLabel()
     {
-        var inputMapKey = SlotType switch
-        {
-            AbilityManagerComponent.Slot.NormalAttack => "normal_attack",
-            AbilityManagerComponent.Slot.Primary => "ability_1",
-            AbilityManagerComponent.Slot.Secondary => "ability_2",
-            AbilityManagerComponent.Slot.WeaponUlt => "weapon_ult",
-            _ => null
-        };
+        var inputMapKey = SlotType.GetSlotName();
 
-        if (inputMapKey == null) return;
+        if (inputMapKey == null)
+            return;
 
         var actions = InputMap.ActionGetEvents(inputMapKey);
 
         foreach (var @event in actions)
         {
-            if (@event is InputEventMouseButton mouseButton && UserInputManager.Instance.CurrentInputSource ==
-                UserInputManager.InputSource.KeyboardMouse)
+            if (
+                @event is InputEventMouseButton mouseButton
+                && UserInputManager.Instance.CurrentInputSource
+                    == UserInputManager.InputSource.KeyboardMouse
+            )
             {
                 _hotKeyLabel.Text = mouseButton.ButtonIndex.ToString();
                 break;
@@ -82,8 +76,11 @@ public partial class AbilitySlot : Panel
                 break;
             }
 
-            if (@event is InputEventJoypadButton joypadButton && UserInputManager.Instance.CurrentInputSource ==
-                UserInputManager.InputSource.Controller)
+            if (
+                @event is InputEventJoypadButton joypadButton
+                && UserInputManager.Instance.CurrentInputSource
+                    == UserInputManager.InputSource.Controller
+            )
             {
                 _hotKeyLabel.Text = joypadButton.ButtonIndex.ToString();
                 break;
@@ -114,7 +111,8 @@ public partial class AbilitySlot : Panel
 
     public void UpdateCooldown(double currentCooldown, double maxCooldown)
     {
-        if (_currentAbility == null) return;
+        if (_currentAbility == null)
+            return;
 
         if (currentCooldown <= 0)
         {
@@ -129,7 +127,10 @@ public partial class AbilitySlot : Panel
 
             // Update cooldown overlay (from 0.0 to 1.0 height ratio)
             var cooldownRatio = (float)(currentCooldown / maxCooldown);
-            _cooldownOverlay.Size = new Vector2(_cooldownOverlay.Size.X, cooldownRatio * GetRect().Size.Y);
+            _cooldownOverlay.Size = new Vector2(
+                _cooldownOverlay.Size.X,
+                cooldownRatio * GetRect().Size.Y
+            );
 
             // Position cooldown overlay from bottom to top
             _cooldownOverlay.Position = new Vector2(0, GetRect().Size.Y * (1 - cooldownRatio));
@@ -141,10 +142,12 @@ public partial class AbilitySlot : Panel
 
     public void UpdateState(BaseAbility.AbilityState state)
     {
-        if (_currentAbility == null) return;
+        if (_currentAbility == null)
+            return;
 
         // Only update if state has changed
-        if (_currentState == state) return;
+        if (_currentState == state)
+            return;
 
         _currentState = state;
 
@@ -186,7 +189,8 @@ public partial class AbilitySlot : Panel
     public void OnActivated()
     {
         // Visual feedback when ability is activated - only if not on cooldown
-        if (_currentState == BaseAbility.AbilityState.Cooldown) return;
+        if (_currentState == BaseAbility.AbilityState.Cooldown)
+            return;
 
         var tween = CreateTween();
         tween.TweenProperty(this, "modulate", new Color(1.5f, 1.5f, 1.5f), 0.1);

@@ -1,5 +1,6 @@
 ﻿using System;
 using ChronosDescent.Scripts.node;
+using ChronosDescent.Scripts.node.Component;
 using Godot;
 
 namespace ChronosDescent.Scripts.resource;
@@ -34,6 +35,9 @@ public partial class BaseAbility : Resource
 
     [Export]
     public Texture2D Icon { get; set; }
+
+    [Export]
+    public AbilitySlot RequiredSlot { get; set; }
 
     // Cooldown properties
     [Export]

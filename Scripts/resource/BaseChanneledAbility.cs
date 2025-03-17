@@ -12,19 +12,24 @@ public partial class BaseChanneledAbility : BaseAbility
 
     [ExportGroup("Channeled ability properties")]
     [Export]
-    public new double ChannelingDuration { get; set; } = 3.0;
+    public double ChannelingDuration { get; set; }
 
-    public new double CurrentChannelingTime { get; protected set; }
+    public double CurrentChannelingTime { get; protected set; }
 
-    public new bool IsChanneling
+    public bool IsChanneling
     {
         get => _isChanneling;
         protected set
         {
-            if (_isChanneling == value) return;
+            if (_isChanneling == value)
+                return;
             _isChanneling = value;
-            OnStateChanged(new AbilityStateEventArgs(this,
-                _isChanneling ? AbilityState.Channeling : AbilityState.Default));
+            OnStateChanged(
+                new AbilityStateEventArgs(
+                    this,
+                    _isChanneling ? AbilityState.Channeling : AbilityState.Default
+                )
+            );
         }
     }
 
@@ -35,7 +40,8 @@ public partial class BaseChanneledAbility : BaseAbility
 
     public override void Activate()
     {
-        if (!CanActivate()) return;
+        if (!CanActivate())
+            return;
 
         // Start channeling
         IsChanneling = true;
@@ -47,20 +53,23 @@ public partial class BaseChanneledAbility : BaseAbility
     {
         base.Update(delta);
 
-        if (!IsChanneling) return;
+        if (!IsChanneling)
+            return;
 
         CurrentChannelingTime += delta;
         OnChannelingTick(delta);
 
-        if (CurrentChannelingTime >= ChannelingDuration) CompleteChanneling();
+        if (CurrentChannelingTime >= ChannelingDuration)
+            CompleteChanneling();
     }
 
     /// <summary>
     ///     Complete a channeled ability normally
     /// </summary>
-    public new void CompleteChanneling()
+    public void CompleteChanneling()
     {
-        if (!IsChanneling) return;
+        if (!IsChanneling)
+            return;
 
         // Execute final effect
         OnChannelingComplete();
@@ -76,9 +85,10 @@ public partial class BaseChanneledAbility : BaseAbility
     /// <summary>
     ///     Interrupt a channeled ability
     /// </summary>
-    public new void InterruptChanneling()
+    public void InterruptChanneling()
     {
-        if (!IsChanneling) return;
+        if (!IsChanneling)
+            return;
 
         // Execute interrupt effect
         OnChannelingInterrupt();
@@ -92,22 +102,22 @@ public partial class BaseChanneledAbility : BaseAbility
     }
 
     // Channeling callback methods
-    protected new virtual void OnChannelingStart()
+    protected virtual void OnChannelingStart()
     {
         GD.Print($"Started channeling {Name}");
     }
 
-    protected new virtual void OnChannelingTick(double delta)
+    protected virtual void OnChannelingTick(double delta)
     {
         // Override in derived classes to provide continuous effects
     }
 
-    protected new virtual void OnChannelingComplete()
+    protected virtual void OnChannelingComplete()
     {
         GD.Print($"Completed channeling {Name}");
     }
 
-    protected new virtual void OnChannelingInterrupt()
+    protected virtual void OnChannelingInterrupt()
     {
         GD.Print($"Channeling of {Name} interrupted");
     }
