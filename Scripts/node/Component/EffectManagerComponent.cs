@@ -256,8 +256,7 @@ public partial class EffectManagerComponent : Node
         }
 
         // Second pass: apply all modifiers
-        var stats = (BaseStats)_stats.Base.Clone();
-
+        var stats = _entity.Stats;
 
         foreach (var (stat, value) in multiplicativeTotal)
             switch (stat)
@@ -326,7 +325,5 @@ public partial class EffectManagerComponent : Node
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
-        _stats.Current = stats;
     }
 }

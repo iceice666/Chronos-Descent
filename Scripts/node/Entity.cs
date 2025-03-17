@@ -9,20 +9,11 @@ namespace ChronosDescent.Scripts.node;
 [GlobalClass]
 public partial class Entity : CharacterBody2D
 {
-    public delegate void EntityDeathEventHandler(Entity entity);
-
     private CollisionShape2D _collision;
 
     public Vector2 AimDirection;
 
     public bool Moveable = true;
-
-    public event EntityDeathEventHandler EntityDeath;
-
-    protected virtual void OnEntityDeath(Entity entity)
-    {
-        EntityDeath?.Invoke(entity);
-    }
 
 
     public override void _Ready()
@@ -37,13 +28,21 @@ public partial class Entity : CharacterBody2D
         AbilityManager = GetNodeOrNull<AbilityManagerComponent>("AbilityManagerComponent");
         Animation = GetNodeOrNull<AnimationComponent>("AnimationComponent");
 
+        _collision = GetNode<CollisionShape2D>("CollisionShape2D");
+
         // Setup component connections
         EffectManager.Initialize(Stats);
         Combat?.Initialize(Stats, Animation);
 
-        _collision = GetNode<CollisionShape2D>("CollisionShape2D");
+        Stats.EntityDead += OnEntityDeath;
+
 
         AddToGroup("Entity");
+    }
+
+    public override void _ExitTree()
+    {
+        Stats.EntityDead -= OnEntityDeath;
     }
 
     public override void _Process(double delta)
@@ -69,9 +68,6 @@ public partial class Entity : CharacterBody2D
     // Virtual method for derived classes to override
     public virtual async void OnEntityDeath()
     {
-        // Signal death event
-        OnEntityDeath(this);
-
         // Play death animation
         Animation?.PlayAnimation("death");
 

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using ChronosDescent.Scripts.node;
 using ChronosDescent.Scripts.node.Component;
 using Godot;
+using Player = ChronosDescent.Scripts.node.Entities.Player;
 
 namespace ChronosDescent.Scripts.resource.Abilities;
 

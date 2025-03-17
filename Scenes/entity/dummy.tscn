@@ -1,6 +1,6 @@
 [gd_scene load_steps=12 format=3 uid="uid://bvnq7r1s2138p"]
 
-[ext_resource type="Script" uid="uid://ci6m7q8srxbu4" path="res://Scripts/node/Entity.cs" id="1_jk4ue"]
+[ext_resource type="Script" path="res://Scripts/node/Entities/Dummy.cs" id="1_eh7ut"]
 [ext_resource type="Texture2D" uid="uid://dowioby133mv0" path="res://Assets/Entity/dummy.png" id="2_vw43e"]
 [ext_resource type="Script" uid="uid://bf4bfk8cc5j7p" path="res://Scripts/node/Component/EffectTriggerComponent.cs" id="3_hw38b"]
 [ext_resource type="Script" uid="uid://dkefqru8ptbxr" path="res://Scripts/node/Component/CombatComponent.cs" id="4_a01bh"]
@@ -30,7 +30,7 @@ MaxResource = 100.0
 metadata/_custom_type_script = "uid://5pq6iq2vk2fb"
 
 [node name="Dummy" type="CharacterBody2D"]
-script = ExtResource("1_jk4ue")
+script = ExtResource("1_eh7ut")
 metadata/_custom_type_script = "uid://ci6m7q8srxbu4"
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

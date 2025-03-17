@@ -9,6 +9,13 @@ public partial class StatsComponent : Node
     // Events
     public delegate void StatsChangedEventHandler();
 
+    public event StatsChangedEventHandler EntityDead;
+    public event StatsChangedEventHandler HealthStatsChanged;
+
+    protected virtual void OnEntityDead() => EntityDead?.Invoke();
+    protected virtual void OnHealthStatsChanged() => HealthStatsChanged?.Invoke();
+
+
     private const double MaxMoveSpeed = 1000;
     public BaseStats Current;
     [Export] public BaseStats Base { get; private set; } = new();
@@ -18,7 +25,20 @@ public partial class StatsComponent : Node
     public double Health
     {
         get => Current.Health;
-        set => Current.Health = value;
+        set
+        {
+            if (value <= 0)
+            {
+                EntityDead?.Invoke();
+                Current.Health = 0;
+            }
+            else
+            {
+                Current.Health = value;
+            }
+
+            HealthStatsChanged?.Invoke();
+        }
     }
 
     public double MaxHealth
@@ -69,24 +89,24 @@ public partial class StatsComponent : Node
         set => Current.AttackSpeed = value;
     }
 
-    public double MoveSpeed => Mathf.Clamp(Current.MoveSpeed, 0, MaxMoveSpeed);
-    public event StatsChangedEventHandler StatsChanged;
-
-    protected virtual void OnStatsChanged()
+    public double MoveSpeed
     {
-        StatsChanged?.Invoke();
+        get => Current.MoveSpeed;
+        set => Current.MoveSpeed = Mathf.Clamp(value, 0, MaxMoveSpeed);
     }
 
 
     public override void _Ready()
     {
-        ResetStatsToBase();
+        Current = (BaseStats)Base.Clone();
     }
 
     public void ResetStatsToBase()
     {
-        Current = (BaseStats)Base.Clone();
+        var newValue = (BaseStats)Base.Clone();
+        newValue.Health = Current.Health;
+        newValue.CurrentResource = CurrentResource;
 
-        OnStatsChanged();
+        Current = newValue;
     }
 }

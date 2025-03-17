@@ -8,7 +8,7 @@ namespace ChronosDescent.Scripts.resource;
 ///     Base abstract class for all abilities in the game.
 /// </summary>
 [GlobalClass]
-public abstract partial class BaseAbility : Resource
+public partial class BaseAbility : Resource
 {
     public enum AbilityState
     {
@@ -67,7 +67,10 @@ public abstract partial class BaseAbility : Resource
     /// <summary>
     ///     Activates the ability. This method should be overridden by derived classes.
     /// </summary>
-    public abstract void Activate();
+    public virtual void Activate()
+    {
+        
+    }
 
     /// <summary>
     ///     Updates the ability state. This method should be called every frame.
