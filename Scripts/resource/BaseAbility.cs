@@ -17,33 +17,39 @@ public partial class BaseAbility : Resource
         Channeling = 2,
         ToggledOn = 3,
         ToggledOff = 4,
-        Cooldown = 5
+        Cooldown = 5,
     }
-
 
     private double _currentCooldown;
 
     // Entity that owns this ability
     public Entity Caster;
 
-    [ExportGroup("Metadata")] [Export] public string Name { get; set; } = "Ability";
-    [Export] public string Description { get; set; } = "";
-    [Export] public Texture2D Icon { get; set; }
+    [ExportGroup("Metadata")]
+    [Export]
+    public string Name { get; set; } = "Ability";
+
+    [Export]
+    public string Description { get; set; } = "";
+
+    [Export]
+    public Texture2D Icon { get; set; }
 
     // Cooldown properties
-    [Export] public double Cooldown { get; set; } = 5.0; // In seconds
+    [Export]
+    public double Cooldown { get; set; } = 5.0; // In seconds
 
     public double CurrentCooldown
     {
         get => _currentCooldown;
         protected set
         {
-            if (!(Math.Abs(_currentCooldown - value) > 0.001)) return;
+            if (!(Math.Abs(_currentCooldown - value) > 0.001))
+                return;
             _currentCooldown = value;
             OnCooldownChanged(new AbilityCooldownEventArgs(this));
         }
     }
-
 
     // Whether the ability is on cooldown
     public bool IsOnCooldown => CurrentCooldown > 0.0;
@@ -52,9 +58,7 @@ public partial class BaseAbility : Resource
     public event EventHandler<AbilityStateEventArgs> StateChanged;
     public event EventHandler<AbilityCooldownEventArgs> CooldownChanged;
 
-    public virtual void Initialize()
-    {
-    }
+    public virtual void Initialize() { }
 
     /// <summary>
     ///     Determines if the ability can be activated.
@@ -67,10 +71,7 @@ public partial class BaseAbility : Resource
     /// <summary>
     ///     Activates the ability. This method should be overridden by derived classes.
     /// </summary>
-    public virtual void Activate()
-    {
-        
-    }
+    public virtual void Activate() { }
 
     /// <summary>
     ///     Updates the ability state. This method should be called every frame.
@@ -85,10 +86,12 @@ public partial class BaseAbility : Resource
     /// </summary>
     protected void UpdateCooldown(double delta)
     {
-        if (CurrentCooldown <= 0) return;
+        if (CurrentCooldown <= 0)
+            return;
 
         CurrentCooldown -= delta;
-        if (CurrentCooldown < 0) CurrentCooldown = 0;
+        if (CurrentCooldown < 0)
+            CurrentCooldown = 0;
     }
 
     /// <summary>

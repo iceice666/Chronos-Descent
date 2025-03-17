@@ -9,17 +9,11 @@ public partial class StatsComponent : Node
     // Events
     public delegate void StatsChangedEventHandler();
 
-    public event StatsChangedEventHandler EntityDead;
-    public event StatsChangedEventHandler HealthStatsChanged;
-
-    protected virtual void OnEntityDead() => EntityDead?.Invoke();
-    protected virtual void OnHealthStatsChanged() => HealthStatsChanged?.Invoke();
-
-
     private const double MaxMoveSpeed = 1000;
     public BaseStats Current;
-    [Export] public BaseStats Base { get; private set; } = new();
 
+    [Export]
+    public BaseStats Base { get; private set; } = new();
 
     // Getter methods that expose CurrentStats properties
     public double Health
@@ -95,6 +89,18 @@ public partial class StatsComponent : Node
         set => Current.MoveSpeed = Mathf.Clamp(value, 0, MaxMoveSpeed);
     }
 
+    public event StatsChangedEventHandler EntityDead;
+    public event StatsChangedEventHandler HealthStatsChanged;
+
+    protected virtual void OnEntityDead()
+    {
+        EntityDead?.Invoke();
+    }
+
+    protected virtual void OnHealthStatsChanged()
+    {
+        HealthStatsChanged?.Invoke();
+    }
 
     public override void _Ready()
     {

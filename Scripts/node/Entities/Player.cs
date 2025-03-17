@@ -18,8 +18,6 @@ public partial class Player : Entity
         GetNode<AbilityProgressBar>("/root/Autoload/UI/AbilityProgressBar").Initialize(this);
         GetNode<PlayerHealthBar>("/root/Autoload/UI/PlayerHealthBar").Initialize(this);
 
-
-
         AbilityManager.SetAbility(AbilityManagerComponent.Slot.Primary, new TimeRewindAbility());
         AbilityManager.SetAbility(AbilityManagerComponent.Slot.Secondary, new DashAbility());
     }
@@ -46,20 +44,27 @@ public partial class Player : Entity
         Animation!.UpdateLookAnimation(AimDirection);
 
         // Handle Ability inputs
-        if (Input.IsActionJustPressed("normal_attack")) ActivateAbility(AbilityManagerComponent.Slot.NormalAttack);
+        if (Input.IsActionJustPressed("normal_attack"))
+            ActivateAbility(AbilityManagerComponent.Slot.NormalAttack);
         else if (Input.IsActionJustReleased("normal_attack"))
             ReleaseChargedAbility(AbilityManagerComponent.Slot.NormalAttack);
 
-        if (Input.IsActionJustPressed("ability_1")) ActivateAbility(AbilityManagerComponent.Slot.Primary);
-        else if (Input.IsActionJustReleased("ability_1")) ReleaseChargedAbility(AbilityManagerComponent.Slot.Primary);
+        if (Input.IsActionJustPressed("ability_1"))
+            ActivateAbility(AbilityManagerComponent.Slot.Primary);
+        else if (Input.IsActionJustReleased("ability_1"))
+            ReleaseChargedAbility(AbilityManagerComponent.Slot.Primary);
 
-        if (Input.IsActionJustPressed("ability_2")) ActivateAbility(AbilityManagerComponent.Slot.Secondary);
-        else if (Input.IsActionJustReleased("ability_2")) ReleaseChargedAbility(AbilityManagerComponent.Slot.Secondary);
+        if (Input.IsActionJustPressed("ability_2"))
+            ActivateAbility(AbilityManagerComponent.Slot.Secondary);
+        else if (Input.IsActionJustReleased("ability_2"))
+            ReleaseChargedAbility(AbilityManagerComponent.Slot.Secondary);
 
-        if (Input.IsActionJustPressed("weapon_ult")) ActivateAbility(AbilityManagerComponent.Slot.WeaponUlt);
+        if (Input.IsActionJustPressed("weapon_ult"))
+            ActivateAbility(AbilityManagerComponent.Slot.WeaponUlt);
         else if (Input.IsActionJustReleased("weapon_ult"))
             ReleaseChargedAbility(AbilityManagerComponent.Slot.WeaponUlt);
 
-        if (Input.IsActionJustPressed("cancel_ability")) CancelChargedAbility();
+        if (Input.IsActionJustPressed("cancel_ability"))
+            CancelChargedAbility();
     }
 }

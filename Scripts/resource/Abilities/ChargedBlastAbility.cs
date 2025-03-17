@@ -15,11 +15,17 @@ public partial class ChargedBlastAbility : BaseChargedAbility
         MinChargeTime = 0.3;
     }
 
-    [Export] public double BaseDamage { get; set; } = 30.0;
-    [Export] public double MinRadius { get; set; } = 50.0;
-    [Export] public double MaxRadius { get; set; } = 200.0;
-    [Export] public double Range { get; set; } = 300.0;
+    [Export]
+    public double BaseDamage { get; set; } = 30.0;
 
+    [Export]
+    public double MinRadius { get; set; } = 50.0;
+
+    [Export]
+    public double MaxRadius { get; set; } = 200.0;
+
+    [Export]
+    public double Range { get; set; } = 300.0;
 
     protected override void ExecuteEffect(double powerMultiplier)
     {
@@ -41,7 +47,8 @@ public partial class ChargedBlastAbility : BaseChargedAbility
             {
                 var distance = targetPosition.DistanceTo(target.GlobalPosition);
 
-                if (distance > radius) continue;
+                if (distance > radius)
+                    continue;
 
                 // Calculate damage falloff based on distance from center
                 var distanceFactor = 1.0 - distance / radius;
@@ -56,8 +63,9 @@ public partial class ChargedBlastAbility : BaseChargedAbility
 
     protected override void OnChargingCanceled()
     {
-        if (!IsCharging) return;
-        
+        if (!IsCharging)
+            return;
+
         IsCharging = false;
         CurrentChargeTime = 0.0;
 
