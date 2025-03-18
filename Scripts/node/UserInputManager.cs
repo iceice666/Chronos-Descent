@@ -39,7 +39,7 @@ public partial class UserInputManager : Control
 
     public event InputSourceChangedEventHandler InputSourceChanged;
 
-    protected virtual void OnInputSourceChanged(InputSource inputSource)
+    protected void OnInputSourceChanged(InputSource inputSource)
     {
         InputSourceChanged?.Invoke(inputSource);
     }
@@ -48,7 +48,7 @@ public partial class UserInputManager : Control
     {
         // Initialize the input source based on device capabilities
         if (DisplayServer.IsTouchscreenAvailable()) CurrentInputSource = InputSource.VirtualJoystick;
-        else if (Input.GetConnectedJoypads().Count != 0) CurrentInputSource = InputSource.Controller;
+        else if (Input.GetConnectedJoypads().Count > 0) CurrentInputSource = InputSource.Controller;
         else CurrentInputSource = InputSource.KeyboardMouse;
 
         GD.Print($"Current Input Source: {CurrentInputSource}");

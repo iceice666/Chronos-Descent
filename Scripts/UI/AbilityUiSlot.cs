@@ -63,27 +63,24 @@ public partial class AbilityUiSlot : Panel
             if (
                 @event is InputEventMouseButton mouseButton
                 && UserInputManager.Instance.CurrentInputSource
-                    == UserInputManager.InputSource.KeyboardMouse
+                == UserInputManager.InputSource.KeyboardMouse
             )
             {
                 _hotKeyLabel.Text = mouseButton.ButtonIndex.ToString();
-                break;
             }
 
-            if (@event is InputEventKey key)
-            {
-                _hotKeyLabel.Text = key.PhysicalKeycode.ToString();
-                break;
-            }
-
-            if (
+            else if (
                 @event is InputEventJoypadButton joypadButton
                 && UserInputManager.Instance.CurrentInputSource
-                    == UserInputManager.InputSource.Controller
+                == UserInputManager.InputSource.Controller
             )
             {
                 _hotKeyLabel.Text = joypadButton.ButtonIndex.ToString();
-                break;
+            }
+
+            else if (@event is InputEventKey key)
+            {
+                _hotKeyLabel.Text = key.PhysicalKeycode.ToString();
             }
         }
     }
