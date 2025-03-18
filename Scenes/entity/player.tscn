@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3 uid="uid://bpuhyc475sgxd"]
+[gd_scene load_steps=37 format=3 uid="uid://bpuhyc475sgxd"]
 
 [ext_resource type="Script" uid="uid://k40oxb8puww3" path="res://Scripts/node/Entities/Player.cs" id="1_vxxhj"]
 [ext_resource type="Script" uid="uid://ck2ek8c0u02x1" path="res://Scripts/node/Component/TimeManipulationComponent.cs" id="2_qnfm0"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" uid="uid://cxyiy7naggcnb" path="res://Scripts/node/Component/AbilityManagerComponent.cs" id="8_swhob"]
 [ext_resource type="Script" uid="uid://by1njeut5gcst" path="res://Scripts/node/Component/DamageIndicatorManagerComponent.cs" id="9_k5mxe"]
 [ext_resource type="Script" uid="uid://bf4bfk8cc5j7p" path="res://Scripts/node/Component/EffectTriggerComponent.cs" id="9_ualn7"]
+[ext_resource type="Script" uid="uid://3y2678e7js26" path="res://Scripts/UI/AbilityCastIndicator.cs" id="11_417id"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_0grkt"]
 atlas = ExtResource("5_dq8j7")
@@ -236,3 +237,7 @@ position = Vector2(0, 6.5)
 shape = SubResource("RectangleShape2D_k4hn1")
 debug_color = Color(0.57844, 0.41746, 0.925219, 0.42)
 metadata/_edit_lock_ = true
+
+[node name="AbilityCastIndicator" type="Node2D" parent="."]
+script = ExtResource("11_417id")
+metadata/_custom_type_script = "uid://3y2678e7js26"

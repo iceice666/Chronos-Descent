@@ -1,4 +1,5 @@
-﻿using Godot;
+using ChronosDescent.Scripts.UI;
+using Godot;
 
 namespace ChronosDescent.Scripts.resource;
 
@@ -19,6 +20,8 @@ public partial class BaseChargedAbility : BaseAbility
     [Export] public double MinChargeTime { get; set; } = 0.2;
 
     public double CurrentChargeTime { get; protected set; }
+    
+    public IndicatorConfig IndicatorConfig;
 
     public bool IsCharging
     {
@@ -50,6 +53,8 @@ public partial class BaseChargedAbility : BaseAbility
         // Start charging
         IsCharging = true;
         CurrentChargeTime = 0.0;
+
+        AbilityCastIndicator.Instance.Start(this);
 
         GD.Print($"{Caster.Name} started charging {Name}");
     }
@@ -89,6 +94,8 @@ public partial class BaseChargedAbility : BaseAbility
 
         // Start cooldown
         StartCooldown();
+        
+        AbilityCastIndicator.Instance.Stop();
 
         GD.Print($"{Caster.Name} released {Name} with {chargePercentage * 100}% charge");
     }
@@ -104,6 +111,8 @@ public partial class BaseChargedAbility : BaseAbility
         // Reset charging state without executing
         IsCharging = false;
         CurrentChargeTime = 0.0;
+        
+        AbilityCastIndicator.Instance.Stop();
 
         OnChargingCanceled();
     }

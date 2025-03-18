@@ -1,4 +1,5 @@
 using ChronosDescent.Scripts.node.Component;
+using ChronosDescent.Scripts.resource.Abilities;
 using ChronosDescent.Scripts.UI;
 using Godot;
 
@@ -15,6 +16,8 @@ public partial class Player : Entity
         GetNode<EffectsContainer>("/root/Autoload/UI/EffectsContainer").Initialize(this);
         GetNode<AbilityContainer>("/root/Autoload/UI/AbilityContainer").Initialize(this);
         GetNode<PlayerHealthBar>("/root/Autoload/UI/PlayerHealthBar").Initialize(this);
+        
+        AbilityManager.SetAbility(AbilitySlot.WeaponSpecial, new ChargedBlastAbility());
     }
 
     public override void _PhysicsProcess(double delta)
