@@ -18,7 +18,7 @@ public partial class BaseAbility : Resource
         Channeling = 2,
         ToggledOn = 3,
         ToggledOff = 4,
-        Cooldown = 5,
+        Cooldown = 5
     }
 
     private double _currentCooldown;
@@ -26,22 +26,16 @@ public partial class BaseAbility : Resource
     // Entity that owns this ability
     public Entity Caster;
 
-    [ExportGroup("Metadata")]
-    [Export]
-    public string Name { get; set; } = "Ability";
+    [ExportGroup("Metadata")] [Export] public string Name { get; set; } = "Ability";
 
-    [Export]
-    public string Description { get; set; } = "";
+    [Export] public string Description { get; set; } = "";
 
-    [Export]
-    public Texture2D Icon { get; set; }
+    [Export] public Texture2D Icon { get; set; }
 
-    [Export]
-    public AbilitySlot RequiredSlot { get; set; }
+    [Export] public AbilitySlot RequiredSlot { get; set; }
 
     // Cooldown properties
-    [Export]
-    public double Cooldown { get; set; } = 5.0; // In seconds
+    [Export] public double Cooldown { get; set; } = 5.0; // In seconds
 
     public double CurrentCooldown
     {
@@ -62,7 +56,9 @@ public partial class BaseAbility : Resource
     public event EventHandler<AbilityStateEventArgs> StateChanged;
     public event EventHandler<AbilityCooldownEventArgs> CooldownChanged;
 
-    public virtual void Initialize() { }
+    public virtual void Initialize()
+    {
+    }
 
     /// <summary>
     ///     Determines if the ability can be activated.
@@ -75,7 +71,9 @@ public partial class BaseAbility : Resource
     /// <summary>
     ///     Activates the ability. This method should be overridden by derived classes.
     /// </summary>
-    public virtual void Activate() { }
+    public virtual void Activate()
+    {
+    }
 
     /// <summary>
     ///     Updates the ability state. This method should be called every frame.

@@ -1,4 +1,4 @@
-using Godot;
+﻿using Godot;
 
 namespace ChronosDescent.Scripts.resource;
 
@@ -14,11 +14,9 @@ public partial class BaseChargedAbility : BaseAbility
     [Export]
     public double MaxChargeTime { get; set; } = 1.0;
 
-    [Export]
-    public bool AutoCastWhenFull { get; set; } = true;
+    [Export] public bool AutoCastWhenFull { get; set; } = true;
 
-    [Export]
-    public double MinChargeTime { get; set; } = 0.2;
+    [Export] public double MinChargeTime { get; set; } = 0.2;
 
     public double CurrentChargeTime { get; protected set; }
 

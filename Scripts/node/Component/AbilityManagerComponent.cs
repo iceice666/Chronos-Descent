@@ -169,7 +169,7 @@ public partial class AbilityManagerComponent : Node
                     if (
                         ability
                             is BaseChanneledAbility { IsChanneling: false }
-                                or BaseChargedAbility { IsCharging: false }
+                            or BaseChargedAbility { IsCharging: false }
                         && GetSlotForAbility(ability) == _currentActiveAbilitySlot
                     )
                         _currentActiveAbilitySlot = AbilitySlot.Unknown;
@@ -193,8 +193,8 @@ public partial class AbilityManagerComponent : Node
             if (
                 ability
                 is BaseChargedAbility { IsCharging: false }
-                    or BaseChanneledAbility { IsChanneling: false }
-                    or BaseToggleAbility { IsToggled: false }
+                or BaseChanneledAbility { IsChanneling: false }
+                or BaseToggleAbility { IsToggled: false }
             )
                 OnAbilityStateChanged(
                     new AbilityStateEventArgs(ability, BaseAbility.AbilityState.Default)
@@ -241,9 +241,9 @@ public partial class AbilityManagerComponent : Node
 
             // Don't allow activating a new channeled/charged ability while another is active
             case BaseChanneledAbility
-            or BaseChargedAbility
+                or BaseChargedAbility
                 when _currentActiveAbilitySlot != AbilitySlot.Unknown
-                    && _currentActiveAbilitySlot != abilitySlot:
+                     && _currentActiveAbilitySlot != abilitySlot:
             {
                 if (!IsAbilityOnCooldown(_currentActiveAbilitySlot))
                 {
@@ -350,7 +350,7 @@ public partial class AbilityManagerComponent : Node
             AbilitySlot.WeaponAttack,
             AbilitySlot.WeaponUlt,
             AbilitySlot.WeaponSpecial,
-            AbilitySlot.LifeSaving,
+            AbilitySlot.LifeSaving
         ];
     }
 
@@ -499,7 +499,7 @@ public enum AbilitySlot
     WeaponAttack = 0,
     WeaponUlt = 1,
     WeaponSpecial = 2,
-    LifeSaving = 3,
+    LifeSaving = 3
 }
 
 public static class AbilitySlotExtensions

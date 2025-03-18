@@ -1,4 +1,4 @@
-using ChronosDescent.Scripts.node;
+﻿using ChronosDescent.Scripts.node;
 
 namespace ChronosDescent.Scripts.resource;
 

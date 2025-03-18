@@ -7,26 +7,23 @@ namespace ChronosDescent.Scripts.UI;
 public partial class HealthBar : Node2D
 {
     private ProgressBar _bar;
+    private double _damageDelayTimer;
     private ProgressBar _delayedBar;
+    private double _delayedHealthValue = 1.0;
     private Entity _entity;
 
     private double _hideTimer;
-    private double _prevHealthPercentage = 1.0;
-    private double _delayedHealthValue = 1.0;
-    private double _damageDelayTimer;
     private bool _isDelayedBarTransitioning;
+    private double _prevHealthPercentage = 1.0;
 
 
     public bool HideAtFullHealth { get; set; } = true;
 
-    [Export]
-    public double HideDelay { get; set; } = 2.0;
+    [Export] public double HideDelay { get; set; } = 2.0;
 
-    [Export]
-    public double DamageDelay { get; set; } = 0.5;
+    [Export] public double DamageDelay { get; set; } = 0.5;
 
-    [Export]
-    public double DamageDelaySpeed { get; set; } = 3.0;
+    [Export] public double DamageDelaySpeed { get; set; } = 3.0;
 
     public override void _Ready()
     {
@@ -126,10 +123,7 @@ public partial class HealthBar : Node2D
             _damageDelayTimer -= delta;
 
             // Start transitioning when delay expires
-            if (_damageDelayTimer <= 0)
-            {
-                _isDelayedBarTransitioning = true;
-            }
+            if (_damageDelayTimer <= 0) _isDelayedBarTransitioning = true;
         }
 
         // Update the delayed health bar if it's transitioning
@@ -145,10 +139,7 @@ public partial class HealthBar : Node2D
             _delayedBar.Value = _delayedHealthValue;
 
             // Check if transition is complete
-            if (Mathf.IsEqualApprox((float)_delayedHealthValue, (float)_bar.Value))
-            {
-                _isDelayedBarTransitioning = false;
-            }
+            if (Mathf.IsEqualApprox((float)_delayedHealthValue, (float)_bar.Value)) _isDelayedBarTransitioning = false;
         }
     }
 

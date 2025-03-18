@@ -14,7 +14,6 @@ public partial class Player : Entity
         GetNode<Camera>("/root/Autoload/Camera").SwitchTarget(this);
         GetNode<EffectsContainer>("/root/Autoload/UI/EffectsContainer").Initialize(this);
         GetNode<AbilityContainer>("/root/Autoload/UI/AbilityContainer").Initialize(this);
-        GetNode<AbilityProgressBar>("/root/Autoload/UI/AbilityProgressBar").Initialize(this);
         GetNode<PlayerHealthBar>("/root/Autoload/UI/PlayerHealthBar").Initialize(this);
     }
 
@@ -40,13 +39,16 @@ public partial class Player : Entity
         Animation!.UpdateLookAnimation(AimDirection);
 
         // Handle Ability inputs
-        foreach (var slot in AbilityManagerComponent.GetAllSlots())
-        {
-            var slotName = slot.GetSlotName();
-            if (Input.IsActionJustPressed(slotName))
-                ActivateAbility(slot);
-            else if (Input.IsActionJustReleased(slotName))
-                ReleaseChargedAbility(slot);
-        }
+        if (Input.IsActionJustPressed("cancel_ability"))
+            CancelChargedAbility();
+        else
+            foreach (var slot in AbilityManagerComponent.GetAllSlots())
+            {
+                var slotName = slot.GetSlotName();
+                if (Input.IsActionJustPressed(slotName))
+                    ActivateAbility(slot);
+                else if (Input.IsActionJustReleased(slotName))
+                    ReleaseChargedAbility(slot);
+            }
     }
 }

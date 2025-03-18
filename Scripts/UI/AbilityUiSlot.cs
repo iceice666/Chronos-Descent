@@ -59,30 +59,21 @@ public partial class AbilityUiSlot : Panel
         var actions = InputMap.ActionGetEvents(inputMapKey);
 
         foreach (var @event in actions)
-        {
             if (
                 @event is InputEventMouseButton mouseButton
                 && UserInputManager.Instance.CurrentInputSource
                 == UserInputManager.InputSource.KeyboardMouse
             )
-            {
                 _hotKeyLabel.Text = mouseButton.ButtonIndex.ToString();
-            }
 
             else if (
                 @event is InputEventJoypadButton joypadButton
                 && UserInputManager.Instance.CurrentInputSource
                 == UserInputManager.InputSource.Controller
             )
-            {
                 _hotKeyLabel.Text = joypadButton.ButtonIndex.ToString();
-            }
 
-            else if (@event is InputEventKey key)
-            {
-                _hotKeyLabel.Text = key.PhysicalKeycode.ToString();
-            }
-        }
+            else if (@event is InputEventKey key) _hotKeyLabel.Text = key.PhysicalKeycode.ToString();
     }
 
     public void UpdateAbility(BaseAbility ability)

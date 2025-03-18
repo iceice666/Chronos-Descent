@@ -15,17 +15,13 @@ public partial class ChargedBlastAbility : BaseChargedAbility
         MinChargeTime = 0.3;
     }
 
-    [Export]
-    public double BaseDamage { get; set; } = 30.0;
+    [Export] public double BaseDamage { get; set; } = 30.0;
 
-    [Export]
-    public double MinRadius { get; set; } = 50.0;
+    [Export] public double MinRadius { get; set; } = 50.0;
 
-    [Export]
-    public double MaxRadius { get; set; } = 200.0;
+    [Export] public double MaxRadius { get; set; } = 200.0;
 
-    [Export]
-    public double Range { get; set; } = 300.0;
+    [Export] public double Range { get; set; } = 300.0;
 
     protected override void ExecuteEffect(double powerMultiplier)
     {

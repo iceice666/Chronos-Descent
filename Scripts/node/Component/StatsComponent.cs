@@ -12,8 +12,7 @@ public partial class StatsComponent : Node
     private const double MaxMoveSpeed = 1000;
     public BaseStats Current;
 
-    [Export]
-    public BaseStats Base { get; private set; } = new();
+    [Export] public BaseStats Base { get; private set; } = new();
 
     // Getter methods that expose CurrentStats properties
     public double Health

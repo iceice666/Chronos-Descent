@@ -5,24 +5,21 @@ namespace ChronosDescent.Scripts.UI;
 
 public partial class PlayerHealthBar : Control
 {
-    private ProgressBar _healthBar;
-    private ProgressBar _delayedHealthBar;
-    private bool _initialized;
-    private Player _player;
     private double _currentHealthDisplay;
-    private double _delayedHealthValue;
     private double _damageDelayTimer;
+    private ProgressBar _delayedHealthBar;
+    private double _delayedHealthValue;
+    private ProgressBar _healthBar;
+    private bool _initialized;
     private bool _isDelayedBarTransitioning;
+    private Player _player;
     private Label _valueLabel;
 
-    [Export]
-    public double HealthBarSmoothSpeed { get; set; } = 5.0;
+    [Export] public double HealthBarSmoothSpeed { get; set; } = 5.0;
 
-    [Export]
-    public double DamageDelay { get; set; } = 0.5;
+    [Export] public double DamageDelay { get; set; } = 0.5;
 
-    [Export]
-    public double DelayedBarSpeed { get; set; } = 3.0;
+    [Export] public double DelayedBarSpeed { get; set; } = 3.0;
 
     public override void _Ready()
     {
@@ -59,7 +56,7 @@ public partial class PlayerHealthBar : Control
         if (_player == null)
             return;
 
-        double previousHealth = _currentHealthDisplay;
+        var previousHealth = _currentHealthDisplay;
 
         // Update target health display to the new value
         _currentHealthDisplay = _player.Stats.Health;
@@ -90,7 +87,8 @@ public partial class PlayerHealthBar : Control
             return;
 
         // Smooth health bar animation for the red bar
-        _healthBar.Value = Mathf.Lerp((float)_healthBar.Value, (float)_currentHealthDisplay, (float)(delta * HealthBarSmoothSpeed));
+        _healthBar.Value = Mathf.Lerp((float)_healthBar.Value, (float)_currentHealthDisplay,
+            (float)(delta * HealthBarSmoothSpeed));
 
         // Process delayed health bar behavior
         ProcessDelayedHealthBar(delta);
@@ -104,10 +102,7 @@ public partial class PlayerHealthBar : Control
             _damageDelayTimer -= delta;
 
             // Start transitioning when delay expires
-            if (_damageDelayTimer <= 0)
-            {
-                _isDelayedBarTransitioning = true;
-            }
+            if (_damageDelayTimer <= 0) _isDelayedBarTransitioning = true;
         }
 
         // Update the delayed health bar if it's transitioning
@@ -124,9 +119,7 @@ public partial class PlayerHealthBar : Control
 
             // Check if transition is complete
             if (Mathf.IsEqualApprox((float)_delayedHealthValue, (float)_currentHealthDisplay))
-            {
                 _isDelayedBarTransitioning = false;
-            }
         }
         else
         {
