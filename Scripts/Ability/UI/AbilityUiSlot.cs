@@ -17,7 +17,6 @@ public partial class AbilityUiSlot : Panel
 
     // UI components
     private TextureRect _iconNode;
-    private Label _nameLabel;
 
     // Slot properties
     public AbilitySlot SlotType { get; set; }
@@ -27,7 +26,6 @@ public partial class AbilityUiSlot : Panel
         // Get references to UI components
         _iconNode = GetNode<TextureRect>("Icon");
         _hotKeyLabel = GetNode<Label>("HotKey");
-        _nameLabel = GetNode<Label>("Name");
         _cooldownOverlay = GetNode<ColorRect>("CooldownOverlay");
         _cooldownText = GetNode<Label>("CooldownText");
 
@@ -83,14 +81,12 @@ public partial class AbilityUiSlot : Panel
         {
             // Empty slot
             _iconNode.Texture = null;
-            _nameLabel.Text = "";
             _cooldownOverlay.Visible = false;
             return;
         }
 
         // Update with ability info
         _iconNode.Texture = ability.Icon;
-        _nameLabel.Text = ability.Name;
 
         // Reset state
         UpdateState(BaseAbility.AbilityState.Default);
