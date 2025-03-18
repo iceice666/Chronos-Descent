@@ -29,6 +29,11 @@ window/stretch/mode="viewport"
 
 project/assembly_name="Chronos-Descent"
 
+[gui]
+
+theme/custom_font="uid://ddp0p0s8gyve"
+theme/default_font_antialiasing=0
+
 [input]
 
 move_up={
