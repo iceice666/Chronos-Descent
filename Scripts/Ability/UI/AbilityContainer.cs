@@ -104,7 +104,7 @@ public partial class AbilityContainer : HBoxContainer
         }
     }
 
-    private void OnAbilityActivated(object sender, AbilityManagerComponent.AbilityEventArgs e)
+    private void OnAbilityActivated(BaseAbility ability)
     {
         // Find the slot for this ability
         foreach (var slot in _abilitySlots)
@@ -112,16 +112,14 @@ public partial class AbilityContainer : HBoxContainer
             if (slot == null)
                 continue;
 
-            if (_abilityManager.GetAbility(slot.SlotType) != e.Ability)
+            if (_abilityManager.GetAbility(slot.SlotType) != ability)
                 continue;
             slot.OnActivated();
             break;
         }
     }
 
-    private void OnAbilityCooldownChanged(
-        object sender,
-        AbilityManagerComponent.AbilityCooldownEventArgs e
+    private void OnAbilityCooldownChanged(BaseAbility ability, double cooldown
     )
     {
         // Find the slot for this ability
@@ -130,16 +128,14 @@ public partial class AbilityContainer : HBoxContainer
             if (slot == null)
                 continue;
 
-            if (_abilityManager.GetAbility(slot.SlotType) != e.Ability)
+            if (_abilityManager.GetAbility(slot.SlotType) != ability)
                 continue;
-            slot.UpdateCooldown(e.Cooldown, e.Ability.Cooldown);
+            slot.UpdateCooldown(cooldown, ability.Cooldown);
             break;
         }
     }
 
-    private void OnAbilityStateChanged(
-        object sender,
-        AbilityManagerComponent.AbilityStateEventArgs e
+    private void OnAbilityStateChanged(BaseAbility ability, BaseAbility.AbilityState state
     )
     {
         // Find the slot for this ability
@@ -148,23 +144,18 @@ public partial class AbilityContainer : HBoxContainer
             if (slot == null)
                 continue;
 
-            if (_abilityManager.GetAbility(slot.SlotType) != e.Ability)
+            if (_abilityManager.GetAbility(slot.SlotType) != ability)
                 continue;
-            slot.UpdateState(e.State);
+            slot.UpdateState(state);
             break;
         }
     }
 
-    private void OnAbilityChanged(object sender, AbilityManagerComponent.AbilitySlotEventArgs e)
+    private void OnAbilityChanged(BaseAbility ability, AbilitySlot abilitySlot)
     {
-        if (
-            (int)e.AbilitySlotValue >= _abilitySlots.Length
-            || _abilitySlots[(int)e.AbilitySlotValue] == null
-        )
-            return;
+        if ((int)abilitySlot >= _abilitySlots.Length) return;
 
-        var abilitySlot = _abilitySlots[(int)e.AbilitySlotValue];
-        abilitySlot.UpdateAbility(e.Ability);
+        _abilitySlots[(int)abilitySlot]?.UpdateAbility(ability);
     }
 
     private void OnInputSourceChanged(UserInputManager.InputSource inputSource)

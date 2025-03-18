@@ -26,11 +26,43 @@ public partial class AbilityManagerComponent : Godot.Node
     // Track currently active ability slot
     private AbilitySlot _currentActiveAbilitySlot = AbilitySlot.Unknown;
 
-    // C# events instead of Godot signals
-    public event EventHandler<AbilityEventArgs> AbilityActivated;
-    public event EventHandler<AbilityCooldownEventArgs> AbilityCooldownChanged;
-    public event EventHandler<AbilityStateEventArgs> AbilityStateChanged;
-    public event EventHandler<AbilitySlotEventArgs> AbilityChanged;
+    // Events
+    public delegate void AbilityActivatedEventHandler(BaseAbility ability);
+
+    public delegate void AbilityCooldownEventHandler(BaseAbility ability, double cooldown);
+
+    public delegate void AbilityStateEventHandler(BaseAbility ability, BaseAbility.AbilityState state);
+
+    public delegate void AbilitySlotEventHandler(BaseAbility ability, AbilitySlot abilitySlot);
+
+    public event AbilityActivatedEventHandler AbilityActivated;
+    public event AbilityCooldownEventHandler AbilityCooldownChanged;
+    public event AbilityStateEventHandler AbilityStateChanged;
+    public event AbilitySlotEventHandler AbilityChanged;
+
+    #region Event Invokers
+
+    protected void OnAbilityActivated(BaseAbility ability)
+    {
+        AbilityActivated?.Invoke(ability);
+    }
+
+    protected void OnAbilityCooldownChanged(BaseAbility ability, double cooldown)
+    {
+        AbilityCooldownChanged?.Invoke(ability, cooldown);
+    }
+
+    protected void OnAbilityStateChanged(BaseAbility ability, BaseAbility.AbilityState state)
+    {
+        AbilityStateChanged?.Invoke(ability, state);
+    }
+
+    protected void OnAbilityChanged(BaseAbility ability, AbilitySlot abilitySlot)
+    {
+        AbilityChanged?.Invoke(ability, abilitySlot);
+    }
+
+    #endregion
 
     public override void _Ready()
     {
@@ -71,7 +103,7 @@ public partial class AbilityManagerComponent : Godot.Node
         // Subscribe to ability events
         SubscribeToAbilityEvents(ability, abilitySlot);
 
-        OnAbilityChanged(new AbilitySlotEventArgs(ability, abilitySlot));
+        OnAbilityChanged(ability, abilitySlot);
         GD.Print($"Added ability {ability.Name} to {caster.Name}");
     }
 
@@ -95,7 +127,7 @@ public partial class AbilityManagerComponent : Godot.Node
         if (_currentActiveAbilitySlot == abilitySlot)
             _currentActiveAbilitySlot = AbilitySlot.Unknown;
 
-        OnAbilityChanged(new AbilitySlotEventArgs(null, abilitySlot));
+        OnAbilityChanged(null, abilitySlot);
         GD.Print($"Removed ability {ability.Name} from slot {abilitySlot}");
     }
 
@@ -154,13 +186,13 @@ public partial class AbilityManagerComponent : Godot.Node
         }
 
 
-        OnAbilityStateChanged(new AbilityStateEventArgs(ability, state));
+        OnAbilityStateChanged(ability, state);
     }
 
     // Redirector
     private void HandleAbilityCooldownChanged(BaseAbility ability)
     {
-        OnAbilityCooldownChanged(new AbilityCooldownEventArgs(ability, ability.CurrentCooldown));
+        OnAbilityCooldownChanged(ability, ability.CurrentCooldown);
     }
 
     // Get an ability by slot
@@ -217,10 +249,11 @@ public partial class AbilityManagerComponent : Godot.Node
             return;
         }
 
-        ability.Activate();
-        OnAbilityActivated(new AbilityEventArgs(ability));
-
         _caster.Moveable = false;
+
+        ability.Activate();
+        OnAbilityActivated(ability);
+
 
         GD.Print($"Activated ability {ability.Name}");
     }
@@ -309,76 +342,6 @@ public partial class AbilityManagerComponent : Godot.Node
         ];
     }
 
-    // Custom event args
-    public class AbilityEventArgs : EventArgs
-    {
-        public AbilityEventArgs(BaseAbility ability)
-        {
-            Ability = ability;
-        }
-
-        public BaseAbility Ability { get; }
-    }
-
-    public class AbilityCooldownEventArgs : EventArgs
-    {
-        public AbilityCooldownEventArgs(BaseAbility ability, double cooldown)
-        {
-            Ability = ability;
-            Cooldown = cooldown;
-        }
-
-        public BaseAbility Ability { get; }
-        public double Cooldown { get; }
-    }
-
-    public class AbilityStateEventArgs : EventArgs
-    {
-        public AbilityStateEventArgs(BaseAbility ability, BaseAbility.AbilityState state)
-        {
-            Ability = ability;
-            State = state;
-        }
-
-        public BaseAbility Ability { get; }
-        public BaseAbility.AbilityState State { get; }
-    }
-
-    public class AbilitySlotEventArgs : EventArgs
-    {
-        public AbilitySlotEventArgs(BaseAbility ability, AbilitySlot abilitySlot)
-        {
-            Ability = ability;
-            AbilitySlotValue = abilitySlot;
-        }
-
-        public BaseAbility Ability { get; }
-        public AbilitySlot AbilitySlotValue { get; }
-    }
-
-    #region Event Invokers
-
-    protected void OnAbilityActivated(AbilityEventArgs e)
-    {
-        AbilityActivated?.Invoke(this, e);
-    }
-
-    protected void OnAbilityCooldownChanged(AbilityCooldownEventArgs e)
-    {
-        AbilityCooldownChanged?.Invoke(this, e);
-    }
-
-    protected void OnAbilityStateChanged(AbilityStateEventArgs e)
-    {
-        AbilityStateChanged?.Invoke(this, e);
-    }
-
-    protected void OnAbilityChanged(AbilitySlotEventArgs e)
-    {
-        AbilityChanged?.Invoke(this, e);
-    }
-
-    #endregion
 
     #region BaseAbility State Helpers
 
