@@ -5,7 +5,7 @@ namespace ChronosDescent.Scripts.node;
 public partial class Camera : Node2D
 {
     private Vector2 _offset = new(0, 0);
-    private Entity _target;
+    private Entity.Entity _target;
 
     public override void _PhysicsProcess(double delta)
     {
@@ -20,7 +20,7 @@ public partial class Camera : Node2D
     }
 
 
-    public void SwitchTarget(Entity target)
+    public void SwitchTarget(Entity.Entity target)
     {
         _target = target;
         _target.Stats.EntityDead += OnPlayerDead;

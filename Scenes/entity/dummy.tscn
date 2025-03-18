@@ -1,13 +1,13 @@
 [gd_scene load_steps=12 format=3 uid="uid://bvnq7r1s2138p"]
 
-[ext_resource type="Script" path="res://Scripts/node/Entities/Dummy.cs" id="1_eh7ut"]
+[ext_resource type="Script" uid="uid://d1hwpkkpfncxa" path="res://Scripts/Entity/Variant/Dummy.cs" id="1_eh7ut"]
 [ext_resource type="Texture2D" uid="uid://dowioby133mv0" path="res://Assets/Entity/dummy.png" id="2_vw43e"]
-[ext_resource type="Script" uid="uid://bf4bfk8cc5j7p" path="res://Scripts/node/Component/EffectTriggerComponent.cs" id="3_hw38b"]
-[ext_resource type="Script" uid="uid://dkefqru8ptbxr" path="res://Scripts/node/Component/CombatComponent.cs" id="4_a01bh"]
-[ext_resource type="Script" uid="uid://bghylo3hjyh03" path="res://Scripts/node/Component/EffectManagerComponent.cs" id="5_eh7ut"]
-[ext_resource type="Script" uid="uid://dm1rr2m3v20ct" path="res://Scripts/node/Component/StatsComponent.cs" id="6_k86i5"]
-[ext_resource type="Script" uid="uid://by1njeut5gcst" path="res://Scripts/node/Component/DamageIndicatorManagerComponent.cs" id="7_ckp21"]
-[ext_resource type="Script" uid="uid://5pq6iq2vk2fb" path="res://Scripts/resource/BaseStats.cs" id="7_eh7ut"]
+[ext_resource type="Script" uid="uid://bf4bfk8cc5j7p" path="res://Scripts/Effect/Node/EffectTriggerComponent.cs" id="3_hw38b"]
+[ext_resource type="Script" uid="uid://dkefqru8ptbxr" path="res://Scripts/Entity/Node/CombatComponent.cs" id="4_a01bh"]
+[ext_resource type="Script" uid="uid://bghylo3hjyh03" path="res://Scripts/Effect/Node/EffectManagerComponent.cs" id="5_eh7ut"]
+[ext_resource type="Script" uid="uid://dm1rr2m3v20ct" path="res://Scripts/Entity/Node/StatsComponent.cs" id="6_k86i5"]
+[ext_resource type="Script" uid="uid://by1njeut5gcst" path="res://Scripts/Entity/Node/DamageIndicatorManagerComponent.cs" id="7_ckp21"]
+[ext_resource type="Script" uid="uid://5pq6iq2vk2fb" path="res://Scripts/Entity/Resource/BaseStats.cs" id="7_eh7ut"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jk4ue"]
 size = Vector2(6, 18)
