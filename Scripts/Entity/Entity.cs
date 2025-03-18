@@ -1,6 +1,8 @@
 using ChronosDescent.Scripts.Effect.Node;
 using ChronosDescent.Scripts.Entity.Node;
 using ChronosDescent.Scripts.Entity.UI;
+using ChronosDescent.Scripts.Weapon;
+using ChronosDescent.Scripts.Weapon.Node;
 using Godot;
 using AbilityManagerComponent = ChronosDescent.Scripts.Ability.Node.AbilityManagerComponent;
 using AbilitySlot = ChronosDescent.Scripts.Ability.Node.AbilitySlot;
@@ -15,7 +17,7 @@ public partial class Entity : CharacterBody2D
 
     public Vector2 AimDirection;
 
-    public bool Moveable = true;
+    public bool Moveable { get; set; }= true;
 
     public override void _Ready()
     {
@@ -30,6 +32,7 @@ public partial class Entity : CharacterBody2D
         TimeManipulation = GetNodeOrNull<TimeManipulationComponent>("TimeManipulationComponent");
         AbilityManager = GetNodeOrNull<AbilityManagerComponent>("AbilityManagerComponent");
         Animation = GetNodeOrNull<AnimationComponent>("AnimationComponent");
+        Weapon = GetNodeOrNull<WeaponComponent>("WeaponComponent");
 
         _collision = GetNode<CollisionShape2D>("CollisionShape2D");
 
@@ -99,6 +102,7 @@ public partial class Entity : CharacterBody2D
     public TimeManipulationComponent TimeManipulation;
     public AnimationComponent Animation;
     public AbilityManagerComponent AbilityManager;
+    public WeaponComponent Weapon;
 
     // @formatter:on
 
@@ -125,8 +129,7 @@ public partial class Entity : CharacterBody2D
     }
 
     #endregion
-
-
+    
     #region Ability
 
     public void ActivateAbility(AbilitySlot abilitySlot)
@@ -174,4 +177,20 @@ public partial class Entity : CharacterBody2D
     }
 
     #endregion
+    
+    public void EquipWeapon(BaseWeapon weapon)
+    {
+        if (Weapon == null)
+        {
+            Util.PrintWarning($"This entity({this}) has no weapon component!");
+            return;
+        }
+    
+        Weapon.EquipWeapon(weapon);
+    }
+
+    public BaseWeapon GetCurrentWeapon()
+    {
+        return Weapon?.CurrentWeapon;
+    }
 }

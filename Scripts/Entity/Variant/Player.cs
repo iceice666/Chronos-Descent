@@ -1,6 +1,7 @@
 using ChronosDescent.Scripts.Ability.Node;
 using ChronosDescent.Scripts.Entity.UI;
 using ChronosDescent.Scripts.node;
+using ChronosDescent.Scripts.Weapon;
 using Godot;
 using AbilityContainer = ChronosDescent.Scripts.Ability.UI.AbilityContainer;
 using AbilityManagerComponent = ChronosDescent.Scripts.Ability.Node.AbilityManagerComponent;
@@ -22,6 +23,7 @@ public partial class Player : Entity
         GetNode<PlayerHealthBar>("/root/Autoload/UI/PlayerHealthBar").Initialize(this);
 
         AbilityManager.SetAbility(AbilitySlot.WeaponSpecial, new ChargedBlastAbility());
+        Weapon.EquipWeapon(GD.Load<PackedScene>("res://Scenes/weapon/silver_word.tscn").Instantiate<BaseWeapon>());
     }
 
     public override void _PhysicsProcess(double delta)
@@ -34,6 +36,7 @@ public partial class Player : Entity
 
             Velocity = velocity;
             Animation!.UpdateWalkAnimation(velocity);
+           
 
             MoveAndSlide();
         }
@@ -44,6 +47,7 @@ public partial class Player : Entity
         // Handle Animation
         AimDirection = UserInputManager.Instance.AimInput;
         Animation!.UpdateLookAnimation(AimDirection);
+        Weapon?.CurrentWeapon.UpdateLookAnimation(AimDirection);
 
         // Handle Ability inputs
         if (Input.IsActionJustPressed("cancel_ability"))

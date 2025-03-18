@@ -9,7 +9,6 @@
         <Folder Include="Scripts\Effect\Resource\"/>
         <Folder Include="Scripts\Effect\UI\"/>
         <Folder Include="Scripts\Entity\"/>
-        <Folder Include="Scripts\Weapon\Node\"/>
         <Folder Include="Scripts\Weapon\Resource\"/>
     </ItemGroup>
 </Project>

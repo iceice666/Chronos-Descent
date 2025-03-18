@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=3 uid="uid://bpuhyc475sgxd"]
+[gd_scene load_steps=38 format=3 uid="uid://bpuhyc475sgxd"]
 
 [ext_resource type="Script" uid="uid://k40oxb8puww3" path="res://Scripts/Entity/Variant/Player.cs" id="1_vxxhj"]
 [ext_resource type="Script" uid="uid://ck2ek8c0u02x1" path="res://Scripts/Entity/Node/TimeManipulationComponent.cs" id="2_qnfm0"]
@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://by1njeut5gcst" path="res://Scripts/Entity/Node/DamageIndicatorManagerComponent.cs" id="9_k5mxe"]
 [ext_resource type="Script" uid="uid://bf4bfk8cc5j7p" path="res://Scripts/Effect/Node/EffectTriggerComponent.cs" id="9_ualn7"]
 [ext_resource type="Script" uid="uid://3y2678e7js26" path="res://Scripts/Ability/UI/AbilityCastIndicator.cs" id="11_417id"]
+[ext_resource type="Script" uid="uid://b0dme4wdscodc" path="res://Scripts/Weapon/node/WeaponComponent.cs" id="12_1cwhq"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_0grkt"]
 atlas = ExtResource("5_dq8j7")
@@ -241,3 +242,7 @@ metadata/_edit_lock_ = true
 [node name="AbilityCastIndicator" type="Node2D" parent="."]
 script = ExtResource("11_417id")
 metadata/_custom_type_script = "uid://3y2678e7js26"
+
+[node name="WeaponComponent" type="Node2D" parent="."]
+script = ExtResource("12_1cwhq")
+metadata/_custom_type_script = "uid://b0dme4wdscodc"
