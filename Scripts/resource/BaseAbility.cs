@@ -101,6 +101,7 @@ public partial class BaseAbility : Resource
     /// </summary>
     protected void StartCooldown(double multiplier = 1.0)
     {
+        OnStateChanged(new AbilityStateEventArgs(this, AbilityState.Cooldown));
         CurrentCooldown = Cooldown * multiplier;
     }
 
