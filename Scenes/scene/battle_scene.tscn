@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://cwx1wpnqhiio8"]
+
+[ext_resource type="PackedScene" uid="uid://cv83jmh2yx4l5" path="res://Scenes/entity/dummy.tscn" id="1_c0pla"]
+
+[node name="BattleScene" type="Node2D"]
+
+[node name="Dummy" parent="." instance=ExtResource("1_c0pla")]
+position = Vector2(232, 112)

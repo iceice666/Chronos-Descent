@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://dhbxyf3dj542s"]
 
-[ext_resource type="Script" uid="uid://dujhbr0cdd7q7" path="res://Scripts/UI/DamageIndicator.cs" id="1_fnv8c"]
+[ext_resource type="Script" uid="uid://bcd2ipysa58lf" path="res://Scripts/Entity/Damage/Indicator.cs" id="1_fnv8c"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_6fgmi"]
 font_size = 20
