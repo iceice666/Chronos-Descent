@@ -31,14 +31,12 @@ public partial class BerserkerRageAbility : BasePassiveAbility
             // Apply rage effect if not already applied
             if (Caster.HasEffect(_rageEffect.Name)) return;
             Caster.ApplyEffect(_rageEffect);
-            GD.Print($"{Caster.Name}'s {Name} activated at {healthPercentage * 100}% health");
         }
         else
         {
             // Remove rage effect if health is above the threshold
             if (!Caster.HasEffect(_rageEffect.Name)) return;
             Caster.RemoveEffect(_rageEffect.Name);
-            GD.Print($"{Caster.Name}'s {Name} deactivated");
         }
     }
 }

@@ -36,8 +36,6 @@ public partial class BuffAbility : BaseToggleAbility
         if (TargetSelf) ApplyEffectToTarget(Caster);
 
         if (AreaOfEffect > 0) ApplyEffectToArea();
-
-        GD.Print($"{Caster.Name} activated {Name}");
     }
 
     protected override void OnToggleOff()
@@ -48,8 +46,6 @@ public partial class BuffAbility : BaseToggleAbility
         if (TargetSelf) RemoveEffectFromTarget(Caster);
 
         if (AreaOfEffect > 0) RemoveEffectFromArea();
-
-        GD.Print($"{Caster.Name} deactivated {Name}");
     }
 
     protected override void OnToggleTick(double delta)

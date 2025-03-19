@@ -45,8 +45,6 @@ public partial class TimeRewindAbility : BaseChanneledAbility
 
         // Pause recording during rewind
         Caster.TimeManipulation.PauseRecording();
-
-        GD.Print($"{Caster.Name} activated {Name} - rewinding {RewindDuration} seconds");
     }
 
 

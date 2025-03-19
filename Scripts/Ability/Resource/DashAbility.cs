@@ -57,8 +57,6 @@ public partial class DashAbility : BaseActiveAbility
         // Disable collision
         Caster.DisableCollision(true);
         Caster.Moveable = false;
-
-        GD.Print($"{Caster.Name} activated {Name} in direction {_dashDirection}");
     }
 
     public override void Update(double delta)

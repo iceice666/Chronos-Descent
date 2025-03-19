@@ -1,4 +1,4 @@
-﻿using Godot;
+using Godot;
 using Godot.Collections;
 using BaseStats = ChronosDescent.Scripts.Entity.Resource.BaseStats;
 
@@ -74,8 +74,6 @@ public sealed partial class BerserkerRageEffect : Effect
 
             // Mark stats for recalculation
             Target.EffectManager.SetStatsDirty();
-
-            GD.Print("Berserker Rage strength bonus deactivated");
         }
     }
 

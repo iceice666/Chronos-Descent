@@ -27,8 +27,8 @@ public partial class BaseStats : Godot.Resource, ICloneable
     }
 
     [Export] public double AttackSpeed = 100;
-    [Export] public double CriticalChance = 50;
-    [Export] public double CriticalDamage = 100;
+    [Export] public double CriticalChance = 5;
+    [Export] public double CriticalDamage = 50;
     [Export] public double Defense = 100;
 
     // Basic stats with private backing fields and public properties

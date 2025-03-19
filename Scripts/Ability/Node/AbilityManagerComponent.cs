@@ -231,16 +231,16 @@ public partial class AbilityManagerComponent : Godot.Node
                 or BaseChargedAbility
                 when _currentActiveAbilitySlot != AbilitySlot.Unknown
                      && _currentActiveAbilitySlot != abilitySlot:
-            {
-                if (!IsAbilityOnCooldown(_currentActiveAbilitySlot))
                 {
-                    GD.Print($"Cannot activate {ability.Name} while another ability is active");
-                    return;
-                }
+                    if (!IsAbilityOnCooldown(_currentActiveAbilitySlot))
+                    {
+                        GD.Print($"Cannot activate {ability.Name} while another ability is active");
+                        return;
+                    }
 
-                _currentActiveAbilitySlot = AbilitySlot.Unknown;
-                break;
-            }
+                    _currentActiveAbilitySlot = AbilitySlot.Unknown;
+                    break;
+                }
         }
 
         if (!ability.CanActivate())
@@ -253,9 +253,6 @@ public partial class AbilityManagerComponent : Godot.Node
 
         ability.Activate();
         OnAbilityActivated(ability);
-
-
-        GD.Print($"Activated ability {ability.Name}");
     }
 
     // Release a charged ability

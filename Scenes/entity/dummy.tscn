@@ -18,8 +18,8 @@ size = Vector2(12, 3)
 [sub_resource type="Resource" id="Resource_k86i5"]
 script = ExtResource("7_eh7ut")
 AttackSpeed = 4.0
-CriticalChance = 50.0
-CriticalDamage = 100.0
+CriticalChance = 5.0
+CriticalDamage = 50.0
 Defense = 100.0
 Health = 114514.0
 MaxHealth = 114514.0

@@ -22,7 +22,6 @@ public partial class BasePassiveAbility : BaseAbility
     public override void Activate()
     {
         // Passive abilities can't be activated manually
-        GD.Print($"{Name} is a passive ability and cannot be manually activated");
     }
 
     public override void Update(double delta)
