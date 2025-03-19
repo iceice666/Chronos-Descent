@@ -43,7 +43,7 @@ public partial class StatsComponent : Godot.Node
     public double Defense
     {
         get => Current.Defense;
-        set => Current.Defense = value;
+        set => Current.Defense = Mathf.Max(0, value);
     }
 
     public BaseStats.CombatResource ResourceType
