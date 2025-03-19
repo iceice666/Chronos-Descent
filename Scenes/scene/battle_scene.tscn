@@ -1,0 +1,51 @@
+[gd_scene load_steps=7 format=3 uid="uid://cwx1wpnqhiio8"]
+
+[ext_resource type="PackedScene" uid="uid://cv83jmh2yx4l5" path="res://Scenes/entity/dummy.tscn" id="1_c0pla"]
+[ext_resource type="PackedScene" uid="uid://de4usjehraevn" path="res://Scenes/entity/player.tscn" id="2_v365r"]
+[ext_resource type="Script" uid="uid://bxsgp8e2seq64" path="res://Scripts/Core/Effect/EffectTrigger.cs" id="3_3ayl6"]
+[ext_resource type="Script" uid="uid://cnaq7c47wqp16" path="res://Scripts/Effects/InstantDamage.cs" id="4_v2tsq"]
+
+[sub_resource type="Resource" id="Resource_nfamq"]
+script = ExtResource("4_v2tsq")
+Damage = 100.0
+metadata/_custom_type_script = "uid://cnaq7c47wqp16"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3ayl6"]
+
+[node name="BattleScene" type="Node2D"]
+
+[node name="Player" parent="." instance=ExtResource("2_v365r")]
+position = Vector2(34, 85)
+scale = Vector2(2, 2)
+
+[node name="EffectTrigger" type="Area2D" parent="."]
+position = Vector2(-326, -50)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_3ayl6")
+Effect = SubResource("Resource_nfamq")
+metadata/_custom_type_script = "uid://bxsgp8e2seq64"
+
+[node name="ColorRect" type="ColorRect" parent="EffectTrigger"]
+offset_left = 415.0
+offset_top = 73.0
+offset_right = 435.0
+offset_bottom = 93.0
+metadata/_edit_lock_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EffectTrigger"]
+position = Vector2(425, 83)
+shape = SubResource("RectangleShape2D_3ayl6")
+metadata/_edit_lock_ = true
+
+[node name="Dummy" parent="." instance=ExtResource("1_c0pla")]
+position = Vector2(135, 79)
+scale = Vector2(3, 3)
+
+[node name="Dummy2" parent="." instance=ExtResource("1_c0pla")]
+position = Vector2(208, 75)
+scale = Vector2(3, 3)
+
+[node name="Dummy3" parent="." instance=ExtResource("1_c0pla")]
+position = Vector2(173, 143)
+scale = Vector2(3, 3)

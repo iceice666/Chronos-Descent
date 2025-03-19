@@ -1,51 +1,85 @@
-[gd_scene load_steps=4 format=3 uid="uid://bdrjvoym5x78i"]
+[gd_scene load_steps=5 format=3 uid="uid://cuiojf8xhcvmb"]
 
-[ext_resource type="Script" uid="uid://bmt4m63yqbxlf" path="res://Scripts/UI/HealthBar.cs" id="1_v7wlb"]
+[ext_resource type="Script" uid="uid://brokf8xct47sa" path="res://Scripts/UI/HealthBar.cs" id="1_1xqhs"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_delayed"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uyjlx"]
+bg_color = Color(0.156863, 0.156863, 0.156863, 0.784314)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cdbom"]
 bg_color = Color(1, 1, 1, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.12549, 0.12549, 0.12549, 1)
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_right = 2
-corner_radius_bottom_left = 2
-anti_aliasing = false
+corner_radius_top_left = 1
+corner_radius_top_right = 1
+corner_radius_bottom_right = 1
+corner_radius_bottom_left = 1
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q61en"]
-bg_color = Color(0.85098, 0.219608, 0.180392, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.12549, 0.12549, 0.12549, 1)
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_right = 2
-corner_radius_bottom_left = 2
-anti_aliasing = false
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yk6qs"]
+bg_color = Color(0.9, 0.16, 0.16, 1)
+corner_radius_top_left = 1
+corner_radius_top_right = 1
+corner_radius_bottom_right = 1
+corner_radius_bottom_left = 1
 
-[node name="HealthBar" type="Node2D"]
-z_index = 100
-script = ExtResource("1_v7wlb")
+[node name="HealthBar" type="Control"]
+custom_minimum_size = Vector2(100, 12)
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -480.0
+offset_top = -270.0
+offset_right = -380.0
+offset_bottom = -258.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_1xqhs")
 
-[node name="DelayedProgressBar" type="ProgressBar" parent="."]
-custom_minimum_size = Vector2(30, 4)
-offset_right = 30.0
-offset_bottom = 4.0
-theme_override_styles/fill = SubResource("StyleBoxFlat_delayed")
-max_value = 1.0
-value = 1.0
+[node name="Background" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_uyjlx")
+
+[node name="DelayedHealthBar" type="ProgressBar" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = -2.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_cdbom")
+value = 100.0
 show_percentage = false
 
-[node name="ProgressBar" type="ProgressBar" parent="."]
-custom_minimum_size = Vector2(30, 4)
-offset_right = 30.0
-offset_bottom = 4.0
-theme_override_styles/fill = SubResource("StyleBoxFlat_q61en")
-max_value = 1.0
-value = 1.0
+[node name="CurrentHealthBar" type="ProgressBar" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = -2.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_yk6qs")
+value = 70.0
 show_percentage = false
+
+[node name="DamageDelayTimer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
+[connection signal="timeout" from="DamageDelayTimer" to="." method="OnDamageDelayTimerTimeout"]

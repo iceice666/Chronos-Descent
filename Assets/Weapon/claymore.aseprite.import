@@ -1,0 +1,14 @@
+[remap]
+
+importer="aseprite_wizard.plugin.noop"
+type="PackedDataContainer"
+uid="uid://cq3wxqie8aiaw"
+path="res://.godot/imported/claymore.aseprite-3a5bbc7f6ceb7b7bda939b9d9ecf42b8.res"
+
+[deps]
+
+source_file="res://Assets/Weapon/claymore.aseprite"
+dest_files=["res://.godot/imported/claymore.aseprite-3a5bbc7f6ceb7b7bda939b9d9ecf42b8.res"]
+
+[params]
+

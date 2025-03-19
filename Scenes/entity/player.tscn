@@ -1,252 +1,165 @@
-[gd_scene load_steps=38 format=3 uid="uid://bpuhyc475sgxd"]
+[gd_scene load_steps=13 format=4 uid="uid://de4usjehraevn"]
 
-[ext_resource type="Script" uid="uid://k40oxb8puww3" path="res://Scripts/Entity/Variant/Player.cs" id="1_vxxhj"]
-[ext_resource type="Script" uid="uid://ck2ek8c0u02x1" path="res://Scripts/Entity/Node/TimeManipulationComponent.cs" id="2_qnfm0"]
-[ext_resource type="Script" uid="uid://dkefqru8ptbxr" path="res://Scripts/Entity/Node/CombatComponent.cs" id="3_jd6qi"]
-[ext_resource type="Script" uid="uid://bghylo3hjyh03" path="res://Scripts/Effect/Node/EffectManagerComponent.cs" id="4_gh0aw"]
-[ext_resource type="Texture2D" uid="uid://bdhl6nigpplgi" path="res://Assets/Tiny RPG Character Asset Pack v1.03 -Free Soldier&Orc/Characters(100x100)/Soldier/Soldier/Soldier.png" id="5_dq8j7"]
-[ext_resource type="Script" uid="uid://dm1rr2m3v20ct" path="res://Scripts/Entity/Node/StatsComponent.cs" id="5_ef8pe"]
-[ext_resource type="Script" uid="uid://d1urpysdnl1cm" path="res://Scripts/Entity/Node/AnimationComponent.cs" id="6_iv6k8"]
-[ext_resource type="Script" uid="uid://cxyiy7naggcnb" path="res://Scripts/Ability/Node/AbilityManagerComponent.cs" id="8_swhob"]
-[ext_resource type="Script" uid="uid://by1njeut5gcst" path="res://Scripts/Entity/Node/DamageIndicatorManagerComponent.cs" id="9_k5mxe"]
-[ext_resource type="Script" uid="uid://bf4bfk8cc5j7p" path="res://Scripts/Effect/Node/EffectTriggerComponent.cs" id="9_ualn7"]
-[ext_resource type="Script" uid="uid://3y2678e7js26" path="res://Scripts/Ability/UI/AbilityCastIndicator.cs" id="11_417id"]
-[ext_resource type="Script" uid="uid://b0dme4wdscodc" path="res://Scripts/Weapon/node/WeaponComponent.cs" id="12_1cwhq"]
+[ext_resource type="Script" uid="uid://bhokion2aj7fk" path="res://Scripts/Entities/Player.cs" id="1_t4jk1"]
+[ext_resource type="AnimationNodeStateMachine" uid="uid://bkhv1grxpwcfe" path="res://Resources/player_animation.tres" id="2_258nv"]
+[ext_resource type="Script" uid="uid://bmbj1lwqxqm0s" path="res://Scripts/Core/Animation/PlayerAnimationManager.cs" id="2_t4jk1"]
+[ext_resource type="Script" uid="uid://2snmbmve0swj" path="res://Scripts/Core/Effect/EffectBox.cs" id="4_23hx6"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_0grkt"]
-atlas = ExtResource("5_dq8j7")
-region = Rect2(0, 600, 100, 100)
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_4fuip"]
+radius = 36.0
+height = 96.0
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_ykmhm"]
-atlas = ExtResource("5_dq8j7")
-region = Rect2(100, 600, 100, 100)
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_bs0fw"]
+radius = 0.999998
+height = 12.0
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_qqymb"]
-atlas = ExtResource("5_dq8j7")
-region = Rect2(200, 600, 100, 100)
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_23hx6"]
+graph_offset = Vector2(-110.6, 93.32)
+nodes/PlayerState/node = ExtResource("2_258nv")
+nodes/PlayerState/position = Vector2(40, 150)
+nodes/output/position = Vector2(380, 170)
+node_connections = [&"output", 0, &"PlayerState"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_fnlie"]
-atlas = ExtResource("5_dq8j7")
-region = Rect2(300, 600, 100, 100)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_kvujy"]
-atlas = ExtResource("5_dq8j7")
-region = Rect2(0, 500, 100, 100)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_sfvbn"]
-atlas = ExtResource("5_dq8j7")
-region = Rect2(100, 500, 100, 100)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_4xj40"]
-atlas = ExtResource("5_dq8j7")
-region = Rect2(200, 500, 100, 100)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_by6r7"]
-atlas = ExtResource("5_dq8j7")
-region = Rect2(300, 500, 100, 100)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_xfquq"]
-atlas = ExtResource("5_dq8j7")
-region = Rect2(0, 0, 100, 100)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_110lj"]
-atlas = ExtResource("5_dq8j7")
-region = Rect2(100, 0, 100, 100)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_mh365"]
-atlas = ExtResource("5_dq8j7")
-region = Rect2(200, 0, 100, 100)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_obkx5"]
-atlas = ExtResource("5_dq8j7")
-region = Rect2(300, 0, 100, 100)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_qk8yx"]
-atlas = ExtResource("5_dq8j7")
-region = Rect2(400, 0, 100, 100)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_6yejy"]
-atlas = ExtResource("5_dq8j7")
-region = Rect2(500, 0, 100, 100)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_5jot5"]
-atlas = ExtResource("5_dq8j7")
-region = Rect2(0, 100, 100, 100)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_g3vqr"]
-atlas = ExtResource("5_dq8j7")
-region = Rect2(100, 100, 100, 100)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_cccgg"]
-atlas = ExtResource("5_dq8j7")
-region = Rect2(200, 100, 100, 100)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_r8s2g"]
-atlas = ExtResource("5_dq8j7")
-region = Rect2(300, 100, 100, 100)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_3vfmq"]
-atlas = ExtResource("5_dq8j7")
-region = Rect2(400, 100, 100, 100)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ak2wi"]
-atlas = ExtResource("5_dq8j7")
-region = Rect2(500, 100, 100, 100)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_f0x6s"]
-atlas = ExtResource("5_dq8j7")
-region = Rect2(600, 100, 100, 100)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_b6qul"]
-atlas = ExtResource("5_dq8j7")
-region = Rect2(700, 100, 100, 100)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_72fkf"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_0grkt")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_ykmhm")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_qqymb")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_fnlie")
-}],
-"loop": false,
-"name": &"death",
-"speed": 8.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_kvujy")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_sfvbn")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_4xj40")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_by6r7")
-}],
-"loop": false,
-"name": &"hurt",
-"speed": 8.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_xfquq")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_110lj")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_mh365")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_obkx5")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_qk8yx")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_6yejy")
-}],
-"loop": true,
-"name": &"idle",
-"speed": 16.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_5jot5")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_g3vqr")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_cccgg")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_r8s2g")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_3vfmq")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_ak2wi")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_f0x6s")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_b6qul")
-}],
-"loop": true,
-"name": &"walk",
-"speed": 16.0
+[sub_resource type="Animation" id="Animation_hkcvn"]
+length = 0.4
+tracks/0/type = "method"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.4),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"queue_free"
 }]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = false
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [8, 9, 10]
+}
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_2ivh0"]
-radius = 6.0
+[sub_resource type="Animation" id="Animation_1qc6a"]
+length = 0.6
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = false
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 0, 1, 1, 0, 2]
+}
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_k4hn1"]
-size = Vector2(12, 3)
+[sub_resource type="Animation" id="Animation_bs0fw"]
+length = 1.2
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = false
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 3, 4, 5, 6, 7, 0, 3, 4, 5, 6, 7]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_1qc6a"]
+_data = {
+&"death": SubResource("Animation_hkcvn"),
+&"idle": SubResource("Animation_1qc6a"),
+&"walk": SubResource("Animation_bs0fw")
+}
+
+[sub_resource type="PortableCompressedTexture2D" id="PortableCompressedTexture2D_1qc6a"]
+_data = PackedByteArray("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")
+size_override = Vector2(128, 96)
 
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 6
 collision_mask = 3
-script = ExtResource("1_vxxhj")
+script = ExtResource("1_t4jk1")
+metadata/_custom_type_script = "uid://bhokion2aj7fk"
 
-[node name="AnimationComponent" type="AnimatedSprite2D" parent="."]
-sprite_frames = SubResource("SpriteFrames_72fkf")
-animation = &"idle"
-autoplay = "idle"
-script = ExtResource("6_iv6k8")
+[node name="HurtBox" type="CollisionShape2D" parent="."]
+scale = Vector2(0.25, 0.25)
+shape = SubResource("CapsuleShape2D_4fuip")
+debug_color = Color(0.238251, 0.625841, 0.346228, 0.42)
 metadata/_edit_lock_ = true
 
-[node name="TimeManipulationComponent" type="Node" parent="."]
-script = ExtResource("2_qnfm0")
-
-[node name="CombatComponent" type="Node" parent="."]
-script = ExtResource("3_jd6qi")
-
-[node name="EffectManagerComponent" type="Node" parent="."]
-script = ExtResource("4_gh0aw")
-
-[node name="StatsComponent" type="Node" parent="."]
-script = ExtResource("5_ef8pe")
-
-[node name="AbilityManagerComponent" type="Node" parent="."]
-script = ExtResource("8_swhob")
-
-[node name="DamageIndicatorManagerComponent" type="Node" parent="."]
-script = ExtResource("9_k5mxe")
-metadata/_custom_type_script = "uid://by1njeut5gcst"
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_2ivh0")
-debug_color = Color(0.350349, 0.812157, 0.349349, 0.42)
-metadata/_edit_lock_ = true
-
-[node name="EffectTriggerComponent" type="Area2D" parent="."]
+[node name="EffectBox" type="Area2D" parent="."]
 collision_layer = 0
 collision_mask = 8
-script = ExtResource("9_ualn7")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="EffectTriggerComponent"]
-position = Vector2(0, 6.5)
-shape = SubResource("RectangleShape2D_k4hn1")
-debug_color = Color(0.57844, 0.41746, 0.925219, 0.42)
+script = ExtResource("4_23hx6")
+metadata/_custom_type_script = "uid://2snmbmve0swj"
 metadata/_edit_lock_ = true
 
-[node name="AbilityCastIndicator" type="Node2D" parent="."]
-script = ExtResource("11_417id")
-metadata/_custom_type_script = "uid://3y2678e7js26"
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EffectBox"]
+position = Vector2(0, 14)
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_bs0fw")
+debug_color = Color(0.53077, 0.442076, 0.928365, 0.42)
 
-[node name="WeaponComponent" type="Node2D" parent="."]
-script = ExtResource("12_1cwhq")
-metadata/_custom_type_script = "uid://b0dme4wdscodc"
+[node name="DamageIndicatorAnchor" type="Node2D" parent="."]
+position = Vector2(0, -18)
+
+[node name="PlayerAnimationManager" type="Node" parent="." node_paths=PackedStringArray("AnimationTree")]
+script = ExtResource("2_t4jk1")
+AnimationTree = NodePath("../AnimationTree")
+metadata/_custom_type_script = "uid://bmbj1lwqxqm0s"
+
+[node name="AnimationTree" type="AnimationTree" parent="."]
+tree_root = SubResource("AnimationNodeBlendTree_23hx6")
+advance_expression_base_node = NodePath("..")
+anim_player = NodePath("../AnimationPlayer")
+parameters/PlayerState/conditions/IsDead = false
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_1qc6a")
+}
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(-0.5, 0)
+texture = SubResource("PortableCompressedTexture2D_1qc6a")
+hframes = 4
+vframes = 3
+frame = 1
+metadata/_aseprite_wizard_interface_config_ = {
+"pending_changes": {}
+}
+metadata/_aseprite_wizard_config_ = {
+"embed_tex": true,
+"i_mode": 0,
+"keep_anim_length": false,
+"layers": [],
+"o_ex_p": "",
+"o_folder": "",
+"o_name": "",
+"only_visible": false,
+"player": "AnimationPlayer",
+"slice": "",
+"source": "res://Assets/Entity/player.aseprite"
+}
+metadata/_aseprite_wizard_source_file_hash_ = "ef74b923fa79abe6869a2c1439a47f70"
+metadata/_edit_lock_ = true
+
+[node name="WeaponMountPoint" type="Node2D" parent="."]

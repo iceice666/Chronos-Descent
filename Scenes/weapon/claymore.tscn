@@ -1,0 +1,58 @@
+[gd_scene load_steps=4 format=4 uid="uid://cg4v3w0qshdit"]
+
+[sub_resource type="PortableCompressedTexture2D" id="PortableCompressedTexture2D_h3o6k"]
+_data = PackedByteArray("AAADAAUAAAABAAAAQAAAAEAAAAAcAQAAUklGRhQBAABXRUJQVlA4TAgBAAAvP8APEKfANACANGhza1QyR/D/DavurncoiW0r+vPVU9+x0xFPBVr9GlTYHYphI0lWqi0yckJ3ibg1F9SvNf8BCCJ0PJirb7sOfwvYA3spz78pV62AMk2YhABXOMh6SfiV36Hl1wgstYPjSJIc5fQqNPhvbA29aPob0X9Gbts4Eo/Ttn5i+Iity28bLsJvCVfscYWH3jt2xA4xlhAzPJawR0MM6Qx/JXFAQQzp+/JWEk1UxJC+r//ea/9kvyImxJDO8NQmRhSMSJhRYKSXRWcULNAz9Xv/871Nxh79Mz30vrEbMvTMQfgr44SMu29Y+KsKfV9D14YjvLVihr6jx6WUkr9e/8atNQA=")
+size_override = Vector2(64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w35db"]
+atlas = SubResource("PortableCompressedTexture2D_h3o6k")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_n1b7t"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w35db")
+}],
+"loop": true,
+"name": &"default",
+"speed": 10.0
+}]
+
+[node name="Claymore" type="Node2D"]
+metadata/_aseprite_wizard_interface_config_ = {
+"pending_changes": {}
+}
+metadata/_aseprite_wizard_config_ = {
+"embed_tex": true,
+"layers": [],
+"o_ex_p": "",
+"o_folder": "",
+"o_name": "",
+"only_visible": false,
+"should_round_fps": true,
+"slice": "",
+"source": "res://Assets/Weapon/claymore.aseprite"
+}
+metadata/_aseprite_wizard_source_file_hash_ = "b7459fd29f9fbce80501b2f82ac72fbf"
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+rotation = -0.785398
+scale = Vector2(0.3, 0.3)
+sprite_frames = SubResource("SpriteFrames_n1b7t")
+metadata/_aseprite_wizard_interface_config_ = {
+"pending_changes": {}
+}
+metadata/_aseprite_wizard_config_ = {
+"embed_tex": true,
+"layers": [],
+"o_ex_p": "",
+"o_folder": "",
+"o_name": "",
+"only_visible": false,
+"should_round_fps": true,
+"slice": "",
+"source": "res://Assets/Weapon/claymore.aseprite"
+}
+metadata/_aseprite_wizard_source_file_hash_ = "b7459fd29f9fbce80501b2f82ac72fbf"

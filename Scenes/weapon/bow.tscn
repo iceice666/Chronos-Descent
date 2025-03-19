@@ -1,0 +1,80 @@
+[gd_scene load_steps=8 format=4 uid="uid://cp4bixiu6ge24"]
+
+[ext_resource type="Script" uid="uid://c6i6hloy07dix" path="res://Scripts/Weapons/Bow.cs" id="1_in2sr"]
+
+[sub_resource type="PortableCompressedTexture2D" id="PortableCompressedTexture2D_in2sr"]
+_data = PackedByteArray("AAADAAUAAAABAAAAgAAAAIAAAABiAgAAUklGRloCAABXRUJQVlA4TE0CAAAvf8AfEI+gKLatBJcK7rYiB/07sKYAQw1FkSQ1W3daMliIwtFF8TpVtW1DbzLPhNDCpwL6lyCA+Q8A8Ov3Ed2uyZGtuhQY/8M7T4ZyhUwojY1DC71bt2m/g4sDx7at1I1Jin23+v9/e80FJBOZRfTfkdtGjiQda4OmJv2hhPhS9XVt8LruBedSH3C030jmB/8wvjsv6NfoTbX33rl9NByQW3d4h/HduYCbP/DUR7bW2qlTVW+2R7Hda49vxr16u90pIuLfGY/83Xp7LuBj5T/ghmJaa60883XrI+72t+eDB+TZaLDb9Jb5bv096Otff+bafdfrExbVmG4e+frzwQ0OfDO7Ja5bH+n9eYBbmNZaO+DcLK7bN3rD3NB774O5Z11Qt8svHN054QHt5tFSTGO6fV18va89Me1MrbUW09hu332TG25wtA9ERIpqbLe+N75v8sPcOyu+297bwnOJ+izH3cHvNdVrmnPEBufbHnAcx428Zm954Qf/UO88vdNMecTvSXt3c9323hKA6Q7v8ANPjWRrrXXyUPVfu3Pd9t5ywejxjXzHKiJSSinx3fbe1h67ebTq7XPvqVprvbZbRCQfPOCH5HYfo2+0xHTP7W398bfz9epvf8IC47r9e8sFNzjQn1W+du7SO2K67b2tP77u1lo7YIG+dh/cEtfN7Tmh994Zf/sb+ojrzgkPOM8bfqHeZLfrzO9u/fF1c7PddLrWXfrb59p4d7ngBkeTzgM+YXEb227vLifwM0tEpNZai9tr2xecUP3Pq2vbU0QBAA==")
+size_override = Vector2(128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5ysiv"]
+atlas = SubResource("PortableCompressedTexture2D_in2sr")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kcbfp"]
+atlas = SubResource("PortableCompressedTexture2D_in2sr")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_osstl"]
+atlas = SubResource("PortableCompressedTexture2D_in2sr")
+region = Rect2(0, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o2v7o"]
+atlas = SubResource("PortableCompressedTexture2D_in2sr")
+region = Rect2(64, 64, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_gab4d"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5ysiv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kcbfp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_osstl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_o2v7o")
+}],
+"loop": false,
+"name": &"charging",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5ysiv")
+}],
+"loop": false,
+"name": &"normal",
+"speed": 10.0
+}]
+
+[node name="Bow" type="Node2D"]
+script = ExtResource("1_in2sr")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+position = Vector2(10, -0.5)
+rotation = 2.35619
+scale = Vector2(0.2, 0.2)
+sprite_frames = SubResource("SpriteFrames_gab4d")
+animation = &"charging"
+metadata/_aseprite_wizard_interface_config_ = {
+"pending_changes": {}
+}
+metadata/_aseprite_wizard_config_ = {
+"embed_tex": true,
+"layers": [],
+"o_ex_p": "",
+"o_folder": "",
+"o_name": "",
+"only_visible": false,
+"should_round_fps": true,
+"slice": "",
+"source": "res://Assets/Weapon/bow.aseprite"
+}
+metadata/_aseprite_wizard_source_file_hash_ = "72b0bd092f9c7da0ffbfa0d595196efb"
+
+[node name="ArrowSpawnPoint" type="Node2D" parent="."]
+position = Vector2(10, 0)

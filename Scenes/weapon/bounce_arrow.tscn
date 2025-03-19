@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3 uid="uid://cs73u37y15k3w"]
+
+[ext_resource type="Script" uid="uid://2o1xqo5ximur" path="res://Scripts/Weapons/BounceArrow.cs" id="1_x8ork"]
+[ext_resource type="Texture2D" uid="uid://t3sl8p7i5hqx" path="res://Assets/Weapon/arrow.png" id="2_xhflm"]
+[ext_resource type="Script" uid="uid://bl38baike4vp2" path="res://Scripts/Core/Damage/Hitbox.cs" id="3_hvfl0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_h5xfq"]
+size = Vector2(13.25, 2.75)
+
+[node name="BounceArrow" type="CharacterBody2D"]
+collision_layer = 0
+script = ExtResource("1_x8ork")
+
+[node name="Arrow" type="Sprite2D" parent="."]
+position = Vector2(0, -0.5)
+texture = ExtResource("2_xhflm")
+
+[node name="Hitbox" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 7
+script = ExtResource("3_hvfl0")
+metadata/_custom_type_script = "uid://bl38baike4vp2"
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hitbox"]
+position = Vector2(3, 0)
+polygon = PackedVector2Array(3, -2, 6, 0, 3, 2)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-0.625, 0)
+shape = SubResource("RectangleShape2D_h5xfq")

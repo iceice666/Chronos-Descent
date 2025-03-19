@@ -1,44 +1,23 @@
-﻿using System;
+using System;
 using Godot;
 
-namespace ChronosDescent.Scripts;
-
-public class Util
+public class Utils
 {
-    public static bool NearlyEqual(double a, double b)
+    // Rotates a target point to a desired angle on the unit circle
+    public static Vector2 RotateAngle(Vector2 originPoint, Vector2 targetPoint, double angleRadians)
     {
-        const double minNormal = 2.2250738585072014E-308d;
-        const double epsilon = 1e-6;
+        // Calculate the offset
+        var offset = targetPoint - originPoint;
 
-        var absA = Math.Abs(a);
-        var absB = Math.Abs(b);
-        var diff = Math.Abs(a - b);
+        // Multiply the rotation matrix
+        var sin = Mathf.Sin(angleRadians);
+        var cos = Mathf.Cos(angleRadians);
 
-        if (a.Equals(b))
-            // shortcut, handles infinities
-            return true;
+        var newOffsetX = offset.X * cos - offset.Y * sin;
+        var newOffsetY = offset.X * sin + offset.Y * cos;
 
-        if (a == 0 || b == 0 || absA + absB < minNormal)
-            // a or b is zero or both are extremely close to it
-            // relative error is less meaningful here
-            return diff < epsilon * minNormal;
-
-        {
-            // use relative error
-            return diff / (absA + absB) < epsilon;
-        }
+        // Add origin point
+        return new Vector2((float)newOffsetX, (float)newOffsetY) + originPoint;
     }
-
-    public static void PrintWarning(string warning)
-    {
-        GD.PrintRich($"[color=YELLOW]{warning}");
-    }
-
-    /// <summary>
-    ///     Print a "Tick" message to Godot console
-    /// </summary>
-    public static void Tick()
-    {
-        GD.Print("Tick");
-    }
+    
 }

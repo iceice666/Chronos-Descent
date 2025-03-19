@@ -1,0 +1,89 @@
+[gd_scene load_steps=6 format=4 uid="uid://dbtq6drqooghf"]
+
+[sub_resource type="Animation" id="Animation_5daug"]
+length = 1.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = false
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 0, 1, 1, 2, 2, 0, 0, 1, 1, 2, 2]
+}
+
+[sub_resource type="Animation" id="Animation_nkbp8"]
+length = 1.6
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = false
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4, 1.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [3, 4, 5, 6, 7, 8, 9, 10, 3, 4, 5, 6, 7, 8, 9, 10]
+}
+
+[sub_resource type="Animation" id="Animation_uc31c"]
+length = 1.8
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = false
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.9, 1, 1.1, 1.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [11, 12, 13, 14, 11, 12, 13, 14]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_dkbql"]
+_data = {
+&"Death": SubResource("Animation_uc31c"),
+&"Idle": SubResource("Animation_5daug"),
+&"Walk": SubResource("Animation_nkbp8")
+}
+
+[sub_resource type="PortableCompressedTexture2D" id="PortableCompressedTexture2D_3r5vu"]
+_data = PackedByteArray("AAADAAUAAAABAAAAkAEAAJABAACGBAAAUklGRn4EAABXRUJQVlA4THIEAAAvj8FjEK/AJratRmToogVqBv8VJtCQYfO22GATAEATNvd+50//EBsakAA1gGwCAEiDewpubrJTxBvAy1wJsm3KPYBrPwAA9v9fZMpabjuJU8PrTdNWoC+XHMk9/GF3A+47Pc8in6GKVipxcQf/xk7SzXUCRdu247YNLPiRsiO+i0MW//+vZOZgYidE9N+R27aBpCS7c1vY8QT7hnA7avrP9J/pP/+fCXAvdoS8CnEwTDvicOFUkbVB2hH5ODzjVJG1IdoR28kry6kjayO0I7Yt55cq8W+QduTbJok6sjZIO5Lr8RASxfs3SDtCEm/v+46oI2sjtCP43K8i1OBfX3ZUsjr37PmUVod/A7SjgOGescL7W/9GaEeYEc1WitfmnjEGaEd4Jtq6Gk7h2r7yzxmhHflXOype23ey1v4dLcvz+VF4nlm+1kaoQ1vzdyR5jJmy7/232kIl2lq/o0SMYKRx0mYUrS2lE9JFSiOk7atOqWBt6Uc1TNrq6TBY2spXF8JQabsdNf1n+s/0n+k/03+m/0z/+Z8WgJsx8hoaGKZ3hsOF04+std8/8nF4xulH1lrvH9vJK8vpR9Za7x/blvNLOJ3IWgf8w7dNUkey1gH/5Ho8hEQ/stZ2/5DE2/u+I/qRtdb7B5/7VT3JWi3+FZ1oz55PZf3IWiX+lSzOrsYIvcha+/3zTDRb6UjWWu8f7ti6Gs4AZQ2zKvxjWZ7Pj5M6slbDjoqPc/n+BSSPMVeTtbbvCPca3pkQiBHMCHVkrfE7oo53JiVIqXQSgBkpNH9HRMwo2r/0/Spd20nh2gCM4v37VlqqYlIaK211fAyWtvLVhTBU2m5HTf+Z/jP9Z/rP9J/pP9N//qcF4GaMvIYGhumd4XDh9CNr7fePfByecfqRtdb7x3byynL6kbXW+8e25fwSTiey1gH/8G2T1JGsdcA/uR4PIdGPrLXdPyTx9r7viBHKmlxS8f7B537VCGUNSTwe3/hXdKI9ez6V9SNrlfhXsji7GiP0Imvt98+MaLbi9CNrbfcPz+esq+H0I2s1+Fc2zrI8nx90I2sd8A/JY8yEjmStBv+cso9xjJidyjqRtUrembKXlNJJOqtsbRAjnNqav6Ov7DNSyU/fr7K1xUjx2ogRKF8b6SKlKialsdJWx8dgaStfXQhDpe121PSf6T/Tf6b/TP+Z/jP9Z5IFcDNGfi+aw4VzHw4A+Tg849yFA8B28spy6jkA48OW80s4FR2A0cG3Tbqo5gCMDn8h14VEXQegeI1N/wmJx2PfEXUcgEpANPwfJPC5X1X+VHQAAki+bYSGP7hnjMLP8ZdqDgDgXJMzrR4zotla/GGhkgMAmPkn2vJxHLT6+Zx1Nbz4Vg0HAC0R8v6Q8nG4aDLuLMvz+VE8RK/gABB9seh+oZyh1V8xKkq5+Ilyvw4AxWtbyfsOCG/ypJSIpISRUtHqDHBflicFq/taW8bYd/lZpNTg+VG1XV36qWp+t15ddVOBfT1Q9xNPt6Om/0z/mf4z8SIA")
+size_override = Vector2(400, 400)
+
+[node name="Node2D" type="CharacterBody2D"]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+root_node = NodePath("../Sprite2D")
+libraries = {
+&"": SubResource("AnimationLibrary_dkbql")
+}
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = SubResource("PortableCompressedTexture2D_3r5vu")
+hframes = 4
+vframes = 4
+frame = 3
+metadata/_aseprite_wizard_interface_config_ = {
+"pending_changes": {}
+}
+metadata/_aseprite_wizard_config_ = {
+"embed_tex": true,
+"i_mode": 0,
+"keep_anim_length": false,
+"layers": [],
+"o_ex_p": "",
+"o_folder": "",
+"o_name": "",
+"only_visible": false,
+"player": "AnimationPlayer",
+"slice": "",
+"source": "res://Assets/Entity/player_old.aseprite"
+}
+metadata/_aseprite_wizard_source_file_hash_ = "b4f793b8c91b56d534016cf20ce60bb5"
