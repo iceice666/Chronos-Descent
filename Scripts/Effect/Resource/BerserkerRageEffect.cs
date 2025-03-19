@@ -1,4 +1,4 @@
-using Godot;
+﻿using Godot;
 using Godot.Collections;
 using BaseStats = ChronosDescent.Scripts.Entity.Resource.BaseStats;
 

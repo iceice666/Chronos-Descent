@@ -1,7 +1,6 @@
-using System;
 using ChronosDescent.Scripts.Entity.Resource;
+using ChronosDescent.Scripts.Entity.UI;
 using Godot;
-
 
 namespace ChronosDescent.Scripts.node;
 
@@ -16,7 +15,7 @@ public partial class DamageManager : Node
     }
 
     public void DealDamage(BaseStats attackerStats, Entity.Entity attackee, double rawDamage,
-        Entity.UI.DamageIndicator.DamageType? damageType = null)
+        DamageIndicator.DamageType? damageType = null)
     {
         if (attackee == null) return;
 
@@ -32,7 +31,7 @@ public partial class DamageManager : Node
         {
             // Critical hit applies the critical damage multiplier
             var critMultiplier = attackerStats?.CriticalDamage / 100 ?? 0;
-            damage *= (1 + critMultiplier);
+            damage *= 1 + critMultiplier;
             isCritical = true;
         }
 
@@ -43,8 +42,8 @@ public partial class DamageManager : Node
 
         // Apply damage with appropriate visual indicator
         var dmgType = damageType ?? (isCritical
-            ? Entity.UI.DamageIndicator.DamageType.Critical
-            : Entity.UI.DamageIndicator.DamageType.Normal);
+            ? DamageIndicator.DamageType.Critical
+            : DamageIndicator.DamageType.Normal);
 
         attackee.TakeDamage(damage, dmgType);
     }

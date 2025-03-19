@@ -7,6 +7,15 @@ namespace ChronosDescent.Scripts.Ability.Node;
 [GlobalClass]
 public partial class AbilityManagerComponent : Godot.Node
 {
+    // Events
+    public delegate void AbilityActivatedEventHandler(BaseAbility ability);
+
+    public delegate void AbilityCooldownEventHandler(BaseAbility ability, double cooldown);
+
+    public delegate void AbilitySlotEventHandler(BaseAbility ability, AbilitySlot abilitySlot);
+
+    public delegate void AbilityStateEventHandler(BaseAbility ability, BaseAbility.AbilityState state);
+
     // List of abilities - sized to match enum values
     private readonly BaseAbility[] _abilities = new BaseAbility[4];
 
@@ -26,43 +35,10 @@ public partial class AbilityManagerComponent : Godot.Node
     // Track currently active ability slot
     private AbilitySlot _currentActiveAbilitySlot = AbilitySlot.Unknown;
 
-    // Events
-    public delegate void AbilityActivatedEventHandler(BaseAbility ability);
-
-    public delegate void AbilityCooldownEventHandler(BaseAbility ability, double cooldown);
-
-    public delegate void AbilityStateEventHandler(BaseAbility ability, BaseAbility.AbilityState state);
-
-    public delegate void AbilitySlotEventHandler(BaseAbility ability, AbilitySlot abilitySlot);
-
     public event AbilityActivatedEventHandler AbilityActivated;
     public event AbilityCooldownEventHandler AbilityCooldownChanged;
     public event AbilityStateEventHandler AbilityStateChanged;
     public event AbilitySlotEventHandler AbilityChanged;
-
-    #region Event Invokers
-
-    protected void OnAbilityActivated(BaseAbility ability)
-    {
-        AbilityActivated?.Invoke(ability);
-    }
-
-    protected void OnAbilityCooldownChanged(BaseAbility ability, double cooldown)
-    {
-        AbilityCooldownChanged?.Invoke(ability, cooldown);
-    }
-
-    protected void OnAbilityStateChanged(BaseAbility ability, BaseAbility.AbilityState state)
-    {
-        AbilityStateChanged?.Invoke(ability, state);
-    }
-
-    protected void OnAbilityChanged(BaseAbility ability, AbilitySlot abilitySlot)
-    {
-        AbilityChanged?.Invoke(ability, abilitySlot);
-    }
-
-    #endregion
 
     public override void _Ready()
     {
@@ -231,16 +207,16 @@ public partial class AbilityManagerComponent : Godot.Node
                 or BaseChargedAbility
                 when _currentActiveAbilitySlot != AbilitySlot.Unknown
                      && _currentActiveAbilitySlot != abilitySlot:
+            {
+                if (!IsAbilityOnCooldown(_currentActiveAbilitySlot))
                 {
-                    if (!IsAbilityOnCooldown(_currentActiveAbilitySlot))
-                    {
-                        GD.Print($"Cannot activate {ability.Name} while another ability is active");
-                        return;
-                    }
-
-                    _currentActiveAbilitySlot = AbilitySlot.Unknown;
-                    break;
+                    GD.Print($"Cannot activate {ability.Name} while another ability is active");
+                    return;
                 }
+
+                _currentActiveAbilitySlot = AbilitySlot.Unknown;
+                break;
+            }
         }
 
         if (!ability.CanActivate())
@@ -338,6 +314,30 @@ public partial class AbilityManagerComponent : Godot.Node
             AbilitySlot.LifeSaving
         ];
     }
+
+    #region Event Invokers
+
+    protected void OnAbilityActivated(BaseAbility ability)
+    {
+        AbilityActivated?.Invoke(ability);
+    }
+
+    protected void OnAbilityCooldownChanged(BaseAbility ability, double cooldown)
+    {
+        AbilityCooldownChanged?.Invoke(ability, cooldown);
+    }
+
+    protected void OnAbilityStateChanged(BaseAbility ability, BaseAbility.AbilityState state)
+    {
+        AbilityStateChanged?.Invoke(ability, state);
+    }
+
+    protected void OnAbilityChanged(BaseAbility ability, AbilitySlot abilitySlot)
+    {
+        AbilityChanged?.Invoke(ability, abilitySlot);
+    }
+
+    #endregion
 
 
     #region BaseAbility State Helpers

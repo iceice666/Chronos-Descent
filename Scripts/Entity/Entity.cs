@@ -17,7 +17,7 @@ public partial class Entity : CharacterBody2D
 
     public Vector2 AimDirection;
 
-    public bool Moveable { get; set; }= true;
+    public bool Moveable { get; set; } = true;
 
     public override void _Ready()
     {
@@ -129,7 +129,7 @@ public partial class Entity : CharacterBody2D
     }
 
     #endregion
-    
+
     #region Ability
 
     public void ActivateAbility(AbilitySlot abilitySlot)
@@ -177,9 +177,9 @@ public partial class Entity : CharacterBody2D
     }
 
     #endregion
-    
+
     #region Weapon
-    
+
     public void EquipWeapon(BaseWeapon weapon)
     {
         if (Weapon == null)
@@ -187,7 +187,7 @@ public partial class Entity : CharacterBody2D
             Util.PrintWarning($"This entity({this}) has no weapon component!");
             return;
         }
-    
+
         Weapon.EquipWeapon(weapon);
     }
 
@@ -195,5 +195,6 @@ public partial class Entity : CharacterBody2D
     {
         return Weapon?.CurrentWeapon;
     }
+
     #endregion
 }

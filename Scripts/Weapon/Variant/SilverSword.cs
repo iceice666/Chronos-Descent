@@ -1,8 +1,6 @@
 using ChronosDescent.Scripts.Ability;
 using ChronosDescent.Scripts.Ability.Node;
-using ChronosDescent.Scripts.Ability.UI;
 using ChronosDescent.Scripts.Entity.Resource;
-using ChronosDescent.Scripts.Weapon.Node;
 using Godot;
 using Godot.Collections;
 
@@ -10,6 +8,13 @@ namespace ChronosDescent.Scripts.Weapon.Variant;
 
 public partial class SilverSword : BaseWeapon
 {
+    private AnimationPlayer _animation;
+    private Hitbox _hitbox;
+
+    private bool _prevXLessThanZero = true;
+
+    private AnimatedSprite2D _weapon;
+
     public SilverSword()
     {
         Id = "silver_sword";
@@ -19,10 +24,6 @@ public partial class SilverSword : BaseWeapon
         NormalAttack = new AttackAbility();
         SpecialAttack = new SpecialAbility();
     }
-
-    private AnimatedSprite2D _weapon;
-    private AnimationPlayer _animation;
-    private Hitbox _hitbox;
 
     public override void _Ready()
     {
@@ -34,8 +35,6 @@ public partial class SilverSword : BaseWeapon
         _hitbox.RawDamage = 10;
         _hitbox.Caster = (Entity.Entity)GetParent().Owner;
     }
-
-    private bool _prevXLessThanZero = true;
 
     public override void UpdateLookAnimation(Vector2 vec)
     {
@@ -89,6 +88,18 @@ public partial class SilverSword : BaseWeapon
 
     public partial class SpecialAbility : BaseActiveAbility
     {
+        public SpecialAbility()
+        {
+            Id = "silver_sword_special";
+            RequiredSlot = AbilitySlot.WeaponSpecial;
+            Cooldown = 10.0f;
+        }
+
+        protected override void ExecuteEffect()
+        {
+            Caster.ApplyEffect(new AbilityEffect());
+        }
+
         public sealed partial class AbilityEffect : Effect.Effect
         {
             public AbilityEffect()
@@ -110,18 +121,6 @@ public partial class SilverSword : BaseWeapon
                     }
                 };
             }
-        }
-
-        public SpecialAbility()
-        {
-            Id = "silver_sword_special";
-            RequiredSlot = AbilitySlot.WeaponSpecial;
-            Cooldown = 10.0f;
-        }
-
-        protected override void ExecuteEffect()
-        {
-            Caster.ApplyEffect(new AbilityEffect());
         }
     }
 }

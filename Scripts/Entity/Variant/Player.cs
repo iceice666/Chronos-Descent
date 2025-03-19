@@ -5,7 +5,6 @@ using ChronosDescent.Scripts.Weapon;
 using Godot;
 using AbilityContainer = ChronosDescent.Scripts.Ability.UI.AbilityContainer;
 using AbilityManagerComponent = ChronosDescent.Scripts.Ability.Node.AbilityManagerComponent;
-using ChargedBlastAbility = ChronosDescent.Scripts.Ability.Resource.ChargedBlastAbility;
 using EffectsContainer = ChronosDescent.Scripts.Effect.UI.EffectsContainer;
 
 namespace ChronosDescent.Scripts.Entity.Variant;
@@ -21,7 +20,7 @@ public partial class Player : Entity
         GetNode<EffectsContainer>("/root/Autoload/UI/EffectsContainer").Initialize(this);
         GetNode<AbilityContainer>("/root/Autoload/UI/AbilityContainer").Initialize(this);
         GetNode<PlayerHealthBar>("/root/Autoload/UI/PlayerHealthBar").Initialize(this);
-        
+
         Weapon.EquipWeapon(GD.Load<PackedScene>("res://Scenes/weapon/silver_word.tscn").Instantiate<BaseWeapon>());
     }
 
@@ -35,7 +34,7 @@ public partial class Player : Entity
 
             Velocity = velocity;
             Animation!.UpdateWalkAnimation(velocity);
-           
+
 
             MoveAndSlide();
         }

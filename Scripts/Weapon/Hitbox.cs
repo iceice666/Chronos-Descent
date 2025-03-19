@@ -1,4 +1,3 @@
-
 using ChronosDescent.Scripts.Entity.Resource;
 using ChronosDescent.Scripts.node;
 using Godot;

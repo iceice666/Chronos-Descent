@@ -1,20 +1,12 @@
-using Godot;
 using ChronosDescent.Scripts.Ability;
+using Godot;
 
 namespace ChronosDescent.Scripts.Weapon;
 
-
 public partial class BaseWeapon : Node2D
 {
-    
-    public delegate void HitEntityEventHandler(Entity.Entity entity); 
-    public event HitEntityEventHandler HitEntity;
+    public delegate void HitEntityEventHandler(Entity.Entity entity);
 
-    protected void OnHitEntity(Entity.Entity entity)
-    {
-        HitEntity?.Invoke(entity);
-    }
-    
     // Weapon properties
     public string Id { get; set; } = "Weapon";
     public string Description { get; set; } = "";
@@ -29,11 +21,15 @@ public partial class BaseWeapon : Node2D
     public float AttackDamage { get; set; }
     public float AttackSpeed { get; set; }
     public float Range { get; set; }
+    public event HitEntityEventHandler HitEntity;
+
+    protected void OnHitEntity(Entity.Entity entity)
+    {
+        HitEntity?.Invoke(entity);
+    }
 
 
-   
-    
-    public virtual void UpdateLookAnimation(Vector2 vec){}
-    
-  
+    public virtual void UpdateLookAnimation(Vector2 vec)
+    {
+    }
 }

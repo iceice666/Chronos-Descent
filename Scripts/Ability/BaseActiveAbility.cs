@@ -1,4 +1,3 @@
-using ChronosDescent.Scripts.Ability.Node;
 using Godot;
 
 namespace ChronosDescent.Scripts.Ability;
