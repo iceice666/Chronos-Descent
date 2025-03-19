@@ -1,0 +1,136 @@
+[gd_scene load_steps=9 format=3 uid="uid://h52a2pi4vr63"]
+
+[ext_resource type="Texture2D" uid="uid://bhkr41q08d0pc" path="res://Assets/Weapon/silver_sword.png" id="1_ejtjj"]
+[ext_resource type="Script" uid="uid://dmgx56tq7rcta" path="res://Scripts/Weapon/Variant/SilverSword.cs" id="2_bj4p7"]
+[ext_resource type="Script" uid="uid://q3ncjfbddow0" path="res://Scripts/Weapon/Hitbox.cs" id="3_bj4p7"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ejtjj"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_ejtjj")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ejtjj"]
+size = Vector2(11.4016, 4.12252)
+
+[sub_resource type="Animation" id="Animation_2b80x"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [-0.523599]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(6, -7)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Hitbox/CollisionShape2D:disabled")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_ejtjj"]
+resource_name = "weapon_attack"
+length = 0.9
+step = 0.03
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.0620058, 0.193553, 0.224242, 0.272727, 0.333333, 0.734964, 0.878788),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(6, -7), Vector2(9, -10), Vector2(9, -10), Vector2(13.7061, -1.96091), Vector2(8.89986, 1.79097), Vector2(8.89986, 1.79097), Vector2(6, -7)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.0620058, 0.193553, 0.224242, 0.272727, 0.333333, 0.734964, 0.878788),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [-1.0472, -1.58678, -1.58678, -0.257521, 0.877858, 0.877858, -1.0472]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Hitbox/CollisionShape2D:disabled")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.0612527, 0.333333),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [true, false, true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_bj4p7"]
+_data = {
+&"RESET": SubResource("Animation_2b80x"),
+&"weapon_attack": SubResource("Animation_ejtjj")
+}
+
+[node name="SilverWord" type="Node2D"]
+script = ExtResource("2_bj4p7")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(6, -7)
+rotation = -0.523599
+scale = Vector2(0.04, 0.04)
+sprite_frames = SubResource("SpriteFrames_ejtjj")
+
+[node name="Hitbox" type="Area2D" parent="AnimatedSprite2D"]
+position = Vector2(-226.554, -42.4044)
+rotation = 1.0472
+scale = Vector2(25, 25)
+script = ExtResource("3_bj4p7")
+metadata/_custom_type_script = "uid://q3ncjfbddow0"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AnimatedSprite2D/Hitbox"]
+position = Vector2(5.26794, -9.73205)
+rotation = 1.30899
+scale = Vector2(1, 1)
+shape = SubResource("RectangleShape2D_ejtjj")
+disabled = true
+debug_color = Color(0.924001, 0.207669, 0.460694, 0.42)
+metadata/_edit_lock_ = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+root_node = NodePath("../AnimatedSprite2D")
+libraries = {
+&"": SubResource("AnimationLibrary_bj4p7")
+}

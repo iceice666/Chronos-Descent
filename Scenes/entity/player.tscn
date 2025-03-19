@@ -197,6 +197,8 @@ radius = 6.0
 size = Vector2(12, 3)
 
 [node name="Player" type="CharacterBody2D"]
+collision_layer = 6
+collision_mask = 3
 script = ExtResource("1_vxxhj")
 
 [node name="AnimationComponent" type="AnimatedSprite2D" parent="."]
@@ -231,6 +233,8 @@ debug_color = Color(0.350349, 0.812157, 0.349349, 0.42)
 metadata/_edit_lock_ = true
 
 [node name="EffectTriggerComponent" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 8
 script = ExtResource("9_ualn7")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="EffectTriggerComponent"]

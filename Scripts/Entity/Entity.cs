@@ -178,6 +178,8 @@ public partial class Entity : CharacterBody2D
 
     #endregion
     
+    #region Weapon
+    
     public void EquipWeapon(BaseWeapon weapon)
     {
         if (Weapon == null)
@@ -193,4 +195,5 @@ public partial class Entity : CharacterBody2D
     {
         return Weapon?.CurrentWeapon;
     }
+    #endregion
 }

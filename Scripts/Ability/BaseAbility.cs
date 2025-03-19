@@ -25,16 +25,17 @@ public partial class BaseAbility : Godot.Resource
     // Entity that owns this ability
     public Entity.Entity Caster;
 
-    [ExportGroup("Metadata")] [Export] public string Name { get; set; } = "Ability";
+    public string Id { get; set; } = "Ability";
+    public string Name { get; set; } = "Ability";
 
-    [Export] public string Description { get; set; } = "";
+    public string Description { get; set; } = "";
 
-    [Export] public Texture2D Icon { get; set; }
+    public Texture2D Icon { get; set; }
 
-    [Export] public AbilitySlot RequiredSlot { get; set; }
+    public AbilitySlot RequiredSlot { get; set; }
 
     // Cooldown properties
-    [Export] public double Cooldown { get; set; } = 5.0; // In seconds
+    public double Cooldown { get; set; } = 5.0; // In seconds
 
     public double CurrentCooldown
     {

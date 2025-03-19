@@ -21,8 +21,7 @@ public partial class Player : Entity
         GetNode<EffectsContainer>("/root/Autoload/UI/EffectsContainer").Initialize(this);
         GetNode<AbilityContainer>("/root/Autoload/UI/AbilityContainer").Initialize(this);
         GetNode<PlayerHealthBar>("/root/Autoload/UI/PlayerHealthBar").Initialize(this);
-
-        AbilityManager.SetAbility(AbilitySlot.WeaponSpecial, new ChargedBlastAbility());
+        
         Weapon.EquipWeapon(GD.Load<PackedScene>("res://Scenes/weapon/silver_word.tscn").Instantiate<BaseWeapon>());
     }
 

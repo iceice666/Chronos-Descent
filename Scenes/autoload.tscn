@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://b1tyahwcajxk3"]
+[gd_scene load_steps=5 format=3 uid="uid://b1tyahwcajxk3"]
 
 [ext_resource type="Script" uid="uid://bbk5f1shfn220" path="res://Scripts/node/UserInputManager.cs" id="1_5wbsh"]
 [ext_resource type="PackedScene" uid="uid://m2gapyvjm1kt" path="res://Scenes/ui/ui.tscn" id="2_euvdl"]
 [ext_resource type="PackedScene" uid="uid://bbnwwmxrpqa6" path="res://Scenes/camera.tscn" id="3_55vpd"]
+[ext_resource type="Script" uid="uid://cfa52deunpk6b" path="res://Scripts/node/DamageManager.cs" id="4_xk5ld"]
 
 [node name="Autoload" type="Node"]
 
@@ -13,6 +14,10 @@ offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("1_5wbsh")
 metadata/_custom_type_script = "uid://bbk5f1shfn220"
+
+[node name="DamageManager" type="Node" parent="."]
+script = ExtResource("4_xk5ld")
+metadata/_custom_type_script = "uid://cfa52deunpk6b"
 
 [node name="UI" parent="." instance=ExtResource("2_euvdl")]
 

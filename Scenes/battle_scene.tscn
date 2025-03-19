@@ -27,6 +27,8 @@ script = ExtResource("5_wejrf")
 [node name="PoisonTrigger" type="Area2D" parent="."]
 position = Vector2(123, 105)
 scale = Vector2(4, 4)
+collision_layer = 8
+collision_mask = 0
 script = ExtResource("2_xei7x")
 Effect = SubResource("Resource_ygipm")
 
@@ -55,6 +57,8 @@ metadata/_edit_lock_ = true
 [node name="SpeedTrigger" type="Area2D" parent="."]
 position = Vector2(450, 100)
 scale = Vector2(4, 4)
+collision_layer = 8
+collision_mask = 0
 script = ExtResource("2_xei7x")
 Effect = SubResource("Resource_luav2")
 metadata/_edit_lock_ = true
@@ -85,6 +89,8 @@ metadata/_edit_lock_ = true
 [node name="StunTrigger" type="Area2D" parent="."]
 position = Vector2(740, 107)
 scale = Vector2(4, 4)
+collision_layer = 8
+collision_mask = 0
 script = ExtResource("2_xei7x")
 Effect = SubResource("Resource_h8swt")
 

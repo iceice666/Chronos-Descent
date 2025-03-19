@@ -22,11 +22,11 @@ public partial class BaseStats : Godot.Resource, ICloneable
         Defense,
         CriticalChance,
         CriticalDamage,
-        AttackSpeed,
+        AttackSpeed, // attack (AttackSpeed)/100 per second
         MoveSpeed
     }
 
-    [Export] public double AttackSpeed = 4;
+    [Export] public double AttackSpeed = 100;
     [Export] public double CriticalChance = 50;
     [Export] public double CriticalDamage = 100;
     [Export] public double Defense = 100;

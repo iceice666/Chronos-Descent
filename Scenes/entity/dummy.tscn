@@ -30,6 +30,8 @@ MaxResource = 100.0
 metadata/_custom_type_script = "uid://5pq6iq2vk2fb"
 
 [node name="Dummy" type="CharacterBody2D"]
+collision_layer = 7
+collision_mask = 0
 script = ExtResource("1_eh7ut")
 metadata/_custom_type_script = "uid://ci6m7q8srxbu4"
 
@@ -44,6 +46,8 @@ debug_color = Color(0.350349, 0.812157, 0.349349, 0.42)
 metadata/_edit_lock_ = true
 
 [node name="EffectTriggerComponent" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 16
 script = ExtResource("3_hw38b")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="EffectTriggerComponent"]

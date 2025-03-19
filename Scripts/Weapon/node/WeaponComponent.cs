@@ -6,7 +6,6 @@ namespace ChronosDescent.Scripts.Weapon.Node;
 [GlobalClass]
 public partial class WeaponComponent : Godot.Node
 {
-	public static WeaponComponent Instance;
 	
 	private Entity.Entity _owner;
 	private AbilityManagerComponent _abilityManager;
@@ -24,8 +23,7 @@ public partial class WeaponComponent : Godot.Node
 	{
 		_owner = GetOwner<Entity.Entity>();
 		_abilityManager = _owner.GetNode<AbilityManagerComponent>("AbilityManagerComponent");
-		
-		Instance = this;
+	
 	}
 
 	// Equip a new weapon and set up its abilities

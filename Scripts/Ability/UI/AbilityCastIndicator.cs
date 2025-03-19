@@ -21,6 +21,8 @@ public partial class AbilityCastIndicator : Node2D
         Instance = this;
         //   Visible = false;
         SetProcess(false);
+
+        Instance = this;
     }
 
     // Initialize the ability cast indicator
