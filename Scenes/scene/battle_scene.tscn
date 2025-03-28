@@ -14,10 +14,6 @@ metadata/_custom_type_script = "uid://cnaq7c47wqp16"
 
 [node name="BattleScene" type="Node2D"]
 
-[node name="Player" parent="." instance=ExtResource("2_v365r")]
-position = Vector2(34, 85)
-scale = Vector2(2, 2)
-
 [node name="EffectTrigger" type="Area2D" parent="."]
 position = Vector2(-326, -50)
 collision_layer = 8
@@ -49,3 +45,7 @@ scale = Vector2(3, 3)
 [node name="Dummy3" parent="." instance=ExtResource("1_c0pla")]
 position = Vector2(173, 143)
 scale = Vector2(3, 3)
+
+[node name="Player" parent="." instance=ExtResource("2_v365r")]
+position = Vector2(34, 85)
+scale = Vector2(2, 2)

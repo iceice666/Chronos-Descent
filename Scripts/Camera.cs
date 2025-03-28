@@ -18,7 +18,7 @@ public partial class Camera : Camera2D
 
     public override void _Ready()
     {
-        GlobalEventBus.Instance.Subscribe(GlobalEventVariant.EntityDeath, (IEntity target) => OnEntityDead(target));
+        GlobalEventBus.Instance.Subscribe<IEntity>(GlobalEventVariant.EntityDied, OnEntityDead);
     }
 
     private void OnEntityDead(IEntity target)
@@ -30,5 +30,6 @@ public partial class Camera : Camera2D
     public void Initialize(IEntity target)
     {
         _target = target;
+
     }
 }

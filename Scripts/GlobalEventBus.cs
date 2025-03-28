@@ -10,7 +10,7 @@ namespace ChronosDescent.Scripts;
 public enum GlobalEventVariant
 {
     DamageDealt,
-    EntityDeath,
+    EntityDied,
     InputSourceChanged
 }
 

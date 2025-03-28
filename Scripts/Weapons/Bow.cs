@@ -21,6 +21,8 @@ public partial class Bow : Node2D, IWeapon
         NormalAttack = new NormalAbility(spawnPoint, PlayAnimation);
         SpecialAttack = new SpecialAbility(spawnPoint, PlayAnimation);
         Ultimate = new UltimateAbility(spawnPoint, PlayAnimation);
+        
+        AddToGroup("NeedRotation");
     }
 
     private void PlayAnimation(string animation)

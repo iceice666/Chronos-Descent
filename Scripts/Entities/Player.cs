@@ -31,6 +31,8 @@ public partial class Player : CharacterBody2D, IEntity
     private int _moveableCounter;
     private Node2D _weaponMountPoint;
 
+    public bool IsDead { get; private set; }
+
 
     public bool Collision
     {
@@ -50,7 +52,7 @@ public partial class Player : CharacterBody2D, IEntity
     public bool Moveable
     {
         get => _moveableCounter <= 0;
-        set => _moveableCounter += value ? 1 : -1;
+        set => _moveableCounter = Mathf.Max(_moveableCounter + (value ? 1 : -1), 0);
     }
 
     public override void _Ready()
@@ -73,11 +75,9 @@ public partial class Player : CharacterBody2D, IEntity
         GetNode<Camera>("/root/Autoload/Camera").Initialize(this);
         GetNode<PlayerHealthBar>("/root/Autoload/UI/PlayerHealthBar").Initialize(this);
 
-        EventBus.Subscribe(EventVariant.EntityDied,
-            () => { AnimationManager.Play("dead"); });
 
-
-        WeaponManager.SetWeapon<Bow>(GD.Load<PackedScene>("res://Scenes/weapon/bow.tscn"));
+        WeaponManager.SetWeapon<Claymore>(GD.Load<PackedScene>("res://Scenes/weapon/claymore.tscn"));
+        //    WeaponManager.SetWeapon<Bow>(GD.Load<PackedScene>("res://Scenes/weapon/bow.tscn"));
     }
 
     public override void _ExitTree()
@@ -92,9 +92,11 @@ public partial class Player : CharacterBody2D, IEntity
         EffectManager.Update(delta);
         WeaponManager.Update(delta);
 
-        var radius = Mathf.Atan2(ActionManager.LookDirection.Y, float.Abs(ActionManager.LookDirection.X));
-
-        _weaponMountPoint.Rotation = radius;
+        if (_weaponMountPoint.GetChild(0)?.IsInGroup("NeedRotation") ?? false)
+        {
+            _weaponMountPoint.Rotation =
+                Mathf.Atan2(ActionManager.LookDirection.Y, float.Abs(ActionManager.LookDirection.X));
+        }
     }
 
     private AbilitySlotType[] _abilitySlots =
@@ -176,8 +178,11 @@ public partial class Player : CharacterBody2D, IEntity
         // Check if entity died
         if (StatsManager.CurrentStats.Health <= 0)
         {
+            _moveableCounter = 0;
+
             EventBus.Publish(EventVariant.EntityDied);
-            GlobalEventBus.Instance.Publish(GlobalEventVariant.EntityDeath, this);
+            GlobalEventBus.Instance.Publish<IEntity>(GlobalEventVariant.EntityDied, this);
+            IsDead = true;
         }
 
         // Display damage indicator

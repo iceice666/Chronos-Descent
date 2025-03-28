@@ -1,7 +1,7 @@
-[gd_resource type="AnimationNodeStateMachine" load_steps=10 format=3 uid="uid://bkhv1grxpwcfe"]
+[gd_resource type="AnimationNodeStateMachine" load_steps=9 format=3 uid="uid://bkhv1grxpwcfe"]
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_t4jk1"]
-animation = &"Death"
+animation = &"dead"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_258nv"]
 animation = &"idle"
@@ -22,23 +22,20 @@ advance_expression = "!velocity"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ro5c0"]
 advance_mode = 2
-advance_condition = &"IsDead"
+advance_expression = "IsDead"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_scnn8"]
 advance_mode = 2
-advance_condition = &"IsDead"
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_k5mxe"]
-advance_mode = 2
+advance_expression = "IsDead"
 
 [resource]
-states/Death/node = SubResource("AnimationNodeAnimation_t4jk1")
-states/Death/position = Vector2(614.075, 65.0387)
+states/Dead/node = SubResource("AnimationNodeAnimation_t4jk1")
+states/Dead/position = Vector2(614.075, 64.4095)
 states/End/position = Vector2(781.5, 64.2804)
 states/Idle/node = SubResource("AnimationNodeAnimation_258nv")
-states/Idle/position = Vector2(380.575, 63.775)
-states/Start/position = Vector2(240, 65.7969)
+states/Idle/position = Vector2(380.45, 64.345)
+states/Start/position = Vector2(240, 65.1032)
 states/Walk/node = SubResource("AnimationNodeAnimation_23hx6")
 states/Walk/position = Vector2(380.325, 172.275)
-transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition_1qc6a"), "Idle", "Walk", SubResource("AnimationNodeStateMachineTransition_bs0fw"), "Walk", "Idle", SubResource("AnimationNodeStateMachineTransition_hkcvn"), "Walk", "Death", SubResource("AnimationNodeStateMachineTransition_ro5c0"), "Idle", "Death", SubResource("AnimationNodeStateMachineTransition_scnn8"), "Death", "End", SubResource("AnimationNodeStateMachineTransition_k5mxe")]
-graph_offset = Vector2(74.5947, 5.33671e-05)
+transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition_1qc6a"), "Idle", "Walk", SubResource("AnimationNodeStateMachineTransition_bs0fw"), "Walk", "Idle", SubResource("AnimationNodeStateMachineTransition_hkcvn"), "Walk", "Dead", SubResource("AnimationNodeStateMachineTransition_ro5c0"), "Idle", "Dead", SubResource("AnimationNodeStateMachineTransition_scnn8")]
+graph_offset = Vector2(138.405, -11.5874)

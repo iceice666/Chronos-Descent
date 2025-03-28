@@ -19,7 +19,6 @@ public interface IEntity
     public IActionManager ActionManager { get; }
     public State.Manager StatsManager { get; }
     public Ability.Manager AbilityManager { get; } 
-    public IAnimationPlayer AnimationManager { get; }
     public Weapon.Manager WeaponManager { get; }
 
     public Vector2 GlobalPosition { get; set; }

@@ -1,4 +1,7 @@
-[gd_scene load_steps=4 format=4 uid="uid://cg4v3w0qshdit"]
+[gd_scene load_steps=6 format=4 uid="uid://cg4v3w0qshdit"]
+
+[ext_resource type="Script" uid="uid://xsudwshwwh50" path="res://Scripts/Weapons/Claymore.cs" id="1_n1b7t"]
+[ext_resource type="Script" uid="uid://bl38baike4vp2" path="res://Scripts/Core/Damage/Hitbox.cs" id="1_w35db"]
 
 [sub_resource type="PortableCompressedTexture2D" id="PortableCompressedTexture2D_h3o6k"]
 _data = PackedByteArray("AAADAAUAAAABAAAAQAAAAEAAAAAcAQAAUklGRhQBAABXRUJQVlA4TAgBAAAvP8APEKfANACANGhza1QyR/D/DavurncoiW0r+vPVU9+x0xFPBVr9GlTYHYphI0lWqi0yckJ3ibg1F9SvNf8BCCJ0PJirb7sOfwvYA3spz78pV62AMk2YhABXOMh6SfiV36Hl1wgstYPjSJIc5fQqNPhvbA29aPob0X9Gbts4Eo/Ttn5i+Iity28bLsJvCVfscYWH3jt2xA4xlhAzPJawR0MM6Qx/JXFAQQzp+/JWEk1UxJC+r//ea/9kvyImxJDO8NQmRhSMSJhRYKSXRWcULNAz9Xv/871Nxh79Mz30vrEbMvTMQfgr44SMu29Y+KsKfV9D14YjvLVihr6jx6WUkr9e/8atNQA=")
@@ -20,6 +23,7 @@ animations = [{
 }]
 
 [node name="Claymore" type="Node2D"]
+script = ExtResource("1_n1b7t")
 metadata/_aseprite_wizard_interface_config_ = {
 "pending_changes": {}
 }
@@ -56,3 +60,15 @@ metadata/_aseprite_wizard_config_ = {
 "source": "res://Assets/Weapon/claymore.aseprite"
 }
 metadata/_aseprite_wizard_source_file_hash_ = "b7459fd29f9fbce80501b2f82ac72fbf"
+metadata/_edit_lock_ = true
+
+[node name="Hitbox" type="Area2D" parent="."]
+rotation = -0.785398
+scale = Vector2(0.3, 0.3)
+script = ExtResource("1_w35db")
+metadata/_custom_type_script = "uid://bl38baike4vp2"
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hitbox"]
+rotation = 0.785398
+scale = Vector2(3.33333, 3.33333)
+polygon = PackedVector2Array(-2, -11, 0, -13, 2, -11, 2, 3, -2, 3)

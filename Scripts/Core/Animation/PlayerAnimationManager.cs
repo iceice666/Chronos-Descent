@@ -5,12 +5,11 @@ using Godot;
 namespace ChronosDescent.Scripts.Core.Animation;
 
 [GlobalClass]
-public partial class PlayerAnimationManager : Node, IAnimationPlayer
+public partial class PlayerAnimationManager : AnimationTree, IAnimationPlayer
 {
     private bool _isPrevIdle = true;
 
     private bool _isPrevLookRight = true;
-    [Export] public AnimationTree AnimationTree { get; set; }
     private Player _owner;
 
     public override void _Ready()
@@ -31,10 +30,6 @@ public partial class PlayerAnimationManager : Node, IAnimationPlayer
 
     public void Play(string animation)
     {
-        if (AnimationTree == null) return;
-        if (animation == "dead")
-        {
-            AnimationTree.Set("parameters/PlayerState/conditions/is_dead", true);
-        }
+      
     }
 }
