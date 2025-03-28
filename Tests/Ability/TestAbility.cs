@@ -31,8 +31,10 @@ public class MockChanneledAbility : BaseChanneledAbility
     public MockChanneledAbility()
     {
         Description = "A mock channeled ability for testing";
-        ChannelingDuration = 3.0;
     }
+    
+    
+    public override double ChannelingDuration { get; protected set; } = 3.0;
 
     public bool OnChannelingStartCalled { get; private set; }
     public bool OnChannelingTickCalled { get; private set; }
@@ -50,6 +52,7 @@ public class MockChanneledAbility : BaseChanneledAbility
     {
         // This is called internally by BaseChanneledAbility's CompleteChanneling method
     }
+
 
     protected override void OnChannelingStart()
     {

@@ -25,6 +25,7 @@ public partial class TestEntity : CharacterBody2D, IEntity
     public Scripts.Core.Ability.Manager AbilityManager { get; } = new();
     public IAnimationPlayer AnimationManager => null;
     public Scripts.Core.Weapon.Manager WeaponManager { get; } = new();
+    public AnimationPlayer WeaponAnimationPlayer => null;
     public EventBus EventBus { get; init; } = new();
     public IActionManager ActionManager { get; } = new TestActionManager();
     public Scripts.Core.State.Manager StatsManager { get; } = new(new EntityBaseStats());

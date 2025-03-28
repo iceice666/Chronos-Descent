@@ -20,6 +20,7 @@ public interface IEntity
     public State.Manager StatsManager { get; }
     public Ability.Manager AbilityManager { get; } 
     public Weapon.Manager WeaponManager { get; }
+    public AnimationPlayer WeaponAnimationPlayer { get; }
 
     public Vector2 GlobalPosition { get; set; }
     public bool Moveable { get; set; }

@@ -72,3 +72,4 @@ metadata/_custom_type_script = "uid://bl38baike4vp2"
 rotation = 0.785398
 scale = Vector2(3.33333, 3.33333)
 polygon = PackedVector2Array(-2, -11, 0, -13, 2, -11, 2, 3, -2, 3)
+disabled = true

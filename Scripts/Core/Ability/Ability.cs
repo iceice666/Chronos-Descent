@@ -10,7 +10,7 @@ public abstract class BaseAbility
 
     private AbilityState _state;
 
-    protected AbilityState State
+    public AbilityState State
     {
         get => _state;
         set
@@ -157,7 +157,7 @@ public abstract class BaseChargedAbility : BaseAbility
 
 public abstract class BaseChanneledAbility : BaseAbility
 {
-    public double ChannelingDuration { get; protected set; }
+    public abstract double ChannelingDuration { get; protected set; }
     public double CurrentChannelingTime { get; protected set; }
 
     public override void Activate()
@@ -218,6 +218,10 @@ public abstract class BaseChanneledAbility : BaseAbility
         StartCooldown();
     }
 
+    public override void Execute()
+    {
+        throw new NotImplementedException("How do you reach here?");
+    }
 
     // Channeling callback methods
     protected abstract void OnChannelingStart();

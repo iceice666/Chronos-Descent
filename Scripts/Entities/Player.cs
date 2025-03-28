@@ -7,7 +7,6 @@ using ChronosDescent.Scripts.Core.State;
 using ChronosDescent.Scripts.UI;
 using ChronosDescent.Scripts.Weapons;
 using Godot;
-using Manager = ChronosDescent.Scripts.Core.Weapon.Manager;
 
 namespace ChronosDescent.Scripts.Entities;
 
@@ -24,7 +23,8 @@ public partial class Player : CharacterBody2D, IEntity
     public Core.Ability.Manager AbilityManager { get; } = new();
     protected Core.Effect.Manager EffectManager = new();
     public IAnimationPlayer AnimationManager { get; } = new PlayerAnimationManager();
-    public Manager WeaponManager { get; } = new();
+    public Core.Weapon.Manager WeaponManager { get; } = new();
+    public AnimationPlayer WeaponAnimationPlayer { get; private set; }
 
     #endregion
 
@@ -64,6 +64,7 @@ public partial class Player : CharacterBody2D, IEntity
         _effectBox = GetNode<Area2D>("EffectBox");
         ActionManager = GetNode<UserInputManager>("/root/Autoload/UserInputManager");
         _weaponMountPoint = GetNode<Node2D>("WeaponMountPoint");
+        WeaponAnimationPlayer = GetNode<AnimationPlayer>("WeaponAnimationPlayer");
 
 
         StatsManager.Initialize(this);
@@ -76,7 +77,7 @@ public partial class Player : CharacterBody2D, IEntity
         GetNode<PlayerHealthBar>("/root/Autoload/UI/PlayerHealthBar").Initialize(this);
 
 
-        WeaponManager.SetWeapon<Claymore>(GD.Load<PackedScene>("res://Scenes/weapon/claymore.tscn"));
+        WeaponManager.SetWeapon<Weapons.Claymore>(GD.Load<PackedScene>("res://Scenes/weapon/claymore.tscn"));
         //    WeaponManager.SetWeapon<Bow>(GD.Load<PackedScene>("res://Scenes/weapon/bow.tscn"));
     }
 

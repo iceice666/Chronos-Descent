@@ -46,7 +46,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_5ysiv")
 }],
 "loop": false,
-"name": &"normal",
+"name": &"idle",
 "speed": 10.0
 }]
 
@@ -59,7 +59,7 @@ position = Vector2(10, -0.5)
 rotation = 2.35619
 scale = Vector2(0.2, 0.2)
 sprite_frames = SubResource("SpriteFrames_gab4d")
-animation = &"charging"
+animation = &"idle"
 metadata/_aseprite_wizard_interface_config_ = {
 "pending_changes": {}
 }

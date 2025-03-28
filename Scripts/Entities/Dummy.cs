@@ -18,6 +18,7 @@ public partial class Dummy : CharacterBody2D, IEntity
     public Core.Ability.Manager AbilityManager => null;
     public IAnimationPlayer AnimationManager => null;
     public Manager WeaponManager => null;
+    public AnimationPlayer WeaponAnimationPlayer => null;
 
     public new Vector2 GlobalPosition
     {

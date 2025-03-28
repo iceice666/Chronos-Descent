@@ -13,6 +13,13 @@ public class Manager : ISystem
     public void Initialize(IEntity owner)
     {
         _owner = owner;
+        _owner.EventBus.Subscribe<BaseAbility>(EventVariant.AbilityStateChange, ability =>
+        {
+            if (ability.State == AbilityState.Cooldown && ability == GetAbility(CurrentActiveAbilitySlot))
+            {
+                CurrentActiveAbilitySlot = AbilitySlotType.Unknown;
+            }
+        });
     }
 
     public void Update(double deltaTime)

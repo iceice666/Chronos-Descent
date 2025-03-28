@@ -118,30 +118,19 @@ length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("WeaponMountPoint:position")
+tracks/0/path = NodePath("WeaponMountPoint/Claymore:HitboxEnabled")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, 0)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("WeaponMountPoint:rotation")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
+"update": 1,
+"values": [false]
 }
 
 [sub_resource type="Animation" id="Animation_hkcvn"]
-resource_name = "normal_attack"
+resource_name = "claymore_normal"
+length = 0.7
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -149,10 +138,10 @@ tracks/0/path = NodePath("WeaponMountPoint:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0.0583327),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0.0454263, 0.256729, 0.433333, 0.633333),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(0, 0)]
+"values": [Vector2(0, 0), Vector2(0, 8), Vector2(2, -8), Vector2(2, -8)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -161,16 +150,28 @@ tracks/1/path = NodePath("WeaponMountPoint:rotation")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0.0583327),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0.0454263, 0.256729, 0.433333, 0.633333),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
-"values": [0.0]
+"values": [0.0, -2.30383, -3.14159, -5.44543]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = false
+tracks/2/path = NodePath("WeaponMountPoint/Claymore:HitboxEnabled")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.239273, 0.256729, 0.434978, 0.456729),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [false, true, true, false]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_k5mxe"]
 _data = {
 &"RESET": SubResource("Animation_scnn8"),
-&"normal_attack": SubResource("Animation_hkcvn")
+&"claymore_normal": SubResource("Animation_hkcvn")
 }
 
 [node name="Player" type="CharacterBody2D"]
@@ -195,7 +196,6 @@ position = Vector2(-0.5, 0)
 texture = SubResource("PortableCompressedTexture2D_23hx6")
 hframes = 4
 vframes = 3
-frame = 8
 metadata/_aseprite_wizard_interface_config_ = {
 "pending_changes": {}
 }
@@ -243,7 +243,9 @@ libraries = {
 }
 
 [node name="WeaponMountPoint" type="Node2D" parent="."]
+position = Vector2(2, -8)
+rotation = -5.44543
 
 [node name="Claymore" parent="WeaponMountPoint" instance=ExtResource("5_1qc6a")]
-position = Vector2(-6, 8)
+position = Vector2(-13.227, 5.74855)
 rotation = -1.98968
