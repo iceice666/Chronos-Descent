@@ -55,6 +55,10 @@ and use your ability to manipulate time to overcome seemingly impossible situati
 - [ ] Audio implementation
 - [ ] Polish and balancing
 
+## 🙏 Acknowledgment
+- [Godot 4 Virtual Joystick Tutoria](https://www.youtube.com/watch?v=3YQxT3CepXU)
+- [Dungeon tileset for Floor 1](https://snowhex.itch.io/dungeon-gathering)
+
 <!-- ## 💻 Getting Started
 
 ### Prerequisites

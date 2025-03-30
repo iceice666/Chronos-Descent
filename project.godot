@@ -15,7 +15,7 @@ warnings/check_invalid_track_paths=false
 [application]
 
 config/name="Chronos-Descent"
-run/main_scene="res://Scenes/scene/battle_scene.tscn"
+run/main_scene="res://Scenes/battle_scene.tscn"
 config/features=PackedStringArray("4.4", "C#", "Mobile")
 config/icon="uid://3e85i6qn22hr"
 
