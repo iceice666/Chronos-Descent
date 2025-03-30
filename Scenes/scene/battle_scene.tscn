@@ -20,6 +20,9 @@ collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_3ayl6")
 Effect = SubResource("Resource_nfamq")
+OneShot = null
+TriggerOnEnter = null
+TriggerOnExit = null
 metadata/_custom_type_script = "uid://bxsgp8e2seq64"
 
 [node name="ColorRect" type="ColorRect" parent="EffectTrigger"]
@@ -43,7 +46,7 @@ position = Vector2(208, 75)
 scale = Vector2(3, 3)
 
 [node name="Dummy3" parent="." instance=ExtResource("1_c0pla")]
-position = Vector2(173, 143)
+position = Vector2(168, 92)
 scale = Vector2(3, 3)
 
 [node name="Player" parent="." instance=ExtResource("2_v365r")]

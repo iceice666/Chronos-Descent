@@ -24,6 +24,7 @@ animations = [{
 
 [node name="Claymore" type="Node2D"]
 script = ExtResource("1_n1b7t")
+HitboxEnabled = null
 metadata/_aseprite_wizard_interface_config_ = {
 "pending_changes": {}
 }
@@ -71,5 +72,5 @@ metadata/_custom_type_script = "uid://bl38baike4vp2"
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hitbox"]
 rotation = 0.785398
 scale = Vector2(3.33333, 3.33333)
-polygon = PackedVector2Array(-2, -11, 0, -13, 2, -11, 2, 3, -2, 3)
+polygon = PackedVector2Array(-2, -14, 2, -14, 2, 3, -2, 3)
 disabled = true

@@ -18,6 +18,7 @@ public class Manager : ISystem
             if (ability.State == AbilityState.Cooldown && ability == GetAbility(CurrentActiveAbilitySlot))
             {
                 CurrentActiveAbilitySlot = AbilitySlotType.Unknown;
+                _owner.Moveable = true;
             }
         });
     }

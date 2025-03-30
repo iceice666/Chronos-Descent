@@ -26,7 +26,7 @@ public abstract partial class BaseEntity: CharacterBody2D
     public bool Moveable
     {
         get => MoveableCounter <= 0;
-        set => MoveableCounter = Mathf.Max(MoveableCounter + (value ? 1 : -1), 0);
+        set => MoveableCounter = Mathf.Max(MoveableCounter + (value ? -1 : 1), 0);
     }
     public abstract bool Collision { get; set; }
 

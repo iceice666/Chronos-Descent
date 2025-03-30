@@ -168,7 +168,6 @@ public abstract class BaseChanneledAbility : BaseAbility
         // Start channeling
         State = AbilityState.Executing;
         CurrentChannelingTime = 0.0;
-        Caster.Moveable = false;
         OnChannelingStart();
     }
 

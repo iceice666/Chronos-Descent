@@ -8,7 +8,7 @@ using Godot;
 namespace ChronosDescent.Scripts.Effects;
 
 [GlobalClass]
-public partial class Dissociation : BaseEffect
+public sealed partial class Dissociation : BaseEffect
 {
     public override string Id { get; protected set; } = "dissociation";
 
@@ -17,7 +17,7 @@ public partial class Dissociation : BaseEffect
 
     [Export] public override double Duration { get; set; }
 
-    private DissociationSnapshot DissociatedEntity;
+    private DissociationSnapshot DissociatedEntity { get; set; }
 
 
     public override void OnApply()

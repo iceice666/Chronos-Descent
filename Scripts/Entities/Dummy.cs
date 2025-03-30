@@ -10,64 +10,75 @@ using Manager = ChronosDescent.Scripts.Core.Weapon.Manager;
 
 namespace ChronosDescent.Scripts.Entities;
 
-public partial class Dummy :BaseEntity
+public partial class Dummy : BaseEntity
 {
     public IAnimationPlayer AnimationManager => null;
-    
+
     public bool IsDead { get; set; }
 
     public override void _Ready()
     {
         AddToGroup("Entity");
+
+
+        EffectManager.Initialize(this);
+    }
+
+    public override void _Process(double delta)
+    {
+        EffectManager.Update(delta);
+    }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        EffectManager.FixedUpdate(delta);
     }
 
 
     public override bool Collision { get; set; }
 
-    public override  void TakeDamage(double amount, DamageType damageType)
+    public override void TakeDamage(double amount, DamageType damageType)
     {
         Indicator.Spawn(this, amount, damageType);
     }
 
-    public  override void SetAbility(AbilitySlotType slot, BaseAbility ability)
+    public override void SetAbility(AbilitySlotType slot, BaseAbility ability)
     {
         throw new NotImplementedException();
     }
 
-    public  override void RemoveAbility(AbilitySlotType slot)
+    public override void RemoveAbility(AbilitySlotType slot)
     {
         throw new NotImplementedException();
     }
 
-    public  override void ActivateAbility(AbilitySlotType abilitySlotType)
+    public override void ActivateAbility(AbilitySlotType abilitySlotType)
     {
         throw new NotImplementedException();
     }
 
-    public  override void ReleaseAbility(AbilitySlotType abilitySlotType)
+    public override void ReleaseAbility(AbilitySlotType abilitySlotType)
     {
         throw new NotImplementedException();
     }
 
-    public override  void CancelAbility(AbilitySlotType abilitySlotType)
+    public override void CancelAbility(AbilitySlotType abilitySlotType)
     {
         throw new NotImplementedException();
     }
 
-    public override  void ApplyEffect(BaseEffect effect)
+    public override void ApplyEffect(BaseEffect effect)
     {
         throw new NotImplementedException();
     }
 
-    public  override void RemoveEffect(string effectId)
+    public override void RemoveEffect(string effectId)
     {
         throw new NotImplementedException();
     }
 
-    public  override bool HasEffect(string effectId)
+    public override bool HasEffect(string effectId)
     {
         throw new NotImplementedException();
     }
-
-
 }

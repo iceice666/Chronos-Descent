@@ -1,6 +1,7 @@
-using System.Collections.Generic;
+
 using ChronosDescent.Scripts.Core.Effect;
 using ChronosDescent.Scripts.Core.State;
+using Godot.Collections;
 
 namespace ChronosDescent.Tests.Effect;
 

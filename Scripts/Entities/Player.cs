@@ -38,9 +38,6 @@ public partial class Player : BaseEntity
     }
 
 
-  
-
-
     public override void _Ready()
     {
         AddToGroup("Entity");
@@ -112,7 +109,7 @@ public partial class Player : BaseEntity
         WeaponManager.FixedUpdate(delta);
         PositionRecord.FixedUpdate(delta);
 
-        if (!Moveable)
+        if (Moveable)
         {
             Velocity = ActionManager.MoveDirection * (float)StatsManager.MoveSpeed;
             MoveAndSlide();
