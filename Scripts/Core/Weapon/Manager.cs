@@ -1,5 +1,4 @@
 using ChronosDescent.Scripts.Core.Ability;
-using ChronosDescent.Scripts.Core.Damage;
 using ChronosDescent.Scripts.Core.Entity;
 using Godot;
 
@@ -22,16 +21,32 @@ public interface IWeapon
     public BaseAbility NormalAttack { get; }
     public BaseAbility SpecialAttack { get; }
     public BaseAbility Ultimate { get; }
-    
+
     public void SetOwner(BaseEntity owner);
 }
 
-public partial class Manager : ISystem
+public class Manager : ISystem
 {
     private BaseEntity _owner;
-    public Node2D MountPoint;
 
     public IWeapon CurrentWeapon;
+    public Node2D MountPoint;
+
+    public void Initialize(BaseEntity owner)
+    {
+        _owner = owner;
+        MountPoint = _owner.GetNodeOrNull<Node2D>("WeaponMountPoint");
+    }
+
+    public void Update(double delta)
+    {
+        // nop
+    }
+
+    public void FixedUpdate(double delta)
+    {
+        // nop
+    }
 
 
     public void SetWeapon<T>(PackedScene scene) where T : Node2D, IWeapon
@@ -49,21 +64,5 @@ public partial class Manager : ISystem
         _owner.SetAbility(AbilitySlotType.Normal, CurrentWeapon.NormalAttack);
         _owner.SetAbility(AbilitySlotType.Special, CurrentWeapon.SpecialAttack);
         _owner.SetAbility(AbilitySlotType.Ultimate, CurrentWeapon.Ultimate);
-    }
-
-    public void Initialize(BaseEntity owner)
-    {
-        _owner = owner;
-        MountPoint = (_owner).GetNodeOrNull<Node2D>("WeaponMountPoint");
-    }
-
-    public void Update(double delta)
-    {
-        // nop
-    }
-
-    public void FixedUpdate(double delta)
-    {
-        // nop
     }
 }

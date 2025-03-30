@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Linq;
 using ChronosDescent.Scripts.Core.State;
 using GdUnit4;

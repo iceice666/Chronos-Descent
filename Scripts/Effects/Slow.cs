@@ -8,12 +8,6 @@ namespace ChronosDescent.Scripts.Effects;
 [GlobalClass]
 public sealed partial class Slow : BaseEffect
 {
-    public override string Id { get; protected set; } = "time_slow";
-    public override string Description { get; protected set; } = "Slowed by temporal distortion.";
-
-    [Export] public override double Duration { get; set; }
-    [Export] public override Dictionary<StatFieldSpecifier, double> MultiplicativeModifiers { get; protected set; }
-
     private readonly float _slowFactor;
 
     public Slow(double duration, float slowFactor = 0.5f)
@@ -31,6 +25,12 @@ public sealed partial class Slow : BaseEffect
     public Slow()
     {
     }
+
+    public override string Id { get; protected set; } = "time_slow";
+    public override string Description { get; protected set; } = "Slowed by temporal distortion.";
+
+    [Export] public override double Duration { get; set; }
+    [Export] public override Dictionary<StatFieldSpecifier, double> MultiplicativeModifiers { get; protected set; }
 
     public override void OnApply()
     {

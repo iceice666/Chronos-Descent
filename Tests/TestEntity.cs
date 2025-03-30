@@ -1,12 +1,10 @@
-using ChronosDescent.Scripts;
 using ChronosDescent.Scripts.Core.Ability;
-using ChronosDescent.Scripts.Core.Animation;
 using ChronosDescent.Scripts.Core.Damage;
 using ChronosDescent.Scripts.Core.Effect;
 using ChronosDescent.Scripts.Core.Entity;
 using ChronosDescent.Scripts.Core.State;
 using Godot;
-using Manager = ChronosDescent.Scripts.Core.Effect.Manager;
+using Manager = ChronosDescent.Scripts.Core.State.Manager;
 
 namespace ChronosDescent.Tests;
 
@@ -22,7 +20,7 @@ public partial class TestActionManager : ActionManager
 public partial class TestEntity : BaseEntity
 {
     public override IActionManager ActionManager { get; protected set; } = new TestActionManager();
-    public override Scripts.Core.State.Manager StatsManager { get; } = new(new EntityBaseStats());
+    public override Manager StatsManager { get; } = new(new EntityBaseStats());
 
 
     public override bool Collision { get; set; } = true;

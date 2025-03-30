@@ -17,10 +17,9 @@ public enum GlobalEventVariant
 [GlobalClass]
 public partial class GlobalEventBus : Node
 {
-    public static GlobalEventBus Instance { get; private set; }
-
     // Dictionary of event types to event instances
     private readonly Dictionary<Type, Dictionary<GlobalEventVariant, object>> _events = new();
+    public static GlobalEventBus Instance { get; private set; }
 
     // Subscribe to an event
     public void Subscribe<T>(GlobalEventVariant ev, Action<T> callback)
@@ -96,22 +95,6 @@ public partial class GlobalEventBus : Node
         _events.Clear();
     }
 
-    // Generic event class
-    private class Event<T>
-    {
-        public event Action<T> Handler;
-
-        public void Invoke(T data)
-        {
-            Handler?.Invoke(data);
-        }
-    }
-
-    // Empty class for parameterless events
-    private struct Empty
-    {
-    }
-
     public override void _Ready()
     {
         Instance = this;
@@ -154,4 +137,20 @@ public partial class GlobalEventBus : Node
     }
 
     #endregion
+
+    // Generic event class
+    private class Event<T>
+    {
+        public event Action<T> Handler;
+
+        public void Invoke(T data)
+        {
+            Handler?.Invoke(data);
+        }
+    }
+
+    // Empty class for parameterless events
+    private struct Empty
+    {
+    }
 }

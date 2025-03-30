@@ -1,4 +1,3 @@
-
 using ChronosDescent.Scripts.Core.Entity;
 using ChronosDescent.Scripts.Core.State;
 using Godot;
@@ -18,7 +17,7 @@ public abstract partial class BaseEffect : Resource
     public virtual int MaxStacks { get; protected set; } = 1;
     public virtual Dictionary<StatFieldSpecifier, double> AdditiveModifiers { get; protected set; } = new();
     public virtual Dictionary<StatFieldSpecifier, double> MultiplicativeModifiers { get; protected set; } = new();
-    
+
     public virtual void OnApply()
     {
     }

@@ -4,9 +4,6 @@ using ChronosDescent.Scripts.Core.Animation;
 using ChronosDescent.Scripts.Core.Damage;
 using ChronosDescent.Scripts.Core.Effect;
 using ChronosDescent.Scripts.Core.Entity;
-using ChronosDescent.Scripts.Core.State;
-using Godot;
-using Manager = ChronosDescent.Scripts.Core.Weapon.Manager;
 
 namespace ChronosDescent.Scripts.Entities;
 
@@ -15,6 +12,9 @@ public partial class Dummy : BaseEntity
     public IAnimationPlayer AnimationManager => null;
 
     public bool IsDead { get; set; }
+
+
+    public override bool Collision { get; set; }
 
     public override void _Ready()
     {
@@ -33,9 +33,6 @@ public partial class Dummy : BaseEntity
     {
         EffectManager.FixedUpdate(delta);
     }
-
-
-    public override bool Collision { get; set; }
 
     public override void TakeDamage(double amount, DamageType damageType)
     {

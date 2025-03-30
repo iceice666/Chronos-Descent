@@ -18,9 +18,8 @@ public enum EventVariant
 
     EntityDied,
     EntityStatChanged,
-    
-    DamageReceived,
-    
+
+    DamageReceived
 }
 
 public class EventBus

@@ -7,23 +7,24 @@ using ChronosDescent.Scripts.Core.State;
 using ChronosDescent.Scripts.UI;
 using ChronosDescent.Scripts.Weapons;
 using Godot;
+using Manager = ChronosDescent.Scripts.Core.State.Manager;
 
 namespace ChronosDescent.Scripts.Entities;
 
 [GlobalClass]
 public partial class Player : BaseEntity
 {
-    #region Components
+    private readonly AbilitySlotType[] _abilitySlots =
+    [
+        AbilitySlotType.Normal,
+        AbilitySlotType.Special,
+        AbilitySlotType.Ultimate,
+        AbilitySlotType.LifeSaving
+    ];
 
-    private Area2D _effectBox;
-    private CollisionShape2D _hurtBox;
-    private Sprite2D _sprite;
+    private PackedScene _indicatorScene = GD.Load<PackedScene>("res://Scenes/ui/damage_indicator.tscn");
 
-    public override Core.State.Manager StatsManager { get; } = new(new EntityBaseStats());
-    public IAnimationPlayer AnimationManager { get; } = new PlayerAnimationManager();
-    public PositionRecord PositionRecord { get; set; } = new();
-
-    #endregion
+    private bool _isPrevLookRight;
 
 
     private Node2D _weaponMountPoint;
@@ -70,8 +71,6 @@ public partial class Player : BaseEntity
     {
     }
 
-    private bool _isPrevLookRight;
-
     public override void _Process(double delta)
     {
         StatsManager.Update(delta);
@@ -88,18 +87,8 @@ public partial class Player : BaseEntity
         }
 
         if (_weaponMountPoint.GetChild(0)?.IsInGroup("NeedRotation") ?? false)
-        {
             _weaponMountPoint.Rotation = Mathf.Atan2(ActionManager.LookDirection.Y, ActionManager.LookDirection.X);
-        }
     }
-
-    private readonly AbilitySlotType[] _abilitySlots =
-    [
-        AbilitySlotType.Normal,
-        AbilitySlotType.Special,
-        AbilitySlotType.Ultimate,
-        AbilitySlotType.LifeSaving
-    ];
 
     public override void _PhysicsProcess(double delta)
     {
@@ -128,15 +117,6 @@ public partial class Player : BaseEntity
     }
 
 
-    #region Effect
-
-    public override void ApplyEffect(BaseEffect effect) => EffectManager.ApplyEffect(effect);
-    public override void RemoveEffect(string effectId) => EffectManager.RemoveEffect(effectId);
-    public override bool HasEffect(string effectId) => EffectManager.HasEffect(effectId);
-
-    #endregion
-
-
     public override void SetAbility(AbilitySlotType slot, BaseAbility ability)
     {
         AbilityManager.SetAbility(slot, ability);
@@ -151,8 +131,6 @@ public partial class Player : BaseEntity
     {
         return AbilityManager.CanActivateAbility(slot);
     }
-
-    private PackedScene _indicatorScene = GD.Load<PackedScene>("res://Scenes/ui/damage_indicator.tscn");
 
     public override void TakeDamage(double amount, DamageType damageType)
     {
@@ -190,4 +168,36 @@ public partial class Player : BaseEntity
     {
         AbilityManager.CancelAbility(abilitySlotType);
     }
+
+    #region Components
+
+    private Area2D _effectBox;
+    private CollisionShape2D _hurtBox;
+    private Sprite2D _sprite;
+
+    public override Manager StatsManager { get; } = new(new EntityBaseStats());
+    public IAnimationPlayer AnimationManager { get; } = new PlayerAnimationManager();
+    public PositionRecord PositionRecord { get; set; } = new();
+
+    #endregion
+
+
+    #region Effect
+
+    public override void ApplyEffect(BaseEffect effect)
+    {
+        EffectManager.ApplyEffect(effect);
+    }
+
+    public override void RemoveEffect(string effectId)
+    {
+        EffectManager.RemoveEffect(effectId);
+    }
+
+    public override bool HasEffect(string effectId)
+    {
+        return EffectManager.HasEffect(effectId);
+    }
+
+    #endregion
 }

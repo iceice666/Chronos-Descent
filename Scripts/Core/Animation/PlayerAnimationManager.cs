@@ -1,4 +1,3 @@
-using System;
 using ChronosDescent.Scripts.Entities;
 using Godot;
 
@@ -11,6 +10,10 @@ public partial class PlayerAnimationManager : AnimationTree, IAnimationPlayer
 
     private bool _isPrevLookRight = true;
     private Player _owner;
+
+    public void Play(string animation)
+    {
+    }
 
     public override void _Ready()
     {
@@ -26,10 +29,5 @@ public partial class PlayerAnimationManager : AnimationTree, IAnimationPlayer
             _isPrevLookRight = isLookRight;
             _owner.Scale = new Vector2(-_owner.Scale.X, _owner.Scale.Y);
         }
-    }
-
-    public void Play(string animation)
-    {
-      
     }
 }

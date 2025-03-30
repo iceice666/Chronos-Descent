@@ -12,7 +12,6 @@ public class Dash : BaseActiveAbility
     public Dash()
     {
         Description = "Quickly dash in a direction";
-       
     }
 
     private static double DashDistance => 200.0;

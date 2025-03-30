@@ -12,6 +12,6 @@
         <PackageReference Include="gdUnit4.test.adapter" Version="2.*"/>
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="Scripts\Abilities\" />
+        <Folder Include="Scripts\Abilities\"/>
     </ItemGroup>
 </Project>

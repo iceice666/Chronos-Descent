@@ -13,6 +13,7 @@ public enum DamageType
 
 public partial class Indicator : Node2D
 {
+    private static readonly PackedScene IndicatorScene = GD.Load<PackedScene>("res://Scenes/ui/damage_indicator.tscn");
     private double _currentTime;
     private double _duration = 1.0f;
     private Label _label;
@@ -70,7 +71,7 @@ public partial class Indicator : Node2D
                 _label.Text = $"+{amount:F0}";
                 _label.Modulate = new Color(0.0f, 1.0f, 0.5f); // Cyan/Green
                 break;
-            
+
             case DamageType.Explosive:
                 _label.Text = $"-{amount:F0}";
                 _label.Modulate = new Color(1.0f, 0.0f, 0.0f); // Red
@@ -80,9 +81,6 @@ public partial class Indicator : Node2D
         // Add a small random offset to the position
         GlobalPosition += new Vector2(GD.Randf() * 20 - 10, GD.Randf() * 10 - 5);
     }
-
-
-    private static readonly PackedScene IndicatorScene = GD.Load<PackedScene>("res://Scenes/ui/damage_indicator.tscn");
 
     public static void Spawn(Node2D root, double amount, DamageType type = DamageType.Normal)
     {

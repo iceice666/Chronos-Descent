@@ -2,6 +2,7 @@ using ChronosDescent.Scripts.Core.Ability;
 using ChronosDescent.Scripts.Core.Damage;
 using ChronosDescent.Scripts.Core.Effect;
 using Godot;
+using Manager = ChronosDescent.Scripts.Core.State.Manager;
 
 namespace ChronosDescent.Scripts.Core.Entity;
 
@@ -12,22 +13,23 @@ public interface ISystem
     public void FixedUpdate(double delta);
 }
 
-public abstract partial class BaseEntity: CharacterBody2D
+public abstract partial class BaseEntity : CharacterBody2D
 {
+    protected int MoveableCounter;
     public EventBus EventBus { get; } = new();
-    public virtual IActionManager ActionManager { get;protected set; } 
-    public virtual State.Manager StatsManager { get; }
+    public virtual IActionManager ActionManager { get; protected set; }
+    public virtual Manager StatsManager { get; }
     public Ability.Manager AbilityManager { get; } = new();
     public Weapon.Manager WeaponManager { get; } = new();
     public Effect.Manager EffectManager { get; } = new();
     public AnimationPlayer WeaponAnimationPlayer { get; protected set; }
 
-    protected int MoveableCounter;
     public bool Moveable
     {
         get => MoveableCounter <= 0;
         set => MoveableCounter = Mathf.Max(MoveableCounter + (value ? -1 : 1), 0);
     }
+
     public abstract bool Collision { get; set; }
 
     // Stats

@@ -4,11 +4,12 @@ namespace ChronosDescent.Tests.Ability;
 
 public class MockActiveAbility : BaseActiveAbility
 {
-    public override string Id { get; protected set; } = "mock_active_ability";
     public MockActiveAbility()
     {
         Description = "A mock active ability for testing";
     }
+
+    public override string Id { get; protected set; } = "mock_active_ability";
 
     public bool ExecuteCalled { get; private set; }
 
@@ -27,13 +28,14 @@ public class MockActiveAbility : BaseActiveAbility
 
 public class MockChanneledAbility : BaseChanneledAbility
 {
-    public override string Id { get; protected set; } = "mock_channeled_ability";
     public MockChanneledAbility()
     {
         Description = "A mock channeled ability for testing";
     }
-    
-    
+
+    public override string Id { get; protected set; } = "mock_channeled_ability";
+
+
     public override double ChannelingDuration { get; protected set; } = 3.0;
 
     public bool OnChannelingStartCalled { get; private set; }
@@ -77,16 +79,16 @@ public class MockChanneledAbility : BaseChanneledAbility
 
 public class MockChargedAbility : BaseChargedAbility
 {
-    public override double MinChargeTime { get; set; } = 0.5;
-    public override double MaxChargeTime { get; set; } = 2.0;
-    public override bool AutoCastWhenFull { get; set; } 
-    public override string Id { get; protected set; }= "mock_charged_ability";
-    public override double Cooldown { get; protected init; } = 4;
-
     public MockChargedAbility()
     {
         Description = "A mock charged ability for testing";
     }
+
+    public override double MinChargeTime { get; set; } = 0.5;
+    public override double MaxChargeTime { get; set; } = 2.0;
+    public override bool AutoCastWhenFull { get; set; }
+    public override string Id { get; protected set; } = "mock_charged_ability";
+    public override double Cooldown { get; protected init; } = 4;
 
     public bool ExecuteCalled { get; private set; }
     public bool OnChargingCanceledCalled { get; private set; }

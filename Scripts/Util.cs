@@ -1,4 +1,3 @@
-using System;
 using Godot;
 
 public class Utils
@@ -19,5 +18,4 @@ public class Utils
         // Add origin point
         return new Vector2((float)newOffsetX, (float)newOffsetY) + originPoint;
     }
-    
 }

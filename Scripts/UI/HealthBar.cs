@@ -5,18 +5,17 @@ namespace ChronosDescent.Scripts.UI;
 
 public partial class HealthBar : Control
 {
-    public float DamageDelay = 1.0f;
-    public float DelayedBarSpeed = 15.0f;
-
     protected ProgressBar CurrentHealthBar;
-    protected ProgressBar DelayedHealthBar;
+    public float DamageDelay = 1.0f;
     protected Timer DamageDelayTimer;
-    protected BaseEntity Entity;
-    protected double TargetHealth;
+    public float DelayedBarSpeed = 15.0f;
+    protected ProgressBar DelayedHealthBar;
     protected double DelayedHealthValue;
-    protected bool IsUpdatingDelayedBar;
+    protected BaseEntity Entity;
 
     [Export] public int HideThreshold = 99;
+    protected bool IsUpdatingDelayedBar;
+    protected double TargetHealth;
 
 
     public override void _Ready()
@@ -55,10 +54,7 @@ public partial class HealthBar : Control
         DelayedHealthBar.Value = (float)DelayedHealthValue;
 
         // Stop updating when we reach the target
-        if (Mathf.IsEqualApprox((float)DelayedHealthValue, (float)TargetHealth))
-        {
-            IsUpdatingDelayedBar = false;
-        }
+        if (Mathf.IsEqualApprox((float)DelayedHealthValue, (float)TargetHealth)) IsUpdatingDelayedBar = false;
     }
 
 

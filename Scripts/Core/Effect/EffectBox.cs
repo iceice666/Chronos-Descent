@@ -20,19 +20,13 @@ public partial class EffectBox : Area2D
     {
         if (!area.IsInGroup("EffectTrigger")) return;
         var trigger = (EffectTrigger)area;
-        if (trigger.TriggerOnEnter)
-        {
-            _owner.ApplyEffect(trigger.Effect);
-        }
+        if (trigger.TriggerOnEnter) _owner.ApplyEffect(trigger.Effect);
     }
 
     private void OnExitedEffectTrigger(Area2D area)
     {
         if (!area.IsInGroup("EffectTrigger")) return;
         var trigger = (EffectTrigger)area;
-        if (trigger.TriggerOnExit)
-        {
-            _owner.ApplyEffect(trigger.Effect);
-        }
+        if (trigger.TriggerOnExit) _owner.ApplyEffect(trigger.Effect);
     }
 }

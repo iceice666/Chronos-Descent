@@ -9,11 +9,11 @@ namespace ChronosDescent.Scripts.Weapons;
 
 public partial class BounceArrow : BaseProjectile
 {
-    private Hitbox _hitbox;
-    private int _counter;
-    private int _maxCounter = 3;
     private readonly HashSet<BaseEntity> _hitEntities = [];
     private BaseEntity _attacker;
+    private int _counter;
+    private Hitbox _hitbox;
+    private int _maxCounter = 3;
 
     private int _speed;
 
@@ -77,7 +77,7 @@ public partial class BounceArrow : BaseProjectile
         Node2D target;
 
         if (targets.Count == 0)
-            target = (Node2D)_hitEntities.ElementAt((int)(GD.Randf() * _hitEntities.Count));
+            target = _hitEntities.ElementAt((int)(GD.Randf() * _hitEntities.Count));
         else
             target = (Node2D)targets[(int)(GD.Randf() * targets.Count)];
 

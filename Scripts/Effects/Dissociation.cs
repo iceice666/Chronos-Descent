@@ -42,6 +42,8 @@ public sealed partial class Dissociation : BaseEffect
     {
         private Action<double, DamageType> _takeDamageCb;
 
+        public override bool Collision { get; set; } = true;
+
         public void Initialize(
             BaseEntity origin
         )
@@ -55,10 +57,10 @@ public sealed partial class Dissociation : BaseEffect
             _takeDamageCb = origin.TakeDamage;
         }
 
-        public override bool Collision { get; set; } = true;
-
         public override void TakeDamage(double amount, DamageType damageType)
-            => _takeDamageCb(amount, damageType);
+        {
+            _takeDamageCb(amount, damageType);
+        }
 
         public override void ApplyEffect(BaseEffect effect)
         {
@@ -66,33 +68,40 @@ public sealed partial class Dissociation : BaseEffect
             EffectManager.ApplyEffect(effect);
         }
 
-        public override void RemoveEffect(string effectId) => EffectManager.RemoveEffect(effectId);
-        public override bool HasEffect(string effectId) => EffectManager.HasEffect(effectId);
+        public override void RemoveEffect(string effectId)
+        {
+            EffectManager.RemoveEffect(effectId);
+        }
+
+        public override bool HasEffect(string effectId)
+        {
+            return EffectManager.HasEffect(effectId);
+        }
 
 
         public override void SetAbility(AbilitySlotType slot, BaseAbility ability)
         {
-            throw new System.NotImplementedException("Why are you here?");
+            throw new NotImplementedException("Why are you here?");
         }
 
         public override void RemoveAbility(AbilitySlotType slot)
         {
-            throw new System.NotImplementedException("Why are you here?");
+            throw new NotImplementedException("Why are you here?");
         }
 
         public override void ActivateAbility(AbilitySlotType abilitySlotType)
         {
-            throw new System.NotImplementedException("Why are you here?");
+            throw new NotImplementedException("Why are you here?");
         }
 
         public override void ReleaseAbility(AbilitySlotType abilitySlotType)
         {
-            throw new System.NotImplementedException("Why are you here?");
+            throw new NotImplementedException("Why are you here?");
         }
 
         public override void CancelAbility(AbilitySlotType abilitySlotType)
         {
-            throw new System.NotImplementedException("Why are you here?");
+            throw new NotImplementedException("Why are you here?");
         }
     }
 }

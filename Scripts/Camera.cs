@@ -30,6 +30,5 @@ public partial class Camera : Camera2D
     public void Initialize(BaseEntity target)
     {
         _target = target;
-
     }
 }

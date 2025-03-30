@@ -1,4 +1,3 @@
-using ChronosDescent.Scripts.Core.Entity;
 using Godot;
 
 namespace ChronosDescent.Scripts.Core.Effect;

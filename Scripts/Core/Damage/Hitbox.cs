@@ -7,11 +7,10 @@ namespace ChronosDescent.Scripts.Core.Damage;
 [GlobalClass]
 public partial class Hitbox : Area2D
 {
+    private CollisionPolygon2D _collisionObject;
     public BaseEntity Attacker;
     public EntityStats AttackerStats = null;
     public double RawDamage;
-
-    private CollisionPolygon2D _collisionObject;
 
     public bool Enabled
     {
@@ -22,7 +21,7 @@ public partial class Hitbox : Area2D
     public override void _Ready()
     {
         CollisionLayer = 0;
-        CollisionMask = 1 << 1 | 1 << 2;
+        CollisionMask = (1 << 1) | (1 << 2);
         BodyEntered += OnEntityHit;
         _collisionObject = GetNode<CollisionPolygon2D>("CollisionPolygon2D");
     }

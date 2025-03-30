@@ -28,6 +28,16 @@ public partial class Claymore : Node2D, IWeapon
         }
     }
 
+
+    public BaseAbility NormalAttack { get; } = new NormalAbility();
+    public BaseAbility SpecialAttack { get; } = new SpecialAbility();
+    public BaseAbility Ultimate { get; } = new UltimateAbility();
+
+    public void SetOwner(BaseEntity owner)
+    {
+        _owner = owner;
+    }
+
     public override void _Ready()
     {
         _hitbox = GetNode<Hitbox>("Hitbox");
@@ -40,27 +50,19 @@ public partial class Claymore : Node2D, IWeapon
     }
 
 
-    public BaseAbility NormalAttack { get; } = new NormalAbility();
-    public BaseAbility SpecialAttack { get; } = new SpecialAbility();
-    public BaseAbility Ultimate { get; } = new UltimateAbility();
-
-    public void SetOwner(BaseEntity owner)
-    {
-        _owner = owner;
-    }
-
-
     public class NormalAbility : BaseChanneledAbility
     {
+        private double _animationTimer = 1;
+
+        private Claymore _mountedWeapon;
         public override string Id { get; protected set; } = "claymore_normal";
         public override double Cooldown { get; protected init; } = 0.3;
         public override double ChannelingDuration { get; protected set; } = 0.4;
 
-        private double _animationTimer = 1;
-
-        public override bool CanActivate() => CurrentCooldown <= 0;
-
-        private Claymore _mountedWeapon;
+        public override bool CanActivate()
+        {
+            return CurrentCooldown <= 0;
+        }
 
         protected override void OnChannelingStart()
         {
@@ -75,23 +77,19 @@ public partial class Claymore : Node2D, IWeapon
         protected override void OnChannelingTick(double delta)
         {
             if (ClaymoreGlobal.NormalAnimationGoingForward)
-            {
                 _mountedWeapon._hitbox.Enabled = _animationTimer switch
                 {
                     < 0.1 when _animationTimer + delta >= 0.1 => true,
                     < 0.2 when _animationTimer + delta >= 0.2 => false,
                     _ => _mountedWeapon._hitbox.Enabled
                 };
-            }
             else
-            {
                 _mountedWeapon._hitbox.Enabled = _animationTimer switch
                 {
                     < 0.05 when _animationTimer + delta >= 0.05 => true,
                     < 0.1 when _animationTimer + delta >= 0.1 => false,
                     _ => _mountedWeapon._hitbox.Enabled
                 };
-            }
 
             _animationTimer += delta;
         }
@@ -110,14 +108,18 @@ public partial class Claymore : Node2D, IWeapon
     public class SpecialAbility : BaseChanneledAbility
     {
         private const int JumpDistance = 100;
-        private Vector2 _targetPoint;
         private double _animationTimer;
+        private Vector2 _targetPoint;
 
 
         public override string Id { get; protected set; } = "claymore_special";
         public override double Cooldown { get; protected init; } = 5;
         public override double ChannelingDuration { get; protected set; } = 0.8;
-        public override bool CanActivate() => CurrentCooldown <= 0;
+
+        public override bool CanActivate()
+        {
+            return CurrentCooldown <= 0;
+        }
 
 
         protected override void OnChannelingStart()
@@ -164,10 +166,7 @@ public partial class Claymore : Node2D, IWeapon
                 && Caster.GlobalPosition.DistanceSquaredTo(e.GlobalPosition) <= 50 * 50
             ).ToList();
 
-            foreach (var entity in entities.Cast<BaseEntity>())
-            {
-                entity.TakeDamage(40, DamageType.Explosive);
-            }
+            foreach (var entity in entities.Cast<BaseEntity>()) entity.TakeDamage(40, DamageType.Explosive);
         }
     }
 
@@ -176,14 +175,17 @@ public partial class Claymore : Node2D, IWeapon
         private const int DamageRadius = 120;
         private const float TimeSlowDuration = 5.0f;
 
+        private double _animationTimer;
+        private Claymore _mountedWeapon;
+
         public override string Id { get; protected set; } = "claymore_ultimate";
         public override double Cooldown { get; protected init; } = 25.0;
         public override double ChannelingDuration { get; protected set; } = 2;
 
-        private double _animationTimer;
-        private Claymore _mountedWeapon;
-
-        public override bool CanActivate() => CurrentCooldown <= 0;
+        public override bool CanActivate()
+        {
+            return CurrentCooldown <= 0;
+        }
 
         protected override void OnChannelingStart()
         {
@@ -240,7 +242,7 @@ public partial class Claymore : Node2D, IWeapon
                 if (angle <= Mathf.Pi / 2)
                 {
                     // Calculate damage falloff based on distance
-                    var distanceRatio = 1.0f - (Caster.GlobalPosition.DistanceTo(entity.GlobalPosition) / DamageRadius);
+                    var distanceRatio = 1.0f - Caster.GlobalPosition.DistanceTo(entity.GlobalPosition) / DamageRadius;
                     var damageMultiplier = Mathf.Max(0.5f, distanceRatio);
 
                     // Deal damage

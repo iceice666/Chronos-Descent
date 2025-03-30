@@ -6,16 +6,11 @@ namespace ChronosDescent.Scripts.Core.State;
 
 public class PositionRecord : ISystem
 {
-    public record RecordUnit
-    {
-        public Vector2 Position { get; init; }
-        public double Delta { get; init; }
-    }
+    private const double MaxTime = 5.0d;
 
     private readonly LinkedList<RecordUnit> _records = [];
     private BaseEntity _owner;
     private double _totalTime;
-    private const double MaxTime = 5.0d;
 
     public bool Recording { get; set; } = true;
 
@@ -57,5 +52,11 @@ public class PositionRecord : ISystem
             yield return current.Value;
             current = current.Next;
         }
+    }
+
+    public record RecordUnit
+    {
+        public Vector2 Position { get; init; }
+        public double Delta { get; init; }
     }
 }
