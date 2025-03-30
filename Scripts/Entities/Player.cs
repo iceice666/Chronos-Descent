@@ -34,8 +34,8 @@ public partial class Player : BaseEntity
 
     public override bool Collision
     {
-        get => !_hurtBox.Disabled;
-        set => _hurtBox.Disabled = !value;
+        get => !_collision.Disabled;
+        set => _collision.Disabled = !value;
     }
 
 
@@ -45,8 +45,7 @@ public partial class Player : BaseEntity
         AddToGroup("Player");
 
         _sprite = GetNode<Sprite2D>("Sprite2D");
-        _hurtBox = GetNode<CollisionShape2D>("HurtBox");
-        _effectBox = GetNode<Area2D>("EffectBox");
+        _hurtbox = GetNode<Hurtbox>("Hurtbox");
         ActionManager = GetNode<UserInputManager>("/root/Autoload/UserInputManager");
         _weaponMountPoint = GetNode<Node2D>("WeaponMountPoint");
         WeaponAnimationPlayer = GetNode<AnimationPlayer>("WeaponAnimationPlayer");
@@ -171,9 +170,9 @@ public partial class Player : BaseEntity
 
     #region Components
 
-    private Area2D _effectBox;
-    private CollisionShape2D _hurtBox;
+    private Hurtbox _hurtbox;
     private Sprite2D _sprite;
+    private CollisionShape2D _collision;
 
     public override Manager StatsManager { get; } = new(new EntityBaseStats());
     public IAnimationPlayer AnimationManager { get; } = new PlayerAnimationManager();

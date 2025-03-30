@@ -1,3 +1,4 @@
+using ChronosDescent.Scripts.Core.Entity;
 using Godot;
 
 namespace ChronosDescent.Scripts.Core.Effect;
@@ -12,6 +13,19 @@ public partial class EffectTrigger : Area2D
 
     public override void _Ready()
     {
-        AddToGroup("EffectTrigger");
+        BodyEntered += OnEnteredEffectTrigger;
+        BodyExited += OnExitedEffectTrigger;
+    }
+
+    private void OnEnteredEffectTrigger(Node2D body)
+    {
+        if (body is not BaseEntity entity) return;
+        if (TriggerOnEnter) entity.ApplyEffect(Effect);
+    }
+
+    private void OnExitedEffectTrigger(Node2D body)
+    {
+        if (body is not BaseEntity entity) return;
+        if (TriggerOnExit) entity.ApplyEffect(Effect);
     }
 }

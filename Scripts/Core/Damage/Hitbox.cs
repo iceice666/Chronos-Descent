@@ -21,15 +21,22 @@ public partial class Hitbox : Area2D
     public override void _Ready()
     {
         CollisionLayer = 0;
-        CollisionMask = (1 << 1) | (1 << 2);
-        BodyEntered += OnEntityHit;
+        CollisionMask = 1 << 4;
+        AreaEntered += OnEntityHit;
         _collisionObject = GetNode<CollisionPolygon2D>("CollisionPolygon2D");
     }
 
-    private void OnEntityHit(Node2D body)
+    public override void _ExitTree()
     {
-        if (!body.IsInGroup("Entity")) return;
-        var attackee = (BaseEntity)body;
+        AreaEntered -= OnEntityHit;
+    }
+
+    private void OnEntityHit(Area2D area)
+    {
+        
+        if (area is not Hurtbox hurtbox) return;
+        
+        var attackee = hurtbox.Owner;
         if (attackee == Attacker) return;
 
         GlobalEventBus.Instance.Publish(GlobalEventVariant.DamageDealt,

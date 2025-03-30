@@ -2,13 +2,13 @@
 
 [ext_resource type="Script" uid="uid://blmg130gnl8gw" path="res://Scripts/Entities/Dummy.cs" id="1_jk4ue"]
 [ext_resource type="Texture2D" uid="uid://dowioby133mv0" path="res://Assets/Entity/dummy.png" id="2_vw43e"]
-[ext_resource type="Script" uid="uid://2snmbmve0swj" path="res://Scripts/Core/Effect/EffectBox.cs" id="4_vw43e"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_jk4ue"]
-size = Vector2(24, 72)
+[ext_resource type="Script" uid="uid://b0asgk1npwhss" path="res://Scripts/Core/Damage/Hurtbox.cs" id="3_jk4ue"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vw43e"]
 size = Vector2(10, 2)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jk4ue"]
+size = Vector2(24, 72)
 
 [node name="Dummy" type="CharacterBody2D"]
 collision_layer = 2
@@ -19,21 +19,22 @@ script = ExtResource("1_jk4ue")
 texture = ExtResource("2_vw43e")
 metadata/_edit_lock_ = true
 
-[node name="HurtBox" type="CollisionShape2D" parent="."]
-position = Vector2(0, 2)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 11)
+shape = SubResource("RectangleShape2D_vw43e")
+debug_color = Color(0.53077, 0.442076, 0.928365, 0.42)
+metadata/_edit_lock_ = true
+
+[node name="Hurtbox" type="Area2D" parent="."]
+position = Vector2(0, 11)
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("3_jk4ue")
+metadata/_custom_type_script = "uid://b0asgk1npwhss"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+position = Vector2(0, -9)
 scale = Vector2(0.25, 0.25)
 shape = SubResource("RectangleShape2D_jk4ue")
 debug_color = Color(0.238251, 0.625841, 0.346228, 0.42)
 metadata/_edit_lock_ = true
-
-[node name="EffectBox" type="Area2D" parent="."]
-collision_layer = 0
-collision_mask = 8
-script = ExtResource("4_vw43e")
-metadata/_custom_type_script = "uid://2snmbmve0swj"
-metadata/_edit_lock_ = true
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="EffectBox"]
-position = Vector2(0, 11)
-shape = SubResource("RectangleShape2D_vw43e")
-debug_color = Color(0.53077, 0.442076, 0.928365, 0.42)
