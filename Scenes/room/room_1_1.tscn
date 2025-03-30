@@ -9,6 +9,7 @@
 
 [node name="GroundLayer" type="TileMapLayer" parent="TileMap"]
 tile_set = ExtResource("1_vxpj4")
+collision_visibility_mode = 1
 
 [node name="MiscLayer" type="TileMapLayer" parent="TileMap"]
 tile_set = ExtResource("1_vxpj4")
