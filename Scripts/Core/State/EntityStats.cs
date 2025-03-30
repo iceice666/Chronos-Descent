@@ -62,7 +62,7 @@ public class Manager : ISystem
     public double MoveSpeed => CurrentStats.MoveSpeed;
 
 
-    public void Initialize(IEntity owner)
+    public void Initialize(BaseEntity owner)
     {
     }
 
@@ -118,8 +118,8 @@ public class Manager : ISystem
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-        
-        
+
+
         foreach (var (stat, value) in additiveTotal)
             switch (stat)
             {

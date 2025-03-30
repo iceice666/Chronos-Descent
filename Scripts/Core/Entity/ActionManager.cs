@@ -10,12 +10,12 @@ public interface IActionManager
 
 public partial class ActionManager : Node, IActionManager
 {
-    private IEntity _owner;
+    private BaseEntity _owner;
 
 
     public override void _Ready()
     {
-        _owner = (IEntity)GetOwner();
+        _owner = (BaseEntity)GetOwner();
     }
 
     #region Preporities

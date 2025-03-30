@@ -9,8 +9,6 @@ public partial class BaseProjectile : CharacterBody2D
 {
     protected float DragFactor;
 
-  
-
     public override void _PhysicsProcess(double delta)
     {
         Velocity *= DragFactor;
@@ -24,12 +22,16 @@ public interface IWeapon
     public BaseAbility NormalAttack { get; }
     public BaseAbility SpecialAttack { get; }
     public BaseAbility Ultimate { get; }
+    
+    public void SetOwner(BaseEntity owner);
 }
 
 public partial class Manager : ISystem
 {
-    private IEntity _owner;
+    private BaseEntity _owner;
     public Node2D MountPoint;
+
+    public IWeapon CurrentWeapon;
 
 
     public void SetWeapon<T>(PackedScene scene) where T : Node2D, IWeapon
@@ -39,19 +41,20 @@ public partial class Manager : ISystem
 
         MountPoint.GetNodeOrNull("weapon")?.QueueFree();
 
-        var newWeapon = scene.Instantiate<T>();
-        newWeapon.Name = "weapon";
-        MountPoint.AddChild(newWeapon);
+        CurrentWeapon = scene.Instantiate<T>();
+        ((Node2D)CurrentWeapon).Name = "weapon";
+        CurrentWeapon.SetOwner(_owner);
+        MountPoint.AddChild((Node2D)CurrentWeapon);
 
-        _owner.SetAbility(AbilitySlotType.Normal, newWeapon.NormalAttack);
-        _owner.SetAbility(AbilitySlotType.Special, newWeapon.SpecialAttack);
-        _owner.SetAbility(AbilitySlotType.Ultimate, newWeapon.Ultimate);
+        _owner.SetAbility(AbilitySlotType.Normal, CurrentWeapon.NormalAttack);
+        _owner.SetAbility(AbilitySlotType.Special, CurrentWeapon.SpecialAttack);
+        _owner.SetAbility(AbilitySlotType.Ultimate, CurrentWeapon.Ultimate);
     }
 
-    public void Initialize(IEntity owner)
+    public void Initialize(BaseEntity owner)
     {
         _owner = owner;
-        MountPoint = ((Node2D)_owner).GetNodeOrNull<Node2D>("WeaponMountPoint");
+        MountPoint = (_owner).GetNodeOrNull<Node2D>("WeaponMountPoint");
     }
 
     public void Update(double delta)

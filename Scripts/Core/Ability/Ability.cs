@@ -21,7 +21,7 @@ public abstract class BaseAbility
     }
 
 
-    public IEntity Caster { get; set; }
+    public BaseEntity Caster { get; set; }
 
     public abstract string Id { get; protected set; }
     public string Description { get; protected set; }
@@ -46,7 +46,7 @@ public abstract class BaseAbility
 
     #region Life Cycle
 
-    public virtual void Initialize(IEntity caster)
+    public virtual void Initialize(BaseEntity caster)
     {
         Caster = caster;
     }

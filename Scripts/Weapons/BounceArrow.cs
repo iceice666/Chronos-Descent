@@ -12,12 +12,12 @@ public partial class BounceArrow : BaseProjectile
     private Hitbox _hitbox;
     private int _counter;
     private int _maxCounter = 3;
-    private readonly HashSet<IEntity> _hitEntities = [];
+    private readonly HashSet<BaseEntity> _hitEntities = [];
 
     private int _speed;
 
     public void Initialize(
-        IEntity attacker,
+        BaseEntity attacker,
         Vector2 scale,
         Vector2 position,
         float rotation,
@@ -61,12 +61,12 @@ public partial class BounceArrow : BaseProjectile
         }
 
         _counter++;
-        _hitEntities.Add((IEntity)body);
+        _hitEntities.Add((BaseEntity)body);
 
         var targets = _hitbox.GetNode("/root/BattleScene").GetTree().GetNodesInGroup("Entity")
             .Where(node =>
                 !node.IsInGroup("Player")
-                && node is IEntity e
+                && node is BaseEntity e
                 && !_hitEntities.Contains(e)
                 && _hitbox.GlobalPosition.DistanceTo(e.GlobalPosition) < 100
             ).ToList();
@@ -79,7 +79,7 @@ public partial class BounceArrow : BaseProjectile
         else
             target = (Node2D)targets[(int)(GD.Randf() * targets.Count)];
 
-        _hitEntities.Add((IEntity)body);
+        _hitEntities.Add((BaseEntity)body);
 
         var direction = (target.GlobalPosition - _hitbox.GlobalPosition).LimitLength();
         Rotation = direction.Angle();

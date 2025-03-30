@@ -19,78 +19,65 @@ public partial class TestActionManager : ActionManager
     }
 }
 
-public partial class TestEntity : CharacterBody2D, IEntity
+public partial class TestEntity : BaseEntity
 {
-    public Manager EffectManager { get; } = new();
-    public Scripts.Core.Ability.Manager AbilityManager { get; } = new();
-    public IAnimationPlayer AnimationManager => null;
-    public Scripts.Core.Weapon.Manager WeaponManager { get; } = new();
-    public AnimationPlayer WeaponAnimationPlayer => null;
-    public EventBus EventBus { get; init; } = new();
-    public IActionManager ActionManager { get; } = new TestActionManager();
-    public Scripts.Core.State.Manager StatsManager { get; } = new(new EntityBaseStats());
+    public override IActionManager ActionManager { get; protected set; } = new TestActionManager();
+    public override Scripts.Core.State.Manager StatsManager { get; } = new(new EntityBaseStats());
 
-    public new Vector2 GlobalPosition
-    {
-        get => base.Position;
-        set => base.Position = value;
-    }
 
-    public bool Moveable { get; set; } = true;
-
-    public bool Collision { get; set; } = true;
+    public override bool Collision { get; set; } = true;
     public bool IsDead { get; set; }
 
-    // IEntity implementations
-    public void ApplyEffect(BaseEffect effect)
+    // BaseEntity implementations
+    public override void ApplyEffect(BaseEffect effect)
     {
         EffectManager.ApplyEffect(effect);
     }
 
-    public void RemoveEffect(string effectId)
+    public override void RemoveEffect(string effectId)
     {
         EffectManager.RemoveEffect(effectId);
     }
 
-    public bool HasEffect(string effectId)
+    public override bool HasEffect(string effectId)
     {
         return EffectManager.HasEffect(effectId);
     }
 
-    public void SetAbility(AbilitySlotType slot, BaseAbility ability)
+    public override void SetAbility(AbilitySlotType slot, BaseAbility ability)
     {
         AbilityManager.SetAbility(slot, ability);
     }
 
-    public void RemoveAbility(AbilitySlotType slot)
+    public override void RemoveAbility(AbilitySlotType slot)
     {
         AbilityManager.RemoveAbility(slot);
     }
 
-    public void TakeDamage(double amount, DamageType damageType)
+    public override void TakeDamage(double amount, DamageType damageType)
     {
         // No-op for test implementation
     }
 
-    public void ActivateAbility(AbilitySlotType abilitySlotType)
+    public override void ActivateAbility(AbilitySlotType abilitySlotType)
     {
         AbilityManager.ActivateAbility(abilitySlotType);
     }
 
-    public void ReleaseAbility(AbilitySlotType abilitySlotType)
+    public override void ReleaseAbility(AbilitySlotType abilitySlotType)
     {
         AbilityManager.ReleaseAbility(abilitySlotType);
     }
 
-    public void CancelAbility(AbilitySlotType abilitySlotType)
+    public override void CancelAbility(AbilitySlotType abilitySlotType)
     {
         AbilityManager.CancelAbility(abilitySlotType);
     }
-    
+
     public override void _Ready()
     {
         AddToGroup("Entity");
-        
+
         StatsManager.Initialize(this);
         AbilityManager.Initialize(this);
         EffectManager.Initialize(this);

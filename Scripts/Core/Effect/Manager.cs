@@ -10,10 +10,10 @@ public class Manager : ISystem
 {
     private readonly Dictionary<string, Instance> _activeEffects = new();
     private readonly List<Instance> _tickingEffects = new();
-    private IEntity _owner;
+    private BaseEntity _owner;
     private bool _statsAreDirty;
 
-    public void Initialize(IEntity owner)
+    public void Initialize(BaseEntity owner)
     {
         _owner = owner;
     }
@@ -169,7 +169,7 @@ public class Instance
 
     public Instance(
         BaseEffect baseEffect,
-        IEntity target,
+        BaseEntity target,
         int currentStacks = 1)
     {
         RemainingDuration = baseEffect.Duration;

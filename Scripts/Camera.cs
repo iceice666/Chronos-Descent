@@ -7,7 +7,7 @@ namespace ChronosDescent.Scripts;
 public partial class Camera : Camera2D
 {
     private Vector2 _offset = new(0, 0);
-    private IEntity _target;
+    private BaseEntity _target;
 
     public override void _PhysicsProcess(double delta)
     {
@@ -18,16 +18,16 @@ public partial class Camera : Camera2D
 
     public override void _Ready()
     {
-        GlobalEventBus.Instance.Subscribe<IEntity>(GlobalEventVariant.EntityDied, OnEntityDead);
+        GlobalEventBus.Instance.Subscribe<BaseEntity>(GlobalEventVariant.EntityDied, OnEntityDead);
     }
 
-    private void OnEntityDead(IEntity target)
+    private void OnEntityDead(BaseEntity target)
     {
         if (_target != target) return;
         _target = null;
     }
 
-    public void Initialize(IEntity target)
+    public void Initialize(BaseEntity target)
     {
         _target = target;
 

@@ -5,12 +5,12 @@ namespace ChronosDescent.Scripts.Core.Ability;
 public class Manager : ISystem
 {
     private readonly AbilitySlots _abilitySlots = new();
-    private IEntity _owner;
+    private BaseEntity _owner;
     public AbilitySlotType CurrentActiveAbilitySlot { get; private set; } = AbilitySlotType.Unknown;
 
     # region Life Cycle
 
-    public void Initialize(IEntity owner)
+    public void Initialize(BaseEntity owner)
     {
         _owner = owner;
         _owner.EventBus.Subscribe<BaseAbility>(EventVariant.AbilityStateChange, ability =>

@@ -6,18 +6,18 @@ namespace ChronosDescent.Tests.Effect;
 
 public partial class SimpleTestEffect : BaseEffect
 {
-    public SimpleTestEffect()
-    {
-        Id = "simple_test_effect";
-        Description = "Simple test effect";
-        Duration = 5.0;
-        MaxStacks = 1;
-        AdditiveModifiers.Add(StatFieldSpecifier.Health, 10.0);
-    }
-
     public bool OnApplyCalled { get; private set; }
     public bool OnRemoveCalled { get; private set; }
 
+
+    public override string Id { get; protected  set; } = "simple_test_effect";
+    public override double Duration { get;   set; } = 5.0;
+    public override string Description { get;  protected set; } = "Simple test effect";
+
+    public override Dictionary<StatFieldSpecifier, double> AdditiveModifiers { get;  protected set; } = new()
+    {
+        { StatFieldSpecifier.Health, 10.0 }
+    };
 
     public override void OnApply()
     {

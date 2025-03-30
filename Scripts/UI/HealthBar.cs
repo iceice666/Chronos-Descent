@@ -11,7 +11,7 @@ public partial class HealthBar : Control
     protected ProgressBar CurrentHealthBar;
     protected ProgressBar DelayedHealthBar;
     protected Timer DamageDelayTimer;
-    protected IEntity Entity;
+    protected BaseEntity Entity;
     protected double TargetHealth;
     protected double DelayedHealthValue;
     protected bool IsUpdatingDelayedBar;
@@ -22,7 +22,7 @@ public partial class HealthBar : Control
     public override void _Ready()
     {
         GD.Print("Ready");
-        Entity = GetOwner<IEntity>();
+        Entity = GetOwner<BaseEntity>();
 
         CurrentHealthBar = GetNode<ProgressBar>("HealthBar");
         DelayedHealthBar = GetNode<ProgressBar>("DelayedHealthBar");

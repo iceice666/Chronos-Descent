@@ -6,11 +6,11 @@ namespace ChronosDescent.Scripts.Core.Effect;
 [GlobalClass]
 public partial class EffectBox : Area2D
 {
-    private IEntity _owner;
+    private BaseEntity _owner;
 
     public override void _Ready()
     {
-        _owner = GetOwner<IEntity>();
+        _owner = GetOwner<BaseEntity>();
 
         AreaEntered += OnEnteredEffectTrigger;
         AreaExited += OnExitedEffectTrigger;

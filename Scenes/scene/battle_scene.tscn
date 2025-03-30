@@ -1,14 +1,14 @@
 [gd_scene load_steps=7 format=3 uid="uid://cwx1wpnqhiio8"]
 
 [ext_resource type="PackedScene" uid="uid://cv83jmh2yx4l5" path="res://Scenes/entity/dummy.tscn" id="1_c0pla"]
+[ext_resource type="Script" uid="uid://b2kbw1b4aag38" path="res://Scripts/Effects/Dissociation.cs" id="2_v2tsq"]
 [ext_resource type="PackedScene" uid="uid://de4usjehraevn" path="res://Scenes/entity/player.tscn" id="2_v365r"]
 [ext_resource type="Script" uid="uid://bxsgp8e2seq64" path="res://Scripts/Core/Effect/EffectTrigger.cs" id="3_3ayl6"]
-[ext_resource type="Script" uid="uid://cnaq7c47wqp16" path="res://Scripts/Effects/InstantDamage.cs" id="4_v2tsq"]
 
 [sub_resource type="Resource" id="Resource_nfamq"]
-script = ExtResource("4_v2tsq")
-Damage = 100.0
-metadata/_custom_type_script = "uid://cnaq7c47wqp16"
+script = ExtResource("2_v2tsq")
+Duration = 10.0
+metadata/_custom_type_script = "uid://b2kbw1b4aag38"
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3ayl6"]
 
@@ -35,7 +35,7 @@ shape = SubResource("RectangleShape2D_3ayl6")
 metadata/_edit_lock_ = true
 
 [node name="Dummy" parent="." instance=ExtResource("1_c0pla")]
-position = Vector2(135, 79)
+position = Vector2(-1, -1)
 scale = Vector2(3, 3)
 
 [node name="Dummy2" parent="." instance=ExtResource("1_c0pla")]

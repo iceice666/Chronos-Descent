@@ -13,13 +13,13 @@ public class PositionRecord : ISystem
     }
 
     private readonly LinkedList<RecordUnit> _records = [];
-    private IEntity _owner;
+    private BaseEntity _owner;
     private double _totalTime;
     private const double MaxTime = 5.0d;
 
     public bool Recording { get; set; } = true;
 
-    public void Initialize(IEntity owner)
+    public void Initialize(BaseEntity owner)
     {
         _owner = owner;
     }

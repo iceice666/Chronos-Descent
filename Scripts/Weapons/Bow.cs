@@ -1,5 +1,6 @@
 using System;
 using ChronosDescent.Scripts.Core.Ability;
+using ChronosDescent.Scripts.Core.Entity;
 using ChronosDescent.Scripts.Core.Weapon;
 using Godot;
 
@@ -10,6 +11,10 @@ public partial class Bow : Node2D, IWeapon
     public BaseAbility NormalAttack { get; private set; }
     public BaseAbility SpecialAttack { get; private set; }
     public BaseAbility Ultimate { get; private set; }
+    public void SetOwner(BaseEntity owner)
+    {
+        // no need here
+    }
 
     private AnimatedSprite2D _animatedSprite;
 

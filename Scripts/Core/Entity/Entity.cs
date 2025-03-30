@@ -1,5 +1,4 @@
 using ChronosDescent.Scripts.Core.Ability;
-using ChronosDescent.Scripts.Core.Animation;
 using ChronosDescent.Scripts.Core.Damage;
 using ChronosDescent.Scripts.Core.Effect;
 using Godot;
@@ -8,36 +7,41 @@ namespace ChronosDescent.Scripts.Core.Entity;
 
 public interface ISystem
 {
-    public void Initialize(IEntity owner);
+    public void Initialize(BaseEntity owner);
     public void Update(double delta);
     public void FixedUpdate(double delta);
 }
 
-public interface IEntity
+public abstract partial class BaseEntity: CharacterBody2D
 {
-    public EventBus EventBus { get; }
-    public IActionManager ActionManager { get; }
-    public State.Manager StatsManager { get; }
-    public Ability.Manager AbilityManager { get; } 
-    public Weapon.Manager WeaponManager { get; }
-    public AnimationPlayer WeaponAnimationPlayer { get; }
+    public EventBus EventBus { get; } = new();
+    public virtual IActionManager ActionManager { get;protected set; } 
+    public virtual State.Manager StatsManager { get; }
+    public Ability.Manager AbilityManager { get; } = new();
+    public Weapon.Manager WeaponManager { get; } = new();
+    public Effect.Manager EffectManager { get; } = new();
+    public AnimationPlayer WeaponAnimationPlayer { get; protected set; }
 
-    public Vector2 GlobalPosition { get; set; }
-    public bool Moveable { get; set; }
-    public bool Collision { get; set; }
+    protected int MoveableCounter;
+    public bool Moveable
+    {
+        get => MoveableCounter <= 0;
+        set => MoveableCounter = Mathf.Max(MoveableCounter + (value ? 1 : -1), 0);
+    }
+    public abstract bool Collision { get; set; }
 
     // Stats
-    public void TakeDamage(double amount, DamageType damageType);
+    public abstract void TakeDamage(double amount, DamageType damageType);
 
     // Ability
-    public void SetAbility(AbilitySlotType slot, BaseAbility ability);
-    public void RemoveAbility(AbilitySlotType slot);
-    public void ActivateAbility(AbilitySlotType abilitySlotType);
-    public void ReleaseAbility(AbilitySlotType abilitySlotType);
-    public void CancelAbility(AbilitySlotType abilitySlotType);
+    public abstract void SetAbility(AbilitySlotType slot, BaseAbility ability);
+    public abstract void RemoveAbility(AbilitySlotType slot);
+    public abstract void ActivateAbility(AbilitySlotType abilitySlotType);
+    public abstract void ReleaseAbility(AbilitySlotType abilitySlotType);
+    public abstract void CancelAbility(AbilitySlotType abilitySlotType);
 
     // Effect
-    public void ApplyEffect(BaseEffect effect);
-    public void RemoveEffect(string effectId);
-    public bool HasEffect(string effectId);
+    public abstract void ApplyEffect(BaseEffect effect);
+    public abstract void RemoveEffect(string effectId);
+    public abstract bool HasEffect(string effectId);
 }

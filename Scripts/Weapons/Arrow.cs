@@ -8,9 +8,9 @@ namespace ChronosDescent.Scripts.Weapons;
 public partial class Arrow : BaseProjectile
 {
     private Hitbox _hitbox;
-    
+
     public void Initialize(
-        IEntity attacker,
+        BaseEntity attacker,
         Vector2 scale,
         Vector2 position,
         float rotation,
