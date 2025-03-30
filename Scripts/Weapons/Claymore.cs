@@ -1,3 +1,4 @@
+using System.Linq;
 using ChronosDescent.Scripts.Core.Ability;
 using ChronosDescent.Scripts.Core.Damage;
 using ChronosDescent.Scripts.Core.Entity;
@@ -36,7 +37,7 @@ public partial class Claymore : Node2D, IWeapon
 
 
     public BaseAbility NormalAttack { get; } = new NormalAbility();
-    public BaseAbility SpecialAttack { get; }
+    public BaseAbility SpecialAttack { get; } = new SpecialAbility();
     public BaseAbility Ultimate { get; }
 
     public void SetOwner(BaseEntity owner)
@@ -51,7 +52,7 @@ public partial class Claymore : Node2D, IWeapon
         public override double Cooldown { get; protected init; } = 0.3;
         public override double ChannelingDuration { get; protected set; } = 0.4;
 
-        private double _animationTimer;
+        private double _animationTimer = 1;
 
         public override bool CanActivate() => CurrentCooldown <= 0;
 
@@ -99,6 +100,71 @@ public partial class Claymore : Node2D, IWeapon
         protected override void OnChannelingInterrupt()
         {
             Caster.WeaponAnimationPlayer.Stop();
+        }
+    }
+
+    public class SpecialAbility : BaseChanneledAbility
+    {
+        private const int JumpDistance = 100;
+        private const float JumpDuration = 0.5f;
+        private Vector2 _targetPoint;
+        private double _animationTimer;
+
+
+        public override string Id { get; protected set; } = "claymore_special";
+        public override double Cooldown { get; protected init; } = 5;
+        public override double ChannelingDuration { get; protected set; } = 0.8;
+        public override bool CanActivate() => CurrentCooldown <= 0;
+
+
+        protected override void OnChannelingStart()
+        {
+            _targetPoint = Caster.GlobalPosition + Caster.ActionManager.LookDirection * JumpDistance;
+
+            if (ClaymoreGlobal.NormalAnimationGoingForward)
+                Caster.WeaponAnimationPlayer.Play(
+                    ClaymoreGlobal.NormalAnimationGoingForward
+                        ? "claymore_special_1"
+                        : "claymore_special_2"
+                );
+
+            _animationTimer = 0;
+        }
+
+        protected override void OnChannelingTick(double delta)
+        {
+            if (_animationTimer < 0.5)
+            {
+                if (_animationTimer + delta >= 0.5) DealExplodeDamage();
+
+                Caster.GlobalPosition = Caster.GlobalPosition.Lerp(_targetPoint, (float)delta * 10.0f);
+            }
+
+            _animationTimer += delta;
+        }
+
+        protected override void OnChannelingComplete()
+        {
+        }
+
+        protected override void OnChannelingInterrupt()
+        {
+            // nop
+        }
+
+        private void DealExplodeDamage()
+        {
+            // Deal damage to entity within 50 units
+            var entities = Caster.GetTree().GetNodesInGroup("Entity").Where(node =>
+                node is BaseEntity e
+                && e != Caster
+                && Caster.GlobalPosition.DistanceSquaredTo(e.GlobalPosition) <= 50 * 50
+            ).ToList();
+
+            foreach (var entity in entities.Cast<BaseEntity>())
+            {
+                entity.TakeDamage(40, DamageType.Explosive);
+            }
         }
     }
 }

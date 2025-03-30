@@ -7,7 +7,8 @@ public enum DamageType
     Normal,
     Critical,
     Poison,
-    Healing
+    Healing,
+    Explosive
 }
 
 public partial class Indicator : Node2D
@@ -68,6 +69,11 @@ public partial class Indicator : Node2D
             case DamageType.Healing:
                 _label.Text = $"+{amount:F0}";
                 _label.Modulate = new Color(0.0f, 1.0f, 0.5f); // Cyan/Green
+                break;
+            
+            case DamageType.Explosive:
+                _label.Text = $"-{amount:F0}";
+                _label.Modulate = new Color(1.0f, 0.0f, 0.0f); // Red
                 break;
         }
 

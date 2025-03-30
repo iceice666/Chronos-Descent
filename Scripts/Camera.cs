@@ -13,7 +13,7 @@ public partial class Camera : Camera2D
     {
         if (_target == null) return;
         // Smoothly move camera to follow target
-        Position = Position.Lerp(_target.GlobalPosition + _offset, (float)delta * 5.0f);
+        GlobalPosition = GlobalPosition.Lerp(_target.GlobalPosition + _offset, (float)delta * 5.0f);
     }
 
     public override void _Ready()

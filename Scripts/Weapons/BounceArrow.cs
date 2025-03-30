@@ -13,6 +13,7 @@ public partial class BounceArrow : BaseProjectile
     private int _counter;
     private int _maxCounter = 3;
     private readonly HashSet<BaseEntity> _hitEntities = [];
+    private BaseEntity _attacker;
 
     private int _speed;
 
@@ -33,6 +34,7 @@ public partial class BounceArrow : BaseProjectile
         Velocity = direction * speed;
         DragFactor = drag;
         _speed = speed;
+        _attacker = attacker;
 
         var hitbox = GetNode<Hitbox>("Hitbox");
         hitbox.RawDamage = rawDamage;
@@ -63,10 +65,10 @@ public partial class BounceArrow : BaseProjectile
         _counter++;
         _hitEntities.Add((BaseEntity)body);
 
-        var targets = _hitbox.GetNode("/root/BattleScene").GetTree().GetNodesInGroup("Entity")
+        var targets = _hitbox.GetTree().GetNodesInGroup("Entity")
             .Where(node =>
-                !node.IsInGroup("Player")
-                && node is BaseEntity e
+                node is BaseEntity e
+                && e != _attacker
                 && !_hitEntities.Contains(e)
                 && _hitbox.GlobalPosition.DistanceTo(e.GlobalPosition) < 100
             ).ToList();

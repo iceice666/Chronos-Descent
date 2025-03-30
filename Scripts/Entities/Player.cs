@@ -21,6 +21,7 @@ public partial class Player : BaseEntity
 
     public override Core.State.Manager StatsManager { get; } = new(new EntityBaseStats());
     public IAnimationPlayer AnimationManager { get; } = new PlayerAnimationManager();
+    public PositionRecord PositionRecord { get; set; } = new();
 
     #endregion
 
@@ -37,11 +38,7 @@ public partial class Player : BaseEntity
     }
 
 
-    public new Vector2 GlobalPosition
-    {
-        get => base.GlobalPosition;
-        set => base.GlobalPosition = value;
-    }
+  
 
 
     public override void _Ready()
@@ -61,6 +58,7 @@ public partial class Player : BaseEntity
         AbilityManager.Initialize(this);
         EffectManager.Initialize(this);
         WeaponManager.Initialize(this);
+        PositionRecord.Initialize(this);
 
 
         GetNode<Camera>("/root/Autoload/Camera").Initialize(this);
@@ -83,6 +81,7 @@ public partial class Player : BaseEntity
         AbilityManager.Update(delta);
         EffectManager.Update(delta);
         WeaponManager.Update(delta);
+        PositionRecord.Update(delta);
 
         var isLookRight = ActionManager.LookDirection.X < 0;
         if (_isPrevLookRight != isLookRight)
@@ -111,9 +110,13 @@ public partial class Player : BaseEntity
         AbilityManager.FixedUpdate(delta);
         EffectManager.FixedUpdate(delta);
         WeaponManager.FixedUpdate(delta);
+        PositionRecord.FixedUpdate(delta);
 
-        Velocity = ActionManager.MoveDirection * (float)StatsManager.MoveSpeed;
-        MoveAndSlide();
+        if (!Moveable)
+        {
+            Velocity = ActionManager.MoveDirection * (float)StatsManager.MoveSpeed;
+            MoveAndSlide();
+        }
 
 
         foreach (var slotType in _abilitySlots)

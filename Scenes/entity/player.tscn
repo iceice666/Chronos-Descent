@@ -1,8 +1,9 @@
-[gd_scene load_steps=16 format=4 uid="uid://de4usjehraevn"]
+[gd_scene load_steps=19 format=4 uid="uid://de4usjehraevn"]
 
 [ext_resource type="Script" uid="uid://bhokion2aj7fk" path="res://Scripts/Entities/Player.cs" id="1_t4jk1"]
 [ext_resource type="AnimationNodeStateMachine" uid="uid://bkhv1grxpwcfe" path="res://Resources/player_animation.tres" id="2_258nv"]
 [ext_resource type="Script" uid="uid://2snmbmve0swj" path="res://Scripts/Core/Effect/EffectBox.cs" id="4_23hx6"]
+[ext_resource type="PackedScene" uid="uid://cg4v3w0qshdit" path="res://Scenes/weapon/claymore.tscn" id="5_1qc6a"]
 
 [sub_resource type="Animation" id="Animation_23hx6"]
 length = 0.001
@@ -78,7 +79,8 @@ tracks/0/keys = {
 }
 
 [sub_resource type="Animation" id="Animation_bs0fw"]
-length = 1.2
+length = 0.6
+loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -86,10 +88,10 @@ tracks/0/path = NodePath("Sprite2D:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = false
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 1,
-"values": [0, 3, 4, 5, 6, 7, 0, 3, 4, 5, 6, 7]
+"values": [0, 3, 4, 5, 6, 7]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_1qc6a"]
@@ -138,6 +140,30 @@ tracks/1/keys = {
 "update": 0,
 "values": [Vector2(0, 0)]
 }
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("HurtBox:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("EffectBox:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
 
 [sub_resource type="Animation" id="Animation_hkcvn"]
 resource_name = "claymore_normal_1"
@@ -149,7 +175,7 @@ tracks/0/path = NodePath("WeaponMountPoint:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0.0120926, 0.1, 0.2, 0.366666),
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.366666),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
 "values": [Vector2(0, 0), Vector2(0, 8), Vector2(2, -8), Vector2(2, -8)]
@@ -161,7 +187,7 @@ tracks/1/path = NodePath("WeaponMountPoint:rotation")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0.0120926, 0.1, 0.2, 0.366666),
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.366666),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
 "values": [0.0, -2.30383, -3.14159, -5.44543]
@@ -177,10 +203,10 @@ tracks/0/path = NodePath("WeaponMountPoint:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(3.72529e-08, 0.05, 0.1, 0.299446, 0.4),
+"times": PackedFloat32Array(3.72529e-08, 0.05, 0.1, 0.3, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(2, -8), Vector2(17, -9), Vector2(4, 6), Vector2(4, 6), Vector2(0, 0)]
+"values": [Vector2(2, -8), Vector2(17, -9), Vector2(4, 14), Vector2(4, 14), Vector2(0, 0)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -195,16 +221,147 @@ tracks/1/keys = {
 "values": [-5.44543, -5.23599, -2.51215, -2.51215, 0.0]
 }
 
+[sub_resource type="Animation" id="Animation_417id"]
+resource_name = "claymore_special_1"
+length = 0.8
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("WeaponMountPoint:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.3, 0.4, 0.5, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.48353, 4.01426, 4.01426, 6.28319]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("WeaponMountPoint:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.3, 0.4, 0.5, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, -23), Vector2(14, -19), Vector2(8, 8), Vector2(8, 8), Vector2(0, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite2D:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.3, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, -5), Vector2(0, -5), Vector2(0, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("HurtBox:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.3, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, -5), Vector2(0, -5), Vector2(0, 0)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("EffectBox:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.3, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, -5), Vector2(0, -5), Vector2(0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_1cwhq"]
+resource_name = "claymore_special_2"
+length = 0.8
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("WeaponMountPoint:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.3, 0.4, 0.5, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(2, -8), Vector2(0, -23), Vector2(14, -19), Vector2(8, 8), Vector2(8, 8), Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("WeaponMountPoint:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.3, 0.4, 0.5, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [-5.44543, -6.28319, -4.79966, -2.26893, -2.26893, 0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite2D:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.3, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, -5), Vector2(0, -5), Vector2(0, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("HurtBox:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.3, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, -5), Vector2(0, -5), Vector2(0, 0)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("EffectBox:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.3, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, -5), Vector2(0, -5), Vector2(0, 0)]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_k5mxe"]
 _data = {
 &"RESET": SubResource("Animation_scnn8"),
 &"claymore_normal_1": SubResource("Animation_hkcvn"),
-&"claymore_normal_2": SubResource("Animation_k5mxe")
+&"claymore_normal_2": SubResource("Animation_k5mxe"),
+&"claymore_special_1": SubResource("Animation_417id"),
+&"claymore_special_2": SubResource("Animation_1cwhq")
 }
 
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 6
 collision_mask = 3
+motion_mode = 1
 script = ExtResource("1_t4jk1")
 metadata/_custom_type_script = "uid://bhokion2aj7fk"
 
@@ -220,11 +377,10 @@ libraries = {
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture_filter = 1
-position = Vector2(-0.5, 0)
 texture = SubResource("PortableCompressedTexture2D_23hx6")
 hframes = 4
 vframes = 3
-frame = 2
+frame = 1
 metadata/_aseprite_wizard_interface_config_ = {
 "pending_changes": {}
 }
@@ -241,7 +397,7 @@ metadata/_aseprite_wizard_config_ = {
 "slice": "",
 "source": "res://Assets/Entity/player.aseprite"
 }
-metadata/_aseprite_wizard_source_file_hash_ = "1e2d186b0ce92b6e47b6cac4456d9795"
+metadata/_aseprite_wizard_source_file_hash_ = "74c1e1c07b49daa57fbb26e76912d354"
 metadata/_edit_lock_ = true
 
 [node name="HurtBox" type="CollisionShape2D" parent="."]
@@ -272,3 +428,7 @@ libraries = {
 }
 
 [node name="WeaponMountPoint" type="Node2D" parent="."]
+
+[node name="Claymore" parent="WeaponMountPoint" instance=ExtResource("5_1qc6a")]
+position = Vector2(-6, 8)
+rotation = -1.98968
