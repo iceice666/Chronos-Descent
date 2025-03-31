@@ -7,6 +7,7 @@ public partial class PlayerHealthBar : HealthBar
 {
     public override void _Ready()
     {
+        Visible = false;
     }
 
     public void Initialize(Player player)
@@ -25,5 +26,7 @@ public partial class PlayerHealthBar : HealthBar
         CurrentHealthBar.Value = (float)player.StatsManager.Health;
 
         player.EventBus.Subscribe(EventVariant.EntityStatChanged, UpdateHealth);
+
+        Visible = true;
     }
 }

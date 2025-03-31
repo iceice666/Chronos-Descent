@@ -1,0 +1,25 @@
+[remap]
+
+importer="font_data_image"
+type="FontFile"
+uid="uid://bh4mhdste7lpf"
+path="res://.godot/imported/bopomofo-english.png-44f6c0df55dae3fa8e3d735e62e5ffc5.fontdata"
+
+[deps]
+
+source_file="res://Assets/Font/bopomofo-english.png"
+dest_files=["res://.godot/imported/bopomofo-english.png-44f6c0df55dae3fa8e3d735e62e5ffc5.fontdata"]
+
+[params]
+
+character_ranges=PackedStringArray("65-90", "97-122")
+kerning_pairs=PackedStringArray()
+columns=13
+rows=4
+image_margin=Rect2i(0, 0, 0, 0)
+character_margin=Rect2i(16, 16, 16, 16)
+ascent=0
+descent=0
+fallbacks=[Resource("res://Assets/Font/Monocraft-no-ligatures.ttc")]
+compress=true
+scaling_mode=2

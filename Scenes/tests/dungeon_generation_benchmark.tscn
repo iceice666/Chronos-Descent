@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://d36mkmvl5xc8o"]
+
+[ext_resource type="Script" path="res://Scripts/Tests/DungeonGenerationBenchmark.cs" id="1_5vvn4"]
+[ext_resource type="Resource" uid="uid://dbpjawe0j05dp" path="res://Resources/Floor1Rooms.tres" id="2_j24dp"]
+
+[node name="DungeonGenerationBenchmark" type="Node"]
+script = ExtResource("1_5vvn4")
+RoomRegistry = ExtResource("2_j24dp")
+RunOnReady = true

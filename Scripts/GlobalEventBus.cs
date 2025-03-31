@@ -11,7 +11,11 @@ public enum GlobalEventVariant
 {
     DamageDealt,
     EntityDied,
-    InputSourceChanged
+    InputSourceChanged,
+    
+    BoardcastTitle,
+    RoomEntered,
+    RoomCleared,
 }
 
 [GlobalClass]

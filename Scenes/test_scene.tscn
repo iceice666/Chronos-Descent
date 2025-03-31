@@ -1,25 +1,25 @@
 [gd_scene load_steps=7 format=3 uid="uid://cwx1wpnqhiio8"]
 
-[ext_resource type="PackedScene" uid="uid://cv83jmh2yx4l5" path="res://Scenes/entity/dummy.tscn" id="1_c0pla"]
-[ext_resource type="Script" uid="uid://b2kbw1b4aag38" path="res://Scripts/Effects/Dissociation.cs" id="2_v2tsq"]
-[ext_resource type="PackedScene" uid="uid://de4usjehraevn" path="res://Scenes/entity/player.tscn" id="2_v365r"]
-[ext_resource type="Script" uid="uid://bxsgp8e2seq64" path="res://Scripts/Core/Effect/EffectTrigger.cs" id="3_3ayl6"]
+[ext_resource type="Script" uid="uid://bxsgp8e2seq64" path="res://Scripts/Core/Effect/EffectTrigger.cs" id="1_hb2xm"]
+[ext_resource type="Script" uid="uid://b2kbw1b4aag38" path="res://Scripts/Effects/Dissociation.cs" id="2_ak5v8"]
+[ext_resource type="PackedScene" uid="uid://cv83jmh2yx4l5" path="res://Scenes/entity/dummy.tscn" id="3_x033f"]
+[ext_resource type="PackedScene" uid="uid://de4usjehraevn" path="res://Scenes/entity/player.tscn" id="4_rdbpf"]
 
 [sub_resource type="Resource" id="Resource_nfamq"]
-script = ExtResource("2_v2tsq")
+script = ExtResource("2_ak5v8")
 Duration = 10.0
 metadata/_custom_type_script = "uid://b2kbw1b4aag38"
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3ayl6"]
 
-[node name="BattleScene" type="Node2D"]
+[node name="TestScene" type="Node2D"]
 y_sort_enabled = true
 
 [node name="EffectTrigger" type="Area2D" parent="."]
 position = Vector2(-326, -50)
 collision_layer = 8
 collision_mask = 0
-script = ExtResource("3_3ayl6")
+script = ExtResource("1_hb2xm")
 Effect = SubResource("Resource_nfamq")
 metadata/_custom_type_script = "uid://bxsgp8e2seq64"
 
@@ -35,18 +35,18 @@ position = Vector2(425, 83)
 shape = SubResource("RectangleShape2D_3ayl6")
 metadata/_edit_lock_ = true
 
-[node name="Dummy" parent="." instance=ExtResource("1_c0pla")]
+[node name="Dummy" parent="." instance=ExtResource("3_x033f")]
 position = Vector2(-1, -1)
 scale = Vector2(3, 3)
 
-[node name="Dummy2" parent="." instance=ExtResource("1_c0pla")]
+[node name="Dummy2" parent="." instance=ExtResource("3_x033f")]
 position = Vector2(208, 75)
 scale = Vector2(3, 3)
 
-[node name="Dummy3" parent="." instance=ExtResource("1_c0pla")]
+[node name="Dummy3" parent="." instance=ExtResource("3_x033f")]
 position = Vector2(168, 92)
 scale = Vector2(3, 3)
 
-[node name="Player" parent="." instance=ExtResource("2_v365r")]
+[node name="Player" parent="." instance=ExtResource("4_rdbpf")]
 position = Vector2(98, 83)
 scale = Vector2(2, 2)

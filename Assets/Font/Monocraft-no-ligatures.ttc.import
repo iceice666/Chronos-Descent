@@ -3,12 +3,12 @@
 importer="font_data_dynamic"
 type="FontFile"
 uid="uid://ddp0p0s8gyve"
-path="res://.godot/imported/Monocraft-no-ligatures.ttc-f81b36b27eb42b274a2156266e07afa8.fontdata"
+path="res://.godot/imported/Monocraft-no-ligatures.ttc-08cd315cebf3860de47a3ca626a5fca1.fontdata"
 
 [deps]
 
-source_file="res://Assets/Monocraft-no-ligatures.ttc"
-dest_files=["res://.godot/imported/Monocraft-no-ligatures.ttc-f81b36b27eb42b274a2156266e07afa8.fontdata"]
+source_file="res://Assets/Font/Monocraft-no-ligatures.ttc"
+dest_files=["res://.godot/imported/Monocraft-no-ligatures.ttc-08cd315cebf3860de47a3ca626a5fca1.fontdata"]
 
 [params]
 
