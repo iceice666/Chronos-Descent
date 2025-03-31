@@ -8,7 +8,7 @@ using Godot;
 
 namespace ChronosDescent.Scripts.Weapons;
 
-public class ClaymoreGlobal
+public static class ClaymoreGlobal
 {
     public static bool NormalAnimationGoingForward { get; set; } = true;
 }
@@ -110,7 +110,9 @@ public partial class Claymore : Node2D, IWeapon
         private const int JumpDistance = 100;
         private double _animationTimer;
         private Vector2 _targetPoint;
-
+        private Vector2 _velocity;
+        private const float Speed = 200.0f; // Adjust this speed as needed
+        private const float Acceleration = 1000.0f; // How quickly it reaches target speed
 
         public override string Id { get; protected set; } = "claymore_special";
         public override double Cooldown { get; protected init; } = 5;
@@ -120,7 +122,6 @@ public partial class Claymore : Node2D, IWeapon
         {
             return CurrentCooldown <= 0;
         }
-
 
         protected override void OnChannelingStart()
         {
@@ -134,15 +135,37 @@ public partial class Claymore : Node2D, IWeapon
                 );
 
             _animationTimer = 0;
+            _velocity = Vector2.Zero; // Reset velocity
         }
 
         protected override void OnChannelingTick(double delta)
         {
             if (_animationTimer < 0.5)
             {
-                if (_animationTimer + delta >= 0.5) DealExplodeDamage();
+                if (_animationTimer + delta >= 0.5)
+                {
+                    DealExplodeDamage();
+                    _velocity = Vector2.Zero; // Stop movement when explosion happens
+                }
 
-                Caster.GlobalPosition = Caster.GlobalPosition.Lerp(_targetPoint, (float)delta * 10.0f);
+                // Calculate direction and desired velocity
+                var direction = (_targetPoint - Caster.GlobalPosition).Normalized();
+                var targetVelocity = direction * Speed;
+
+                // Smoothly adjust velocity
+                _velocity = _velocity.MoveToward(targetVelocity, Acceleration * (float)delta);
+
+                // Apply velocity to CharacterBody2D
+                Caster.Velocity = _velocity;
+                Caster.MoveAndSlide();
+
+                // Check if we've reached the target
+                var distance = Caster.GlobalPosition.DistanceTo(_targetPoint);
+                if (distance < 5.0f) // Small threshold to consider "arrived"
+                {
+                    _velocity = Vector2.Zero;
+                    Caster.Velocity = _velocity;
+                }
             }
 
             _animationTimer += delta;
@@ -150,23 +173,26 @@ public partial class Claymore : Node2D, IWeapon
 
         protected override void OnChannelingComplete()
         {
+            // Ensure we stop moving when complete
+            Caster.Velocity = Vector2.Zero;
         }
 
         protected override void OnChannelingInterrupt()
         {
             Caster.WeaponAnimationPlayer.Stop();
+            Caster.Velocity = Vector2.Zero;
         }
 
         private void DealExplodeDamage()
         {
-            // Deal damage to entity within 50 units
             var entities = Caster.GetTree().GetNodesInGroup("Entity").Where(node =>
                 node is BaseEntity e
                 && e != Caster
                 && Caster.GlobalPosition.DistanceSquaredTo(e.GlobalPosition) <= 50 * 50
             ).ToList();
 
-            foreach (var entity in entities.Cast<BaseEntity>()) entity.TakeDamage(40, DamageType.Explosive);
+            foreach (var entity in entities.Cast<BaseEntity>())
+                entity.TakeDamage(40, DamageType.Explosive);
         }
     }
 
