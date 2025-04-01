@@ -1,0 +1,104 @@
+[gd_scene load_steps=8 format=4 uid="uid://c4q8071hqdkvg"]
+
+[ext_resource type="Script" uid="uid://cjmlsu1gnlsd1" path="res://Scripts/Items/ShopKeeper.cs" id="1_3bhjl"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hbufv"]
+radius = 322.0
+
+[sub_resource type="PortableCompressedTexture2D" id="PortableCompressedTexture2D_3bhjl"]
+_data = PackedByteArray("AAADAAUAAAABAAAAAAEAAAABAADGAAAAUklGRr4AAABXRUJQVlA4TLIAAAAv/8A/EEegJgAIxkeUWUX/GvtWw2gAMprsCInk/6P2wdRGskG97EOmD/1XJFcB8x8A+P95y9OQRBusdD3hAkdtJElSUxgKRSEpNIWhMBSGwhAPZV/f3I3o/wS0nwlle7JznPCyZZctzG2y+7Ky81vfXpjTNPxDTf+QWJjLhIXeg/MeFBLnNr9s6tPz2fhaXpjT2KvtZee0fty2bA67jyvMZyzbe5e/UZjPfB2zbZu//tcH")
+size_override = Vector2(256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hbufv"]
+atlas = SubResource("PortableCompressedTexture2D_3bhjl")
+region = Rect2(0, 0, 256, 256)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_dgpoi"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hbufv")
+}],
+"loop": true,
+"name": &"default",
+"speed": 10.0
+}]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mc82h"]
+bg_color = Color(0.0784314, 0.0862745, 0.129412, 0.784314)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.45098, 0.552941, 0.694118, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="LabelSettings" id="LabelSettings_om8fy"]
+outline_color = Color(0, 0, 0, 1)
+
+[node name="ShopKeeper" type="Node2D"]
+script = ExtResource("1_3bhjl")
+Greetings = PackedStringArray("Welcome, time traveler. My wares come from many timelines!", "Ah, a customer! How... fortuitous.", "Time waits for no one, but my shop is always open.", "My merchandise is quite rare. Take a look!")
+Farewells = PackedStringArray("Until we meet again... perhaps in another timeline.", "Time flows differently for me, traveler. We will meet again.", "May your journeys through time be... profitable.", "Return when you have more chronoshards!")
+
+[node name="InteractionArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
+shape = SubResource("CircleShape2D_hbufv")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+position = Vector2(2.38419e-07, 1.19209e-07)
+scale = Vector2(0.484375, 0.484375)
+sprite_frames = SubResource("SpriteFrames_dgpoi")
+metadata/_aseprite_wizard_interface_config_ = {
+"pending_changes": {}
+}
+metadata/_aseprite_wizard_config_ = {
+"embed_tex": true,
+"layers": [],
+"o_ex_p": "",
+"o_folder": "",
+"o_name": "",
+"only_visible": false,
+"should_round_fps": true,
+"slice": "",
+"source": "res://Assets/Entity/merchant.aseprite"
+}
+metadata/_aseprite_wizard_source_file_hash_ = "414ace1b638498f996d0a624e7a50c99"
+
+[node name="DialogueTimer" type="Timer" parent="."]
+wait_time = 4.0
+one_shot = true
+
+[node name="DialoguePanel" type="Panel" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = -110.0
+offset_right = 150.0
+offset_bottom = -50.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_mc82h")
+metadata/_edit_use_anchors_ = true
+
+[node name="DialogueLabel" type="Label" parent="DialoguePanel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = -0.06
+anchor_right = 1.0
+anchor_bottom = 1.08
+grow_horizontal = 2
+grow_vertical = 2
+text = "Welcome, time traveler. My wares come from many timelines!"
+label_settings = SubResource("LabelSettings_om8fy")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/_edit_use_anchors_ = true

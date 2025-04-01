@@ -1,5 +1,6 @@
 using ChronosDescent.Scripts.ActionManager;
 using ChronosDescent.Scripts.Core.Ability;
+using ChronosDescent.Scripts.Core.State;
 using ChronosDescent.Scripts.Weapons;
 using Godot;
 using Manager = ChronosDescent.Scripts.Core.State.Manager;

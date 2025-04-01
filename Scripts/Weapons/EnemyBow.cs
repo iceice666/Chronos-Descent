@@ -41,7 +41,7 @@ public partial class EnemyBow : Node2D, IWeapon
         private const int Speed = 250;
         private const double BaseDamage = 8;
         private const float DefaultScale = 0.8f;
-        private const float DefaultDrag = 0.97f;
+        private const float DefaultDrag = 0.95f;
         private readonly Action<string> _playAnimation;
         private readonly PackedScene _projectileScene = GD.Load<PackedScene>("res://Scenes/weapon/arrow.tscn");
 
@@ -88,9 +88,6 @@ public partial class EnemyBow : Node2D, IWeapon
                 BaseDamage,
                 "Enemy"
             );
-
-            // Return to idle animation
-            _playAnimation("idle");
         }
     }
 }

@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3 uid="uid://b0mo5eufbsubp"]
+
+[ext_resource type="PackedScene" uid="uid://cpeq0750yu4ua" path="res://Scenes/shop/shop_item.tscn" id="1_uc7o3"]
+[ext_resource type="Script" uid="uid://lpaux6uq8ine" path="res://Scripts/Items/Shop/WeaponUpgrade.cs" id="2_30wma"]
+
+[node name="Weapon upgrade" instance=ExtResource("1_uc7o3")]
+script = ExtResource("2_30wma")

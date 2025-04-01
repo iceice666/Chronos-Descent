@@ -130,6 +130,10 @@ public static class DungeonGenerator
         var endNode = new DungeonNode(level % 5 == 0 ? RoomType.BossRoom : RoomType.EndRoom, depth - 1);
         nodes[depth - 1].Add(endNode);
 
+        // MODIFICATION: Always create a combat room at depth 1
+        var combatRoomAfterStart = new DungeonNode(RoomType.CombatRoom, 1);
+        nodes[1].Add(combatRoomAfterStart);
+
         // Determine if we'll have a mini-boss
         var hasMiniBoss = level > 6 && level - _lastMiniBossLevel > 2;
         DungeonNode miniBossNode = null;
@@ -143,8 +147,9 @@ public static class DungeonGenerator
             _lastMiniBossLevel = level;
         }
 
-        // Distribute remaining nodes across depths
-        var remainingRooms = numRooms - 2 - (hasMiniBoss ? 1 : 0);
+        // Distribute remaining rooms across depths
+        // MODIFICATION: Subtract 3 instead of 2 to account for the mandatory combat room
+        var remainingRooms = numRooms - 3 - (hasMiniBoss ? 1 : 0);
 
         // Scale number of special rooms based on level - more restrictive
         var specialTypes = new[] { RoomType.RewardRoom, RoomType.EventRoom, RoomType.ShopRoom };
@@ -152,11 +157,13 @@ public static class DungeonGenerator
         var specialRoomsAdded = 0;
 
         // Create a minimum requirement for combat rooms - ensuring they're distributed
-        var minCombatRooms = Math.Max(numRooms / 3, 3); // At least 1/3 of rooms should be combat
-        var combatRoomsAdded = 0;
+        // MODIFICATION: Decrease minCombatRooms by 1 since we already added one mandatory combat room
+        var minCombatRooms = Math.Max(numRooms / 3, 3) - 1;
+        var combatRoomsAdded = 1; // MODIFICATION: Start with 1 since we already added one combat room
 
-        // Fill intermediate depths
-        for (var d = 1; d < depth - 1; d++)
+        // Fill intermediate depths, starting from depth 2 since depth 1 already has the mandatory combat room
+        // MODIFICATION: Start from d = 2 instead of d = 1
+        for (var d = 2; d < depth - 1; d++)
         {
             // Skip if this is the mini-boss depth and we already added it
             if (hasMiniBoss && nodes[d].Count > 0 && nodes[d][0].Type == RoomType.MiniBossRoom)
@@ -233,16 +240,40 @@ public static class DungeonGenerator
         BalanceRoomDistribution(nodes, depth, targetSpecialRooms, minCombatRooms);
 
         // Connect nodes - create edges in the graph
-        // Start with level 0 -> level 1
-        if (nodes[1].Count > 0)
-            foreach (var node in nodes[1])
-                ConnectNodes(startNode, node);
-        else if (depth > 1)
-            // If level 1 is empty, connect directly to the end
-            ConnectNodes(startNode, endNode);
+        // MODIFICATION: Always connect start node to the combat room at depth 1
+        ConnectNodes(startNode, combatRoomAfterStart);
 
-        // Middle layers
-        for (var d = 1; d < depth - 1; d++)
+        // Connect the combat room to level 2 or to the end if there's nothing in between
+        if (nodes[2].Count > 0)
+        {
+            foreach (var node in nodes[2])
+                ConnectNodes(combatRoomAfterStart, node);
+        }
+        else if (depth > 2)
+        {
+            // If level 2 is empty, find the next non-empty layer or connect to end
+            var foundNextLayer = false;
+            for (var nextD = 3; nextD < depth - 1; nextD++)
+                if (nodes[nextD].Count > 0)
+                {
+                    foreach (var nextNode in nodes[nextD])
+                        ConnectNodes(combatRoomAfterStart, nextNode);
+
+                    foundNextLayer = true;
+                    break;
+                }
+
+            if (!foundNextLayer)
+                ConnectNodes(combatRoomAfterStart, endNode);
+        }
+        else
+        {
+            // If there are only 3 depths (start, combat, end)
+            ConnectNodes(combatRoomAfterStart, endNode);
+        }
+
+        // Middle layers, starting from depth 2
+        for (var d = 2; d < depth - 1; d++)
         {
             if (nodes[d].Count == 0) continue;
 
@@ -356,10 +387,12 @@ public static class DungeonGenerator
             // Find combat rooms to convert to special rooms
             // Prioritize mid to late dungeon depths
             var combatRoomsToConvert = allNodes
-                .Where(n => n.Type == RoomType.CombatRoom)
+                .Where(n => n.Type == RoomType.CombatRoom &&
+                            n.Depth > 1) // MODIFICATION: Don't convert the first combat room
                 .OrderByDescending(n => (double)n.Depth / depth) // Prefer rooms deeper in the dungeon
                 .ThenBy(_ => rand.Next())
-                .Take(Math.Min(combatRoomCount - minCombatRooms, targetSpecialRooms - adjustedSpecialCount))
+                .Take(Math.Min(combatRoomCount - minCombatRooms - 1,
+                    targetSpecialRooms - adjustedSpecialCount)) // MODIFICATION: Ensure we keep the first combat room
                 .ToList();
 
             foreach (var node in combatRoomsToConvert) node.Type = specialTypes[rand.Next(specialTypes.Length)];
@@ -369,11 +402,13 @@ public static class DungeonGenerator
         foreach (var specialType in specialTypes)
         {
             if (allNodes.Any(n => n.Type == specialType) ||
-                allNodes.Count(n => n.Type == RoomType.CombatRoom) <= minCombatRooms) continue;
+                allNodes.Count(n => n.Type == RoomType.CombatRoom) <= minCombatRooms + 1)
+                continue; // MODIFICATION: +1 to account for mandatory first combat room
             {
                 // Find a combat room to convert, preferably in the middle or late dungeon
                 var roomToConvert = allNodes
-                    .Where(n => n.Type == RoomType.CombatRoom)
+                    .Where(n => n.Type == RoomType.CombatRoom &&
+                                n.Depth > 1) // MODIFICATION: Don't convert the first combat room
                     .OrderByDescending(n => (double)n.Depth / depth >= 0.4 && (double)n.Depth / depth <= 0.8)
                     .ThenBy(_ => rand.Next())
                     .FirstOrDefault();
@@ -386,8 +421,9 @@ public static class DungeonGenerator
     private static void ConnectNodes(DungeonNode from, DungeonNode to)
     {
         // Check if a node with the same room type already exists in NextNodes
-        if (from.NextNodes.Any(node => node.Type == to.Type))
-            return; // Don't connect if a node with same room type exists
+        if (from.NextNodes.Any(node => node.Type == to.Type) &&
+            !(from.Type == RoomType.StartRoom && to.Type == RoomType.CombatRoom))
+            return; // Don't connect if a node with same room type exists, except for the StartRoom → CombatRoom connection
 
         // Add connections
         if (!from.NextNodes.Contains(to)) from.NextNodes.Add(to);

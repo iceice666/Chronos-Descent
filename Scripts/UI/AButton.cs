@@ -6,6 +6,6 @@ public partial class AButton : Button
 {
     public override void _Ready()
     {
-        Pressed += () => GlobalEventBus.Instance.Publish(GlobalEventVariant.RoomCleared);
+        Pressed += () => GlobalEventBus.Instance.Publish(GlobalEventVariant.MagicButtonTriggered);
     }
 }

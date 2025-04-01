@@ -1,6 +1,4 @@
-using ChronosDescent.Scripts.Core.State;
-
-namespace ChronosDescent.Scripts.Entities.Enemies;
+namespace ChronosDescent.Scripts.Core.State;
 
 public class EnemyBaseStats : EntityBaseStats
 {
@@ -19,10 +17,10 @@ public class EnemyBaseStats : EntityBaseStats
 
 public class MeleeEnemyStats : EnemyBaseStats
 {
-    public override double Health { get; } = 120;
+    public override double Health { get; } = 60;
     public override double Defense { get; } = 8;
     public override double MoveSpeed { get; } = 50;
-    public override double AttackDamage { get; } = 15;
+    public override double AttackDamage { get; } = 10;
     public override double AttackRadius { get; } = 50;
 }
 

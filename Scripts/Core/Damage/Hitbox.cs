@@ -10,9 +10,9 @@ public partial class Hitbox : Area2D
     private CollisionPolygon2D _collisionObject;
     public BaseEntity Attacker;
     public EntityStats AttackerStats;
+    public string ExcludedGroup;
     public double RawDamage;
     public int RawKnockback;
-    public string ExcludedGroup;
 
     public bool Enabled
     {
@@ -38,7 +38,7 @@ public partial class Hitbox : Area2D
         if (!area.IsInGroup("Hurtbox") || area.Owner.IsInGroup(ExcludedGroup) || area is not Hurtbox hurtbox) return;
 
         var attackee = hurtbox.Owner;
-        if (attackee == Attacker) return;
+        if (attackee == Attacker || attackee.IsQueuedForDeletion()) return;
 
         var kbDirection = (attackee.GlobalPosition - Attacker.GlobalPosition).Normalized() * RawKnockback;
 

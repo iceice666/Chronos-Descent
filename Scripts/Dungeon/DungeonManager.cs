@@ -34,6 +34,22 @@ public partial class DungeonManager : Node
                 .ForEach(door => door.Open());
         });
 
+        GlobalEventBus.Instance.Subscribe(GlobalEventVariant.MagicButtonTriggered, () =>
+        {
+            while (true)
+            {
+                if (DungeonMap.Type is RoomType.BossRoom or RoomType.EndRoom)
+                {
+                    Level++;
+                    DungeonMap = DungeonGenerator.Generate(Level);
+                }
+
+                if (DungeonMap.NextNodes[0].Type == RoomType.ShopRoom) break;
+
+                DungeonMap = DungeonMap.NextNodes[0];
+            }
+        });
+
         MoveToNextLevel();
     }
 
@@ -52,13 +68,19 @@ public partial class DungeonManager : Node
 
     public void MoveToNextRoom(bool isLeft)
     {
-        if (DungeonMap.Type is RoomType.BossRoom or RoomType.EndRoom)
+        if (DungeonMap.Type is RoomType.BossRoom)
         {
             MoveToNextLevel();
             return;
         }
 
         DungeonMap = DungeonMap.NextNodes.Count == 1 || isLeft ? DungeonMap.NextNodes[0] : DungeonMap.NextNodes[1];
+
+        if (DungeonMap.Type is RoomType.EndRoom)
+        {
+            MoveToNextLevel();
+            return;
+        }
 
         PrepareDungeonRoom();
     }
@@ -69,8 +91,9 @@ public partial class DungeonManager : Node
         _player.Moveable = false;
 
         GetChildren().ToList().ForEach(node => node.QueueFree());
+        GetNode("/root/Autoload/Entities").GetChildren().ToList().ForEach(node => node.QueueFree());
 
-        GD.Print($"Current room: {DungeonMap.Type}");
+        GD.Print($"Room type: {DungeonMap.Type}");
 
         var roomScene = (DungeonMap.Type switch
         {

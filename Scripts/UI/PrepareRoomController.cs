@@ -1,34 +1,36 @@
-using Godot;
+using System;
 using System.Collections.Generic;
 using ChronosDescent.Scripts.Abilities;
 using ChronosDescent.Scripts.Entities;
+using Godot;
 
 namespace ChronosDescent.Scripts.UI;
 
 public partial class PrepareRoomController : Control
 {
-    private readonly Dictionary<string, PackedScene> _weapons = new()
-    {
-        { "Bow", GD.Load<PackedScene>("res://Scenes/weapon/bow.tscn") },
-        { "Claymore", GD.Load<PackedScene>("res://Scenes/weapon/claymore.tscn") }
-    };
-
-    private readonly Dictionary<string, System.Type> _lifeSavingAbilities = new()
+    private readonly Dictionary<string, Type> _lifeSavingAbilities = new()
     {
         { "Dash", typeof(Dash) },
         { "Time Rewind", typeof(TimeRewind) },
         { "Heal", typeof(Heal) }
     };
 
-    private Player _player;
-    private Button _startRunButton;
-    private ItemList _weaponList;
-    private ItemList _abilityList;
-    private Label _weaponDescription;
+    private readonly Dictionary<string, PackedScene> _weapons = new()
+    {
+        { "Bow", GD.Load<PackedScene>("res://Scenes/weapon/bow.tscn") },
+        { "Claymore", GD.Load<PackedScene>("res://Scenes/weapon/claymore.tscn") }
+    };
+
     private Label _abilityDescription;
+    private ItemList _abilityList;
+
+    private Player _player;
+    private string _selectedAbility = "Dash";
 
     private string _selectedWeapon = "Bow";
-    private string _selectedAbility = "Dash";
+    private Button _startRunButton;
+    private Label _weaponDescription;
+    private ItemList _weaponList;
 
     public override void _Ready()
     {
@@ -49,39 +51,29 @@ public partial class PrepareRoomController : Control
     {
         // Populate weapon list
         _weaponList.Clear();
-        foreach (var weapon in _weapons.Keys)
-        {
-            _weaponList.AddItem(weapon);
-        }
-        
+        foreach (var weapon in _weapons.Keys) _weaponList.AddItem(weapon);
+
         // Select default weapon
         for (var i = 0; i < _weaponList.ItemCount; i++)
-        {
             if (_weaponList.GetItemText(i) == _selectedWeapon)
             {
                 _weaponList.Select(i);
                 UpdateWeaponDescription(_selectedWeapon);
                 break;
             }
-        }
 
         // Populate ability list
         _abilityList.Clear();
-        foreach (var ability in _lifeSavingAbilities.Keys)
-        {
-            _abilityList.AddItem(ability);
-        }
-        
+        foreach (var ability in _lifeSavingAbilities.Keys) _abilityList.AddItem(ability);
+
         // Select default ability
         for (var i = 0; i < _abilityList.ItemCount; i++)
-        {
             if (_abilityList.GetItemText(i) == _selectedAbility)
             {
                 _abilityList.Select(i);
                 UpdateAbilityDescription(_selectedAbility);
                 break;
             }
-        }
     }
 
     private void OnWeaponSelected(long index)
@@ -134,11 +126,11 @@ public partial class PrepareRoomController : Control
     private void OnStartRunPressed()
     {
         SavePlayerSelections();
-        
+
         // Start the game
         GetTree().ChangeSceneToFile("res://Scenes/dungeon.tscn");
     }
-    
+
     private void SavePlayerSelections()
     {
         // Store selections in the GameManager singleton

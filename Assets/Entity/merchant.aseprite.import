@@ -1,0 +1,14 @@
+[remap]
+
+importer="aseprite_wizard.plugin.noop"
+type="PackedDataContainer"
+uid="uid://binauagriglq8"
+path="res://.godot/imported/merchant.aseprite-12dd37d199dfbe30f285a186de1ae51b.res"
+
+[deps]
+
+source_file="res://Assets/Entity/merchant.aseprite"
+dest_files=["res://.godot/imported/merchant.aseprite-12dd37d199dfbe30f285a186de1ae51b.res"]
+
+[params]
+

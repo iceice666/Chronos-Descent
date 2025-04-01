@@ -9,50 +9,49 @@ namespace ChronosDescent.Scripts.Dungeon.Room;
 [GlobalClass]
 public partial class RoomController : Node
 {
+    private readonly List<BaseEnemy> _spawnedEnemies = [];
+    private int _remainingEnemies;
+    private bool _roomCleared;
+    private Node _spawnNode;
+    private Node2D _spawnPointsContainer;
     [Export] public required PackedScene[] EnemyTypes { get; set; }
     [Export] public NodePath SpawnPointsPath { get; set; } = "SpawnPoints";
     [Export] public bool SpawnOnStart { get; set; } = true;
-    
-    private readonly List<BaseEnemy> _spawnedEnemies = [];
-    private bool _roomCleared;
-    private Node2D _spawnPointsContainer;
-
-    private int _remainingEnemies;
 
     public override void _Ready()
     {
         GlobalEventBus.Instance.Subscribe<BaseEntity>(GlobalEventVariant.EntityDied, OnEntityDied);
-        
+
         _spawnPointsContainer = GetNodeOrNull<Node2D>(SpawnPointsPath);
+        _spawnNode = GetNode("/root/Autoload/Entities");
     }
-    
+
     public override void _ExitTree()
     {
         GlobalEventBus.Instance.Unsubscribe<BaseEntity>(GlobalEventVariant.EntityDied, OnEntityDied);
     }
-    
+
     public void OnRoomEntered()
     {
         _remainingEnemies = DungeonManager.Instance.Level;
 
         if (SpawnOnStart)
-        {
             // Delay spawning slightly to ensure room is fully set up
             GetTree().CreateTimer(0.5).Timeout += () =>
             {
-                GlobalEventBus.Instance.Publish(GlobalEventVariant.RoomStarted); ;
+                GlobalEventBus.Instance.Publish(GlobalEventVariant.RoomStarted);
+                ;
                 SpawnEnemies();
             };
-        }
     }
-    
+
     private void OnEntityDied(BaseEntity entity)
     {
         if (entity is not BaseEnemy enemy) return;
 
         if (!_spawnedEnemies.Contains(enemy)) return;
         _spawnedEnemies.Remove(enemy);
-            
+
         // Check if all enemies are defeated
         if (_spawnedEnemies.Count != 0 || _roomCleared) return;
         if (_spawnedEnemies.Count == 0 && _remainingEnemies > 0)
@@ -60,33 +59,33 @@ public partial class RoomController : Node
             SpawnEnemies();
             return;
         }
-        
+
         _roomCleared = true;
         GlobalEventBus.Instance.Publish(GlobalEventVariant.RoomCleared);
     }
-    
+
     public void SpawnEnemies()
     {
         if (EnemyTypes.Length == 0)
             return;
-            
+
         var spawnPoints = _spawnPointsContainer.GetChildren().Cast<Node2D>().ToArray();
         if (spawnPoints.Length == 0) return;
-        
+
         _roomCleared = false;
         _spawnedEnemies.Clear();
-        
+
         // Spawn enemies at each spawn point
         foreach (var spawnPoint in spawnPoints)
         {
             if (_remainingEnemies <= 0) break;
-            
+
             // Pick a random enemy type
             var enemyScene = EnemyTypes[GD.RandRange(0, EnemyTypes.Length - 1)];
 
 
             var enemy = enemyScene.Instantiate<BaseEnemy>();
-            GetTree().Root.GetNode("/root/Autoload/Entities").AddChild(enemy);
+            Callable.From(() => _spawnNode.AddChild(enemy)).CallDeferred();
             enemy.GlobalPosition = spawnPoint.GlobalPosition;
 
             _spawnedEnemies.Add(enemy);
@@ -94,7 +93,7 @@ public partial class RoomController : Node
             _remainingEnemies--;
         }
     }
-    
+
     // Public method to manually trigger enemy spawning
     public void TriggerEnemySpawn()
     {

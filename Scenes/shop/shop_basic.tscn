@@ -1,0 +1,257 @@
+[gd_scene load_steps=7 format=3 uid="uid://dnuoxphvvgqmc"]
+
+[ext_resource type="Script" uid="uid://dhhenclt5p21v" path="res://Scripts/UI/ShopItemButton.cs" id="1_irgoa"]
+[ext_resource type="Texture2D" uid="uid://c7kjtiullfyl2" path="res://Assets/items/potion.png" id="2_kcr7p"]
+[ext_resource type="Texture2D" uid="uid://bqtmucj8dwx4n" path="res://Assets/items/weapon_upgrade.png" id="3_irdg2"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yomwd"]
+bg_color = Color(0.160784, 0.180392, 0.278431, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.572549, 0.682353, 0.831373, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4cwep"]
+bg_color = Color(0.121569, 0.133333, 0.203922, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.45098, 0.552941, 0.694118, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="Resource" id="Resource_1wh3o"]
+metadata/__load_path__ = "res://Assets/items/armor_upgrade.png"
+
+[node name="ShopBasic" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0784314, 0.0862745, 0.129412, 0.901961)
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="ShopTitle" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Temporal Merchant"
+horizontal_alignment = 1
+
+[node name="Description" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Welcome to my shop, traveler. I offer rare items from across the timestream."
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ItemsContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="HealthPotion" type="Button" parent="MarginContainer/VBoxContainer/ItemsContainer"]
+custom_minimum_size = Vector2(180, 220)
+layout_mode = 2
+theme_override_styles/hover = SubResource("StyleBoxFlat_yomwd")
+theme_override_styles/normal = SubResource("StyleBoxFlat_4cwep")
+script = ExtResource("1_irgoa")
+ItemName = "Health Potion"
+ItemDescription = "Restores 25 health points."
+Cost = 35
+ItemIcon = ExtResource("2_kcr7p")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ItemsContainer/HealthPotion"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer/ItemsContainer/HealthPotion/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Health Potion"
+horizontal_alignment = 1
+
+[node name="ItemIcon" type="TextureRect" parent="MarginContainer/VBoxContainer/ItemsContainer/HealthPotion/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+size_flags_horizontal = 4
+texture = ExtResource("2_kcr7p")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="DescriptionLabel" type="Label" parent="MarginContainer/VBoxContainer/ItemsContainer/HealthPotion/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Restores 25 health points."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="PriceContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ItemsContainer/HealthPotion/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 10
+alignment = 1
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/ItemsContainer/HealthPotion/VBoxContainer/PriceContainer"]
+layout_mode = 2
+text = "Price:"
+
+[node name="CostLabel" type="Label" parent="MarginContainer/VBoxContainer/ItemsContainer/HealthPotion/VBoxContainer/PriceContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "35"
+
+[node name="WeaponUpgrade" type="Button" parent="MarginContainer/VBoxContainer/ItemsContainer"]
+custom_minimum_size = Vector2(180, 220)
+layout_mode = 2
+theme_override_styles/hover = SubResource("StyleBoxFlat_yomwd")
+theme_override_styles/normal = SubResource("StyleBoxFlat_4cwep")
+script = ExtResource("1_irgoa")
+ItemName = "Weapon Upgrade"
+ItemDescription = "Increases weapon damage by 15%."
+Cost = 80
+ItemIcon = ExtResource("3_irdg2")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ItemsContainer/WeaponUpgrade"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer/ItemsContainer/WeaponUpgrade/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Weapon Upgrade"
+horizontal_alignment = 1
+
+[node name="ItemIcon" type="TextureRect" parent="MarginContainer/VBoxContainer/ItemsContainer/WeaponUpgrade/VBoxContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+size_flags_horizontal = 4
+texture = ExtResource("3_irdg2")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="DescriptionLabel" type="Label" parent="MarginContainer/VBoxContainer/ItemsContainer/WeaponUpgrade/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Increases weapon damage by 15%."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="PriceContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ItemsContainer/WeaponUpgrade/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 10
+alignment = 1
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/ItemsContainer/WeaponUpgrade/VBoxContainer/PriceContainer"]
+layout_mode = 2
+text = "Price:"
+
+[node name="CostLabel" type="Label" parent="MarginContainer/VBoxContainer/ItemsContainer/WeaponUpgrade/VBoxContainer/PriceContainer"]
+layout_mode = 2
+text = "80"
+
+[node name="ArmorUpgrade" type="Button" parent="MarginContainer/VBoxContainer/ItemsContainer"]
+custom_minimum_size = Vector2(180, 220)
+layout_mode = 2
+theme_override_styles/hover = SubResource("StyleBoxFlat_yomwd")
+theme_override_styles/normal = SubResource("StyleBoxFlat_4cwep")
+script = ExtResource("1_irgoa")
+ItemName = "Armor Upgrade"
+ItemDescription = "Increases defense by 10%."
+Cost = 65
+ItemIcon = SubResource("Resource_1wh3o")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ItemsContainer/ArmorUpgrade"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer/ItemsContainer/ArmorUpgrade/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Armor Upgrade"
+horizontal_alignment = 1
+
+[node name="ItemIcon" type="TextureRect" parent="MarginContainer/VBoxContainer/ItemsContainer/ArmorUpgrade/VBoxContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+size_flags_horizontal = 4
+expand_mode = 1
+stretch_mode = 5
+
+[node name="DescriptionLabel" type="Label" parent="MarginContainer/VBoxContainer/ItemsContainer/ArmorUpgrade/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Increases defense by 10%."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="PriceContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ItemsContainer/ArmorUpgrade/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 10
+alignment = 1
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/ItemsContainer/ArmorUpgrade/VBoxContainer/PriceContainer"]
+layout_mode = 2
+text = "Price:"
+
+[node name="CostLabel" type="Label" parent="MarginContainer/VBoxContainer/ItemsContainer/ArmorUpgrade/VBoxContainer/PriceContainer"]
+layout_mode = 2
+text = "65"
+
+[node name="CloseButton" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 16
+text = "Leave Shop"

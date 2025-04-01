@@ -1,5 +1,6 @@
 using System;
 using ChronosDescent.Scripts.Abilities;
+using ChronosDescent.Scripts.ActionManager;
 using ChronosDescent.Scripts.Core.Ability;
 using ChronosDescent.Scripts.Core.Animation;
 using ChronosDescent.Scripts.Core.Damage;
@@ -46,7 +47,7 @@ public partial class Player : BaseEntity
 
         _sprite = GetNode<Sprite2D>("Sprite2D");
         _hurtbox = GetNode<Hurtbox>("Hurtbox");
-        ActionManager = GetNode<ActionManager.UserInputManager>("../UserInputManager");
+        ActionManager = GetNode<UserInputManager>("../UserInputManager");
         _weaponMountPoint = GetNode<Node2D>("WeaponMountPoint");
         WeaponAnimationPlayer = GetNode<AnimationPlayer>("WeaponAnimationPlayer");
         _collision = GetNode<CollisionShape2D>("CollisionShape2D");
@@ -57,10 +58,15 @@ public partial class Player : BaseEntity
         EffectManager.Initialize(this);
         WeaponManager.Initialize(this);
         PositionRecord.Initialize(this);
+        CurrencyManager.Initialize(this);
+
+        // Give starting currency
+        CurrencyManager.SetChronoshards(10);
 
 
         GetNode<Camera>("../Camera").Initialize(this);
-        GetNode<PlayerHealthBar>("../UI/PlayerHealthBar").Initialize(this);
+        GetNode<PlayerHealthBar>("../UI/TopLeftContainer/PlayerHealthBar").Initialize(this);
+        GetNode<CurrencyDisplay>("../UI/TopLeftContainer/CurrencyDisplay").Initialize(this);
 
         // Check if we have player config from preparation room
         ApplyPlayerConfiguration();
@@ -104,6 +110,7 @@ public partial class Player : BaseEntity
         EffectManager.Update(delta);
         WeaponManager.Update(delta);
         PositionRecord.Update(delta);
+        CurrencyManager.Update(delta);
 
         var isLookRight = ActionManager.LookDirection.X < 0;
         if (_isPrevLookRight != isLookRight)
@@ -124,6 +131,7 @@ public partial class Player : BaseEntity
         EffectManager.FixedUpdate(delta);
         WeaponManager.FixedUpdate(delta);
         PositionRecord.FixedUpdate(delta);
+        CurrencyManager.FixedUpdate(delta);
 
         if (Moveable)
         {

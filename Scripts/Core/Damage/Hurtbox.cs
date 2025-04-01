@@ -12,7 +12,7 @@ public partial class Hurtbox : Area2D
     {
         Owner = GetOwner<BaseEntity>();
         CollisionLayer = 1 << 4;
-        
+
         AddToGroup("Hurtbox");
     }
 }

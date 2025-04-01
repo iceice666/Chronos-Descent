@@ -19,7 +19,11 @@ public enum EventVariant
     EntityDied,
     EntityStatChanged,
 
-    DamageReceived
+    DamageReceived,
+
+    // Currency related events
+    CurrencyChanged,
+    CurrencyInsufficient
 }
 
 public class EventBus

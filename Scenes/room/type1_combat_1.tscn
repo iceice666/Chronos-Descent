@@ -26,15 +26,16 @@ position = Vector2(32, -200)
 _doorType = 1
 
 [node name="EnterPoint" type="Node2D" parent="."]
-metadata/_edit_lock_ = true
+position = Vector2(-23, 148)
 
 [node name="SpawnPoints" type="Node2D" parent="."]
+position = Vector2(-6, -35)
 
 [node name="Node2D" type="Node2D" parent="SpawnPoints"]
-position = Vector2(-75, -36)
+position = Vector2(-111, 2)
 
 [node name="Node2D2" type="Node2D" parent="SpawnPoints"]
-position = Vector2(38, -66)
+position = Vector2(13, -67)
 
 [node name="Node2D3" type="Node2D" parent="SpawnPoints"]
 position = Vector2(-54, -114)
@@ -43,7 +44,7 @@ position = Vector2(-54, -114)
 position = Vector2(99, -122)
 
 [node name="Node2D5" type="Node2D" parent="SpawnPoints"]
-position = Vector2(-139, 44)
+position = Vector2(-137, -69)
 
 [node name="Node2D6" type="Node2D" parent="SpawnPoints"]
 position = Vector2(153, 2)

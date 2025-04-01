@@ -1,7 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://csgjswqnhcfup"]
+[gd_scene load_steps=3 format=3 uid="uid://dmxxdxcmgyvhk"]
 
-[ext_resource type="Script" path="res://Scripts/UI/CurrencyDisplay.cs" id="1_hm0jy"]
-[ext_resource type="Texture2D" path="res://Assets/Items/chronoshard.png" id="2_eljn7"]
+[ext_resource type="Script" uid="uid://dd4opyqqk1vkc" path="res://Scripts/UI/CurrencyDisplay.cs" id="1_hm0jy"]
+[ext_resource type="Texture2D" uid="uid://bnh58kclqutpi" path="res://Assets/Items/chronoshard.png" id="2_eljn7"]
 
 [node name="CurrencyDisplay" type="HBoxContainer"]
 offset_right = 183.0

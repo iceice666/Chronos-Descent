@@ -1,0 +1,66 @@
+[gd_scene load_steps=3 format=3 uid="uid://cpeq0750yu4ua"]
+
+[ext_resource type="Script" uid="uid://c7gu1h6rhr2rm" path="res://Scripts/Items/ShopItem.cs" id="1_3ifee"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_s0lhx"]
+radius = 60.075
+
+[node name="Shop Item" type="Node2D"]
+script = ExtResource("1_3ifee")
+metadata/_custom_type_script = "uid://c7gu1h6rhr2rm"
+
+[node name="InteractionArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
+shape = SubResource("CircleShape2D_s0lhx")
+
+[node name="NameLabel" type="Label" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -70.0
+offset_top = -73.0
+offset_right = 69.0
+offset_bottom = -47.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Item Name"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="CostLabel" type="Label" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -26.0
+offset_top = -94.0
+offset_right = 24.0
+offset_bottom = -68.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "1145"
+horizontal_alignment = 1
+
+[node name="InteractPrompt" type="Label" parent="."]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -48.5
+offset_top = 50.0
+offset_right = 48.5
+offset_bottom = 76.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Press E to Buy"
+horizontal_alignment = 1
+
+[node name="ItemSprite" type="Sprite2D" parent="."]

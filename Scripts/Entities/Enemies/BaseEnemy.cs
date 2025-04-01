@@ -3,6 +3,8 @@ using ChronosDescent.Scripts.Core.Ability;
 using ChronosDescent.Scripts.Core.Damage;
 using ChronosDescent.Scripts.Core.Effect;
 using ChronosDescent.Scripts.Core.Entity;
+using ChronosDescent.Scripts.Core.State;
+using ChronosDescent.Scripts.Items;
 using Godot;
 using Manager = ChronosDescent.Scripts.Core.State.Manager;
 
@@ -23,9 +25,9 @@ public partial class BaseEnemy : BaseEntity
     protected const double AttackCooldown = 1.0;
     protected double AttackCooldownTimer = 0.0;
     protected bool CanAttack = true;
+    protected CollisionShape2D CollisionObject;
 
     protected EnemyBaseStats EnemyStats;
-    protected CollisionShape2D CollisionObject;
     protected Hurtbox Hurtbox;
     protected NavigationAgent2D NavigationAgent;
     protected Sprite2D Sprite;
@@ -36,6 +38,12 @@ public partial class BaseEnemy : BaseEntity
         AttackRadius = (float)((EnemyBaseStats)StatsManager.BaseStats).AttackRadius;
         DetectionRadius = (float)((EnemyBaseStats)StatsManager.BaseStats).DetectionRadius;
     }
+
+    // Currency drop settings
+    [Export] protected int MinCurrencyDrop { get; set; } = 5;
+    [Export] protected int MaxCurrencyDrop { get; set; } = 15;
+    [Export] protected float CurrencyDropChance { get; set; } = 0.75f; // 75% chance to drop currency
+    [Export] protected PackedScene ChronoshardScene { get; set; }
 
     public EnemyState CurrentState { get; protected set; } = EnemyState.Idle;
     public BaseEntity? CurrentTarget { get; protected set; }
@@ -310,8 +318,46 @@ public partial class BaseEnemy : BaseEntity
 
     protected virtual void Die()
     {
+        // Drop currency based on chance
+        if (GD.Randf() <= CurrencyDropChance) DropCurrency();
+
         // Base implementation just removes the entity
         QueueFree();
+    }
+
+    /// <summary>
+    ///     Drops currency when enemy is defeated
+    /// </summary>
+    protected virtual void DropCurrency()
+    {
+        // Skip if no scene is assigned
+        if (ChronoshardScene == null)
+        {
+            // Try to load the default scene
+            ChronoshardScene = GD.Load<PackedScene>("res://Scenes/items/chronoshard.tscn");
+            if (ChronoshardScene == null) return;
+        }
+
+        // Instantiate the chronoshard
+        var chronoshard = ChronoshardScene.Instantiate<ChronoshardCollectible>();
+
+        // Set random value within range
+        chronoshard.Value = GD.RandRange(MinCurrencyDrop, MaxCurrencyDrop);
+
+        // Position at enemy's location
+        chronoshard.GlobalPosition = GlobalPosition;
+
+        // Add small random offset
+        chronoshard.GlobalPosition += new Vector2(
+            GD.Randf() * 20 - 10,
+            GD.Randf() * 20 - 10
+        );
+
+        // Add to the scene
+        Callable.From(() => GetTree().Root.AddChild(chronoshard)).CallDeferred();
+
+        // Publish event
+        GlobalEventBus.Instance.Publish(GlobalEventVariant.CurrencyDropped, chronoshard.Value);
     }
 
     // Ability implementation

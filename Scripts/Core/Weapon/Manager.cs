@@ -11,7 +11,7 @@ public partial class BaseProjectile : CharacterBody2D
     public override void _PhysicsProcess(double delta)
     {
         Velocity *= DragFactor;
-        if (Velocity.LengthSquared() < 10) QueueFree();
+        if (Velocity.LengthSquared() < 400) QueueFree();
         MoveAndSlide();
     }
 }

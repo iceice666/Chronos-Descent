@@ -9,13 +9,20 @@ namespace ChronosDescent.Scripts;
 
 public enum GlobalEventVariant
 {
+    MagicButtonTriggered,
+
     DamageDealt,
     EntityDied,
     InputSourceChanged,
 
     BoardcastTitle,
     RoomStarted,
-    RoomCleared
+    RoomCleared,
+
+    // Currency related events
+    CurrencyCollected,
+    CurrencyDropped,
+    ShopTransactionCompleted
 }
 
 [GlobalClass]

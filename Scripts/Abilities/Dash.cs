@@ -3,83 +3,64 @@ using Godot;
 
 namespace ChronosDescent.Scripts.Abilities;
 
-public partial class Dash : BaseActiveAbility
+public class Dash : BaseChanneledAbility
 {
-    private Vector2 _dashDirection = Vector2.Zero;
-    private Vector2 _dashTarget = Vector2.Zero;
-    private bool _isDashing;
-
-    public override string Id { get; protected set; } = "Dash";
-
-    public override double Cooldown { get; protected init; } = 3.0;
+    private const int JumpDistance = 100;
+    private const float Speed = 200.0f; // Adjust this speed as needed
+    private const float Acceleration = 1000.0f; // How quickly it reaches target speed
+    private Vector2 _targetPoint;
+    private Vector2 _velocity;
 
     public Dash()
     {
         Description = "Quickly dash in a direction";
     }
 
-    [Export] public double DashDistance { get; set; } = 200.0;
-    [Export] public double DashSpeed { get; set; } = 1000.0;
+    public override string Id { get; protected set; } = "dash";
+    public override double Cooldown { get; protected init; } = 1;
+    public override double ChannelingDuration { get; protected set; } = 0.5;
 
-    public override void Execute()
+    public override bool CanActivate()
     {
-        // Get the direction to dash
-        Vector2 direction = Caster.ActionManager.LookDirection;
-        if (direction == Vector2.Zero) return;
-
-        // Set up the dash
-        _isDashing = true;
-        _dashDirection = direction.Normalized();
-        _dashTarget = Caster.Position + _dashDirection * (float)DashDistance;
-
-
-        // Disable collision
-        Caster.Collision = false;
-        Caster.Moveable = false;
+        return CurrentCooldown <= 0;
     }
 
-
-    public override bool CanActivate() => CurrentCooldown <= 0;
-
-
-    public override void Update(double delta)
+    protected override void OnChannelingStart()
     {
-        base.Update(delta);
+        _targetPoint = Caster.GlobalPosition + Caster.ActionManager.LookDirection * JumpDistance;
+        _velocity = Vector2.Zero; // Reset velocity
+    }
 
-        if (!_isDashing) return;
+    protected override void OnChannelingTick(double delta)
+    {
+        // Calculate direction and desired velocity
+        var direction = (_targetPoint - Caster.GlobalPosition).Normalized();
+        var targetVelocity = direction * Speed;
 
-        // Calculate movement distance this frame
-        var moveDistance = DashSpeed * delta;
+        // Smoothly adjust velocity
+        _velocity = _velocity.MoveToward(targetVelocity, Acceleration * (float)delta);
 
-        // Calculate the direction to target
-        var currentPosition = Caster.Position;
-        var distanceToTarget = currentPosition.DistanceTo(_dashTarget);
+        // Apply velocity to CharacterBody2D
+        Caster.Velocity = _velocity;
+        Caster.MoveAndSlide();
 
-        if (distanceToTarget <= moveDistance)
+        // Check if we've reached the target
+        var distance = Caster.GlobalPosition.DistanceTo(_targetPoint);
+        if (distance < 5.0f) // Small threshold to consider "arrived"
         {
-            // We've reached the target
-            Caster.Position = _dashTarget;
-            FinishDash();
-        }
-        else
-        {
-            // Move towards the target
-            Caster.Position += _dashDirection * (float)moveDistance;
+            _velocity = Vector2.Zero;
+            Caster.Velocity = _velocity;
         }
     }
 
-
-    private void FinishDash()
+    protected override void OnChannelingComplete()
     {
-        if (Caster == null) return;
+        // Ensure we stop moving when complete
+        Caster.Velocity = Vector2.Zero;
+    }
 
-        // Re-enable movement
-        Caster.Moveable = true;
-
-        // Clean up
-        _isDashing = false;
-
-        // Enable collision
-        Caster.Collision = true;
+    protected override void OnChannelingInterrupt()
+    {
+        Caster.Velocity = Vector2.Zero;
     }
 }

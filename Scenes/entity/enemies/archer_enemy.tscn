@@ -9,11 +9,11 @@
 _data = PackedByteArray("AAADAAUAAAABAAAAQAAAAEAAAADcAQAAUklGRtQBAABXRUJQVlA4TMgBAAAvP8APEDdAFmCygUTQl79XKoQaGBdADU8dZNXTZqABGQUEEUD/RArwb/MfAH/WZikpJ9MD5Ei24zYsZCB5OcOPSwAAM8CPAFVfd2v5+ccA433Q+zWi/w7cto0kpeO5d+XFvmL6JyYCQPgM1dpsY88x3+cRUC+quh4npmowg8fAM1QiOD0GnnFN9VXNXsLRHniken43OxGhjjxj4+UNYOI68oQmqLVhD/b0YlFVXR0P8mQ0LQBQnR5DT93K1fd8kKfjsZXlapcH96BQx8OSLFcnqm7S9diYtmvLoe9hSgBIIrIAFNyDSLlINwtBPTzEJ3o9wijmnsyeQvRbyQx77hwyCNr2PXOQiHcyCKQMAHkGB51QTEDofq6pB7n3zAjTvzURAMJnPKq12X60x0VVVybggIfBDM7T6ZMeoRLB83hVs5dAmusRj/O72Yn/do8jHi9vABOPeECtDXvqAY9FVXV1PI94AEBldOhBoQ5bubonlT027rGV5WqXB9N7mDJqSRY/LMnHcnhsIleXtmvLofdgIoAkIgvQi3gePTkX6acnZdJYGBnBnvMwdqLXKJkp/dGenZNhyDBI1Ak6oUDKAJBn8Aflbj4+aAI=")
 size_override = Vector2(64, 64)
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_eohk7"]
-
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_gjmif"]
 radius = 2.0
 height = 26.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_eohk7"]
 
 [sub_resource type="Animation" id="Animation_ej7rv"]
 resource_name = "idle"
@@ -89,12 +89,13 @@ metadata/_aseprite_wizard_config_ = {
 }
 metadata/_aseprite_wizard_source_file_hash_ = "69845b3a8b9bcca86f7c87c23b2f3b48"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -1)
-shape = SubResource("CapsuleShape2D_eohk7")
-
 [node name="DamageIndicatorAnchor" type="Node2D" parent="."]
 position = Vector2(0, -20)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 11)
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_gjmif")
 
 [node name="Hurtbox" type="Area2D" parent="."]
 collision_layer = 16
@@ -102,9 +103,8 @@ collision_mask = 0
 script = ExtResource("4_ooj3p")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
-position = Vector2(0, 11)
-rotation = 1.5708
-shape = SubResource("CapsuleShape2D_gjmif")
+position = Vector2(0, -1)
+shape = SubResource("CapsuleShape2D_eohk7")
 
 [node name="WeaponMountPoint" type="Node2D" parent="."]
 position = Vector2(0, -3)

@@ -6,7 +6,7 @@ namespace ChronosDescent.Scripts.Abilities;
 public class Heal : BaseActiveAbility
 {
     private readonly double _healAmount = 30.0; // Amount to heal
-    
+
     public Heal()
     {
         Description = "Instantly heal a significant amount of health";
@@ -23,14 +23,14 @@ public class Heal : BaseActiveAbility
     public override void Execute()
     {
         if (Caster == null) return;
-        
+
         // Apply healing
         Caster.TakeDamage(_healAmount, DamageType.Healing);
-        
+
         // Create healing visual effect
         CreateHealEffect();
     }
-    
+
     private void CreateHealEffect()
     {
         // Here we could add visual effects for healing

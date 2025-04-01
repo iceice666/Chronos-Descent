@@ -17,7 +17,7 @@ public partial class TitleScreenButton : VBoxContainer
         _newRunButton.Pressed += OnNewRunPressed;
         _quitButton.Pressed += () => GetTree().Quit();
     }
-    
+
     private void OnNewRunPressed()
     {
         // Load the preparation room scene

@@ -1,4 +1,5 @@
 using ChronosDescent.Scripts.Core.Ability;
+using ChronosDescent.Scripts.Core.Currency;
 using ChronosDescent.Scripts.Core.Damage;
 using ChronosDescent.Scripts.Core.Effect;
 using Godot;
@@ -22,6 +23,7 @@ public abstract partial class BaseEntity : CharacterBody2D
     public Ability.Manager AbilityManager { get; } = new();
     public Weapon.Manager WeaponManager { get; } = new();
     public Effect.Manager EffectManager { get; } = new();
+    public CurrencyManager CurrencyManager { get; } = new();
     public AnimationPlayer WeaponAnimationPlayer { get; protected set; }
 
     public bool Moveable

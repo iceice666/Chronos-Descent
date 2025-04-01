@@ -171,7 +171,7 @@ public partial class Bow : Node2D, IWeapon
                     new Vector2(DefaultScale, DefaultScale),
                     originPoint + radius * angleVector,
                     angle,
-                    angleVector*Speed ,
+                    angleVector * Speed,
                     DefaultDrag,
                     damage,
                     "Player"

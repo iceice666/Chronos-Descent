@@ -44,6 +44,8 @@ texture_filter = 1
 position = Vector2(7, 0)
 sprite_frames = SubResource("SpriteFrames_ax45c")
 animation = &"charging"
+frame = 1
+frame_progress = 1.0
 metadata/_aseprite_wizard_interface_config_ = {
 "pending_changes": {}
 }
