@@ -1,11 +1,13 @@
 using ChronosDescent.Scripts.Core.Entity;
+using ChronosDescent.Scripts.Entities.Enemies;
 using Godot;
 
-namespace ChronosDescent.Scripts.Entities.Enemies;
+namespace ChronosDescent.Scripts.ActionManager;
 
+[GlobalClass]
 public partial class EnemyActionManager : Node, IActionManager
 {
-    private BaseEnemy _owner;
+    private  BaseEnemy _owner;
     
     // IActionManager implementation
     public Vector2 MoveDirection { get; set; } = Vector2.Zero;

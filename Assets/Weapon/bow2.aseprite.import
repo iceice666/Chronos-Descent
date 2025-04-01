@@ -1,0 +1,14 @@
+[remap]
+
+importer="aseprite_wizard.plugin.noop"
+type="PackedDataContainer"
+uid="uid://by1f8qhv6hbkr"
+path="res://.godot/imported/bow2.aseprite-8a3b1bb4a69b06a936b7b25e2e461a6a.res"
+
+[deps]
+
+source_file="res://Assets/Weapon/bow2.aseprite"
+dest_files=["res://.godot/imported/bow2.aseprite-8a3b1bb4a69b06a936b7b25e2e461a6a.res"]
+
+[params]
+

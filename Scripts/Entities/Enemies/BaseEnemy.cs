@@ -57,9 +57,9 @@ public partial class BaseEnemy : BaseEntity
         CollisionObject = GetNode<CollisionShape2D>("CollisionShape2D");
         NavigationAgent = GetNode<NavigationAgent2D>("NavigationAgent2D");
         WeaponMountPoint = GetNode<Node2D>("WeaponMountPoint");
-        WeaponAnimationPlayer = GetNode<AnimationPlayer>("WeaponAnimationPlayer");
+        WeaponAnimationPlayer = GetNodeOrNull<AnimationPlayer>("WeaponAnimationPlayer");
 
-        ActionManager = GetNode<EnemyActionManager>("EnemyActionManager");
+        ActionManager = GetNode<ActionManager.EnemyActionManager>("EnemyActionManager");
 
         StatsManager.Initialize(this);
         AbilityManager.Initialize(this);
@@ -256,24 +256,24 @@ public partial class BaseEnemy : BaseEntity
             MoveAndSlide();
 
             // Update action manager with current movement direction
-            var actionManager = (EnemyActionManager)ActionManager;
+            var actionManager = (ActionManager.EnemyActionManager)ActionManager;
             actionManager.SetMoveDirection(direction);
         }
         else
         {
             // Stop moving if we reached the destination
             Velocity = Vector2.Zero;
-            var actionManager = (EnemyActionManager)ActionManager;
+            var actionManager = (ActionManager.EnemyActionManager)ActionManager;
             actionManager.SetMoveDirection(Vector2.Zero);
         }
     }
 
     protected virtual void UpdateLookDirection()
     {
-        if (CurrentTarget == null || CurrentTarget.IsDead) return;
+        if (CurrentTarget.IsDead) return;
 
         var direction = (CurrentTarget.GlobalPosition - GlobalPosition).Normalized();
-        var actionManager = (EnemyActionManager)ActionManager;
+        var actionManager = (ActionManager.EnemyActionManager)ActionManager;
         actionManager.SetLookDirection(direction);
 
         // Optionally flip the sprite based on direction

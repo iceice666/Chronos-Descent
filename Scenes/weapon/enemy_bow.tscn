@@ -1,0 +1,64 @@
+[gd_scene load_steps=6 format=4 uid="uid://dhshgb4kks7yb"]
+
+[ext_resource type="Script" uid="uid://qm7sd83l1hha" path="res://Scripts/Weapons/EnemyBow.cs" id="1_00g0j"]
+
+[sub_resource type="PortableCompressedTexture2D" id="PortableCompressedTexture2D_i7k41"]
+_data = PackedByteArray("AAADAAUAAAABAAAAQAAAACAAAAD2AAAAUklGRu4AAABXRUJQVlA4TOEAAAAvP8AHEEegppEU6PoDZPzqEE6NFQWRpDaYQQEeun8FWID0zCgGgAbKIIR+GQxs1rfD/AcA/v/BcFTI4CUWtDtJGtw2ki1FI06bvey3Dz3hEgMhXAlsBF9ksB5xn+8PEn5E/xm4bdtI3Vvt3StwiyDKevRGeySsx2ysRzMlpEfZ1+cE9LVHa44GWvMQc0qIUVmJiAx9eoJqgtXDJTnh9/kmm4ee050QZI2qqotGM+3C+78kZFZFZ7vuzu3uE3dZQmwUgG0j7rtc8l35/+Li/6qZEtJjNpAefUJ7GOshGuFxnwAA")
+size_override = Vector2(64, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4kdsu"]
+atlas = SubResource("PortableCompressedTexture2D_i7k41")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pi6we"]
+atlas = SubResource("PortableCompressedTexture2D_i7k41")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ax45c"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4kdsu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pi6we")
+}],
+"loop": false,
+"name": &"charging",
+"speed": 4.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4kdsu")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 4.0
+}]
+
+[node name="EnemyBow" type="Node2D"]
+script = ExtResource("1_00g0j")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+position = Vector2(7, 0)
+sprite_frames = SubResource("SpriteFrames_ax45c")
+animation = &"charging"
+metadata/_aseprite_wizard_interface_config_ = {
+"pending_changes": {}
+}
+metadata/_aseprite_wizard_config_ = {
+"embed_tex": true,
+"layers": [],
+"o_ex_p": "",
+"o_folder": "",
+"o_name": "",
+"only_visible": false,
+"should_round_fps": true,
+"slice": "",
+"source": "res://Assets/Weapon/bow2.aseprite"
+}
+metadata/_aseprite_wizard_source_file_hash_ = "46b697200367593c008fafc34a9d0ff1"
+
+[node name="ArrowSpawnPoint" type="Node2D" parent="."]
+position = Vector2(16, 0)

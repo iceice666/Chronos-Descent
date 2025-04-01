@@ -405,6 +405,7 @@ script = ExtResource("1_c0n05")
 
 [node name="EnemyActionManager" type="Node" parent="."]
 script = ExtResource("2_i3flx")
+metadata/_custom_type_script = "uid://c4ygg8s6i8614"
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 path_desired_distance = 4.0

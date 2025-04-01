@@ -1,5 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://dxc2j67fgk6pf"]
+[gd_scene load_steps=9 format=3 uid="uid://dxc2j67fgk6pf"]
 
+[ext_resource type="PackedScene" uid="uid://c5a5g0bkavnhl" path="res://Scenes/entity/enemies/archer_enemy.tscn" id="1_ahw87"]
 [ext_resource type="PackedScene" uid="uid://de4usjehraevn" path="res://Scenes/entity/player.tscn" id="1_fxb7h"]
 [ext_resource type="PackedScene" uid="uid://bwx5f5q8k1x1e" path="res://Scenes/entity/enemies/melee_enemy.tscn" id="2_kn3lo"]
 [ext_resource type="PackedScene" uid="uid://m2gapyvjm1kt" path="res://Scenes/ui/ui.tscn" id="3_4alr0"]
@@ -13,11 +14,6 @@ polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
 outlines = Array[PackedVector2Array]([PackedVector2Array(-392, -256, 392, -256, 392, 256, -392, 256)])
 
 [node name="EnemyTest" type="Node2D"]
-
-[node name="Player" parent="." instance=ExtResource("1_fxb7h")]
-
-[node name="MeleeEnemy" parent="." instance=ExtResource("2_kn3lo")]
-position = Vector2(168, 104)
 
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
 navigation_polygon = SubResource("NavigationPolygon_ry8xr")
@@ -39,6 +35,14 @@ metadata/_custom_type_script = "uid://dmc6r0tb4iafn"
 
 [node name="Dummy" parent="." instance=ExtResource("6_j2xqn")]
 position = Vector2(46, -19)
+
+[node name="Player" parent="." instance=ExtResource("1_fxb7h")]
+
+[node name="ArcherEnemy" parent="." instance=ExtResource("1_ahw87")]
+position = Vector2(46, -19)
+
+[node name="MeleeEnemy" parent="." instance=ExtResource("2_kn3lo")]
+position = Vector2(168, 104)
 
 [node name="MeleeEnemy2" parent="." instance=ExtResource("2_kn3lo")]
 position = Vector2(162, 23)
