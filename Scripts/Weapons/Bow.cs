@@ -117,7 +117,8 @@ public partial class Bow : Node2D, IWeapon
                 direction.Angle(),
                 direction * Speed,
                 DefaultDrag,
-                CalculateDamage(BaseDamage)
+                CalculateDamage(BaseDamage),
+                "Player"
             );
 
             PlayAnimation(IdleAnimation);
@@ -170,9 +171,10 @@ public partial class Bow : Node2D, IWeapon
                     new Vector2(DefaultScale, DefaultScale),
                     originPoint + radius * angleVector,
                     angle,
-                    angleVector * Speed,
+                    angleVector*Speed ,
                     DefaultDrag,
-                    damage
+                    damage,
+                    "Player"
                 );
             }
 
@@ -211,7 +213,8 @@ public partial class Bow : Node2D, IWeapon
                 direction,
                 Speed,
                 DefaultDrag,
-                CalculateDamage(BaseDamage)
+                CalculateDamage(BaseDamage),
+                "Player"
             );
 
             PlayAnimation(IdleAnimation);

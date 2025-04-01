@@ -85,7 +85,8 @@ public partial class EnemyBow : Node2D, IWeapon
                 direction.Angle(),
                 direction * Speed,
                 DefaultDrag,
-                BaseDamage
+                BaseDamage,
+                "Enemy"
             );
 
             // Return to idle animation

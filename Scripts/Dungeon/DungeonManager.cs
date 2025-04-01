@@ -69,7 +69,9 @@ public partial class DungeonManager : Node
         _player.Moveable = false;
 
         GetChildren().ToList().ForEach(node => node.QueueFree());
-
+        
+        GD.Print($"Current room: {DungeonMap.Type }");
+        
         var roomScene = (DungeonMap.Type switch
         {
             RoomType.StartRoom => RoomRegistry.StartRooms,
@@ -97,11 +99,12 @@ public partial class DungeonManager : Node
 
         _player.GlobalPosition = CurrentRoom.GetNodeOrNull<Node2D>("EnterPoint")?.GlobalPosition ?? Vector2.Zero;
 
-        GlobalEventBus.Instance.Publish(GlobalEventVariant.RoomEntered);
-
+        GlobalEventBus.Instance.Publish(GlobalEventVariant.RoomStarted);
 
         await ToSignal(GetTree().CreateTimer(0.5f), "timeout");
 
+        CurrentRoom.GetNodeOrNull<RoomController>("RoomController")?.OnRoomEntered();
+        
         _player.Moveable = true;
         LoadingScreen.Visible = false;
     }

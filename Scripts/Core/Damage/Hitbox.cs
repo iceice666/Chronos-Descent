@@ -9,9 +9,10 @@ public partial class Hitbox : Area2D
 {
     private CollisionPolygon2D _collisionObject;
     public BaseEntity Attacker;
-    public EntityStats AttackerStats = null;
+    public EntityStats AttackerStats ;
     public double RawDamage;
     public int RawKnockback;
+    public string ExcludedGroup;
 
     public bool Enabled
     {
@@ -34,7 +35,7 @@ public partial class Hitbox : Area2D
 
     private void OnEntityHit(Area2D area)
     {
-        if (area is not Hurtbox hurtbox) return;
+        if (area.IsInGroup(ExcludedGroup) || area is not Hurtbox hurtbox) return;
 
         var attackee = hurtbox.Owner;
         if (attackee == Attacker) return;

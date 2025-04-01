@@ -48,7 +48,7 @@ and use your ability to manipulate time to overcome seemingly impossible situati
 
 - [x] Core gameplay mechanics implementation
 - [x] Procedural dungeon generation system
-- [ ] Enemy AI and combat systems
+- [x] Enemy AI and combat systems
 - [ ] Time rewind mechanic
 - [ ] Loot and progression systems
 - [ ] UI and player feedback

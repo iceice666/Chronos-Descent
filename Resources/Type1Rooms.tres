@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="RoomRegistryResource" load_steps=8 format=3 uid="uid://daiqvj28xkkhm"]
+[gd_resource type="Resource" script_class="RoomRegistryResource" load_steps=7 format=3 uid="uid://daiqvj28xkkhm"]
 
 [ext_resource type="Script" uid="uid://bbixn7vgkkaal" path="res://Scripts/Dungeon/Room/RoomRegistryResource.cs" id="1_pkpn6"]
 [ext_resource type="PackedScene" uid="uid://c4qs1gp5ofawk" path="res://Scenes/room/type1_combat_1.tscn" id="2_in4v5"]
@@ -6,7 +6,6 @@
 [ext_resource type="PackedScene" uid="uid://kjeckkcekn3t" path="res://Scenes/room/type1_event_1.tscn" id="4_nr317"]
 [ext_resource type="PackedScene" uid="uid://bg7yba31f8xgc" path="res://Scenes/room/type1_reward_1.tscn" id="5_celru"]
 [ext_resource type="PackedScene" uid="uid://cgp5esmjj5hqj" path="res://Scenes/room/type1_shop_1.tscn" id="6_6hfjq"]
-[ext_resource type="PackedScene" uid="uid://dm8gk14k70oqk" path="res://Scenes/room/type1_archer_combat.tscn" id="7_dm8gk"]
 
 [resource]
 script = ExtResource("1_pkpn6")
@@ -14,7 +13,7 @@ StartRooms = Array[PackedScene]([ExtResource("3_bydhy")])
 EndRooms = Array[PackedScene]([ExtResource("3_bydhy")])
 BossRooms = Array[PackedScene]([ExtResource("2_in4v5")])
 MiniBossRooms = Array[PackedScene]([ExtResource("2_in4v5")])
-CombatRooms = Array[PackedScene]([ExtResource("2_in4v5"), ExtResource("7_dm8gk")])
+CombatRooms = Array[PackedScene]([ExtResource("2_in4v5")])
 RewardRooms = Array[PackedScene]([ExtResource("5_celru")])
 EventRooms = Array[PackedScene]([ExtResource("4_nr317")])
 ShopRooms = Array[PackedScene]([ExtResource("6_6hfjq")])

@@ -14,7 +14,7 @@ public enum GlobalEventVariant
     InputSourceChanged,
 
     BoardcastTitle,
-    RoomEntered,
+    RoomStarted,
     RoomCleared
 }
 

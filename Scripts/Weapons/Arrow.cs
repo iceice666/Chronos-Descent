@@ -16,7 +16,8 @@ public partial class Arrow : BaseProjectile
         float rotation,
         Vector2 velocity,
         float drag,
-        double rawDamage
+        double rawDamage,
+        string shooterGroup
     )
     {
         Scale = scale;
@@ -25,16 +26,15 @@ public partial class Arrow : BaseProjectile
         Velocity = velocity;
         DragFactor = drag;
 
-        var hitbox = GetNode<Hitbox>("Hitbox");
-        hitbox.RawDamage = rawDamage;
-        hitbox.Attacker = attacker;
-        hitbox.RawKnockback = 10;
+        _hitbox.RawDamage = rawDamage;
+        _hitbox.Attacker = attacker;
+        _hitbox.RawKnockback = 10;
+        _hitbox.ExcludedGroup = shooterGroup;
     }
 
     public override void _Ready()
     {
         _hitbox = GetNode<Hitbox>("Hitbox");
-
         _hitbox.BodyEntered += _ => { QueueFree(); };
     }
 }

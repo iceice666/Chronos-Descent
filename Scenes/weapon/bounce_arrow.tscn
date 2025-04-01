@@ -12,6 +12,7 @@ collision_layer = 0
 script = ExtResource("1_x8ork")
 
 [node name="Arrow" type="Sprite2D" parent="."]
+z_index = 900
 position = Vector2(0, -0.5)
 texture = ExtResource("2_xhflm")
 

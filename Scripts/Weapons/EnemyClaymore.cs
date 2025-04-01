@@ -8,17 +8,14 @@ namespace ChronosDescent.Scripts.Weapons;
 
 public partial class EnemyClaymore : Node2D, IWeapon
 {
-    private Hitbox _hitbox;
-    private BaseEntity _owner;
+    public required Hitbox Hitbox;
+    public required BaseEntity WeaponOwner;
 
     [Export]
     public bool HitboxEnabled
     {
-        get => _hitbox?.Enabled ?? false;
-        set
-        {
-            if (_hitbox != null) _hitbox.Enabled = value;
-        }
+        get => Hitbox.Enabled;
+        set => Hitbox.Enabled = value;
     }
 
     public BaseAbility NormalAttack { get; } = new NormalAbility();
@@ -27,15 +24,16 @@ public partial class EnemyClaymore : Node2D, IWeapon
 
     public void SetOwner(BaseEntity owner)
     {
-        _owner = owner;
+        WeaponOwner = owner;
     }
 
     public override void _Ready()
     {
-        _hitbox = GetNode<Hitbox>("Hitbox");
-        _hitbox.RawDamage = 20;
-        _hitbox.Attacker = _owner;
-        _hitbox.RawKnockback = 100;
+        Hitbox = GetNode<Hitbox>("Hitbox");
+        Hitbox.RawDamage = 20;
+        Hitbox.Attacker = WeaponOwner;
+        Hitbox.RawKnockback = 100;
+        Hitbox.ExcludedGroup = "Enemy";
 
         Rotation = (float)Mathf.DegToRad(-114.0);
         Position = new Vector2(-6, 8);
@@ -69,18 +67,18 @@ public partial class EnemyClaymore : Node2D, IWeapon
         protected override void OnChannelingTick(double delta)
         {
             if (ClaymoreGlobal.NormalAnimationGoingForward)
-                _mountedWeapon._hitbox.Enabled = _animationTimer switch
+                _mountedWeapon.Hitbox.Enabled = _animationTimer switch
                 {
                     < 0.1 when _animationTimer + delta >= 0.1 => true,
                     < 0.2 when _animationTimer + delta >= 0.2 => false,
-                    _ => _mountedWeapon._hitbox.Enabled
+                    _ => _mountedWeapon.Hitbox.Enabled
                 };
             else
-                _mountedWeapon._hitbox.Enabled = _animationTimer switch
+                _mountedWeapon.Hitbox.Enabled = _animationTimer switch
                 {
                     < 0.05 when _animationTimer + delta >= 0.05 => true,
                     < 0.1 when _animationTimer + delta >= 0.1 => false,
-                    _ => _mountedWeapon._hitbox.Enabled
+                    _ => _mountedWeapon.Hitbox.Enabled
                 };
 
             _animationTimer += delta;

@@ -21,10 +21,10 @@ public partial class BaseEnemy : BaseEntity
     }
 
     protected const double AttackCooldown = 1.0;
-    protected double _attackCooldownTimer = 0.0;
-    protected bool _canAttack = true;
+    protected double AttackCooldownTimer = 0.0;
+    protected bool CanAttack = true;
 
-    protected EnemyBaseStats _enemyStats;
+    protected EnemyBaseStats EnemyStats;
     protected CollisionShape2D CollisionObject;
     protected Hurtbox Hurtbox;
     protected NavigationAgent2D NavigationAgent;
@@ -38,7 +38,7 @@ public partial class BaseEnemy : BaseEntity
     }
 
     public EnemyState CurrentState { get; protected set; } = EnemyState.Idle;
-    public BaseEntity CurrentTarget { get; protected set; }
+    public BaseEntity? CurrentTarget { get; protected set; }
 
     public override bool Collision
     {
@@ -105,7 +105,7 @@ public partial class BaseEnemy : BaseEntity
     protected virtual void UpdateState()
     {
         // Find the nearest player if we don't have a target
-        if (CurrentTarget == null || CurrentTarget.IsDead)
+        if (CurrentTarget?.IsDead ?? true)
         {
             FindTarget();
         }
@@ -210,7 +210,7 @@ public partial class BaseEnemy : BaseEntity
         foreach (var result in results)
         {
             var collider = result["collider"].As<Node2D>();
-            if (collider == null || !collider.IsInGroup("Player")) continue;
+            if (!collider.IsInGroup("Player")) continue;
             CurrentTarget = (BaseEntity)collider;
             break;
         }
@@ -262,7 +262,7 @@ public partial class BaseEnemy : BaseEntity
 
     protected virtual void UpdateLookDirection()
     {
-        if (CurrentTarget.IsDead) return;
+        if (CurrentTarget?.IsDead ?? true) return;
 
         var direction = (CurrentTarget.GlobalPosition - GlobalPosition).Normalized();
         var actionManager = (EnemyActionManager)ActionManager;

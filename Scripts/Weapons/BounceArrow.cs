@@ -25,7 +25,8 @@ public partial class BounceArrow : BaseProjectile
         Vector2 direction,
         int speed,
         float drag,
-        double rawDamage
+        double rawDamage,
+        string shooterGroup
     )
     {
         Scale = scale;
@@ -39,6 +40,7 @@ public partial class BounceArrow : BaseProjectile
         var hitbox = GetNode<Hitbox>("Hitbox");
         hitbox.RawDamage = rawDamage;
         hitbox.Attacker = attacker;
+        hitbox.ExcludedGroup = shooterGroup;
     }
 
     public override void _Ready()

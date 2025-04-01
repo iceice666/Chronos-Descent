@@ -50,25 +50,24 @@ public partial class ArcherEnemy : BaseEnemy
         base.UpdateState();
 
         // If we have a target, add archer-specific behavior
-        if (!CurrentTarget.IsDead)
-        {
-            var distanceToTarget = GlobalPosition.DistanceTo(CurrentTarget.GlobalPosition);
+        if (CurrentTarget?.IsDead ?? true) return;
 
-            // If too close to the target and not retreating, start retreat
-            if (distanceToTarget < 100 && !_isRetreating && CurrentState != EnemyState.Retreat)
-            {
-                ChangeState(EnemyState.Retreat);
-                _isRetreating = true;
-                _retreatTimer = 0.0;
-            }
-            // If was retreating and now done, go back to appropriate state
-            else if (!_isRetreating && CurrentState == EnemyState.Retreat)
-            {
-                if (distanceToTarget <= AttackRadius)
-                    ChangeState(EnemyState.Attack);
-                else if (distanceToTarget <= DetectionRadius)
-                    ChangeState(EnemyState.Chase);
-            }
+        var distanceToTarget = GlobalPosition.DistanceTo(CurrentTarget.GlobalPosition);
+
+        // If too close to the target and not retreating, start retreat
+        if (distanceToTarget < 100 && !_isRetreating && CurrentState != EnemyState.Retreat)
+        {
+            ChangeState(EnemyState.Retreat);
+            _isRetreating = true;
+            _retreatTimer = 0.0;
+        }
+        // If was retreating and now done, go back to appropriate state
+        else if (!_isRetreating && CurrentState == EnemyState.Retreat)
+        {
+            if (distanceToTarget <= AttackRadius)
+                ChangeState(EnemyState.Attack);
+            else if (distanceToTarget <= DetectionRadius)
+                ChangeState(EnemyState.Chase);
         }
     }
 

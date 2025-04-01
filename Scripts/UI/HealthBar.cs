@@ -20,7 +20,6 @@ public partial class HealthBar : Control
 
     public override void _Ready()
     {
-        GD.Print("Ready");
         Entity = GetOwner<BaseEntity>();
 
         CurrentHealthBar = GetNode<ProgressBar>("CurrentHealthBar");
