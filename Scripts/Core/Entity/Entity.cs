@@ -32,8 +32,10 @@ public abstract partial class BaseEntity : CharacterBody2D
 
     public abstract bool Collision { get; set; }
 
+    public bool IsDead { get; protected set; }
+
     // Stats
-    public abstract void TakeDamage(double amount, DamageType damageType);
+    public abstract void TakeDamage(double amount, DamageType damageType, Vector2 knockback = new());
 
     // Ability
     public abstract void SetAbility(AbilitySlotType slot, BaseAbility ability);

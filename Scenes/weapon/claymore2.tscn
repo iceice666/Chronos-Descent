@@ -1,0 +1,72 @@
+[gd_scene load_steps=6 format=3 uid="uid://doornnj2xavmm"]
+
+[ext_resource type="Script" uid="uid://xsudwshwwh50" path="res://Scripts/Weapons/Claymore.cs" id="1_73t12"]
+[ext_resource type="Texture2D" uid="uid://4oqnwokum0ef" path="res://Assets/Weapon/claymore2.png" id="2_emo7v"]
+[ext_resource type="Script" uid="uid://bl38baike4vp2" path="res://Scripts/Core/Damage/Hitbox.cs" id="2_gb4pk"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_05cit"]
+atlas = ExtResource("2_emo7v")
+region = Rect2(0, 0, 16, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_n1b7t"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_05cit")
+}],
+"loop": true,
+"name": &"default",
+"speed": 10.0
+}]
+
+[node name="Claymore" type="Node2D"]
+script = ExtResource("1_73t12")
+HitboxEnabled = null
+metadata/_aseprite_wizard_interface_config_ = {
+"pending_changes": {}
+}
+metadata/_aseprite_wizard_config_ = {
+"embed_tex": true,
+"layers": [],
+"o_ex_p": "",
+"o_folder": "",
+"o_name": "",
+"only_visible": false,
+"should_round_fps": true,
+"slice": "",
+"source": "res://Assets/Weapon/claymore.aseprite"
+}
+metadata/_aseprite_wizard_source_file_hash_ = "b7459fd29f9fbce80501b2f82ac72fbf"
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+position = Vector2(2.38419e-07, -2)
+scale = Vector2(0.7125, 0.7125)
+sprite_frames = SubResource("SpriteFrames_n1b7t")
+metadata/_aseprite_wizard_interface_config_ = {
+"pending_changes": {}
+}
+metadata/_aseprite_wizard_config_ = {
+"embed_tex": true,
+"layers": [],
+"o_ex_p": "",
+"o_folder": "",
+"o_name": "",
+"only_visible": false,
+"should_round_fps": true,
+"slice": "",
+"source": "res://Assets/Weapon/claymore.aseprite"
+}
+metadata/_aseprite_wizard_source_file_hash_ = "b7459fd29f9fbce80501b2f82ac72fbf"
+
+[node name="Hitbox" type="Area2D" parent="."]
+rotation = -0.785398
+scale = Vector2(0.3, 0.3)
+script = ExtResource("2_gb4pk")
+metadata/_custom_type_script = "uid://bl38baike4vp2"
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hitbox"]
+rotation = 0.785398
+scale = Vector2(3.33333, 3.33333)
+polygon = PackedVector2Array(-3, -13, 3, -13, 3, 4, -3, 4)
+disabled = true

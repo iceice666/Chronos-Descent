@@ -102,17 +102,18 @@ public partial class GlobalEventBus : Node
     public override void _Ready()
     {
         Instance = this;
-        Instance.Subscribe<(double, BaseEntity, EntityStats)>(GlobalEventVariant.DamageDealt, OnDamageDealt);
+        Instance.Subscribe<(double, BaseEntity, EntityStats, Vector2)>(GlobalEventVariant.DamageDealt, OnDamageDealt);
     }
 
 
     #region Callbacks
 
-    public void OnDamageDealt((double, BaseEntity, EntityStats) data)
+    public void OnDamageDealt((double, BaseEntity, EntityStats, Vector2) data)
     {
         var rawDamage = data.Item1;
         var attackee = data.Item2;
         var attackerStats = data.Item3;
+        var rawKb = data.Item4;
 
         if (attackee == null) return;
 
@@ -137,7 +138,7 @@ public partial class GlobalEventBus : Node
             ? DamageType.Critical
             : DamageType.Normal;
 
-        attackee.TakeDamage(damage, dmgType);
+        attackee.TakeDamage(damage, dmgType, rawKb);
     }
 
     #endregion

@@ -16,12 +16,12 @@ public enum StatFieldSpecifier
 
 public class EntityBaseStats
 {
-    public double Health { get; } = 100;
-    public double Defense { get; } = 10;
-    public double CriticalChance { get; } = 5;
-    public double CriticalDamage { get; } = 50;
-    public double MoveSpeed { get; } = 100;
-    public double AttackSpeed { get; } = 1;
+    public virtual double Health { get; } = 100;
+    public virtual double Defense { get; } = 10;
+    public virtual double CriticalChance { get; } = 5;
+    public virtual double CriticalDamage { get; } = 50;
+    public virtual double MoveSpeed { get; } = 100;
+    public virtual double AttackSpeed { get; } = 1;
 }
 
 public class EntityStats(EntityBaseStats baseStats)
@@ -37,12 +37,12 @@ public class EntityStats(EntityBaseStats baseStats)
 
 public class Manager : ISystem
 {
-    private readonly EntityBaseStats _baseStats;
+    public readonly EntityBaseStats BaseStats;
 
     public Manager(EntityBaseStats baseStats)
     {
-        _baseStats = baseStats;
-        CurrentStats = new EntityStats(_baseStats);
+        BaseStats = baseStats;
+        CurrentStats = new EntityStats(BaseStats);
     }
 
     public EntityStats CurrentStats { get; private set; }
@@ -55,10 +55,10 @@ public class Manager : ISystem
     public double Health
     {
         get => CurrentStats.Health;
-        set => CurrentStats.Health = Math.Min(value, _baseStats.Health);
+        set => CurrentStats.Health = Math.Min(value, BaseStats.Health);
     }
 
-    public double MaxHealth => _baseStats.Health;
+    public double MaxHealth => BaseStats.Health;
     public double MoveSpeed => CurrentStats.MoveSpeed;
 
 
@@ -77,14 +77,14 @@ public class Manager : ISystem
 
     public void FullReset()
     {
-        CurrentStats = new EntityStats(_baseStats);
+        CurrentStats = new EntityStats(BaseStats);
     }
 
     public void Reset()
     {
         var originHealth = CurrentStats.Health;
 
-        CurrentStats = new EntityStats(_baseStats)
+        CurrentStats = new EntityStats(BaseStats)
         {
             Health = originHealth
         };

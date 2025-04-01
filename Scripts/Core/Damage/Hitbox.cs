@@ -11,6 +11,7 @@ public partial class Hitbox : Area2D
     public BaseEntity Attacker;
     public EntityStats AttackerStats = null;
     public double RawDamage;
+    public int RawKnockback;
 
     public bool Enabled
     {
@@ -38,8 +39,10 @@ public partial class Hitbox : Area2D
         
         var attackee = hurtbox.Owner;
         if (attackee == Attacker) return;
+        
+        var kbDirection = (attackee.GlobalPosition - Attacker.GlobalPosition).Normalized() * RawKnockback;
 
         GlobalEventBus.Instance.Publish(GlobalEventVariant.DamageDealt,
-            (RawDamage, attackee, AttackerStats ?? Attacker.StatsManager.CurrentStats));
+            (RawDamage, attackee, AttackerStats ?? Attacker.StatsManager.CurrentStats, kbDirection));
     }
 }

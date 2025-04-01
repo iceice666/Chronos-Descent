@@ -1,8 +1,5 @@
-[gd_scene load_steps=5 format=3 uid="uid://b1tyahwcajxk3"]
+[gd_scene load_steps=2 format=3 uid="uid://b1tyahwcajxk3"]
 
-[ext_resource type="Script" uid="uid://bbk5f1shfn220" path="res://Scripts/UserInputManager.cs" id="1_5wbsh"]
-[ext_resource type="PackedScene" uid="uid://m2gapyvjm1kt" path="res://Scenes/ui/ui.tscn" id="2_euvdl"]
-[ext_resource type="Script" uid="uid://dn58ytevo8umt" path="res://Scripts/Camera.cs" id="4_2s5dj"]
 [ext_resource type="Script" uid="uid://cfocs6hhx77fx" path="res://Scripts/GlobalEventBus.cs" id="4_xk5ld"]
 
 [node name="Autoload" type="Node"]
@@ -12,18 +9,3 @@
 [node name="GlobalEventBus" type="Node" parent="."]
 script = ExtResource("4_xk5ld")
 metadata/_custom_type_script = "uid://cfocs6hhx77fx"
-
-[node name="UserInputManager" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-script = ExtResource("1_5wbsh")
-metadata/_custom_type_script = "uid://bbk5f1shfn220"
-
-[node name="UI" parent="." instance=ExtResource("2_euvdl")]
-
-[node name="Camera" type="Camera2D" parent="."]
-zoom = Vector2(2, 2)
-script = ExtResource("4_2s5dj")
-metadata/_custom_type_script = "uid://dn58ytevo8umt"

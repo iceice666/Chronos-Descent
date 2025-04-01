@@ -1,3 +1,4 @@
+using System;
 using ChronosDescent.Scripts.Core.Ability;
 using ChronosDescent.Scripts.Core.Animation;
 using ChronosDescent.Scripts.Core.Damage;
@@ -29,8 +30,6 @@ public partial class Player : BaseEntity
 
     private Node2D _weaponMountPoint;
 
-    public bool IsDead { get; private set; }
-
 
     public override bool Collision
     {
@@ -46,7 +45,7 @@ public partial class Player : BaseEntity
 
         _sprite = GetNode<Sprite2D>("Sprite2D");
         _hurtbox = GetNode<Hurtbox>("Hurtbox");
-        ActionManager = GetNode<UserInputManager>("/root/Autoload/UserInputManager");
+        ActionManager = GetNode<UserInputManager>("../UserInputManager");
         _weaponMountPoint = GetNode<Node2D>("WeaponMountPoint");
         WeaponAnimationPlayer = GetNode<AnimationPlayer>("WeaponAnimationPlayer");
 
@@ -58,12 +57,12 @@ public partial class Player : BaseEntity
         PositionRecord.Initialize(this);
 
 
-        GetNode<Camera>("/root/Autoload/Camera").Initialize(this);
-        GetNode<PlayerHealthBar>("/root/Autoload/UI/PlayerHealthBar").Initialize(this);
+        GetNode<Camera>("../Camera").Initialize(this);
+        GetNode<PlayerHealthBar>("../UI/PlayerHealthBar").Initialize(this);
 
 
-        WeaponManager.SetWeapon<Claymore>(GD.Load<PackedScene>("res://Scenes/weapon/claymore.tscn"));
-        // WeaponManager.SetWeapon<Bow>(GD.Load<PackedScene>("res://Scenes/weapon/bow.tscn"));
+        // WeaponManager.SetWeapon<Claymore>(GD.Load<PackedScene>("res://Scenes/weapon/claymore.tscn"));
+        WeaponManager.SetWeapon<Bow>(GD.Load<PackedScene>("res://Scenes/weapon/bow.tscn"));
     }
 
     public override void _ExitTree()
@@ -86,7 +85,8 @@ public partial class Player : BaseEntity
         }
 
         if (_weaponMountPoint.GetChild(0)?.IsInGroup("NeedRotation") ?? false)
-            _weaponMountPoint.Rotation = Mathf.Atan2(ActionManager.LookDirection.Y, ActionManager.LookDirection.X);
+            _weaponMountPoint.Rotation =
+                Mathf.Atan2(ActionManager.LookDirection.Y, Math.Abs(ActionManager.LookDirection.X));
     }
 
     public override void _PhysicsProcess(double delta)
@@ -131,7 +131,7 @@ public partial class Player : BaseEntity
         return AbilityManager.CanActivateAbility(slot);
     }
 
-    public override void TakeDamage(double amount, DamageType damageType)
+    public override void TakeDamage(double amount, DamageType damageType, Vector2 knockback = new())
     {
         // Update health
         StatsManager.Health += damageType == DamageType.Healing ? amount : -amount;
@@ -151,6 +151,9 @@ public partial class Player : BaseEntity
 
         // Display damage indicator
         Indicator.Spawn(this, amount, damageType);
+
+        // Apply knockback
+        Velocity += knockback;
     }
 
     public override void ActivateAbility(AbilitySlotType abilitySlotType)

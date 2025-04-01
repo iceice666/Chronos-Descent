@@ -1,3 +1,51 @@
-[gd_scene format=3 uid="uid://cgniaeswc7tgf"]
+[gd_scene load_steps=3 format=3 uid="uid://cgniaeswc7tgf"]
 
-[node name="Title" type="Node2D"]
+[ext_resource type="Texture2D" uid="uid://bjbu2na6xgyfu" path="res://Assets/title_bg.png" id="1_w31pl"]
+[ext_resource type="Script" uid="uid://ex0vfn1v00a1" path="res://Scripts/UI/TitleScreenButton.cs" id="2_ekrfg"]
+
+[node name="Title" type="Control"]
+custom_minimum_size = Vector2(960, 540)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 960.0
+offset_bottom = 540.0
+
+[node name="ColorRect" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(960, 540)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -480.0
+offset_top = -270.0
+offset_right = 480.0
+offset_bottom = 270.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_w31pl")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 52.0
+offset_top = 182.0
+offset_right = 316.0
+offset_bottom = 361.0
+script = ExtResource("2_ekrfg")
+
+[node name="NewRunButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "New Run"
+
+[node name="LangButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Language"
+
+[node name="QuitButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Quit
+"

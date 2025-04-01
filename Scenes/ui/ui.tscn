@@ -56,7 +56,12 @@ script = ExtResource("3_ag0dx")
 metadata/_edit_lock_ = true
 
 [node name="BoardcastTitle" parent="." instance=ExtResource("4_atbq8")]
+text = ""
 metadata/_edit_lock_ = true
+
+[node name="Loading" parent="." instance=ExtResource("6_km8u5")]
+visible = false
+z_index = 999
 
 [node name="AButton" type="Button" parent="."]
 offset_left = 569.0
@@ -64,7 +69,3 @@ offset_top = 389.0
 offset_right = 648.0
 offset_bottom = 468.0
 script = ExtResource("5_1s1w6")
-
-[node name="Loading" parent="." instance=ExtResource("6_km8u5")]
-visible = false
-z_index = 999

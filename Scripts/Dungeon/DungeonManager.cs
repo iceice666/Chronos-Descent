@@ -24,7 +24,7 @@ public partial class DungeonManager : Node
     {
         Instance = this;
 
-        LoadingScreen = GetNode<Control>("/root/Autoload/UI/Loading");
+        LoadingScreen = GetNode<Control>("../UI/Loading");
         _player = GetNode<Player>("../Player");
 
 

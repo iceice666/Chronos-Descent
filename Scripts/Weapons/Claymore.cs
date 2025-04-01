@@ -43,6 +43,7 @@ public partial class Claymore : Node2D, IWeapon
         _hitbox = GetNode<Hitbox>("Hitbox");
         _hitbox.RawDamage = 20;
         _hitbox.Attacker = _owner;
+        _hitbox.RawKnockback = 100;
 
 
         Rotation = (float)Mathf.DegToRad(-114.0);

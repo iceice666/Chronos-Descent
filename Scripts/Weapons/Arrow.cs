@@ -28,12 +28,16 @@ public partial class Arrow : BaseProjectile
         var hitbox = GetNode<Hitbox>("Hitbox");
         hitbox.RawDamage = rawDamage;
         hitbox.Attacker = attacker;
+        hitbox.RawKnockback = 10;
     }
 
     public override void _Ready()
     {
         _hitbox = GetNode<Hitbox>("Hitbox");
 
-        _hitbox.BodyEntered += _ => QueueFree();
+        _hitbox.BodyEntered += _ =>
+        {
+            QueueFree();
+        };
     }
 }

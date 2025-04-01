@@ -24,7 +24,7 @@ public partial class TestEntity : BaseEntity
 
 
     public override bool Collision { get; set; } = true;
-    public bool IsDead { get; set; }
+    public new bool IsDead { get; set; }
 
     // BaseEntity implementations
     public override void ApplyEffect(BaseEffect effect)
@@ -52,7 +52,7 @@ public partial class TestEntity : BaseEntity
         AbilityManager.RemoveAbility(slot);
     }
 
-    public override void TakeDamage(double amount, DamageType damageType)
+    public override void TakeDamage(double amount, DamageType damageType, Vector2 knockback=new())
     {
         // No-op for test implementation
     }

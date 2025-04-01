@@ -1,11 +1,11 @@
 [gd_resource type="TileSet" load_steps=13 format=3 uid="uid://p22bjuwqt0y8"]
 
-[ext_resource type="Texture2D" uid="uid://dlvvbwco638dx" path="res://Assets/Dungeon/Vase Shine Anim.png" id="1_3bymr"]
-[ext_resource type="Texture2D" uid="uid://daongu2f5chyk" path="res://Assets/Dungeon/Set 1.png" id="1_ursy6"]
-[ext_resource type="Texture2D" uid="uid://dnjjvfunwghs1" path="res://Assets/Dungeon/Torch Yellow L.png" id="5_qmbnx"]
-[ext_resource type="Texture2D" uid="uid://urf331ww7kc0" path="res://Assets/Dungeon/Torch Yellow R.png" id="6_1shef"]
-[ext_resource type="Texture2D" uid="uid://dp4pyfddenrpi" path="res://Assets/Dungeon/Torch Yellow.png" id="7_nt4e3"]
-[ext_resource type="Texture2D" uid="uid://b6pgk38vgop6l" path="res://Assets/Dungeon/Water.png" id="8_f00oa"]
+[ext_resource type="Texture2D" uid="uid://dlvvbwco638dx" path="res://Assets/Dungeon/Type1/Vase Shine Anim.png" id="1_3bymr"]
+[ext_resource type="Texture2D" uid="uid://daongu2f5chyk" path="res://Assets/Dungeon/Type1/Set 1.png" id="1_ursy6"]
+[ext_resource type="Texture2D" uid="uid://dnjjvfunwghs1" path="res://Assets/Dungeon/Type1/Torch Yellow L.png" id="5_qmbnx"]
+[ext_resource type="Texture2D" uid="uid://urf331ww7kc0" path="res://Assets/Dungeon/Type1/Torch Yellow R.png" id="6_1shef"]
+[ext_resource type="Texture2D" uid="uid://dp4pyfddenrpi" path="res://Assets/Dungeon/Type1/Torch Yellow.png" id="7_nt4e3"]
+[ext_resource type="Texture2D" uid="uid://b6pgk38vgop6l" path="res://Assets/Dungeon/Type1/Water.png" id="8_f00oa"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qxbaa"]
 texture = ExtResource("1_ursy6")

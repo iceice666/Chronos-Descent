@@ -40,7 +40,7 @@ public sealed partial class Dissociation : BaseEffect
 
     public partial class DissociationSnapshot : BaseEntity
     {
-        private Action<double, DamageType> _takeDamageCb;
+        private Action<double, DamageType, Vector2> _takeDamageCb;
 
         public override bool Collision { get; set; } = true;
 
@@ -57,9 +57,9 @@ public sealed partial class Dissociation : BaseEffect
             _takeDamageCb = origin.TakeDamage;
         }
 
-        public override void TakeDamage(double amount, DamageType damageType)
+        public override void TakeDamage(double amount, DamageType damageType, Vector2 knockback = new())
         {
-            _takeDamageCb(amount, damageType);
+            _takeDamageCb(amount, damageType, knockback);
         }
 
         public override void ApplyEffect(BaseEffect effect)

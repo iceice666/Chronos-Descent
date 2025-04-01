@@ -4,6 +4,7 @@ using ChronosDescent.Scripts.Core.Animation;
 using ChronosDescent.Scripts.Core.Damage;
 using ChronosDescent.Scripts.Core.Effect;
 using ChronosDescent.Scripts.Core.Entity;
+using Godot;
 
 namespace ChronosDescent.Scripts.Entities;
 
@@ -11,7 +12,8 @@ public partial class Dummy : BaseEntity
 {
     public IAnimationPlayer AnimationManager => null;
 
-    public bool IsDead { get; set; }
+    // Use 'new' keyword to explicitly hide the base member
+    public new bool IsDead { get; set; }
 
 
     public override bool Collision { get; set; }
@@ -34,7 +36,7 @@ public partial class Dummy : BaseEntity
         EffectManager.FixedUpdate(delta);
     }
 
-    public override void TakeDamage(double amount, DamageType damageType)
+    public override void TakeDamage(double amount, DamageType damageType, Vector2 knockback=new())
     {
         Indicator.Spawn(this, amount, damageType);
     }

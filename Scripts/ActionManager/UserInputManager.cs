@@ -45,7 +45,7 @@ public partial class UserInputManager : Control, IActionManager
         GD.Print($"Current Input Source: {CurrentInputSource}");
 
         // Get reference to virtual input container using the node path
-        _virtualInputContainer = GetNode<Control>("/root/Autoload/UI/VirtualInput");
+        _virtualInputContainer = GetNode<Control>("../UI/VirtualInput");
         _leftVirtualJoystick = _virtualInputContainer.GetNode<VirtualJoystick>("LeftJoystick");
         _rightVirtualJoystick = _virtualInputContainer.GetNode<VirtualJoystick>("RightJoystick");
 
