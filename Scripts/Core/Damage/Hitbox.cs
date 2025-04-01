@@ -34,12 +34,11 @@ public partial class Hitbox : Area2D
 
     private void OnEntityHit(Area2D area)
     {
-        
         if (area is not Hurtbox hurtbox) return;
-        
+
         var attackee = hurtbox.Owner;
         if (attackee == Attacker) return;
-        
+
         var kbDirection = (attackee.GlobalPosition - Attacker.GlobalPosition).Normalized() * RawKnockback;
 
         GlobalEventBus.Instance.Publish(GlobalEventVariant.DamageDealt,

@@ -9,6 +9,7 @@ namespace ChronosDescent.Scripts.Dungeon;
 [GlobalClass]
 public partial class DungeonManager : Node
 {
+    private Player _player;
     public static DungeonManager Instance { get; private set; }
 
     [Export] public RoomRegistryResource RoomRegistry { get; set; }
@@ -17,8 +18,6 @@ public partial class DungeonManager : Node
 
     private Control LoadingScreen { get; set; }
     private Node2D CurrentRoom { get; set; }
-
-    private Player _player;
 
     public override void _Ready()
     {

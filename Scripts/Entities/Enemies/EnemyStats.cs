@@ -10,7 +10,7 @@ public class EnemyBaseStats : EntityBaseStats
     public override double CriticalDamage { get; } = 30;
     public override double MoveSpeed { get; } = 80;
     public override double AttackSpeed { get; } = 0.8;
-    
+
     // Additional enemy-specific stats
     public virtual double AttackDamage { get; } = 10;
     public virtual double DetectionRadius { get; } = 200;

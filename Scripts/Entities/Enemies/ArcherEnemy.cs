@@ -1,3 +1,4 @@
+using ChronosDescent.Scripts.ActionManager;
 using ChronosDescent.Scripts.Core.Ability;
 using ChronosDescent.Scripts.Weapons;
 using Godot;
@@ -8,13 +9,14 @@ namespace ChronosDescent.Scripts.Entities.Enemies;
 [GlobalClass]
 public partial class ArcherEnemy : BaseEnemy
 {
+    private const double RetreatDuration = 1.5;
+    private bool _isRetreating;
+
+    // Override to adjust archer's behavior
+    private double _retreatTimer;
+
     // Use RangedEnemyStats for archer enemies
     public override Manager StatsManager { get; } = new(new RangedEnemyStats());
-    
-    // Override to adjust archer's behavior
-    private double _retreatTimer = 0.0;
-    private const double RetreatDuration = 1.5;
-    private bool _isRetreating = false;
 
     public override void _Ready()
     {
@@ -22,18 +24,18 @@ public partial class ArcherEnemy : BaseEnemy
 
         // Set up the EnemyBow weapon
         WeaponManager.SetWeapon<EnemyBow>(GD.Load<PackedScene>("res://Scenes/weapon/enemy_bow.tscn"));
-        
+
         // Ensure archer enemy only has the normal attack ability
         RemoveAbility(AbilitySlotType.Special);
         RemoveAbility(AbilitySlotType.Ultimate);
     }
-    
+
     public override void _Process(double delta)
     {
         base._Process(delta);
 
         WeaponMountPoint.Rotation = ActionManager.LookDirection.Angle();
-        
+
         // Handle retreat timer if retreating
         if (!_isRetreating) return;
         _retreatTimer += delta;
@@ -46,12 +48,12 @@ public partial class ArcherEnemy : BaseEnemy
     {
         // First use the base state update logic to find/update target
         base.UpdateState();
-        
+
         // If we have a target, add archer-specific behavior
         if (!CurrentTarget.IsDead)
         {
             var distanceToTarget = GlobalPosition.DistanceTo(CurrentTarget.GlobalPosition);
-            
+
             // If too close to the target and not retreating, start retreat
             if (distanceToTarget < 100 && !_isRetreating && CurrentState != EnemyState.Retreat)
             {
@@ -69,7 +71,7 @@ public partial class ArcherEnemy : BaseEnemy
             }
         }
     }
-    
+
     protected override void HandleMovement()
     {
         // If retreating, move away from the target instead of towards it
@@ -77,13 +79,13 @@ public partial class ArcherEnemy : BaseEnemy
         {
             // Calculate direction away from target
             var retreatDirection = (GlobalPosition - CurrentTarget.GlobalPosition).Normalized();
-            
+
             // Move in retreat direction
             Velocity = retreatDirection * (float)StatsManager.MoveSpeed * 1.2f; // Slightly faster when retreating
             MoveAndSlide();
-            
+
             // Update action manager
-            var actionManager = (ActionManager.EnemyActionManager)ActionManager;
+            var actionManager = (EnemyActionManager)ActionManager;
             actionManager.SetMoveDirection(retreatDirection);
         }
         else
@@ -114,10 +116,10 @@ public partial class ArcherEnemy : BaseEnemy
     protected override void OnStateTransitionComplete(EnemyState fromState, EnemyState toState)
     {
         base.OnStateTransitionComplete(fromState, toState);
-        
+
         // Reset any visual effects
         Sprite.Scale = Vector2.One;
-        
+
         switch (toState)
         {
             case EnemyState.Chase:
@@ -131,16 +133,13 @@ public partial class ArcherEnemy : BaseEnemy
                 break;
         }
     }
-    
+
     // Override to implement archer attack behavior
     public override void PerformAttack()
     {
-        if (CurrentState == EnemyState.Attack)
-        {
-            ActivateAbility(AbilitySlotType.Normal);
-        }
+        if (CurrentState == EnemyState.Attack) ActivateAbility(AbilitySlotType.Normal);
     }
-    
+
     protected override void Die()
     {
         // Could spawn items, play death animation, etc.

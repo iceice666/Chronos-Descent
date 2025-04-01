@@ -3,7 +3,7 @@ using Godot;
 namespace ChronosDescent.Scripts.Dungeon.Room;
 
 /// <summary>
-/// Resource for creating a RoomUnit in the editor
+///     Resource for creating a RoomUnit in the editor
 /// </summary>
 [GlobalClass]
 public partial class RoomUnitResource : Resource
@@ -12,7 +12,7 @@ public partial class RoomUnitResource : Resource
     [Export(PropertyHint.File, "*.tscn")] public string ScenePath { get; set; }
 
     /// <summary>
-    /// Converts this resource to a RoomUnit
+    ///     Converts this resource to a RoomUnit
     /// </summary>
     public RoomUnit ToRoomUnit()
     {

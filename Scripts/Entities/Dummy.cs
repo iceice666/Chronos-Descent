@@ -36,7 +36,7 @@ public partial class Dummy : BaseEntity
         EffectManager.FixedUpdate(delta);
     }
 
-    public override void TakeDamage(double amount, DamageType damageType, Vector2 knockback=new())
+    public override void TakeDamage(double amount, DamageType damageType, Vector2 knockback = new())
     {
         Indicator.Spawn(this, amount, damageType);
     }

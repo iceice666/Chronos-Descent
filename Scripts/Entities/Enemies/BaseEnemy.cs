@@ -1,3 +1,4 @@
+using ChronosDescent.Scripts.ActionManager;
 using ChronosDescent.Scripts.Core.Ability;
 using ChronosDescent.Scripts.Core.Damage;
 using ChronosDescent.Scripts.Core.Effect;
@@ -10,17 +11,6 @@ namespace ChronosDescent.Scripts.Entities.Enemies;
 [GlobalClass]
 public partial class BaseEnemy : BaseEntity
 {
-    protected NavigationAgent2D NavigationAgent;
-    protected CollisionShape2D CollisionObject;
-    protected Sprite2D Sprite;
-    protected Hurtbox Hurtbox;
-    protected Node2D WeaponMountPoint;
-
-    protected EnemyBaseStats _enemyStats;
-    protected double _attackCooldownTimer = 0.0;
-    protected const double AttackCooldown = 1.0;
-    protected bool _canAttack = true;
-
     public enum EnemyState
     {
         Idle,
@@ -29,15 +19,26 @@ public partial class BaseEnemy : BaseEntity
         Attack,
         Retreat
     }
-    
-    public EnemyState CurrentState { get; protected set; } = EnemyState.Idle;
-    public BaseEntity CurrentTarget { get; protected set; }
+
+    protected const double AttackCooldown = 1.0;
+    protected double _attackCooldownTimer = 0.0;
+    protected bool _canAttack = true;
+
+    protected EnemyBaseStats _enemyStats;
+    protected CollisionShape2D CollisionObject;
+    protected Hurtbox Hurtbox;
+    protected NavigationAgent2D NavigationAgent;
+    protected Sprite2D Sprite;
+    protected Node2D WeaponMountPoint;
 
     public BaseEnemy()
     {
         AttackRadius = (float)((EnemyBaseStats)StatsManager.BaseStats).AttackRadius;
         DetectionRadius = (float)((EnemyBaseStats)StatsManager.BaseStats).DetectionRadius;
     }
+
+    public EnemyState CurrentState { get; protected set; } = EnemyState.Idle;
+    public BaseEntity CurrentTarget { get; protected set; }
 
     public override bool Collision
     {
@@ -46,6 +47,10 @@ public partial class BaseEnemy : BaseEntity
     }
 
     public override Manager StatsManager { get; } = new(new EnemyBaseStats());
+
+    public float AttackRadius { get; set; }
+
+    public float DetectionRadius { get; set; }
 
     public override void _Ready()
     {
@@ -59,7 +64,7 @@ public partial class BaseEnemy : BaseEntity
         WeaponMountPoint = GetNode<Node2D>("WeaponMountPoint");
         WeaponAnimationPlayer = GetNodeOrNull<AnimationPlayer>("WeaponAnimationPlayer");
 
-        ActionManager = GetNode<ActionManager.EnemyActionManager>("EnemyActionManager");
+        ActionManager = GetNode<EnemyActionManager>("EnemyActionManager");
 
         StatsManager.Initialize(this);
         AbilityManager.Initialize(this);
@@ -77,10 +82,10 @@ public partial class BaseEnemy : BaseEntity
         AbilityManager.Update(delta);
         EffectManager.Update(delta);
         WeaponManager.Update(delta);
-        
+
         // Handle state transitions
         UpdateState();
-        
+
         // Update look direction
         UpdateLookDirection();
     }
@@ -91,13 +96,10 @@ public partial class BaseEnemy : BaseEntity
         AbilityManager.FixedUpdate(delta);
         EffectManager.FixedUpdate(delta);
         WeaponManager.FixedUpdate(delta);
-        
+
         if (IsDead) return;
-        
-        if (Moveable && CurrentState != EnemyState.Idle)
-        {
-            HandleMovement();
-        }
+
+        if (Moveable && CurrentState != EnemyState.Idle) HandleMovement();
     }
 
     protected virtual void UpdateState()
@@ -127,8 +129,6 @@ public partial class BaseEnemy : BaseEntity
         }
     }
 
-    public float AttackRadius { get; set; }
-
     protected virtual void ChangeState(EnemyState newState)
     {
         if (CurrentState == newState) return;
@@ -152,28 +152,26 @@ public partial class BaseEnemy : BaseEntity
         switch (CurrentState)
         {
             case EnemyState.Chase:
-                if (CurrentTarget != null)
-                {
-                    NavigationAgent.TargetPosition = CurrentTarget.GlobalPosition;
-                }
+                if (CurrentTarget != null) NavigationAgent.TargetPosition = CurrentTarget.GlobalPosition;
+
                 break;
         }
-        
+
         // Call transition complete callback
         OnStateTransitionComplete(previousState, newState);
     }
-    
+
     // State transition callbacks - these can be overridden in derived enemy classes
     protected virtual void OnStateTransitionStart(EnemyState fromState, EnemyState toState)
     {
         // Default implementation does nothing
     }
-    
+
     protected virtual void OnStateTransitionUpdate(double progress)
     {
         // Default implementation does nothing
     }
-    
+
     protected virtual void OnStateTransitionComplete(EnemyState fromState, EnemyState toState)
     {
         // Default implementation does nothing
@@ -184,7 +182,6 @@ public partial class BaseEnemy : BaseEntity
         // First try to get the player through more efficient group query
         var players = GetTree().GetNodesInGroup("Player");
         if (players.Count > 0)
-        {
             foreach (var player in players)
             {
                 if (player is not Node2D playerNode) continue;
@@ -196,13 +193,12 @@ public partial class BaseEnemy : BaseEntity
                 CurrentTarget = (BaseEntity)playerNode;
                 return;
             }
-        }
 
         // Fallback to physics shape query if needed for more complex scenarios
         var space = GetWorld2D().DirectSpaceState;
         var query = new PhysicsShapeQueryParameters2D();
         var shape = new CircleShape2D();
-        shape.Radius = (float)DetectionRadius;
+        shape.Radius = DetectionRadius;
 
         query.Shape = shape;
         query.Transform = Transform2D.Identity with { Origin = GlobalPosition };
@@ -220,8 +216,6 @@ public partial class BaseEnemy : BaseEntity
         }
     }
 
-    public float DetectionRadius { get; set; }
-
     protected virtual bool HasLineOfSightTo(Node2D target)
     {
         // Cast a ray to check if there's a clear line of sight to the target
@@ -230,7 +224,7 @@ public partial class BaseEnemy : BaseEntity
         {
             From = GlobalPosition,
             To = target.GlobalPosition,
-            CollisionMask = 1, // World collision layer
+            CollisionMask = 1 // World collision layer
         };
 
         var result = spaceState.IntersectRay(query);
@@ -242,10 +236,8 @@ public partial class BaseEnemy : BaseEntity
     protected virtual void HandleMovement()
     {
         if (CurrentTarget != null && CurrentState == EnemyState.Chase)
-        {
             // Update the target position
             NavigationAgent.TargetPosition = CurrentTarget.GlobalPosition;
-        }
 
         if (!NavigationAgent.IsNavigationFinished())
         {
@@ -256,14 +248,14 @@ public partial class BaseEnemy : BaseEntity
             MoveAndSlide();
 
             // Update action manager with current movement direction
-            var actionManager = (ActionManager.EnemyActionManager)ActionManager;
+            var actionManager = (EnemyActionManager)ActionManager;
             actionManager.SetMoveDirection(direction);
         }
         else
         {
             // Stop moving if we reached the destination
             Velocity = Vector2.Zero;
-            var actionManager = (ActionManager.EnemyActionManager)ActionManager;
+            var actionManager = (EnemyActionManager)ActionManager;
             actionManager.SetMoveDirection(Vector2.Zero);
         }
     }
@@ -273,23 +265,17 @@ public partial class BaseEnemy : BaseEntity
         if (CurrentTarget.IsDead) return;
 
         var direction = (CurrentTarget.GlobalPosition - GlobalPosition).Normalized();
-        var actionManager = (ActionManager.EnemyActionManager)ActionManager;
+        var actionManager = (EnemyActionManager)ActionManager;
         actionManager.SetLookDirection(direction);
 
         // Optionally flip the sprite based on direction
         var isLookingRight = direction.X < 0;
-        if (Sprite.FlipH != isLookingRight)
-        {
-            Sprite.FlipH = isLookingRight;
-        }
+        if (Sprite.FlipH != isLookingRight) Sprite.FlipH = isLookingRight;
     }
 
     public virtual void PerformAttack()
     {
-        if (CurrentState == EnemyState.Attack)
-        {
-            ActivateAbility(AbilitySlotType.Normal);
-        }
+        if (CurrentState == EnemyState.Attack) ActivateAbility(AbilitySlotType.Normal);
     }
 
     public override void TakeDamage(double amount, DamageType damageType, Vector2 knockback = new())

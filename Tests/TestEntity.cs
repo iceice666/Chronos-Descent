@@ -52,7 +52,7 @@ public partial class TestEntity : BaseEntity
         AbilityManager.RemoveAbility(slot);
     }
 
-    public override void TakeDamage(double amount, DamageType damageType, Vector2 knockback=new())
+    public override void TakeDamage(double amount, DamageType damageType, Vector2 knockback = new())
     {
         // No-op for test implementation
     }

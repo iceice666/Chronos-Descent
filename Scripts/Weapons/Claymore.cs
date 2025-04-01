@@ -109,11 +109,11 @@ public partial class Claymore : Node2D, IWeapon
     public class SpecialAbility : BaseChanneledAbility
     {
         private const int JumpDistance = 100;
+        private const float Speed = 200.0f; // Adjust this speed as needed
+        private const float Acceleration = 1000.0f; // How quickly it reaches target speed
         private double _animationTimer;
         private Vector2 _targetPoint;
         private Vector2 _velocity;
-        private const float Speed = 200.0f; // Adjust this speed as needed
-        private const float Acceleration = 1000.0f; // How quickly it reaches target speed
 
         public override string Id { get; protected set; } = "claymore_special";
         public override double Cooldown { get; protected init; } = 5;

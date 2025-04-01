@@ -4,9 +4,9 @@ namespace ChronosDescent.Scripts.UI;
 
 public partial class TitleScreenButton : VBoxContainer
 {
+    private Button _langButton;
     private Button _newRunButton;
     private Button _quitButton;
-    private Button _langButton;
 
     public override void _Ready()
     {

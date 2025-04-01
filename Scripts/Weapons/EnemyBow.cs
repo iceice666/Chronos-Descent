@@ -1,3 +1,4 @@
+using System;
 using ChronosDescent.Scripts.Core.Ability;
 using ChronosDescent.Scripts.Core.Entity;
 using ChronosDescent.Scripts.Core.Weapon;
@@ -10,7 +11,7 @@ public partial class EnemyBow : Node2D, IWeapon
     private AnimatedSprite2D _animatedSprite;
     private BaseEntity _owner;
     private Node2D _spawnPoint;
-    
+
     public BaseAbility NormalAttack { get; private set; }
     public BaseAbility SpecialAttack { get; } = null; // No special attack for enemy bow
     public BaseAbility Ultimate { get; } = null; // No ultimate for enemy bow
@@ -26,7 +27,7 @@ public partial class EnemyBow : Node2D, IWeapon
         _spawnPoint = GetNode<Node2D>("ArrowSpawnPoint");
 
         NormalAttack = new ShootAbility(_spawnPoint, PlayAnimation);
-        
+
         AddToGroup("NeedRotation");
     }
 
@@ -41,12 +42,12 @@ public partial class EnemyBow : Node2D, IWeapon
         private const double BaseDamage = 8;
         private const float DefaultScale = 0.8f;
         private const float DefaultDrag = 0.97f;
-        
-        private readonly Node2D _spawnPoint;
-        private readonly System.Action<string> _playAnimation;
+        private readonly Action<string> _playAnimation;
         private readonly PackedScene _projectileScene = GD.Load<PackedScene>("res://Scenes/weapon/arrow.tscn");
 
-        public ShootAbility(Node2D spawnPoint, System.Action<string> playAnimation)
+        private readonly Node2D _spawnPoint;
+
+        public ShootAbility(Node2D spawnPoint, Action<string> playAnimation)
         {
             _spawnPoint = spawnPoint;
             _playAnimation = playAnimation;
@@ -65,17 +66,17 @@ public partial class EnemyBow : Node2D, IWeapon
         {
             // Get target direction from the caster's action manager
             var direction = Caster.ActionManager.LookDirection;
-            
+
             // Play animation
             _playAnimation("charging");
-            
+
             // Get projectiles node
             var projectilesNode = _spawnPoint.GetNode("/root/Autoload/Projectiles");
-            
+
             // Instantiate arrow
             var projectile = _projectileScene.Instantiate<Arrow>();
             projectilesNode.AddChild(projectile);
-            
+
             // Initialize arrow
             projectile.Initialize(
                 Caster,
@@ -86,7 +87,7 @@ public partial class EnemyBow : Node2D, IWeapon
                 DefaultDrag,
                 BaseDamage
             );
-            
+
             // Return to idle animation
             _playAnimation("idle");
         }

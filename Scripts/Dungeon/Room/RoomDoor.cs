@@ -9,14 +9,15 @@ public partial class RoomDoor : Node2D
     public enum DoorType
     {
         Left,
-        Right,
+        Right
     }
 
-    [Export] private DoorType _doorType;
+    private AnimatedSprite2D _animatedSprite;
 
     private AnimationPlayer _animationPlayer;
-    private AnimatedSprite2D _animatedSprite;
     private Area2D _area2D;
+
+    [Export] private DoorType _doorType;
 
     public override void _Ready()
     {

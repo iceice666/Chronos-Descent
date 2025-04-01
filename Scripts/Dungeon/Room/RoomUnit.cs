@@ -4,7 +4,7 @@ using Godot;
 namespace ChronosDescent.Scripts.Dungeon.Room;
 
 /// <summary>
-/// Types of rooms that can be placed in the dungeon
+///     Types of rooms that can be placed in the dungeon
 /// </summary>
 public enum RoomType
 {
@@ -15,7 +15,7 @@ public enum RoomType
     CombatRoom,
     RewardRoom,
     EventRoom,
-    ShopRoom,
+    ShopRoom
 }
 
 public static class RoomTypeExtensions
@@ -38,7 +38,7 @@ public static class RoomTypeExtensions
 }
 
 /// <summary>
-/// Represents a room type with its scene
+///     Represents a room type with its scene
 /// </summary>
 [GlobalClass]
 public partial class RoomUnit : Resource

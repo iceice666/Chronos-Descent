@@ -35,9 +35,6 @@ public partial class Arrow : BaseProjectile
     {
         _hitbox = GetNode<Hitbox>("Hitbox");
 
-        _hitbox.BodyEntered += _ =>
-        {
-            QueueFree();
-        };
+        _hitbox.BodyEntered += _ => { QueueFree(); };
     }
 }

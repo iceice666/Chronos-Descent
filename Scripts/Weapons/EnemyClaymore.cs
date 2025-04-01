@@ -1,4 +1,3 @@
-using System.Linq;
 using ChronosDescent.Scripts.Core.Ability;
 using ChronosDescent.Scripts.Core.Damage;
 using ChronosDescent.Scripts.Core.Entity;

@@ -5,7 +5,7 @@ namespace ChronosDescent.Scripts.UI;
 public partial class BoardcastTitle : Label
 {
     private AnimationPlayer _animationPlayer;
-    
+
     public override void _Ready()
     {
         _animationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
@@ -18,6 +18,5 @@ public partial class BoardcastTitle : Label
         _animationPlayer.Play("fade");
         await ToSignal(GetTree().CreateTimer(duration), "timeout");
         _animationPlayer.PlayBackwards("fade");
-      
     }
 }
