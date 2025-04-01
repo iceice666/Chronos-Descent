@@ -1,0 +1,14 @@
+[remap]
+
+importer="aseprite_wizard.plugin.noop"
+type="PackedDataContainer"
+uid="uid://cx3dp67ou74cp"
+path="res://.godot/imported/orcs_2.aseprite-4135f2db9055a02a6c16f72882db8542.res"
+
+[deps]
+
+source_file="res://Assets/Entity/orcs_2.aseprite"
+dest_files=["res://.godot/imported/orcs_2.aseprite-4135f2db9055a02a6c16f72882db8542.res"]
+
+[params]
+
