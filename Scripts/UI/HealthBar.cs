@@ -23,7 +23,7 @@ public partial class HealthBar : Control
         GD.Print("Ready");
         Entity = GetOwner<BaseEntity>();
 
-        CurrentHealthBar = GetNode<ProgressBar>("HealthBar");
+        CurrentHealthBar = GetNode<ProgressBar>("CurrentHealthBar");
         DelayedHealthBar = GetNode<ProgressBar>("DelayedHealthBar");
         DamageDelayTimer = GetNode<Timer>("DamageDelayTimer");
 
