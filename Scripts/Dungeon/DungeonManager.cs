@@ -69,9 +69,9 @@ public partial class DungeonManager : Node
         _player.Moveable = false;
 
         GetChildren().ToList().ForEach(node => node.QueueFree());
-        
-        GD.Print($"Current room: {DungeonMap.Type }");
-        
+
+        GD.Print($"Current room: {DungeonMap.Type}");
+
         var roomScene = (DungeonMap.Type switch
         {
             RoomType.StartRoom => RoomRegistry.StartRooms,
@@ -91,9 +91,11 @@ public partial class DungeonManager : Node
         Callable.From(() =>
         {
             AddChild(CurrentRoom);
-            CurrentRoom.GetNodeOrNull("Doors")?
-                .GetChildren().Cast<RoomDoor>().ToList()
-                .ForEach(door => door.Close());
+
+            if (DungeonMap.Type is not (RoomType.BossRoom or RoomType.MiniBossRoom or RoomType.CombatRoom))
+                CurrentRoom.GetNodeOrNull("Doors")?
+                    .GetChildren().Cast<RoomDoor>().ToList()
+                    .ForEach(door => door.Open());
         }).CallDeferred();
 
 
@@ -104,7 +106,7 @@ public partial class DungeonManager : Node
         await ToSignal(GetTree().CreateTimer(0.5f), "timeout");
 
         CurrentRoom.GetNodeOrNull<RoomController>("RoomController")?.OnRoomEntered();
-        
+
         _player.Moveable = true;
         LoadingScreen.Visible = false;
     }

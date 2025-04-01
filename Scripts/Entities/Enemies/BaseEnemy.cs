@@ -235,7 +235,7 @@ public partial class BaseEnemy : BaseEntity
 
     protected virtual void HandleMovement()
     {
-        if (CurrentTarget != null && CurrentState == EnemyState.Chase)
+        if (!(CurrentTarget?.IsDead ?? true) && CurrentState == EnemyState.Chase)
             // Update the target position
             NavigationAgent.TargetPosition = CurrentTarget.GlobalPosition;
 

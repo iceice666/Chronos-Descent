@@ -1,6 +1,6 @@
 [gd_scene load_steps=16 format=3 uid="uid://gq1s8jhj83ps"]
 
-[ext_resource type="Texture2D" uid="uid://byvhr34pynjku" path="res://Assets/Dungeon/Set 3.5.png" id="1_0mih0"]
+[ext_resource type="Texture2D" uid="uid://byvhr34pynjku" path="res://Assets/Dungeon/Type1/Set 3.5.png" id="1_0mih0"]
 [ext_resource type="Script" uid="uid://d3nsy4uwmop4p" path="res://Scripts/Dungeon/Room/RoomDoor.cs" id="1_xgsl8"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_xgsl8"]
