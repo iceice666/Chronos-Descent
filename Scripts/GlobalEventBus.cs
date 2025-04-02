@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ChronosDescent.Scripts.Core;
 using ChronosDescent.Scripts.Core.Damage;
 using ChronosDescent.Scripts.Core.Entity;
 using ChronosDescent.Scripts.Core.State;
@@ -22,7 +23,10 @@ public enum GlobalEventVariant
     // Currency related events
     CurrencyCollected,
     CurrencyDropped,
-    ShopTransactionCompleted
+    ShopTransactionCompleted,
+    
+    // Game state events
+    GameOver
 }
 
 [GlobalClass]
@@ -137,13 +141,18 @@ public partial class GlobalEventBus : Node
             isCritical = true;
         }
 
-
         var defenseMultiplier = 100 / (100 + (attackee.StatsManager?.Defense ?? 0));
         damage *= defenseMultiplier;
 
         var dmgType = isCritical
             ? DamageType.Critical
             : DamageType.Normal;
+            
+        // Record damage only if attacking an enemy (player is the attacker)
+        if (attackee.IsInGroup("Enemy") && !attackee.IsInGroup("Player"))
+        {
+            GameStats.Instance.RecordDamageCaused(damage);
+        }
 
         attackee.TakeDamage(damage, dmgType, rawKb);
     }

@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://m2gapyvjm1kt"]
+[gd_scene load_steps=11 format=3 uid="uid://m2gapyvjm1kt"]
 
 [ext_resource type="PackedScene" uid="uid://cd2h1i3ubv7yh" path="res://Scenes/ui/virtual_joystick.tscn" id="1_oak0x"]
 [ext_resource type="PackedScene" uid="uid://cuiojf8xhcvmb" path="res://Scenes/ui/health_bar.tscn" id="2_oak0x"]
@@ -7,7 +7,9 @@
 [ext_resource type="Script" uid="uid://c4nh721ps6ipb" path="res://Scripts/UI/AButton.cs" id="5_1s1w6"]
 [ext_resource type="Script" uid="uid://xr4ripgysihm" path="res://Scripts/UI/DungeonTimer.cs" id="5_cou77"]
 [ext_resource type="PackedScene" uid="uid://bbygjufp4b2eq" path="res://Scenes/loading.tscn" id="6_km8u5"]
-[ext_resource type="PackedScene" uid="uid://csgjswqnhcfup" path="res://Scenes/ui/currency_display.tscn" id="8_v5ogq"]
+[ext_resource type="PackedScene" uid="uid://dmxxdxcmgyvhk" path="res://Scenes/ui/currency_display.tscn" id="8_v5ogq"]
+[ext_resource type="PackedScene" uid="uid://bivw77diy34mx" path="res://Scenes/ui/death_screen.tscn" id="9_6h8g4"]
+[ext_resource type="PackedScene" uid="uid://c2nyfvlm2yupr" path="res://Scenes/ui/pause_menu.tscn" id="10_bnwxa"]
 
 [node name="UI" type="CanvasLayer"]
 
@@ -83,3 +85,7 @@ AutoStart = true
 
 [node name="CurrencyDisplay" parent="TopLeftContainer" instance=ExtResource("8_v5ogq")]
 layout_mode = 2
+
+[node name="DeathScreen" parent="." instance=ExtResource("9_6h8g4")]
+
+[node name="PauseMenu" parent="." instance=ExtResource("10_bnwxa")]

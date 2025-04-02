@@ -1,6 +1,8 @@
 using System;
 using ChronosDescent.Scripts.Abilities;
 using ChronosDescent.Scripts.ActionManager;
+using System;
+using ChronosDescent.Scripts.Core;
 using ChronosDescent.Scripts.Core.Ability;
 using ChronosDescent.Scripts.Core.Animation;
 using ChronosDescent.Scripts.Core.Damage;
@@ -60,6 +62,9 @@ public partial class Player : BaseEntity
         PositionRecord.Initialize(this);
         CurrencyManager.Initialize(this);
 
+        // Initialize game stats
+        GameStats.Instance.StartGame();
+        
         // Give starting currency
         CurrencyManager.SetChronoshards(10);
 
@@ -182,6 +187,10 @@ public partial class Player : BaseEntity
 
             EventBus.Publish(EventVariant.EntityDied);
             GlobalEventBus.Instance.Publish<BaseEntity>(GlobalEventVariant.EntityDied, this);
+            
+            // Trigger game over event
+            GlobalEventBus.Instance.Publish(GlobalEventVariant.GameOver);
+            
             IsDead = true;
         }
 

@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using ChronosDescent.Scripts.Core;
 using ChronosDescent.Scripts.Dungeon.Room;
 using ChronosDescent.Scripts.Entities;
 using Godot;
@@ -57,6 +58,9 @@ public partial class DungeonManager : Node
     {
         Level++;
         DungeonMap = DungeonGenerator.Generate(Level);
+        
+        // Update the level in GameStats
+        GameStats.Instance.SetLevel(Level);
 
         PrepareDungeonRoom();
 

@@ -1,4 +1,5 @@
 using ChronosDescent.Scripts.ActionManager;
+using ChronosDescent.Scripts.Core;
 using ChronosDescent.Scripts.Core.Ability;
 using ChronosDescent.Scripts.Core.Damage;
 using ChronosDescent.Scripts.Core.Effect;
@@ -46,7 +47,7 @@ public partial class BaseEnemy : BaseEntity
     [Export] protected PackedScene ChronoshardScene { get; set; }
 
     public EnemyState CurrentState { get; protected set; } = EnemyState.Idle;
-    public BaseEntity? CurrentTarget { get; protected set; }
+    public BaseEntity CurrentTarget { get; protected set; }
 
     public override bool Collision
     {
@@ -318,9 +319,12 @@ public partial class BaseEnemy : BaseEntity
 
     protected virtual void Die()
     {
+        // Record the enemy defeat in game stats
+        GameStats.Instance.RecordEnemyDefeat();
+        
         // Drop currency based on chance
         if (GD.Randf() <= CurrencyDropChance) DropCurrency();
-
+        
         // Base implementation just removes the entity
         QueueFree();
     }
