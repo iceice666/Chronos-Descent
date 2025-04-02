@@ -60,6 +60,7 @@ visible = false
 z_index = 999
 
 [node name="AButton" type="Button" parent="."]
+visible = false
 offset_left = 701.0
 offset_top = 271.0
 offset_right = 780.0
