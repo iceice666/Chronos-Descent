@@ -17,6 +17,8 @@ position = Vector2(0, -0.5)
 texture = ExtResource("1_hi2hh")
 
 [node name="Hitbox" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 16
 script = ExtResource("2_7conf")
 metadata/_custom_type_script = "uid://bl38baike4vp2"
 
