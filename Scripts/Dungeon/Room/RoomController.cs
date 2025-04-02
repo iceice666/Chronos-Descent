@@ -16,7 +16,9 @@ public partial class RoomController : Node
     private readonly List<BaseEnemy> _spawnedEnemies = [];
     private bool _roomCleared;
     private Node2D _spawnPointsContainer;
-    
+
+    private int _remainingEnemies;
+
     public override void _Ready()
     {
         GlobalEventBus.Instance.Subscribe<BaseEntity>(GlobalEventVariant.EntityDied, OnEntityDied);
@@ -31,10 +33,16 @@ public partial class RoomController : Node
     
     public void OnRoomEntered()
     {
+        _remainingEnemies = DungeonManager.Instance.Level;
+
         if (SpawnOnStart)
         {
             // Delay spawning slightly to ensure room is fully set up
-            GetTree().CreateTimer(0.2).Timeout += SpawnEnemies;
+            GetTree().CreateTimer(0.5).Timeout += () =>
+            {
+                GlobalEventBus.Instance.Publish(GlobalEventVariant.RoomStarted); ;
+                SpawnEnemies();
+            };
         }
     }
     
@@ -47,6 +55,12 @@ public partial class RoomController : Node
             
         // Check if all enemies are defeated
         if (_spawnedEnemies.Count != 0 || _roomCleared) return;
+        if (_spawnedEnemies.Count == 0 && _remainingEnemies > 0)
+        {
+            SpawnEnemies();
+            return;
+        }
+        
         _roomCleared = true;
         GlobalEventBus.Instance.Publish(GlobalEventVariant.RoomCleared);
     }
@@ -65,20 +79,20 @@ public partial class RoomController : Node
         // Spawn enemies at each spawn point
         foreach (var spawnPoint in spawnPoints)
         {
+            if (_remainingEnemies <= 0) break;
+            
             // Pick a random enemy type
             var enemyScene = EnemyTypes[GD.RandRange(0, EnemyTypes.Length - 1)];
 
-            {
-                var enemy = enemyScene.Instantiate<BaseEnemy>();
-                GetTree().Root.GetNode("/root/Autoload/Entities").AddChild(enemy);
-                enemy.GlobalPosition = spawnPoint.GlobalPosition;
-                
-                _spawnedEnemies.Add(enemy);
-            }
+
+            var enemy = enemyScene.Instantiate<BaseEnemy>();
+            GetTree().Root.GetNode("/root/Autoload/Entities").AddChild(enemy);
+            enemy.GlobalPosition = spawnPoint.GlobalPosition;
+
+            _spawnedEnemies.Add(enemy);
+
+            _remainingEnemies--;
         }
-        
-        // Emit the RoomStart event when enemies are spawned
-        GlobalEventBus.Instance.Publish(GlobalEventVariant.RoomStarted);
     }
     
     // Public method to manually trigger enemy spawning
