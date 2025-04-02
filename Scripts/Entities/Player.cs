@@ -1,4 +1,5 @@
 using System;
+using ChronosDescent.Scripts.Abilities;
 using ChronosDescent.Scripts.Core.Ability;
 using ChronosDescent.Scripts.Core.Animation;
 using ChronosDescent.Scripts.Core.Damage;
@@ -45,9 +46,10 @@ public partial class Player : BaseEntity
 
         _sprite = GetNode<Sprite2D>("Sprite2D");
         _hurtbox = GetNode<Hurtbox>("Hurtbox");
-        ActionManager = GetNode<UserInputManager>("../UserInputManager");
+        ActionManager = GetNode<ActionManager.UserInputManager>("../UserInputManager");
         _weaponMountPoint = GetNode<Node2D>("WeaponMountPoint");
         WeaponAnimationPlayer = GetNode<AnimationPlayer>("WeaponAnimationPlayer");
+        _collision = GetNode<CollisionShape2D>("CollisionShape2D");
 
 
         StatsManager.Initialize(this);
@@ -60,13 +62,39 @@ public partial class Player : BaseEntity
         GetNode<Camera>("../Camera").Initialize(this);
         GetNode<PlayerHealthBar>("../UI/PlayerHealthBar").Initialize(this);
 
-
-        // WeaponManager.SetWeapon<Claymore>(GD.Load<PackedScene>("res://Scenes/weapon/claymore.tscn"));
-        WeaponManager.SetWeapon<Bow>(GD.Load<PackedScene>("res://Scenes/weapon/bow.tscn"));
+        // Check if we have player config from preparation room
+        ApplyPlayerConfiguration();
     }
 
     public override void _ExitTree()
     {
+    }
+
+    private void ApplyPlayerConfiguration()
+    {
+        var gameManager = GetNode<GameManager>("/root/GameManager");
+
+        // Apply weapon selection
+        switch (gameManager.SelectedWeapon)
+        {
+            case "Bow":
+                WeaponManager.SetWeapon<Bow>(GD.Load<PackedScene>("res://Scenes/weapon/bow.tscn"));
+                break;
+            case "Claymore":
+                WeaponManager.SetWeapon<Claymore>(GD.Load<PackedScene>("res://Scenes/weapon/claymore.tscn"));
+                break;
+        }
+
+        // Apply ability selection
+        BaseAbility ability = gameManager.SelectedAbility switch
+        {
+            "Dash" => new Dash(),
+            "Time Rewind" => new TimeRewind(),
+            "Heal" => new Heal(),
+            _ => null
+        };
+
+        SetAbility(AbilitySlotType.LifeSaving, ability);
     }
 
     public override void _Process(double delta)

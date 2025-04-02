@@ -1,0 +1,25 @@
+[gd_scene load_steps=3 format=3 uid="uid://csgjswqnhcfup"]
+
+[ext_resource type="Script" path="res://Scripts/UI/CurrencyDisplay.cs" id="1_hm0jy"]
+[ext_resource type="Texture2D" path="res://Assets/Items/chronoshard.png" id="2_eljn7"]
+
+[node name="CurrencyDisplay" type="HBoxContainer"]
+offset_right = 183.0
+offset_bottom = 64.0
+script = ExtResource("1_hm0jy")
+
+[node name="CurrencyIcon" type="TextureRect" parent="."]
+layout_mode = 2
+size_flags_horizontal = 4
+texture = ExtResource("2_eljn7")
+stretch_mode = 2
+
+[node name="CurrencyValue" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 20
+text = "0"
+vertical_alignment = 1

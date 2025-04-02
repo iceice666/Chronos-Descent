@@ -1,6 +1,5 @@
-[gd_scene load_steps=6 format=3 uid="uid://qdk7840e8sj3"]
+[gd_scene load_steps=5 format=3 uid="uid://qdk7840e8sj3"]
 
-[ext_resource type="FontFile" uid="uid://bh4mhdste7lpf" path="res://Assets/Font/bopomofo-english.png" id="1_5npka"]
 [ext_resource type="Script" uid="uid://bs7mbo2lqioc5" path="res://Scripts/UI/BoardcastTitle.cs" id="1_5ulww"]
 
 [sub_resource type="Animation" id="Animation_5npka"]
@@ -52,7 +51,6 @@ offset_right = 198.5
 offset_bottom = -56.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_fonts/font = ExtResource("1_5npka")
 theme_override_font_sizes/font_size = 32
 text = "Level 1"
 horizontal_alignment = 1

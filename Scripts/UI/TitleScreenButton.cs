@@ -14,7 +14,13 @@ public partial class TitleScreenButton : VBoxContainer
         _quitButton = GetNode<Button>("QuitButton");
         _langButton = GetNode<Button>("LangButton");
 
-
+        _newRunButton.Pressed += OnNewRunPressed;
         _quitButton.Pressed += () => GetTree().Quit();
+    }
+    
+    private void OnNewRunPressed()
+    {
+        // Load the preparation room scene
+        GetTree().ChangeSceneToFile("res://Scenes/prepare_room.tscn");
     }
 }

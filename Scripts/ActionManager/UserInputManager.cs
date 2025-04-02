@@ -2,7 +2,7 @@ using System;
 using ChronosDescent.Scripts.Core.Entity;
 using Godot;
 
-namespace ChronosDescent.Scripts;
+namespace ChronosDescent.Scripts.ActionManager;
 
 /// <summary>
 ///     Manages input from different sources (keyboard/mouse, controller, touchscreen)

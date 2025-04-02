@@ -1,0 +1,115 @@
+[gd_scene load_steps=2 format=3 uid="uid://dcy71y73jm4gs"]
+
+[ext_resource type="Script" path="res://Scripts/UI/PrepareRoomController.cs" id="1_16l5d"]
+
+[node name="PrepareRoom" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_16l5d")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.113725, 0.113725, 0.137255, 1)
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -158.5
+offset_top = 30.0
+offset_right = 158.5
+offset_bottom = 74.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 32
+text = "Prepare for your Run"
+horizontal_alignment = 1
+
+[node name="WeaponSelection" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 100.0
+offset_top = -150.0
+offset_right = 400.0
+offset_bottom = 150.0
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="WeaponSelection"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Select Weapon"
+horizontal_alignment = 1
+
+[node name="WeaponList" type="ItemList" parent="WeaponSelection"]
+layout_mode = 2
+size_flags_vertical = 3
+item_count = 2
+item_0/text = "Bow"
+item_1/text = "Claymore"
+
+[node name="WeaponDescription" type="Label" parent="WeaponSelection"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Weapon description here."
+autowrap_mode = 3
+
+[node name="AbilitySelection" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -150.0
+offset_right = -100.0
+offset_bottom = 150.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="AbilitySelection"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Select Life-Saving Ability"
+horizontal_alignment = 1
+
+[node name="AbilityList" type="ItemList" parent="AbilitySelection"]
+layout_mode = 2
+size_flags_vertical = 3
+item_count = 3
+item_0/text = "Dash"
+item_1/text = "Time Rewind"
+item_2/text = "Heal"
+
+[node name="AbilityDescription" type="Label" parent="AbilitySelection"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Ability description here."
+autowrap_mode = 3
+
+[node name="StartRunButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -100.0
+offset_top = -100.0
+offset_right = 100.0
+offset_bottom = -50.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 20
+text = "Start Run"
