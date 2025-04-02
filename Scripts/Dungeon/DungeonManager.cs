@@ -12,6 +12,7 @@ public partial class DungeonManager : Node
 {
     private Player _player;
     public static DungeonManager Instance { get; private set; }
+    private DungeonGenerator _dungeonGenerator = new();
 
     [Export] public RoomRegistryResource RoomRegistry { get; set; }
     public int Level { get; private set; }
@@ -60,7 +61,7 @@ public partial class DungeonManager : Node
             if (DungeonMap.Type is RoomType.BossRoom or RoomType.EndRoom)
             {
                 Level++;
-                DungeonMap = DungeonGenerator.Generate(Level);
+                DungeonMap = _dungeonGenerator.Generate(Level);
             }
 
             if (DungeonMap.NextNodes[0].Type == RoomType.ShopRoom) break;
@@ -69,10 +70,12 @@ public partial class DungeonManager : Node
         }
     }
 
-    public void MoveToNextLevel()
+    private void MoveToNextLevel()
     {
         Level++;
-        DungeonMap = DungeonGenerator.Generate(Level);
+        DungeonMap = _dungeonGenerator.Generate(Level);
+
+        GD.Print(DungeonMap.ExportToDot());
 
         // Update the level in GameStats
         GameStats.Instance.SetLevel(Level);
