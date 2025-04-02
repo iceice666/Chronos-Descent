@@ -24,6 +24,7 @@ public abstract partial class BaseEntity : CharacterBody2D
     public Weapon.Manager WeaponManager { get; } = new();
     public Effect.Manager EffectManager { get; } = new();
     public CurrencyManager CurrencyManager { get; } = new();
+    public Blessing.Manager BlessingManager { get; } = new();
     public AnimationPlayer WeaponAnimationPlayer { get; protected set; }
 
     public bool Moveable

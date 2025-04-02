@@ -6,12 +6,12 @@ namespace ChronosDescent.Scripts.UI;
 
 public partial class DeathScreen : Control
 {
-    private Label _enemiesDefeatedValue;
     private Label _damageCausedValue;
+    private Label _enemiesDefeatedValue;
     private Label _levelReachedValue;
-    private Label _timePlayedValue;
-    private Button _restartButton;
     private Button _quitButton;
+    private Button _restartButton;
+    private Label _timePlayedValue;
 
     public override void _Ready()
     {
@@ -76,10 +76,7 @@ public partial class DeathScreen : Control
     private void CleanupEnemies()
     {
         var enemies = GetTree().GetNodesInGroup("Enemy");
-        foreach (var enemy in enemies)
-        {
-            enemy.QueueFree();
-        }
+        foreach (var enemy in enemies) enemy.QueueFree();
     }
 
     private void OnRestartPressed()

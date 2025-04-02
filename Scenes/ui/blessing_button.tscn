@@ -1,0 +1,72 @@
+[gd_scene load_steps=2 format=3 uid="uid://c5v8o5l6f68ot"]
+
+[ext_resource type="Script" uid="uid://hk8pvcyf6uno" path="res://Scripts/UI/BlessingButton.cs" id="1_63r26"]
+
+[node name="BlessingButton" type="Button"]
+custom_minimum_size = Vector2(240, 280)
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_63r26")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Temporal Echo"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="IconTexture" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ColorRect" type="ColorRect" parent="MarginContainer/VBoxContainer/HBoxContainer/IconTexture"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.454902, 0.266667, 0.862745, 1)
+
+[node name="CategoryLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Offensive"
+vertical_alignment = 1
+
+[node name="DescriptionLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(224, 137)
+layout_mode = 2
+size_flags_vertical = 3
+text = "Your attacks have a 25% chance to strike again after a brief delay."
+autowrap_mode = 2
+
+[node name="DeityLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "— Chronos, Keeper of Balance"
+horizontal_alignment = 2

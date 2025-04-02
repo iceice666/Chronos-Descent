@@ -22,6 +22,7 @@ config/icon="uid://3e85i6qn22hr"
 [autoload]
 
 Autoload="*res://Scenes/autoload.tscn"
+BlessingRegistry="*res://Scenes/autoload/blessing_registry.tscn"
 GameManager="*res://Scripts/GameManager.cs"
 
 [display]

@@ -1,10 +1,10 @@
 using System;
 using ChronosDescent.Scripts.Abilities;
 using ChronosDescent.Scripts.ActionManager;
-using System;
 using ChronosDescent.Scripts.Core;
 using ChronosDescent.Scripts.Core.Ability;
 using ChronosDescent.Scripts.Core.Animation;
+using ChronosDescent.Scripts.Core.Blessing;
 using ChronosDescent.Scripts.Core.Damage;
 using ChronosDescent.Scripts.Core.Effect;
 using ChronosDescent.Scripts.Core.Entity;
@@ -61,10 +61,11 @@ public partial class Player : BaseEntity
         WeaponManager.Initialize(this);
         PositionRecord.Initialize(this);
         CurrencyManager.Initialize(this);
+        BlessingManager.Initialize(this);
 
         // Initialize game stats
         GameStats.Instance.StartGame();
-        
+
         // Give starting currency
         CurrencyManager.SetChronoshards(10);
 
@@ -116,6 +117,7 @@ public partial class Player : BaseEntity
         WeaponManager.Update(delta);
         PositionRecord.Update(delta);
         CurrencyManager.Update(delta);
+        BlessingManager.Update(delta);
 
         var isLookRight = ActionManager.LookDirection.X < 0;
         if (_isPrevLookRight != isLookRight)
@@ -137,6 +139,7 @@ public partial class Player : BaseEntity
         WeaponManager.FixedUpdate(delta);
         PositionRecord.FixedUpdate(delta);
         CurrencyManager.FixedUpdate(delta);
+        BlessingManager.FixedUpdate(delta);
 
         if (Moveable)
         {
@@ -174,6 +177,9 @@ public partial class Player : BaseEntity
 
     public override void TakeDamage(double amount, DamageType damageType, Vector2 knockback = new())
     {
+        // Allow blessings to react to damage before it's applied
+        if (damageType != DamageType.Healing) BlessingManager.NotifyDamageTaken(amount);
+
         // Update health
         StatsManager.Health += damageType == DamageType.Healing ? amount : -amount;
 
@@ -187,10 +193,10 @@ public partial class Player : BaseEntity
 
             EventBus.Publish(EventVariant.EntityDied);
             GlobalEventBus.Instance.Publish<BaseEntity>(GlobalEventVariant.EntityDied, this);
-            
+
             // Trigger game over event
             GlobalEventBus.Instance.Publish(GlobalEventVariant.GameOver);
-            
+
             IsDead = true;
         }
 
@@ -204,6 +210,34 @@ public partial class Player : BaseEntity
     public override void ActivateAbility(AbilitySlotType abilitySlotType)
     {
         AbilityManager.ActivateAbility(abilitySlotType);
+
+        // Notify blessings about ability usage
+        var abilityVariant = abilitySlotType switch
+        {
+            AbilitySlotType.Normal => AbilityVariant.Normal,
+            AbilitySlotType.Special => AbilityVariant.Special,
+            AbilitySlotType.Ultimate => AbilityVariant.Ultimate,
+            AbilitySlotType.LifeSaving => GetAbilityVariant(abilitySlotType),
+            _ => AbilityVariant.Other
+        };
+
+        BlessingManager.NotifyAbilityUsed(abilityVariant);
+    }
+
+    // Helper method to determine ability variant for life-saving abilities
+    private AbilityVariant GetAbilityVariant(AbilitySlotType slotType)
+    {
+        var ability = AbilityManager.GetAbility(slotType);
+
+        if (ability == null)
+            return AbilityVariant.Other;
+
+        return ability.Id switch
+        {
+            "dash" => AbilityVariant.Dash,
+            "time_rewind" => AbilityVariant.TimeRewind,
+            _ => AbilityVariant.Other
+        };
     }
 
     public override void ReleaseAbility(AbilitySlotType abilitySlotType)

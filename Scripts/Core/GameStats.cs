@@ -1,4 +1,3 @@
-using System;
 using Godot;
 
 namespace ChronosDescent.Scripts.Core;
@@ -6,21 +5,22 @@ namespace ChronosDescent.Scripts.Core;
 public sealed class GameStats
 {
     private static GameStats _instance;
-    public static GameStats Instance => _instance ??= new GameStats();
+    private double _gameTime;
 
     private double _startTime;
-    private double _gameTime;
     private bool _timerActive;
-
-    public int EnemiesDefeated { get; private set; }
-    public double DamageCaused { get; private set; }
-    public int CurrentLevel { get; private set; }
-    public double TimePlayed => _timerActive ? Time.GetUnixTimeFromSystem() - _startTime + _gameTime : _gameTime;
 
     private GameStats()
     {
         Reset();
     }
+
+    public static GameStats Instance => _instance ??= new GameStats();
+
+    public int EnemiesDefeated { get; private set; }
+    public double DamageCaused { get; private set; }
+    public int CurrentLevel { get; private set; }
+    public double TimePlayed => _timerActive ? Time.GetUnixTimeFromSystem() - _startTime + _gameTime : _gameTime;
 
     public void StartGame(int startLevel = 1)
     {
@@ -33,7 +33,7 @@ public sealed class GameStats
     public void PauseTimer()
     {
         if (!_timerActive) return;
-        
+
         _gameTime += Time.GetUnixTimeFromSystem() - _startTime;
         _timerActive = false;
     }
@@ -41,7 +41,7 @@ public sealed class GameStats
     public void ResumeTimer()
     {
         if (_timerActive) return;
-        
+
         _startTime = Time.GetUnixTimeFromSystem();
         _timerActive = true;
     }
@@ -74,9 +74,9 @@ public sealed class GameStats
     {
         var totalSeconds = TimePlayed;
         var hours = (int)(totalSeconds / 3600);
-        var minutes = (int)((totalSeconds % 3600) / 60);
+        var minutes = (int)(totalSeconds % 3600 / 60);
         var seconds = (int)(totalSeconds % 60);
-        
+
         return $"{hours:D2}:{minutes:D2}:{seconds:D2}";
     }
 }

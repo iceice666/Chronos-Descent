@@ -7,6 +7,24 @@ namespace ChronosDescent.Scripts;
 
 public class Utils
 {
+    public static Dictionary<T, U> ToDictionary<[MustBeVariant] T, [MustBeVariant] U>
+        (Godot.Collections.Dictionary<T, U> dict)
+    {
+        var result = new Dictionary<T, U>();
+
+        foreach (var (k, v) in dict) result.Add(k, v);
+
+        return result;
+    }
+
+    public static Godot.Collections.Dictionary<T, U> ToDictionary<[MustBeVariant] T, [MustBeVariant] U>
+        (Dictionary<T, U> dict)
+    {
+        var result = new Godot.Collections.Dictionary<T, U>();
+        foreach (var (k, v) in dict) result.Add(k, v);
+
+        return result;
+    }
 }
 
 public static class EnumerableExtensions

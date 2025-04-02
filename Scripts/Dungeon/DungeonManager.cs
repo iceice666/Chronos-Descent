@@ -38,17 +38,23 @@ public partial class DungeonManager : Node
     {
         GlobalEventBus.Instance.Unsubscribe(GlobalEventVariant.RoomCleared, OnRoomCleared);
         GlobalEventBus.Instance.Unsubscribe(GlobalEventVariant.MagicButtonTriggered, OnMagicButtonPressed);
-
     }
 
     private void OnRoomCleared()
     {
+        if (DungeonMap.Type is RoomType.BossRoom)
+        {
+            MoveToNextLevel();
+            return;
+        }
+        
         CurrentRoom.GetNodeOrNull("Doors")?
             .GetChildren().Cast<RoomDoor>().ToList()
             .ForEach(door => door.Open());
     }
-    
-    private void OnMagicButtonPressed(){
+
+    private void OnMagicButtonPressed()
+    {
         while (true)
         {
             if (DungeonMap.Type is RoomType.BossRoom or RoomType.EndRoom)
@@ -67,7 +73,7 @@ public partial class DungeonManager : Node
     {
         Level++;
         DungeonMap = DungeonGenerator.Generate(Level);
-        
+
         // Update the level in GameStats
         GameStats.Instance.SetLevel(Level);
 
@@ -81,11 +87,6 @@ public partial class DungeonManager : Node
 
     public void MoveToNextRoom(bool isLeft)
     {
-        if (DungeonMap.Type is RoomType.BossRoom)
-        {
-            MoveToNextLevel();
-            return;
-        }
 
         DungeonMap = DungeonMap.NextNodes.Count == 1 || isLeft ? DungeonMap.NextNodes[0] : DungeonMap.NextNodes[1];
 

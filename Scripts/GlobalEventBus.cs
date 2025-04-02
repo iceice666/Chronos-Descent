@@ -24,7 +24,14 @@ public enum GlobalEventVariant
     CurrencyCollected,
     CurrencyDropped,
     ShopTransactionCompleted,
-    
+
+    // Blessing system events
+    BlessingOfferStarted,
+    BlessingSelected,
+    BlessingAdded,
+    BlessingRemoved,
+    BlessingUpgraded,
+
     // Game state events
     GameOver
 }
@@ -34,10 +41,10 @@ public partial class GlobalEventBus : Node
 {
     // Dictionary of event types to event instances
     private readonly Dictionary<Type, Dictionary<GlobalEventVariant, object>> _events = new();
-    
+
     // Dictionary to track lambda wrappers for parameterless subscriptions
     private readonly Dictionary<GlobalEventVariant, Dictionary<Action, Action<Empty>>> _paramlessWrappers = new();
-    
+
     public static GlobalEventBus Instance { get; private set; }
 
     // Subscribe to an event
@@ -64,20 +71,20 @@ public partial class GlobalEventBus : Node
             eventObj = new Event<Empty>();
             eventDict[ev] = eventObj;
         }
-        
+
         // Create a wrapper that invokes the callback
         Action<Empty> wrapper = _ => callback();
-        
+
         // Store the wrapper so we can unsubscribe it later
         if (!_paramlessWrappers.TryGetValue(ev, out var wrappers))
         {
             wrappers = new Dictionary<Action, Action<Empty>>();
             _paramlessWrappers[ev] = wrappers;
         }
-        
+
         // Store the mapping from callback to wrapper
         wrappers[callback] = wrapper;
-        
+
         // Subscribe the wrapper
         ((Event<Empty>)eventObj).Handler += wrapper;
     }
@@ -99,18 +106,13 @@ public partial class GlobalEventBus : Node
         // Find the event and remove the wrapper
         if (_events.TryGetValue(typeof(Empty), out var eventDict) &&
             eventDict.TryGetValue(ev, out var eventObj))
-        {
             ((Event<Empty>)eventObj).Handler -= wrapper;
-        }
-            
+
         // Remove the wrapper from our tracking dictionary
         wrappers.Remove(callback);
-            
+
         // Clean up empty dictionaries
-        if (wrappers.Count == 0)
-        {
-            _paramlessWrappers.Remove(ev);
-        }
+        if (wrappers.Count == 0) _paramlessWrappers.Remove(ev);
     }
 
     // Publish an event with data
@@ -183,12 +185,9 @@ public partial class GlobalEventBus : Node
         var dmgType = isCritical
             ? DamageType.Critical
             : DamageType.Normal;
-            
+
         // Record damage only if attacking an enemy (player is the attacker)
-        if (attackee.IsInGroup("Enemy") && !attackee.IsInGroup("Player"))
-        {
-            GameStats.Instance.RecordDamageCaused(damage);
-        }
+        if (attackee.IsInGroup("Enemy") && !attackee.IsInGroup("Player")) GameStats.Instance.RecordDamageCaused(damage);
 
         attackee.TakeDamage(damage, dmgType, rawKb);
     }

@@ -11,7 +11,6 @@ public partial class RoomController : Node
 {
     private readonly List<BaseEnemy> _spawnedEnemies = [];
     private int _remainingEnemies;
-    private bool _roomCleared;
     private Node _spawnNode;
     private Node2D _spawnPointsContainer;
     [Export] public required PackedScene[] EnemyTypes { get; set; }
@@ -53,14 +52,13 @@ public partial class RoomController : Node
         _spawnedEnemies.Remove(enemy);
 
         // Check if all enemies are defeated
-        if (_spawnedEnemies.Count != 0 || _roomCleared) return;
+        if (_spawnedEnemies.Count != 0 ) return;
         if (_spawnedEnemies.Count == 0 && _remainingEnemies > 0)
         {
             SpawnEnemies();
             return;
         }
 
-        _roomCleared = true;
         GlobalEventBus.Instance.Publish(GlobalEventVariant.RoomCleared);
     }
 
@@ -72,7 +70,6 @@ public partial class RoomController : Node
         var spawnPoints = _spawnPointsContainer.GetChildren().Cast<Node2D>().ToArray();
         if (spawnPoints.Length == 0) return;
 
-        _roomCleared = false;
         _spawnedEnemies.Clear();
 
         // Spawn enemies at each spawn point
@@ -92,11 +89,5 @@ public partial class RoomController : Node
 
             _remainingEnemies--;
         }
-    }
-
-    // Public method to manually trigger enemy spawning
-    public void TriggerEnemySpawn()
-    {
-        SpawnEnemies();
     }
 }

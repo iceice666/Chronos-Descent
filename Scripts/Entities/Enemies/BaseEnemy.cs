@@ -321,10 +321,10 @@ public partial class BaseEnemy : BaseEntity
     {
         // Record the enemy defeat in game stats
         GameStats.Instance.RecordEnemyDefeat();
-        
+
         // Drop currency based on chance
         if (GD.Randf() <= CurrencyDropChance) DropCurrency();
-        
+
         // Base implementation just removes the entity
         QueueFree();
     }

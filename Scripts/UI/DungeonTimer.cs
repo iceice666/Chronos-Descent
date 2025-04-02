@@ -1,4 +1,3 @@
-using System;
 using Godot;
 
 namespace ChronosDescent.Scripts.UI;

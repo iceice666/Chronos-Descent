@@ -11,7 +11,8 @@ public enum StatFieldSpecifier
     Defense,
     CriticalChance,
     CriticalDamage,
-    MoveSpeed
+    MoveSpeed,
+    AttackSpeed
 }
 
 public class EntityBaseStats
