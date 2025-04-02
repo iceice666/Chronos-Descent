@@ -28,30 +28,39 @@ public partial class DungeonManager : Node
         _player = GetNode<Player>("../Player");
 
 
-        GlobalEventBus.Instance.Subscribe(GlobalEventVariant.RoomCleared, () =>
-        {
-            CurrentRoom.GetNodeOrNull("Doors")?
-                .GetChildren().Cast<RoomDoor>().ToList()
-                .ForEach(door => door.Open());
-        });
-
-        GlobalEventBus.Instance.Subscribe(GlobalEventVariant.MagicButtonTriggered, () =>
-        {
-            while (true)
-            {
-                if (DungeonMap.Type is RoomType.BossRoom or RoomType.EndRoom)
-                {
-                    Level++;
-                    DungeonMap = DungeonGenerator.Generate(Level);
-                }
-
-                if (DungeonMap.NextNodes[0].Type == RoomType.ShopRoom) break;
-
-                DungeonMap = DungeonMap.NextNodes[0];
-            }
-        });
+        GlobalEventBus.Instance.Subscribe(GlobalEventVariant.RoomCleared, OnRoomCleared);
+        GlobalEventBus.Instance.Subscribe(GlobalEventVariant.MagicButtonTriggered, OnMagicButtonPressed);
 
         MoveToNextLevel();
+    }
+
+    public override void _ExitTree()
+    {
+        GlobalEventBus.Instance.Unsubscribe(GlobalEventVariant.RoomCleared, OnRoomCleared);
+        GlobalEventBus.Instance.Unsubscribe(GlobalEventVariant.MagicButtonTriggered, OnMagicButtonPressed);
+
+    }
+
+    private void OnRoomCleared()
+    {
+        CurrentRoom.GetNodeOrNull("Doors")?
+            .GetChildren().Cast<RoomDoor>().ToList()
+            .ForEach(door => door.Open());
+    }
+    
+    private void OnMagicButtonPressed(){
+        while (true)
+        {
+            if (DungeonMap.Type is RoomType.BossRoom or RoomType.EndRoom)
+            {
+                Level++;
+                DungeonMap = DungeonGenerator.Generate(Level);
+            }
+
+            if (DungeonMap.NextNodes[0].Type == RoomType.ShopRoom) break;
+
+            DungeonMap = DungeonMap.NextNodes[0];
+        }
     }
 
     public void MoveToNextLevel()

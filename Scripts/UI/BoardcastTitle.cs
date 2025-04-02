@@ -9,15 +9,20 @@ public partial class BoardcastTitle : Label
     public override void _Ready()
     {
         _animationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
-        GlobalEventBus.Instance.Subscribe<string>(GlobalEventVariant.BoardcastTitle, text => Show(text));
+        GlobalEventBus.Instance.Subscribe<string>(GlobalEventVariant.BoardcastTitle, Show);
     }
 
     public override void _ExitTree()
     {
-        GlobalEventBus.Instance.Unsubscribe<string>(GlobalEventVariant.BoardcastTitle, text => Show(text));
+        GlobalEventBus.Instance.Unsubscribe<string>(GlobalEventVariant.BoardcastTitle, Show);
     }
 
-    public async void Show(string text, int duration = 3)
+    public void Show(string text)
+    {
+        Show(text, 3);
+    }
+
+    public async void Show(string text, int duration)
     {
         Text = text;
         _animationPlayer.Play("fade");

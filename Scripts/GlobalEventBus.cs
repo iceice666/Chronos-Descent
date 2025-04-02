@@ -34,6 +34,10 @@ public partial class GlobalEventBus : Node
 {
     // Dictionary of event types to event instances
     private readonly Dictionary<Type, Dictionary<GlobalEventVariant, object>> _events = new();
+    
+    // Dictionary to track lambda wrappers for parameterless subscriptions
+    private readonly Dictionary<GlobalEventVariant, Dictionary<Action, Action<Empty>>> _paramlessWrappers = new();
+    
     public static GlobalEventBus Instance { get; private set; }
 
     // Subscribe to an event
@@ -60,8 +64,22 @@ public partial class GlobalEventBus : Node
             eventObj = new Event<Empty>();
             eventDict[ev] = eventObj;
         }
-
-        ((Event<Empty>)eventObj).Handler += _ => callback();
+        
+        // Create a wrapper that invokes the callback
+        Action<Empty> wrapper = _ => callback();
+        
+        // Store the wrapper so we can unsubscribe it later
+        if (!_paramlessWrappers.TryGetValue(ev, out var wrappers))
+        {
+            wrappers = new Dictionary<Action, Action<Empty>>();
+            _paramlessWrappers[ev] = wrappers;
+        }
+        
+        // Store the mapping from callback to wrapper
+        wrappers[callback] = wrapper;
+        
+        // Subscribe the wrapper
+        ((Event<Empty>)eventObj).Handler += wrapper;
     }
 
     // Unsubscribe from an event
@@ -75,7 +93,24 @@ public partial class GlobalEventBus : Node
     // Unsubscribe from an event without parameters
     public void Unsubscribe(GlobalEventVariant ev, Action callback)
     {
-        // This is more complex with this approach and has limitations
+        // Get the wrapper for this callback
+        if (!_paramlessWrappers.TryGetValue(ev, out var wrappers) ||
+            !wrappers.TryGetValue(callback, out var wrapper)) return;
+        // Find the event and remove the wrapper
+        if (_events.TryGetValue(typeof(Empty), out var eventDict) &&
+            eventDict.TryGetValue(ev, out var eventObj))
+        {
+            ((Event<Empty>)eventObj).Handler -= wrapper;
+        }
+            
+        // Remove the wrapper from our tracking dictionary
+        wrappers.Remove(callback);
+            
+        // Clean up empty dictionaries
+        if (wrappers.Count == 0)
+        {
+            _paramlessWrappers.Remove(ev);
+        }
     }
 
     // Publish an event with data
@@ -108,6 +143,7 @@ public partial class GlobalEventBus : Node
     public void ClearEvents()
     {
         _events.Clear();
+        _paramlessWrappers.Clear();
     }
 
     public override void _Ready()
