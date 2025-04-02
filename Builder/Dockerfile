@@ -10,7 +10,7 @@ SHELL ["/bin/bash", "-c"]
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Set environment variables for Chronos Descent
-ENV GODOT_VERSION=4.3 \
+ENV GODOT_VERSION=4.4 \
     RELEASE_NAME=stable \
     EXPORT_NAME=Chronos-Descent \
     PROJECT_PATH=/project \
