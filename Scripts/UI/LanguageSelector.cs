@@ -33,7 +33,7 @@ public partial class LanguageSelector : Control
         var languages = TranslationManager.Instance.AvailableLanguages.ToArray();
         
         // Add languages to dropdown
-        for (int i = 0; i < languages.Length; i++)
+        for (var i = 0; i < languages.Length; i++)
         {
             _languageDropdown.AddItem(languages[i], i);
             
@@ -48,7 +48,7 @@ public partial class LanguageSelector : Control
     private void OnLanguageSelected(long index)
     {
         // Get selected language
-        string language = _languageDropdown.GetItemText((int)index);
+        var language = _languageDropdown.GetItemText((int)index);
         
         // Set language in TranslationManager
         TranslationManager.Instance.CurrentLanguage = language;

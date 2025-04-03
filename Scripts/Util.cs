@@ -1,14 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ChronosDescent.Scripts.Core;
 using Godot;
 
 namespace ChronosDescent.Scripts;
 
-public class Utils
+public static class Extensions
 {
     public static Dictionary<T, U> ToDictionary<[MustBeVariant] T, [MustBeVariant] U>
-        (Godot.Collections.Dictionary<T, U> dict)
+        (this Godot.Collections.Dictionary<T, U> dict)
     {
         var result = new Dictionary<T, U>();
 
@@ -18,12 +19,60 @@ public class Utils
     }
 
     public static Godot.Collections.Dictionary<T, U> ToDictionary<[MustBeVariant] T, [MustBeVariant] U>
-        (Dictionary<T, U> dict)
+        (this Dictionary<T, U> dict)
     {
         var result = new Godot.Collections.Dictionary<T, U>();
         foreach (var (k, v) in dict) result.Add(k, v);
 
         return result;
+    }
+    
+    /// <summary>
+    /// Set the text of a Label with translation
+    /// </summary>
+    public static void SetTextTr(this Label label, string key)
+    {
+        label.Text = TranslationManager.Tr(key);
+    }
+    
+    /// <summary>
+    /// Set the text of a Label with translation and formatting
+    /// </summary>
+    public static void SetTextTrFormat(this Label label, string key, params object[] args)
+    {
+        label.Text = TranslationManager.TrFormat(key, args);
+    }
+    
+    /// <summary>
+    /// Set the text of a Button with translation
+    /// </summary>
+    public static void SetTextTr(this Button button, string key)
+    {
+        button.Text = TranslationManager.Tr(key);
+    }
+    
+    /// <summary>
+    /// Set the tooltip of a Control with translation
+    /// </summary>
+    public static void SetTooltipTextTr(this Control control, string key)
+    {
+        control.TooltipText = TranslationManager.Tr(key);
+    }
+    
+    /// <summary>
+    /// Set the tooltip of a Control with translation and formatting
+    /// </summary>
+    public static void SetTooltipTextTrFormat(this Control control, string key, params object[] args)
+    {
+        control.TooltipText = TranslationManager.TrFormat(key, args);
+    }
+    
+    /// <summary>
+    /// Set an item's text in an OptionButton with translation
+    /// </summary>
+    public static void SetItemTextTr(this OptionButton optionButton, int index, string key)
+    {
+        optionButton.SetItemText(index, TranslationManager.Tr(key));
     }
 }
 

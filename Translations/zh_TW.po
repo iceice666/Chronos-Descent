@@ -1,0 +1,255 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: iceice 666\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: zh_TW\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+# Title screen
+msgid "Title_NewRun"
+msgstr "開始新遊戲"
+
+msgid "Title_Quit"
+msgstr "退出"
+
+msgid "Title_Settings"
+msgstr "設定"
+
+# Settings screen
+msgid "Settings_Language"
+msgstr "語言"
+
+msgid "Settings_MusicVolume"
+msgstr "音樂音量"
+
+msgid "Settings_SfxVolume"
+msgstr "音效音量"
+
+msgid "Settings_WindowMode"
+msgstr "視窗模式"
+
+msgid "Settings_Apply"
+msgstr "套用"
+
+msgid "Settings_Reset"
+msgstr "重設"
+
+msgid "Settings_Close"
+msgstr "關閉"
+
+msgid "Settings_General"
+msgstr "一般"
+
+msgid "Settings_Audio"
+msgstr "音訊"
+
+msgid "Settings_Video"
+msgstr "視訊"
+
+msgid "Settings_WindowMode_Windowed"
+msgstr "視窗"
+
+msgid "Settings_WindowMode_Fullscreen"
+msgstr "全螢幕"
+
+msgid "Settings_WindowMode_Maximized"
+msgstr "最大化"
+
+# Weapon/Ability
+msgid "Weapon_Bow"
+msgstr "弓箭"
+msgid "Weapon_Claymore"
+msgstr "大劍"
+
+
+# Prepare room
+msgid "Prepare_Title"
+msgstr "準備你的遊戲"
+
+msgid "Prepare_Weapon_Title"
+msgstr "選擇武器"
+
+msgid "Prepare_Ability_Title"
+msgstr "選擇逃生技能"
+
+
+msgid "Prepare_Bow_Desc"
+msgstr "一種多功能的遠程武器，可發射具有各種效果的箭矢。"
+
+
+msgid "Prepare_Claymore_Desc"
+msgstr "一種重型近戰武器，在近距離戰鬥中造成高傷害。"
+
+msgid "LifeSaving_Dash"
+msgstr "衝刺"
+
+msgid "Prepare_Dash_Desc"
+msgstr "快速向您指向的方向衝刺，避免受到傷害。"
+
+msgid "LifeSaving_TimeRewind"
+msgstr "時間倒流"
+
+msgid "Prepare_TimeRewind_Desc"
+msgstr "將時間倒回先前位置，避開危險情況。"
+
+msgid "LifeSaving_Heal"
+msgstr "治療"
+
+msgid "Prepare_Heal_Desc"
+msgstr "立即恢復大量生命值。"
+
+# General
+msgid "UI_Restart"
+msgstr "重新開始"
+msgid "UI_Quit"
+msgstr "退出"
+msgid "UI_Resume"
+msgstr "繼續遊戲"
+
+
+# Dead screen
+msgid "Dead_Title"
+msgstr "你死了"
+msgid "Dead_Stats"
+msgstr "戰鬥統計"
+msgid "Dead_EnemiesDefeated"
+msgstr "擊敗敵人："
+msgid "Dead_DamageCaused"
+msgstr "造成傷害："
+msgid "Dead_LevelReached"
+msgstr "達到層數："
+msgid "Dead_TimePlayed"
+msgstr "遊戲時間："
+
+
+# Pause menu
+msgid "Pause_Title"
+msgstr "遊戲暫停"
+
+# Defensive Blessings
+msgid "Blessing_TemporalShield"
+msgstr "時間護盾"
+
+msgid "Blessing_TemporalShield_Desc"
+msgstr "當你將要死亡時，自動倒轉時間並獲得{0}%生命值（每個房間一次）。"
+
+msgid "Blessing_ProbabilityField"
+msgstr "概率領域"
+
+msgid "Blessing_ProbabilityField_Desc"
+msgstr "{0}%機率完全避免來自任何來源的傷害。"
+
+msgid "Blessing_WoundReversal"
+msgstr "傷口逆轉"
+
+msgid "Blessing_WoundReversal_Desc"
+msgstr "使用時間倒流能力時恢復{0}%的最大生命值。"
+
+msgid "Blessing_TimelineDiversion"
+msgstr "時間線轉移"
+
+msgid "Blessing_TimelineDiversion_Desc"
+msgstr "受到傷害時，有{0}%機率將{1}%的傷害轉移到時間克隆體上。"
+
+msgid "Notification_TemporalShield_Activated"
+msgstr "時間護盾已激活！"
+
+msgid "Notification_Damage_Avoided"
+msgstr "傷害已避免！"
+
+msgid "Notification_WoundReversal"
+msgstr "傷口逆轉：+{0} 生命值"
+
+msgid "Notification_DamageDiverted"
+msgstr "傷害轉移：{0}"
+
+msgid "Notification_TemporalInsight_Revealed"
+msgstr "時間洞察已顯示房間布局！"
+
+# Offensive Blessings
+msgid "Blessing_TemporalEcho"
+msgstr "時間迴響"
+
+msgid "Blessing_TemporalEcho_Desc"
+msgstr "你的攻擊有{0}%機率在短暫延遲後再次打擊。"
+
+msgid "Blessing_TimeAcceleratedStrikes"
+msgstr "時間加速打擊"
+
+msgid "Blessing_TimeAcceleratedStrikes_Desc"
+msgstr "每次成功命中增加{0}%攻擊速度，持續{1}秒，最多疊加{2}次。"
+
+msgid "Blessing_EntropyBuildup"
+msgstr "熵能積累"
+
+msgid "Blessing_EntropyBuildup_Desc"
+msgstr "對同一目標連續命中造成{0}%更多傷害，最多可疊加至{1}%。"
+
+msgid "Blessing_ParadoxDamage"
+msgstr "悖論傷害"
+
+msgid "Blessing_ParadoxDamage_Desc"
+msgstr "攻擊有{0}%機率對目標的現在和未來狀態造成{1}%額外傷害。"
+
+# Utility Blessings
+msgid "Blessing_ChronoHarvester"
+msgstr "時間收割者"
+
+msgid "Blessing_ChronoHarvester_Desc"
+msgstr "敵人被擊敗時掉落{0}%更多的時間碎片。"
+
+msgid "Blessing_TimelineEfficiency"
+msgstr "時間線效率"
+
+msgid "Blessing_TimelineEfficiency_Desc"
+msgstr "所有能力冷卻時間減少{0}%。"
+
+msgid "Blessing_TemporalInsight"
+msgstr "時間洞察"
+
+msgid "Blessing_TemporalInsight_Desc"
+msgstr "顯示房間布局和{0}敵人位置。"
+
+msgid "Blessing_TemporalInsight_LineOfSight"
+msgstr "在視線範圍內的"
+
+msgid "Blessing_TemporalInsight_ThroughWalls"
+msgstr "即使穿過牆壁的"
+
+msgid "Blessing_ResourceRecursion"
+msgstr "資源遞歸"
+
+msgid "Blessing_ResourceRecursion_Desc"
+msgstr "{0}%機率使用物品時不消耗。"
+
+# Movement Blessings
+msgid "Blessing_PhaseShifting"
+msgstr "相位轉移"
+
+msgid "Blessing_PhaseShifting_Desc"
+msgstr "衝刺能力允許你穿過障礙物和敵人。{0}"
+
+msgid "Blessing_PhaseShifting_Damage"
+msgstr "對你穿過的敵人造成傷害。"
+
+msgid "Blessing_TimeSlipstream"
+msgstr "時間急流"
+
+msgid "Blessing_TimeSlipstream_Desc"
+msgstr "使用能力後，獲得{0}%的移動速度，持續{1}秒。"
+
+msgid "Blessing_SpacetimeCompression"
+msgstr "時空壓縮"
+
+msgid "Blessing_SpacetimeCompression_Desc"
+msgstr "每層的房間數量減少{0}%。"
+
+msgid "Blessing_TemporalWake"
+msgstr "時間尾流"
+
+msgid "Blessing_TemporalWake_Desc"
+msgstr "全速移動時留下傷害性尾流。尾流每秒造成{0}點傷害。"

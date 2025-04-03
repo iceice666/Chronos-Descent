@@ -13,10 +13,9 @@ public partial class TemporalEchoBlessing : Blessing
     private double _lastDamageDealt;
     private double _lastEchoTime;
     public override string Id { get; protected set; } = "temporal_echo";
-    public override string Title { get; protected set; } = "Temporal Echo";
+    public override string Title { get; protected set; } = TranslationManager.Tr("Blessing_TemporalEcho");
 
-    public override string Description { get; protected set; } =
-        "Your attacks have a {0}% chance to strike again after a brief delay.";
+    public override string Description { get; protected set; }
 
     [Export] public override BlessingRarity Rarity { get; set; } = BlessingRarity.Rare;
     [Export] public override BlessingCategory Category { get; set; } = BlessingCategory.Offensive;
@@ -33,12 +32,12 @@ public partial class TemporalEchoBlessing : Blessing
     // Format description with current echo chance
     public override void OnApply()
     {
-        Description = string.Format(Description, EchoChance * CurrentLevel);
+        Description = TranslationManager.TrFormat("Blessing_TemporalEcho_Desc", EchoChance * CurrentLevel);
     }
 
     public override void OnLevelUp()
     {
-        Description = string.Format(Description, EchoChance * CurrentLevel);
+        Description = TranslationManager.TrFormat("Blessing_TemporalEcho_Desc", EchoChance * CurrentLevel);
     }
 
     public override void OnDamageDealt(double amount)
@@ -92,10 +91,9 @@ public partial class TimeAcceleratedStrikesBlessing : Blessing
     private int _currentStacks;
     private double _stackTimer;
     public override string Id { get; protected set; } = "time_accelerated_strikes";
-    public override string Title { get; protected set; } = "Time Accelerated Strikes";
+    public override string Title { get; protected set; } = TranslationManager.Tr("Blessing_TimeAcceleratedStrikes");
 
-    public override string Description { get; protected set; } =
-        "Each successful hit increases your attack speed by {0}% for {1} seconds, stacking up to {2} times.";
+    public override string Description { get; protected set; }
 
     [Export] public override BlessingRarity Rarity { get; set; } = BlessingRarity.Uncommon;
     [Export] public override BlessingCategory Category { get; set; } = BlessingCategory.Offensive;
@@ -114,7 +112,7 @@ public partial class TimeAcceleratedStrikesBlessing : Blessing
         MultiplicativeModifiers = new Dictionary<StatFieldSpecifier, double>();
 
         // Format description with current values
-        Description = string.Format(Description,
+        Description = TranslationManager.TrFormat("Blessing_TimeAcceleratedStrikes_Desc",
             AttackSpeedBoostPerStack * CurrentLevel,
             StackDuration,
             MaxStacks);
@@ -123,7 +121,7 @@ public partial class TimeAcceleratedStrikesBlessing : Blessing
     public override void OnLevelUp()
     {
         // Update description with new values
-        Description = string.Format(Description,
+        Description = TranslationManager.TrFormat("Blessing_TimeAcceleratedStrikes_Desc",
             AttackSpeedBoostPerStack * CurrentLevel,
             StackDuration,
             MaxStacks);
@@ -149,7 +147,7 @@ public partial class TimeAcceleratedStrikesBlessing : Blessing
             if (Owner?.BlessingManager != null)
                 // Mark stats as dirty
                 Owner.StatsManager?.Recalculate(new System.Collections.Generic.Dictionary<StatFieldSpecifier, double>(),
-                    Utils.ToDictionary(MultiplicativeModifiers));
+                    MultiplicativeModifiers.ToDictionary());
         }
     }
 
@@ -173,7 +171,7 @@ public partial class TimeAcceleratedStrikesBlessing : Blessing
                     // Mark stats as dirty
                     Owner.StatsManager?.Recalculate(
                         new System.Collections.Generic.Dictionary<StatFieldSpecifier, double>(),
-                        Utils.ToDictionary(MultiplicativeModifiers));
+                        MultiplicativeModifiers.ToDictionary());
             }
         }
     }
@@ -191,10 +189,9 @@ public partial class EntropyBuildupBlessing : Blessing
     private ulong _lastTargetId;
     private double _resetTimer;
     public override string Id { get; protected set; } = "entropy_buildup";
-    public override string Title { get; protected set; } = "Entropy Buildup";
+    public override string Title { get; protected set; } = TranslationManager.Tr("Blessing_EntropyBuildup");
 
-    public override string Description { get; protected set; } =
-        "Consecutive hits on the same target deal {0}% more damage, stacking up to {1}%.";
+    public override string Description { get; protected set; }
 
     [Export] public override BlessingRarity Rarity { get; set; } = BlessingRarity.Epic;
     [Export] public override BlessingCategory Category { get; set; } = BlessingCategory.Offensive;
@@ -210,7 +207,7 @@ public partial class EntropyBuildupBlessing : Blessing
     public override void OnApply()
     {
         // Format description with current values
-        Description = string.Format(Description,
+        Description = TranslationManager.TrFormat("Blessing_EntropyBuildup_Desc",
             DamageIncreasePerHit * CurrentLevel,
             MaxDamageIncrease * CurrentLevel);
     }
@@ -218,7 +215,7 @@ public partial class EntropyBuildupBlessing : Blessing
     public override void OnLevelUp()
     {
         // Update description with new values
-        Description = string.Format(Description,
+        Description = TranslationManager.TrFormat("Blessing_EntropyBuildup_Desc",
             DamageIncreasePerHit * CurrentLevel,
             MaxDamageIncrease * CurrentLevel);
     }
@@ -283,10 +280,9 @@ public partial class EntropyBuildupBlessing : Blessing
 public partial class ParadoxDamageBlessing : Blessing
 {
     public override string Id { get; protected set; } = "paradox_damage";
-    public override string Title { get; protected set; } = "Paradox Damage";
+    public override string Title { get; protected set; } = TranslationManager.Tr("Blessing_ParadoxDamage");
 
-    public override string Description { get; protected set; } =
-        "Attacks have a {0}% chance to deal {1}% additional damage to both current and future states of the target.";
+    public override string Description { get; protected set; }
 
     [Export] public override BlessingRarity Rarity { get; set; } = BlessingRarity.Legendary;
     [Export] public override BlessingCategory Category { get; set; } = BlessingCategory.Offensive;
@@ -301,7 +297,7 @@ public partial class ParadoxDamageBlessing : Blessing
     public override void OnApply()
     {
         // Format description with current values
-        Description = string.Format(Description,
+        Description = TranslationManager.TrFormat("Blessing_ParadoxDamage_Desc",
             ParadoxChance * CurrentLevel,
             ParadoxDamagePercent);
     }
@@ -309,7 +305,7 @@ public partial class ParadoxDamageBlessing : Blessing
     public override void OnLevelUp()
     {
         // Update description with new values
-        Description = string.Format(Description,
+        Description = TranslationManager.TrFormat("Blessing_ParadoxDamage_Desc",
             ParadoxChance * CurrentLevel,
             ParadoxDamagePercent);
     }

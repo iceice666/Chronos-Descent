@@ -1,8 +1,8 @@
 [gd_scene load_steps=2 format=3 uid="uid://dcy71y73jm4gs"]
 
-[ext_resource type="Script" uid="uid://bly4oq26vq3lc" path="res://Scripts/Dungeon/Room/PrepareRoomController.cs" id="1_16l5d"]
+[ext_resource type="Script" uid="uid://bly4oq26vq3lc" path="res://Scripts/UI/PrepareMenu.cs" id="1_16l5d"]
 
-[node name="PrepareRoom" type="Control"]
+[node name="PrepareMenu" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -59,6 +59,7 @@ item_0/text = "Bow"
 item_1/text = "Claymore"
 
 [node name="WeaponDescription" type="Label" parent="WeaponSelection"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "Weapon description here."
@@ -93,6 +94,7 @@ item_1/text = "Time Rewind"
 item_2/text = "Heal"
 
 [node name="AbilityDescription" type="Label" parent="AbilitySelection"]
+custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "Ability description here."

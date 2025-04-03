@@ -10,11 +10,10 @@ namespace ChronosDescent.Scripts.Core.Blessing;
 public partial class TemporalShieldBlessing : Blessing
 {
     private bool _isAvailable = true;
-    public override string Id { get; protected set; } = "temporal_shield";
-    public override string Title { get; protected set; } = "Temporal Shield";
+    public override string Id { get; protected set; } = "Blessing_TemporalShield";
+    public override string Title { get; protected set; } = TranslationManager.Tr("Blessing_TemporalShield");
 
-    public override string Description { get; protected set; } =
-        "When you would die, automatically rewind time and gain {0}% health instead (once per room).";
+    public override string Description { get; protected set; }
 
     [Export] public override BlessingRarity Rarity { get; set; } = BlessingRarity.Epic;
     [Export] public override BlessingCategory Category { get; set; } = BlessingCategory.Defensive;
@@ -28,7 +27,7 @@ public partial class TemporalShieldBlessing : Blessing
     public override void OnApply()
     {
         // Format description with current values
-        Description = string.Format(Description, HealthRestoredPercent * CurrentLevel);
+        Description = TranslationManager.TrFormat("Blessing_TemporalShield_Desc", HealthRestoredPercent * CurrentLevel);
 
         // Reset availability when entering a new room
         GlobalEventBus.Instance.Subscribe(GlobalEventVariant.RoomEntered, OnRoomStarted);
@@ -43,7 +42,7 @@ public partial class TemporalShieldBlessing : Blessing
     public override void OnLevelUp()
     {
         // Update description with new values
-        Description = string.Format(Description, HealthRestoredPercent * CurrentLevel);
+        Description = TranslationManager.TrFormat("Blessing_TemporalShield_Desc", HealthRestoredPercent * CurrentLevel);
     }
 
     public override void OnDamageTaken(double amount)
@@ -59,7 +58,8 @@ public partial class TemporalShieldBlessing : Blessing
             Owner.StatsManager.Health = healthToRestore;
 
             // Visual effect
-            GlobalEventBus.Instance.Publish(GlobalEventVariant.BoardcastTitle, "Temporal Shield Activated!");
+            GlobalEventBus.Instance.Publish(GlobalEventVariant.BoardcastTitle, 
+                TranslationManager.Tr("Notification_TemporalShield_Activated"));
 
             // Trigger time rewind effect
             Owner.BlessingManager.NotifyTimeRewound();
@@ -82,11 +82,10 @@ public partial class ProbabilityFieldBlessing : Blessing
     private const double CooldownDuration = 0.5; // Cooldown between avoidance checks
 
     private double _cooldownTimer;
-    public override string Id { get; protected set; } = "probability_field";
-    public override string Title { get; protected set; } = "Probability Field";
+    public override string Id { get; protected set; } = "Blessing_ProbabilityField";
+    public override string Title { get; protected set; } = TranslationManager.Tr("Blessing_ProbabilityField");
 
-    public override string Description { get; protected set; } =
-        "{0}% chance to completely avoid damage from any source.";
+    public override string Description { get; protected set; } 
 
     [Export] public override BlessingRarity Rarity { get; set; } = BlessingRarity.Rare;
     [Export] public override BlessingCategory Category { get; set; } = BlessingCategory.Defensive;
@@ -100,13 +99,13 @@ public partial class ProbabilityFieldBlessing : Blessing
     public override void OnApply()
     {
         // Format description with current values
-        Description = string.Format(Description, AvoidChance * CurrentLevel);
+        Description = TranslationManager.TrFormat("Blessing_ProbabilityField_Desc", AvoidChance * CurrentLevel);
     }
 
     public override void OnLevelUp()
     {
         // Update description with new values
-        Description = string.Format(Description, AvoidChance * CurrentLevel);
+        Description = TranslationManager.TrFormat("Blessing_ProbabilityField_Desc", AvoidChance * CurrentLevel);
     }
 
     public override void OnDamageTaken(double amount)
@@ -120,7 +119,8 @@ public partial class ProbabilityFieldBlessing : Blessing
                 Owner.TakeDamage(amount, DamageType.Healing);
 
                 // Visual effect
-                GlobalEventBus.Instance.Publish(GlobalEventVariant.BoardcastTitle, "Damage Avoided!");
+                GlobalEventBus.Instance.Publish(GlobalEventVariant.BoardcastTitle, 
+                    TranslationManager.Tr("Notification_Damage_Avoided"));
 
                 // Start cooldown
                 _cooldownTimer = CooldownDuration;
@@ -140,11 +140,10 @@ public partial class ProbabilityFieldBlessing : Blessing
 [GlobalClass]
 public partial class WoundReversalBlessing : Blessing
 {
-    public override string Id { get; protected set; } = "wound_reversal";
-    public override string Title { get; protected set; } = "Wound Reversal";
+    public override string Id { get; protected set; } = "Blessing_WoundReversal";
+    public override string Title { get; protected set; } = TranslationManager.TrFormat("Blessing_WoundReversal");
 
-    public override string Description { get; protected set; } =
-        "Recover {0}% of maximum health when using the time rewind ability.";
+    public override string Description { get; protected set; } 
 
     [Export] public override BlessingRarity Rarity { get; set; } = BlessingRarity.Uncommon;
     [Export] public override BlessingCategory Category { get; set; } = BlessingCategory.Defensive;
@@ -158,13 +157,13 @@ public partial class WoundReversalBlessing : Blessing
     public override void OnApply()
     {
         // Format description with current values
-        Description = string.Format(Description, HealthRecoveryPercent * CurrentLevel);
+        Description = TranslationManager.TrFormat("Blessing_WoundReversal_Desc", HealthRecoveryPercent * CurrentLevel);
     }
 
     public override void OnLevelUp()
     {
         // Update description with new values
-        Description = string.Format(Description, HealthRecoveryPercent * CurrentLevel);
+        Description = TranslationManager.TrFormat("Blessing_WoundReversal_Desc", HealthRecoveryPercent * CurrentLevel);
     }
 
     public override void OnTimeRewound()
@@ -177,7 +176,7 @@ public partial class WoundReversalBlessing : Blessing
 
         // Visual effect
         GlobalEventBus.Instance.Publish(GlobalEventVariant.BoardcastTitle,
-            $"Wound Reversal: +{healthToRestore:F1} Health");
+            TranslationManager.TrFormat("Notification_WoundReversal", healthToRestore.ToString("F1")));
     }
 }
 
@@ -190,11 +189,10 @@ public partial class TimelineDiversionBlessing : Blessing
     private const double CooldownDuration = 3.0; // Cooldown between diversions
 
     private double _cooldownTimer;
-    public override string Id { get; protected set; } = "timeline_diversion";
-    public override string Title { get; protected set; } = "Timeline Diversion";
+    public override string Id { get; protected set; } = "Blessing_TimelineDiversion";
+    public override string Title { get; protected set; } = TranslationManager.TrFormat("Blessing_TimelineDiversion");
 
-    public override string Description { get; protected set; } =
-        "When taking damage, {0}% chance to divert {1}% of the damage to a temporal clone.";
+    public override string Description { get; protected set; } 
 
     [Export] public override BlessingRarity Rarity { get; set; } = BlessingRarity.Legendary;
     [Export] public override BlessingCategory Category { get; set; } = BlessingCategory.Defensive;
@@ -208,7 +206,7 @@ public partial class TimelineDiversionBlessing : Blessing
     public override void OnApply()
     {
         // Format description with current values
-        Description = string.Format(Description, DiversionChance, DamageReductionPercent);
+        Description = TranslationManager. TrFormat("Blessing_TimelineDiversion_Desc", DiversionChance, DamageReductionPercent);
     }
 
     public override void OnDamageTaken(double amount)
@@ -234,7 +232,7 @@ public partial class TimelineDiversionBlessing : Blessing
 
                 // Visual notification
                 GlobalEventBus.Instance.Publish(GlobalEventVariant.BoardcastTitle,
-                    $"Damage Diverted: {divertedAmount:F1}");
+                    TranslationManager.TrFormat("Notification_DamageDiverted", divertedAmount.ToString("F1")));
 
                 // Start cooldown
                 _cooldownTimer = CooldownDuration;

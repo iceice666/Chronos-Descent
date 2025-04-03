@@ -11,10 +11,9 @@ namespace ChronosDescent.Scripts.Core.Blessing;
 public partial class PhaseShiftingBlessing : Blessing
 {
     public override string Id { get; protected set; } = "phase_shifting";
-    public override string Title { get; protected set; } = "Phase Shifting";
+    public override string Title { get; protected set; } = TranslationManager.Tr("Blessing_PhaseShifting");
 
-    public override string Description { get; protected set; } =
-        "Dash ability allows you to phase through obstacles and enemies.{0}";
+    public override string Description { get; protected set; }
 
     [Export] public override BlessingRarity Rarity { get; set; } = BlessingRarity.Rare;
     [Export] public override BlessingCategory Category { get; set; } = BlessingCategory.Movement;
@@ -31,12 +30,13 @@ public partial class PhaseShiftingBlessing : Blessing
         // Set description based on level
         if (CurrentLevel == 1)
         {
-            Description = string.Format(Description, "");
+            Description = TranslationManager.TrFormat("Blessing_PhaseShifting_Desc", "");
             DealsDamage = false;
         }
         else
         {
-            Description = string.Format(Description, " Deal damage to enemies you phase through.");
+            Description = TranslationManager.TrFormat("Blessing_PhaseShifting_Desc", 
+                TranslationManager.Tr("Blessing_PhaseShifting_Damage"));
             DealsDamage = true;
         }
     }
@@ -46,7 +46,8 @@ public partial class PhaseShiftingBlessing : Blessing
         // Update description based on level
         if (CurrentLevel >= 2)
         {
-            Description = string.Format(Description, " Deal damage to enemies you phase through.");
+            Description = TranslationManager.TrFormat("Blessing_PhaseShifting_Desc",
+                TranslationManager.Tr("Blessing_PhaseShifting_Damage"));
             DealsDamage = true;
         }
     }
@@ -82,10 +83,9 @@ public partial class TimeSlipstreamBlessing : Blessing
 
     private double _boostTimer;
     public override string Id { get; protected set; } = "time_slipstream";
-    public override string Title { get; protected set; } = "Time Slipstream";
+    public override string Title { get; protected set; } = TranslationManager.Tr("Blessing_TimeSlipstream");
 
-    public override string Description { get; protected set; } =
-        "After using an ability, gain {0}% movement speed for {1} seconds.";
+    public override string Description { get; protected set; }
 
     [Export] public override BlessingRarity Rarity { get; set; } = BlessingRarity.Uncommon;
     [Export] public override BlessingCategory Category { get; set; } = BlessingCategory.Movement;
@@ -103,7 +103,7 @@ public partial class TimeSlipstreamBlessing : Blessing
         MultiplicativeModifiers = new Dictionary<StatFieldSpecifier, double>();
 
         // Format description with current values
-        Description = string.Format(Description,
+        Description = TranslationManager.TrFormat("Blessing_TimeSlipstream_Desc",
             SpeedBoostPercent * CurrentLevel,
             BoostDuration);
     }
@@ -111,7 +111,7 @@ public partial class TimeSlipstreamBlessing : Blessing
     public override void OnLevelUp()
     {
         // Update description with new values
-        Description = string.Format(Description,
+        Description = TranslationManager.TrFormat("Blessing_TimeSlipstream_Desc",
             SpeedBoostPercent * CurrentLevel,
             BoostDuration);
     }
@@ -132,7 +132,7 @@ public partial class TimeSlipstreamBlessing : Blessing
         if (Owner?.BlessingManager != null)
             Owner.StatsManager?.Recalculate(
                 new System.Collections.Generic.Dictionary<StatFieldSpecifier, double>(),
-                Utils.ToDictionary(MultiplicativeModifiers));
+                MultiplicativeModifiers.ToDictionary());
 
         // Notify player
         GlobalEventBus.Instance.Publish(GlobalEventVariant.BoardcastTitle,
@@ -156,7 +156,7 @@ public partial class TimeSlipstreamBlessing : Blessing
         if (Owner?.BlessingManager != null)
             Owner.StatsManager?.Recalculate(
                 new System.Collections.Generic.Dictionary<StatFieldSpecifier, double>(),
-                Utils.ToDictionary(MultiplicativeModifiers));
+                MultiplicativeModifiers.ToDictionary());
 
         // Notify player
         GlobalEventBus.Instance.Publish(GlobalEventVariant.BoardcastTitle,
@@ -171,8 +171,8 @@ public partial class TimeSlipstreamBlessing : Blessing
 public partial class SpacetimeCompressionBlessing : Blessing
 {
     public override string Id { get; protected set; } = "spacetime_compression";
-    public override string Title { get; protected set; } = "Spacetime Compression";
-    public override string Description { get; protected set; } = "The number of rooms per level is reduced by {0}%.";
+    public override string Title { get; protected set; } = TranslationManager.Tr("Blessing_SpacetimeCompression");
+    public override string Description { get; protected set; }
 
     [Export] public override BlessingRarity Rarity { get; set; } = BlessingRarity.Common;
     [Export] public override BlessingCategory Category { get; set; } = BlessingCategory.Movement;
@@ -189,13 +189,13 @@ public partial class SpacetimeCompressionBlessing : Blessing
     public override void OnApply()
     {
         // Format description with current values
-        Description = string.Format(Description, RoomReductionPercent * CurrentLevel);
+        Description = TranslationManager.TrFormat("Blessing_SpacetimeCompression_Desc", RoomReductionPercent * CurrentLevel);
     }
 
     public override void OnLevelUp()
     {
         // Update description with new values
-        Description = string.Format(Description, RoomReductionPercent * CurrentLevel);
+        Description = TranslationManager.TrFormat("Blessing_SpacetimeCompression_Desc", RoomReductionPercent * CurrentLevel);
     }
 
     // Method for DungeonGenerator to query room reduction
@@ -218,10 +218,9 @@ public partial class TemporalWakeBlessing : Blessing
 
     private double _trailTimer;
     public override string Id { get; protected set; } = "temporal_wake";
-    public override string Title { get; protected set; } = "Temporal Wake";
+    public override string Title { get; protected set; } = TranslationManager.Tr("Blessing_TemporalWake");
 
-    public override string Description { get; protected set; } =
-        "Leave a damaging trail behind you when moving at full speed. Trail deals {0} damage per second.";
+    public override string Description { get; protected set; }
 
     [Export] public override BlessingRarity Rarity { get; set; } = BlessingRarity.Epic;
     [Export] public override BlessingCategory Category { get; set; } = BlessingCategory.Movement;
@@ -236,7 +235,7 @@ public partial class TemporalWakeBlessing : Blessing
     public override void OnApply()
     {
         // Format description with current values
-        Description = string.Format(Description, WakeDamagePerSecond * CurrentLevel);
+        Description = TranslationManager.TrFormat("Blessing_TemporalWake_Desc", WakeDamagePerSecond * CurrentLevel);
 
         // Initialize last position
         if (Owner != null) _lastPosition = Owner.GlobalPosition;
@@ -245,7 +244,7 @@ public partial class TemporalWakeBlessing : Blessing
     public override void OnLevelUp()
     {
         // Update description with new values
-        Description = string.Format(Description, WakeDamagePerSecond * CurrentLevel);
+        Description = TranslationManager.TrFormat("Blessing_TemporalWake_Desc", WakeDamagePerSecond * CurrentLevel);
     }
 
     public override void OnTick(double delta)

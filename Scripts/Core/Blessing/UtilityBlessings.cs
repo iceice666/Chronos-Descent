@@ -10,8 +10,8 @@ namespace ChronosDescent.Scripts.Core.Blessing;
 public partial class ChronoHarvesterBlessing : Blessing
 {
     public override string Id { get; protected set; } = "chrono_harvester";
-    public override string Title { get; protected set; } = "Chrono Harvester";
-    public override string Description { get; protected set; } = "Enemies drop {0}% more chronoshards when defeated.";
+    public override string Title { get; protected set; } = TranslationManager.Tr("Blessing_ChronoHarvester");
+    public override string Description { get; protected set; }
 
     [Export] public override BlessingRarity Rarity { get; set; } = BlessingRarity.Common;
     [Export] public override BlessingCategory Category { get; set; } = BlessingCategory.Utility;
@@ -28,23 +28,23 @@ public partial class ChronoHarvesterBlessing : Blessing
     public override void OnApply()
     {
         // Format description with current values
-        Description = string.Format(Description, ChronoshardBoostPercent * CurrentLevel);
+        Description =
+            TranslationManager.TrFormat("Blessing_ChronoHarvester_Desc", ChronoshardBoostPercent * CurrentLevel);
 
         // Register for enemy death events
         GlobalEventBus.Instance.Subscribe<BaseEntity>(GlobalEventVariant.EntityDied, OnEntityDied);
     }
 
-    public override void OnRemove()
+    public override void OnLevelUp()
     {
+        // Update description with new values
+        Description =
+            TranslationManager.TrFormat("Blessing_ChronoHarvester_Desc", ChronoshardBoostPercent * CurrentLevel);
+
         // Unsubscribe from events
         GlobalEventBus.Instance.Unsubscribe<BaseEntity>(GlobalEventVariant.EntityDied, OnEntityDied);
     }
 
-    public override void OnLevelUp()
-    {
-        // Update description with new values
-        Description = string.Format(Description, ChronoshardBoostPercent * CurrentLevel);
-    }
 
     private void OnEntityDied(BaseEntity entity)
     {
@@ -72,8 +72,8 @@ public partial class ChronoHarvesterBlessing : Blessing
 public partial class TimelineEfficiencyBlessing : Blessing
 {
     public override string Id { get; protected set; } = "timeline_efficiency";
-    public override string Title { get; protected set; } = "Timeline Efficiency";
-    public override string Description { get; protected set; } = "Reduces all ability cooldowns by {0}%.";
+    public override string Title { get; protected set; } = TranslationManager.Tr("Blessing_TimelineEfficiency");
+    public override string Description { get; protected set; }
 
     [Export] public override BlessingRarity Rarity { get; set; } = BlessingRarity.Uncommon;
     [Export] public override BlessingCategory Category { get; set; } = BlessingCategory.Utility;
@@ -90,13 +90,15 @@ public partial class TimelineEfficiencyBlessing : Blessing
     public override void OnApply()
     {
         // Format description with current values
-        Description = string.Format(Description, CooldownReductionPercent * CurrentLevel);
+        Description =
+            TranslationManager.TrFormat("Blessing_TimelineEfficiency_Desc", CooldownReductionPercent * CurrentLevel);
     }
 
     public override void OnLevelUp()
     {
         // Update description with new values
-        Description = string.Format(Description, CooldownReductionPercent * CurrentLevel);
+        Description =
+            TranslationManager.TrFormat("Blessing_TimelineEfficiency_Desc", CooldownReductionPercent * CurrentLevel);
     }
 
     // Get the cooldown reduction multiplier (e.g., 0.85 for 15% reduction)
@@ -113,10 +115,9 @@ public partial class TimelineEfficiencyBlessing : Blessing
 public partial class TemporalInsightBlessing : Blessing
 {
     public override string Id { get; protected set; } = "temporal_insight";
-    public override string Title { get; protected set; } = "Temporal Insight";
+    public override string Title { get; protected set; } = TranslationManager.Tr("Blessing_TemporalInsight");
 
-    public override string Description { get; protected set; } =
-        "Reveals the layout of rooms and shows enemy positions {0}.";
+    public override string Description { get; protected set; }
 
     [Export] public override BlessingRarity Rarity { get; set; } = BlessingRarity.Rare;
     [Export] public override BlessingCategory Category { get; set; } = BlessingCategory.Utility;
@@ -127,17 +128,20 @@ public partial class TemporalInsightBlessing : Blessing
     public override bool IsStackable { get; protected set; } = true;
     public override int MaxLevel { get; protected set; } = 2;
 
+
     public override void OnApply()
     {
         // Format description based on level
         if (CurrentLevel == 1)
         {
-            Description = string.Format(Description, "when in line of sight");
+            Description = TranslationManager.TrFormat("Blessing_TemporalInsight_Desc",
+                TranslationManager.Tr("Blessing_TemporalInsight_LineOfSight"));
             RevealsThroughWalls = false;
         }
         else
         {
-            Description = string.Format(Description, "even through walls");
+            Description = TranslationManager.TrFormat("Blessing_TemporalInsight_Desc",
+                TranslationManager.Tr("Blessing_TemporalInsight_ThroughWalls"));
             RevealsThroughWalls = true;
         }
 
@@ -145,18 +149,13 @@ public partial class TemporalInsightBlessing : Blessing
         GlobalEventBus.Instance.Subscribe(GlobalEventVariant.RoomEntered, OnRoomEntered);
     }
 
-    public override void OnRemove()
-    {
-        // Unsubscribe from events
-        GlobalEventBus.Instance.Unsubscribe(GlobalEventVariant.RoomEntered, OnRoomEntered);
-    }
-
     public override void OnLevelUp()
     {
         // Update description based on level
         if (CurrentLevel >= 2)
         {
-            Description = string.Format(Description, "even through walls");
+            Description = TranslationManager.TrFormat("Blessing_TemporalInsight_Desc",
+                TranslationManager.Tr("Blessing_TemporalInsight_ThroughWalls"));
             RevealsThroughWalls = true;
         }
     }
@@ -168,7 +167,7 @@ public partial class TemporalInsightBlessing : Blessing
 
         // Simplified notification
         GlobalEventBus.Instance.Publish(GlobalEventVariant.BoardcastTitle,
-            "Room layout revealed by Temporal Insight!");
+            TranslationManager.Tr("Notification_TemporalInsight_Revealed"));
     }
 }
 
@@ -179,8 +178,8 @@ public partial class TemporalInsightBlessing : Blessing
 public partial class ResourceRecursionBlessing : Blessing
 {
     public override string Id { get; protected set; } = "resource_recursion";
-    public override string Title { get; protected set; } = "Resource Recursion";
-    public override string Description { get; protected set; } = "{0}% chance to not consume items when used.";
+    public override string Title { get; protected set; } = TranslationManager.Tr("Blessing_ResourceRecursion");
+    public override string Description { get; protected set; }
 
     [Export] public override BlessingRarity Rarity { get; set; } = BlessingRarity.Epic;
     [Export] public override BlessingCategory Category { get; set; } = BlessingCategory.Utility;
@@ -194,7 +193,8 @@ public partial class ResourceRecursionBlessing : Blessing
     public override void OnApply()
     {
         // Format description with current values
-        Description = string.Format(Description, RecursionChancePercent * CurrentLevel);
+        Description =
+            TranslationManager.TrFormat("Blessing_ResourceRecursion_Desc", RecursionChancePercent * CurrentLevel);
 
         // In a full implementation, we would subscribe to item use events
     }
@@ -202,7 +202,8 @@ public partial class ResourceRecursionBlessing : Blessing
     public override void OnLevelUp()
     {
         // Update description with new values
-        Description = string.Format(Description, RecursionChancePercent * CurrentLevel);
+        Description =
+            TranslationManager.TrFormat("Blessing_ResourceRecursion_Desc", RecursionChancePercent * CurrentLevel);
     }
 
     // Method to check if an item should be consumed

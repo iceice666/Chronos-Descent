@@ -1,0 +1,251 @@
+msgid ""
+msgstr ""
+
+# Title screen
+msgid "Title_NewRun"
+msgstr ""
+
+msgid "Title_Quit"
+msgstr ""
+
+msgid "Title_Settings"
+msgstr ""
+
+# Settings screen
+msgid "Settings_Language"
+msgstr ""
+
+msgid "Settings_MusicVolume"
+msgstr ""
+
+msgid "Settings_SfxVolume"
+msgstr ""
+
+msgid "Settings_WindowMode"
+msgstr ""
+
+msgid "Settings_Apply"
+msgstr ""
+
+msgid "Settings_Reset"
+msgstr ""
+
+msgid "Settings_Close"
+msgstr ""
+
+msgid "Settings_General"
+msgstr ""
+
+msgid "Settings_Audio"
+msgstr ""
+
+msgid "Settings_Video"
+msgstr ""
+
+msgid "Settings_WindowMode_Windowed"
+msgstr ""
+
+msgid "Settings_WindowMode_Fullscreen"
+msgstr ""
+
+msgid "Settings_WindowMode_Maximized"
+msgstr ""
+
+# Weapon/Ability
+
+msgid "LifeSaving_Heal"
+msgstr ""
+
+msgid "LifeSaving_TimeRewind"
+msgstr ""
+
+msgid "LifeSaving_Dash"
+msgstr ""
+
+msgid "Weapon_Bow"
+msgstr ""
+
+msgid "Weapon_Claymore"
+msgstr ""
+
+# Prepare room
+msgid "Prepare_Title"
+msgstr ""
+
+msgid "Prepare_Weapon_Title"
+msgstr ""
+
+msgid "Prepare_Ability_Title"
+msgstr ""
+
+msgid "Prepare_Bow_Desc"
+msgstr ""
+
+
+msgid "Prepare_Claymore_Desc"
+msgstr ""
+
+
+msgid "Prepare_Dash_Desc"
+msgstr ""
+
+
+msgid "Prepare_TimeRewind_Desc"
+msgstr ""
+
+
+msgid "Prepare_Heal_Desc"
+msgstr ""
+
+# General
+msgid "UI_Restart"
+msgstr ""
+msgid "UI_Quit"
+msgstr ""
+msgid "UI_Resume"
+msgstr ""
+
+
+# Dead screen
+msgid "Dead_Title"
+msgstr ""
+msgid "Dead_Stats"
+msgstr ""
+
+msgid "Dead_EnemiesDefeated"
+msgstr ""
+msgid "Dead_DamageCaused"
+msgstr ""
+msgid "Dead_LevelReached"
+msgstr ""
+msgid "Dead_TimePlayed"
+msgstr ""
+
+# Pause menu
+msgid "Pause_Title"
+msgstr ""
+
+
+# Defensive Blessings
+msgid "Blessing_TemporalShield"
+msgstr ""
+
+msgid "Blessing_TemporalShield_Desc"
+msgstr ""
+
+msgid "Blessing_ProbabilityField"
+msgstr ""
+
+msgid "Blessing_ProbabilityField_Desc"
+msgstr ""
+
+msgid "Blessing_WoundReversal"
+msgstr ""
+
+msgid "Blessing_WoundReversal_Desc"
+msgstr ""
+
+msgid "Blessing_TimelineDiversion"
+msgstr ""
+
+msgid "Blessing_TimelineDiversion_Desc"
+msgstr ""
+
+msgid "Notification_TemporalShield_Activated"
+msgstr ""
+
+msgid "Notification_Damage_Avoided"
+msgstr ""
+
+msgid "Notification_WoundReversal"
+msgstr ""
+
+msgid "Notification_DamageDiverted"
+msgstr ""
+
+msgid "Notification_TemporalInsight_Revealed"
+msgstr ""
+
+# Offensive Blessings
+msgid "Blessing_TemporalEcho"
+msgstr ""
+
+msgid "Blessing_TemporalEcho_Desc"
+msgstr ""
+
+msgid "Blessing_TimeAcceleratedStrikes"
+msgstr ""
+
+msgid "Blessing_TimeAcceleratedStrikes_Desc"
+msgstr ""
+
+msgid "Blessing_EntropyBuildup"
+msgstr ""
+
+msgid "Blessing_EntropyBuildup_Desc"
+msgstr ""
+
+msgid "Blessing_ParadoxDamage"
+msgstr ""
+
+msgid "Blessing_ParadoxDamage_Desc"
+msgstr ""
+
+# Utility Blessings
+msgid "Blessing_ChronoHarvester"
+msgstr ""
+
+msgid "Blessing_ChronoHarvester_Desc"
+msgstr ""
+
+msgid "Blessing_TimelineEfficiency"
+msgstr ""
+
+msgid "Blessing_TimelineEfficiency_Desc"
+msgstr ""
+
+msgid "Blessing_TemporalInsight"
+msgstr ""
+
+msgid "Blessing_TemporalInsight_Desc"
+msgstr ""
+
+msgid "Blessing_TemporalInsight_LineOfSight"
+msgstr ""
+
+msgid "Blessing_TemporalInsight_ThroughWalls"
+msgstr ""
+
+msgid "Blessing_ResourceRecursion"
+msgstr ""
+
+msgid "Blessing_ResourceRecursion_Desc"
+msgstr ""
+
+# Movement Blessings
+msgid "Blessing_PhaseShifting"
+msgstr ""
+
+msgid "Blessing_PhaseShifting_Desc"
+msgstr ""
+
+msgid "Blessing_PhaseShifting_Damage"
+msgstr ""
+
+msgid "Blessing_TimeSlipstream"
+msgstr ""
+
+msgid "Blessing_TimeSlipstream_Desc"
+msgstr ""
+
+msgid "Blessing_SpacetimeCompression"
+msgstr ""
+
+msgid "Blessing_SpacetimeCompression_Desc"
+msgstr ""
+
+msgid "Blessing_TemporalWake"
+msgstr ""
+
+msgid "Blessing_TemporalWake_Desc"
+msgstr ""

@@ -89,10 +89,10 @@ public partial class Player : BaseEntity
         // Apply weapon selection
         switch (gameManager.SelectedWeapon)
         {
-            case "Bow":
+            case "Weapon_Bow":
                 WeaponManager.SetWeapon<Bow>(GD.Load<PackedScene>("res://Scenes/weapon/bow.tscn"));
                 break;
-            case "Claymore":
+            case "Weapon_Claymore":
                 WeaponManager.SetWeapon<Claymore>(GD.Load<PackedScene>("res://Scenes/weapon/claymore.tscn"));
                 break;
         }
@@ -100,9 +100,9 @@ public partial class Player : BaseEntity
         // Apply ability selection
         BaseAbility ability = gameManager.SelectedAbility switch
         {
-            "Dash" => new Dash(),
-            "Time Rewind" => new TimeRewind(),
-            "Heal" => new Heal(),
+            "LifeSaving_Dash" => new Dash(),
+            "LifeSaving_Time Rewind" => new TimeRewind(),
+            "LifeSaving_Heal" => new Heal(),
             _ => null
         };
 

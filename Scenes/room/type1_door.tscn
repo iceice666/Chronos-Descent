@@ -99,9 +99,8 @@ _data = {
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nx66n"]
 size = Vector2(32, 16)
 
-[sub_resource type="SegmentShape2D" id="SegmentShape2D_xgsl8"]
-a = Vector2(-17, -8)
-b = Vector2(17, -8)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xgsl8"]
+size = Vector2(28, 14)
 
 [node name="Type1 Door" type="Node2D"]
 script = ExtResource("1_xgsl8")
@@ -126,8 +125,8 @@ collision_layer = 0
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-position = Vector2(0, -12)
-shape = SubResource("SegmentShape2D_xgsl8")
+position = Vector2(0, -21)
+shape = SubResource("RectangleShape2D_xgsl8")
 debug_color = Color(0.80246, 0.413552, 0.17753, 0.42)
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

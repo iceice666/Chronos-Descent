@@ -1,0 +1,256 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: iceice 666\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ASCII\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+# Title screen
+msgid "Title_NewRun"
+msgstr "New Run"
+
+msgid "Title_Quit"
+msgstr "Quit"
+
+msgid "Title_Settings"
+msgstr "Settings"
+
+# Settings screen
+msgid "Settings_Language"
+msgstr "Language"
+
+msgid "Settings_MusicVolume"
+msgstr "Music Volume"
+
+msgid "Settings_SfxVolume"
+msgstr "SFX Volume"
+
+msgid "Settings_WindowMode"
+msgstr "Window Mode"
+
+msgid "Settings_Apply"
+msgstr "Apply"
+
+msgid "Settings_Reset"
+msgstr "Reset"
+
+msgid "Settings_Close"
+msgstr "Close"
+
+msgid "Settings_General"
+msgstr "General"
+
+msgid "Settings_Audio"
+msgstr "Audio"
+
+msgid "Settings_Video"
+msgstr "Video"
+
+msgid "Settings_WindowMode_Windowed"
+msgstr "Windowed"
+
+msgid "Settings_WindowMode_Fullscreen"
+msgstr "Fullscreen"
+
+msgid "Settings_WindowMode_Maximized"
+msgstr "Maximized"
+
+# Weapon/Ability
+
+msgid "LifeSaving_Dash"
+msgstr "Dash"
+
+msgid "LifeSaving_TimeRewind"
+msgstr "Time Rewind"
+
+msgid "LifeSaving_Heal"
+msgstr "Heal"
+
+msgid "Weapon_Bow"
+msgstr "Bow"
+msgid "Weapon_Claymore"
+msgstr "Claymore"
+
+# Prepare room
+msgid "Prepare_Title"
+msgstr "Prepare for your Run"
+
+msgid "Prepare_Weapon_Title"
+msgstr "Select Weapon"
+
+msgid "Prepare_Ability_Title"
+msgstr "Select Life-Saving Ability"
+
+
+msgid "Prepare_Bow_Desc"
+msgstr "A versatile ranged weapon that fires arrows with various effects."
+
+
+msgid "Prepare_Claymore_Desc"
+msgstr "A heavy melee weapon that deals high damage in close combat."
+
+msgid "Prepare_Dash_Desc"
+msgstr "Quickly dash in the direction you're facing, avoiding damage."
+
+msgid "Prepare_TimeRewind_Desc"
+msgstr "Rewind time to a previous position, avoiding dangerous situations."
+
+
+msgid "Prepare_Heal_Desc"
+msgstr "Instantly recover a significant amount of health."
+
+# General
+msgid "UI_Restart"
+msgstr "Restart"
+msgid "UI_Quit"
+msgstr "Quit"
+msgid "UI_Resume"
+msgstr "Reset"
+
+
+# Dead screen
+msgid "Dead_Title"
+msgstr "YOU DIED"
+msgid "Dead_Stats"
+msgstr "Battle Statistics"
+msgid "Dead_EnemiesDefeated"
+msgstr "Enemies Defeated:"
+msgid "Dead_DamageCaused"
+msgstr "Damage Caused:"
+msgid "Dead_LevelReached"
+msgstr "Level Reached:"
+msgid "Dead_TimePlayed"
+msgstr "Time Played:"
+
+
+# Pause menu
+msgid "Pause_Title"
+msgstr "GAME PAUSED"
+
+# Defensive Blessings
+msgid "Blessing_TemporalShield"
+msgstr "Temporal Shield"
+
+msgid "Blessing_TemporalShield_Desc"
+msgstr "When you would die, automatically rewind time and gain {0}% health instead (once per room)."
+
+msgid "Blessing_ProbabilityField"
+msgstr "Probability Field"
+
+msgid "Blessing_ProbabilityField_Desc"
+msgstr "{0}% chance to completely avoid damage from any source."
+
+msgid "Blessing_WoundReversal"
+msgstr "Wound Reversal"
+
+msgid "Blessing_WoundReversal_Desc"
+msgstr "Recover {0}% of maximum health when using the time rewind ability."
+
+msgid "Blessing_TimelineDiversion"
+msgstr "Timeline Diversion"
+
+msgid "Blessing_TimelineDiversion_Desc"
+msgstr "When taking damage, {0}% chance to divert {1}% of the damage to a temporal clone."
+
+msgid "Notification_TemporalShield_Activated"
+msgstr "Temporal Shield Activated!"
+
+msgid "Notification_Damage_Avoided"
+msgstr "Damage Avoided!"
+
+msgid "Notification_WoundReversal"
+msgstr "Wound Reversal: +{0} Health"
+
+msgid "Notification_DamageDiverted"
+msgstr "Damage Diverted: {0}"
+
+msgid "Notification_TemporalInsight_Revealed"
+msgstr "Room layout revealed by Temporal Insight!"
+
+# Offensive Blessings
+msgid "Blessing_TemporalEcho"
+msgstr "Temporal Echo"
+
+msgid "Blessing_TemporalEcho_Desc"
+msgstr "Your attacks have a {0}% chance to strike again after a brief delay."
+
+msgid "Blessing_TimeAcceleratedStrikes"
+msgstr "Time Accelerated Strikes"
+
+msgid "Blessing_TimeAcceleratedStrikes_Desc"
+msgstr "Each successful hit increases your attack speed by {0}% for {1} seconds, stacking up to {2} times."
+
+msgid "Blessing_EntropyBuildup"
+msgstr "Entropy Buildup"
+
+msgid "Blessing_EntropyBuildup_Desc"
+msgstr "Consecutive hits on the same target deal {0}% more damage, stacking up to {1}%."
+
+msgid "Blessing_ParadoxDamage"
+msgstr "Paradox Damage"
+
+msgid "Blessing_ParadoxDamage_Desc"
+msgstr "Attacks have a {0}% chance to deal {1}% additional damage to both current and future states of the target."
+
+# Utility Blessings
+msgid "Blessing_ChronoHarvester"
+msgstr "Chrono Harvester"
+
+msgid "Blessing_ChronoHarvester_Desc"
+msgstr "Enemies drop {0}% more chronoshards when defeated."
+
+msgid "Blessing_TimelineEfficiency"
+msgstr "Timeline Efficiency"
+
+msgid "Blessing_TimelineEfficiency_Desc"
+msgstr "Reduces all ability cooldowns by {0}%."
+
+msgid "Blessing_TemporalInsight"
+msgstr "Temporal Insight"
+
+msgid "Blessing_TemporalInsight_Desc"
+msgstr "Reveals the layout of rooms and shows enemy positions {0}."
+
+msgid "Blessing_TemporalInsight_LineOfSight"
+msgstr "when in line of sight"
+
+msgid "Blessing_TemporalInsight_ThroughWalls"
+msgstr "even through walls"
+
+msgid "Blessing_ResourceRecursion"
+msgstr "Resource Recursion"
+
+msgid "Blessing_ResourceRecursion_Desc"
+msgstr "{0}% chance to not consume items when used."
+
+# Movement Blessings
+msgid "Blessing_PhaseShifting"
+msgstr "Phase Shifting"
+
+msgid "Blessing_PhaseShifting_Desc"
+msgstr "Dash ability allows you to phase through obstacles and enemies.{0}"
+
+msgid "Blessing_PhaseShifting_Damage"
+msgstr " Deal damage to enemies you phase through."
+
+msgid "Blessing_TimeSlipstream"
+msgstr "Time Slipstream"
+
+msgid "Blessing_TimeSlipstream_Desc"
+msgstr "After using an ability, gain {0}% movement speed for {1} seconds."
+
+msgid "Blessing_SpacetimeCompression"
+msgstr "Spacetime Compression"
+
+msgid "Blessing_SpacetimeCompression_Desc"
+msgstr "The number of rooms per level is reduced by {0}%."
+
+msgid "Blessing_TemporalWake"
+msgstr "Temporal Wake"
+
+msgid "Blessing_TemporalWake_Desc"
+msgstr "Leave a damaging trail behind you when moving at full speed. Trail deals {0} damage per second."

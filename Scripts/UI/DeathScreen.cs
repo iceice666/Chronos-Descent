@@ -1,3 +1,4 @@
+using System;
 using ChronosDescent.Scripts.Core;
 using ChronosDescent.Scripts.Core.Entity;
 using Godot;
@@ -31,6 +32,8 @@ public partial class DeathScreen : Control
 
         // Subscribe to the player death event
         GlobalEventBus.Instance.Subscribe<BaseEntity>(GlobalEventVariant.EntityDied, OnEntityDied);
+
+        ApplyTranslation();
     }
 
     public override void _ExitTree()
@@ -97,5 +100,32 @@ public partial class DeathScreen : Control
     private void OnQuitPressed()
     {
         GetTree().Quit();
+    }
+
+    private void ApplyTranslation()
+    {
+        var pathKeyPairs = new[]
+        {
+            (Path: "Panel/TitleLabel", Type: typeof(Label), Key: "Dead_Title"),
+            (Path: "Panel/StatsLabel", Type: typeof(Label), Key: "Dead_Stats"),
+            (Path: "Panel/StatsContainer/EnemiesDefeatedLabel", Type: typeof(Label), Key: "Dead_EnemiesDefeated"),
+            (Path: "Panel/StatsContainer/DamageCausedLabel", Type: typeof(Label), Key: "Dead_DamageCaused"),
+            (Path: "Panel/StatsContainer/LevelReachedLabel", Type: typeof(Label), Key: "Dead_LevelReached"),
+            (Path: "Panel/StatsContainer/TimePlayedLabel", Type: typeof(Label), Key: "Dead_TimePlayed"),
+            (Path: "Panel/ButtonContainer/RestartButton", Type: typeof(Button), Key: "UI_Restart"),
+            (Path: "Panel/ButtonContainer/QuitButton", Type: typeof(Button), Key: "UI_Quit")
+        };
+
+        foreach (var pair in pathKeyPairs)
+        {
+            if (pair.Type == typeof(Label))
+            {
+                GetNode<Label>(pair.Path).Text = Tr(pair.Key);
+            }
+            else if (pair.Type == typeof(Button))
+            {
+                GetNode<Button>(pair.Path).Text = Tr(pair.Key);
+            }
+        }
     }
 }

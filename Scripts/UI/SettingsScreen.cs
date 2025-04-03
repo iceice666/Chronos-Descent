@@ -105,18 +105,23 @@ public partial class SettingsScreen : Control
     private void ApplyTranslations()
     {
         // Apply translations to all UI elements
-        GetNode<Label>("%LanguageLabel").SetTextTr("Language");
-        GetNode<Label>("%MusicLabel").SetTextTr("Music Volume");
-        GetNode<Label>("%SFXLabel").SetTextTr("SFX Volume");
-        GetNode<Label>("%WindowModeLabel").SetTextTr("Fullscreen");
-        GetNode<Button>("%ApplyButton").SetTextTr("Apply");
-        GetNode<Button>("%ResetButton").SetTextTr("Reset");
+        GetNode<Label>("%LanguageLabel").SetTextTr("Settings_Language");
+        GetNode<Label>("%MusicLabel").SetTextTr("Settings_MusicVolume");
+        GetNode<Label>("%SFXLabel").SetTextTr("Settings_SfxVolume");
+        GetNode<Label>("%WindowModeLabel").SetTextTr("Settings_WindowMode");
+        GetNode<Button>("%ApplyButton").SetTextTr("Settings_Apply");
+        GetNode<Button>("%ResetButton").SetTextTr("Settings_Reset");
 
         // Translate tab titles
         var tabContainer = GetNode<TabContainer>("Panel/TabContainer");
-        tabContainer.SetTabTitle(0, TranslationManager.Tr("General"));
-        tabContainer.SetTabTitle(1, TranslationManager.Tr("Audio"));
-        tabContainer.SetTabTitle(2, TranslationManager.Tr("Video"));
+        tabContainer.SetTabTitle(0, TranslationManager.Tr("Settings_General"));
+        tabContainer.SetTabTitle(1, TranslationManager.Tr("Settings_Audio"));
+        tabContainer.SetTabTitle(2, TranslationManager.Tr("Settings_Video"));
+        
+        // Translate window mode options
+        _windowMode.SetItemText(0, TranslationManager.Tr("Settings_WindowMode_Windowed"));
+        _windowMode.SetItemText(1, TranslationManager.Tr("Settings_WindowMode_Fullscreen"));
+        _windowMode.SetItemText(2, TranslationManager.Tr("Settings_WindowMode_Maximized"));
     }
 
     private void OnLanguageSelected(long index)
@@ -134,7 +139,7 @@ public partial class SettingsScreen : Control
         _sfxVolume = (float)value;
     }
 
-    private void OnWindowModeSelected(long index)
+    private static void OnWindowModeSelected(long index)
     {
         switch (index)
         {

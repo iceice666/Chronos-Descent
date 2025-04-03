@@ -20,6 +20,8 @@ public partial class PauseMenu : Control
         _restartButton.Pressed += OnRestartPressed;
         _quitButton.Pressed += OnQuitPressed;
 
+        ApplyTranslation();
+
         // Hide the pause menu initially
         Visible = false;
         _isPaused = false;
@@ -77,5 +79,28 @@ public partial class PauseMenu : Control
     private void OnQuitPressed()
     {
         GetTree().Quit();
+    }
+    
+    private void ApplyTranslation()
+    {
+        var pathKeyPairs = new[]
+        {
+            (Path: "Panel/TitleLabel", Type: typeof(Label), Key: "Pause_Title"),
+            (Path: "Panel/ButtonContainer/ResumeButton", Type: typeof(Button), Key: "UI_Resume"),
+            (Path: "Panel/ButtonContainer/RestartButton", Type: typeof(Button), Key: "UI_Restart"),
+            (Path: "Panel/ButtonContainer/QuitButton", Type: typeof(Button), Key: "UI_Quit")
+        };
+
+        foreach (var pair in pathKeyPairs)
+        {
+            if (pair.Type == typeof(Label))
+            {
+                GetNode<Label>(pair.Path).Text = Tr(pair.Key);
+            }
+            else if (pair.Type == typeof(Button))
+            {
+                GetNode<Button>(pair.Path).Text = Tr(pair.Key);
+            }
+        }
     }
 }
