@@ -31,13 +31,13 @@ public partial class TemporalShieldBlessing : Blessing
         Description = string.Format(Description, HealthRestoredPercent * CurrentLevel);
 
         // Reset availability when entering a new room
-        GlobalEventBus.Instance.Subscribe(GlobalEventVariant.RoomStarted, OnRoomStarted);
+        GlobalEventBus.Instance.Subscribe(GlobalEventVariant.RoomEntered, OnRoomStarted);
     }
 
     public override void OnRemove()
     {
         // Unsubscribe from events
-        GlobalEventBus.Instance.Unsubscribe(GlobalEventVariant.RoomStarted, OnRoomStarted);
+        GlobalEventBus.Instance.Unsubscribe(GlobalEventVariant.RoomEntered, OnRoomStarted);
     }
 
     public override void OnLevelUp()

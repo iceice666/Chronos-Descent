@@ -28,14 +28,14 @@ public partial class BlessingRewardRoom : Node2D
         _blessingUI = GetNode<BlessingRewardRoomController>(BlessingUIPath);
 
         // Subscribe to room events
-        GlobalEventBus.Instance.Subscribe(GlobalEventVariant.RoomStarted, OnRoomEntered);
+        GlobalEventBus.Instance.Subscribe(GlobalEventVariant.RoomEntered, OnRoomEntered);
         GlobalEventBus.Instance.Subscribe<Blessing>(GlobalEventVariant.BlessingSelected, OnBlessingSelected);
     }
 
     public override void _ExitTree()
     {
         // Unsubscribe from events
-        GlobalEventBus.Instance.Unsubscribe(GlobalEventVariant.RoomStarted, OnRoomEntered);
+        GlobalEventBus.Instance.Unsubscribe(GlobalEventVariant.RoomEntered, OnRoomEntered);
         GlobalEventBus.Instance.Unsubscribe<Blessing>(GlobalEventVariant.BlessingSelected, OnBlessingSelected);
     }
 

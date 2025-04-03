@@ -17,7 +17,7 @@ public enum StatFieldSpecifier
 
 public class EntityBaseStats
 {
-    public virtual double Health { get; } = 100;
+    public virtual double Health { get; } = 200;
     public virtual double Defense { get; } = 10;
     public virtual double CriticalChance { get; } = 5;
     public virtual double CriticalDamage { get; } = 50;

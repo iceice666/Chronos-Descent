@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text;
 using ChronosDescent.Scripts.Dungeon.Room;
 
-namespace ChronosDescent.Scripts.Dungeon;
+namespace ChronosDescent.Scripts.Dungeon.Generation;
 
 public class DungeonNode(RoomType type, int depth)
 {

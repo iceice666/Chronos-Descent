@@ -48,13 +48,13 @@ public partial class BlessingRewardRoomController : Control
         _player = GetNode<Player>("/root/Dungeon/Player");
 
         // Subscribe to room start event
-        GlobalEventBus.Instance.Subscribe(GlobalEventVariant.RoomStarted, OnRoomEntered);
+        GlobalEventBus.Instance.Subscribe(GlobalEventVariant.RoomEntered, OnRoomEntered);
     }
 
     public override void _ExitTree()
     {
         // Unsubscribe from events
-        GlobalEventBus.Instance.Unsubscribe(GlobalEventVariant.RoomStarted, OnRoomEntered);
+        GlobalEventBus.Instance.Unsubscribe(GlobalEventVariant.RoomEntered, OnRoomEntered);
     }
 
     private void OnRoomEntered()

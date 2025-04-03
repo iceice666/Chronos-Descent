@@ -17,7 +17,7 @@ public enum GlobalEventVariant
     InputSourceChanged,
 
     BoardcastTitle,
-    RoomStarted,
+    RoomEntered,
     RoomCleared,
 
     // Currency related events

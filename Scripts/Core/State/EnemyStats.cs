@@ -17,7 +17,7 @@ public class EnemyBaseStats : EntityBaseStats
 
 public class MeleeEnemyStats : EnemyBaseStats
 {
-    public override double Health { get; } = 60;
+    public override double Health { get; } = 40;
     public override double Defense { get; } = 8;
     public override double MoveSpeed { get; } = 50;
     public override double AttackDamage { get; } = 10;

@@ -142,13 +142,13 @@ public partial class TemporalInsightBlessing : Blessing
         }
 
         // Subscribe to room entered event to reveal layout
-        GlobalEventBus.Instance.Subscribe(GlobalEventVariant.RoomStarted, OnRoomEntered);
+        GlobalEventBus.Instance.Subscribe(GlobalEventVariant.RoomEntered, OnRoomEntered);
     }
 
     public override void OnRemove()
     {
         // Unsubscribe from events
-        GlobalEventBus.Instance.Unsubscribe(GlobalEventVariant.RoomStarted, OnRoomEntered);
+        GlobalEventBus.Instance.Unsubscribe(GlobalEventVariant.RoomEntered, OnRoomEntered);
     }
 
     public override void OnLevelUp()

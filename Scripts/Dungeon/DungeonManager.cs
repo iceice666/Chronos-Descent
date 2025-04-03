@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using ChronosDescent.Scripts.Core;
+using ChronosDescent.Scripts.Dungeon.Generation;
 using ChronosDescent.Scripts.Dungeon.Room;
 using ChronosDescent.Scripts.Entities;
 using Godot;
@@ -141,12 +142,10 @@ public partial class DungeonManager : Node
 
         _player.GlobalPosition = CurrentRoom.GetNodeOrNull<Node2D>("EnterPoint")?.GlobalPosition ?? Vector2.Zero;
 
-        GlobalEventBus.Instance.Publish(GlobalEventVariant.RoomStarted);
+        Callable.From(()=> GlobalEventBus.Instance.Publish(GlobalEventVariant.RoomEntered)).CallDeferred();
 
         await ToSignal(GetTree().CreateTimer(0.5f), "timeout");
-
-        CurrentRoom.GetNodeOrNull<RoomController>("RoomController")?.OnRoomEntered();
-
+        
         _player.Moveable = true;
         LoadingScreen.Visible = false;
     }

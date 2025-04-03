@@ -11,7 +11,7 @@ public partial class DungeonTimer : Label
     public override void _Ready()
     {
         Text = "00:00";
-        GlobalEventBus.Instance.Subscribe(GlobalEventVariant.RoomStarted, OnRoomStarted);
+        GlobalEventBus.Instance.Subscribe(GlobalEventVariant.RoomEntered, OnRoomStarted);
         GlobalEventBus.Instance.Subscribe(GlobalEventVariant.RoomCleared, OnRoomCleared);
 
         SetPhysicsProcess(false);
@@ -25,7 +25,7 @@ public partial class DungeonTimer : Label
 
     public override void _ExitTree()
     {
-        GlobalEventBus.Instance.Unsubscribe(GlobalEventVariant.RoomStarted, OnRoomStarted);
+        GlobalEventBus.Instance.Unsubscribe(GlobalEventVariant.RoomEntered, OnRoomStarted);
         GlobalEventBus.Instance.Unsubscribe(GlobalEventVariant.RoomCleared, OnRoomCleared);
     }
 

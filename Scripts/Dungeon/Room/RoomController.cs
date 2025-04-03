@@ -19,14 +19,17 @@ public partial class RoomController : Node
 
     public override void _Ready()
     {
-        GlobalEventBus.Instance.Subscribe<BaseEntity>(GlobalEventVariant.EntityDied, OnEntityDied);
-
         _spawnPointsContainer = GetNodeOrNull<Node2D>(SpawnPointsPath);
         _spawnNode = GetNode("/root/Autoload/Entities");
+
+
+        GlobalEventBus.Instance.Subscribe(GlobalEventVariant.RoomEntered, OnRoomEntered);
+        GlobalEventBus.Instance.Subscribe<BaseEntity>(GlobalEventVariant.EntityDied, OnEntityDied);
     }
 
     public override void _ExitTree()
     {
+        GlobalEventBus.Instance.Unsubscribe(GlobalEventVariant.RoomEntered, OnRoomEntered);
         GlobalEventBus.Instance.Unsubscribe<BaseEntity>(GlobalEventVariant.EntityDied, OnEntityDied);
     }
 
@@ -36,12 +39,7 @@ public partial class RoomController : Node
 
         if (SpawnOnStart)
             // Delay spawning slightly to ensure room is fully set up
-            GetTree().CreateTimer(0.5).Timeout += () =>
-            {
-                GlobalEventBus.Instance.Publish(GlobalEventVariant.RoomStarted);
-                ;
-                SpawnEnemies();
-            };
+            GetTree().CreateTimer(0.5).Timeout += SpawnEnemies;
     }
 
     private void OnEntityDied(BaseEntity entity)
@@ -52,7 +50,7 @@ public partial class RoomController : Node
         _spawnedEnemies.Remove(enemy);
 
         // Check if all enemies are defeated
-        if (_spawnedEnemies.Count != 0 ) return;
+        if (_spawnedEnemies.Count != 0) return;
         if (_spawnedEnemies.Count == 0 && _remainingEnemies > 0)
         {
             SpawnEnemies();

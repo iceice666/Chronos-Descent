@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ChronosDescent.Scripts.Dungeon.Room;
 
-namespace ChronosDescent.Scripts.Dungeon;
+namespace ChronosDescent.Scripts.Dungeon.Generation;
 
 public static class DungeonUtils
 {
