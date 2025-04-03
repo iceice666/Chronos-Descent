@@ -3,7 +3,7 @@ using System.Linq;
 using ChronosDescent.Scripts.Items;
 using Godot;
 
-namespace ChronosDescent.Scripts.UI;
+namespace ChronosDescent.Scripts.Dungeon.Room;
 
 /// <summary>
 ///     Controls the shop room behavior

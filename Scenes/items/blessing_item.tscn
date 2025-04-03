@@ -1,0 +1,119 @@
+[gd_scene load_steps=4 format=3 uid="uid://4qqti48anntw"]
+
+[ext_resource type="Script" uid="uid://it417y8d5kmw" path="res://Scripts/Items/BlessingItem.cs" id="1_trc2i"]
+[ext_resource type="Texture2D" uid="uid://qqu4eog75oj3" path="res://Assets/icons/Blessing.png" id="2_j77gt"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_2gwxj"]
+radius = 36.0139
+
+[node name="BlessingItem" type="Node2D"]
+script = ExtResource("1_trc2i")
+
+[node name="IconSprite" type="TextureRect" parent="."]
+unique_name_in_owner = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -24.0
+offset_top = -24.0
+offset_right = 24.0
+offset_bottom = 24.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("2_j77gt")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="NameLabel" type="Label" parent="."]
+unique_name_in_owner = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -72.0
+offset_right = 100.0
+offset_bottom = -46.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 16
+text = "Blessing Name"
+horizontal_alignment = 1
+
+[node name="CategoryLabel" type="Label" parent="."]
+unique_name_in_owner = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -50.0
+offset_top = 28.0
+offset_right = 50.0
+offset_bottom = 54.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 12
+text = "Offensive"
+horizontal_alignment = 1
+
+[node name="DescriptionLabel" type="Label" parent="."]
+unique_name_in_owner = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = 52.0
+offset_right = 99.0
+offset_bottom = 74.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 10
+text = "Blessing description goes here"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="InteractionArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
+shape = SubResource("CircleShape2D_2gwxj")
+
+[node name="InteractPrompt" type="Node2D" parent="."]
+unique_name_in_owner = true
+visible = false
+position = Vector2(0, -40)
+
+[node name="Panel" type="Panel" parent="InteractPrompt"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -10.0
+offset_right = 101.0
+offset_bottom = 11.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="InteractPrompt/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Press F to collect"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]

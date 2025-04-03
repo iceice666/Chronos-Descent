@@ -129,3 +129,7 @@ collision_mask = 2
 position = Vector2(0, -12)
 shape = SubResource("SegmentShape2D_xgsl8")
 debug_color = Color(0.80246, 0.413552, 0.17753, 0.42)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-9.53674e-07, -44)
+scale = Vector2(0.09375, 0.09375)

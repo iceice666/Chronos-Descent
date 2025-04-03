@@ -4,7 +4,7 @@ using ChronosDescent.Scripts.Abilities;
 using ChronosDescent.Scripts.Entities;
 using Godot;
 
-namespace ChronosDescent.Scripts.UI;
+namespace ChronosDescent.Scripts.Dungeon.Room;
 
 public partial class PrepareRoomController : Control
 {

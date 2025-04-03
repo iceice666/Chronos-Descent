@@ -27,6 +27,21 @@ public class Utils
     }
 }
 
+public static class ListExtensions
+{
+    public static bool TryGet<T>(this List<T> list, int index, out T value)
+    {
+        if (list != null && index >= 0 && index < list.Count)
+        {
+            value = list[index];
+            return true;
+        }
+        
+        value = default(T);
+        return false;
+    }
+}
+
 public static class EnumerableExtensions
 {
     // Pick a single random item using System.Random

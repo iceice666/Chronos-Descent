@@ -5,6 +5,7 @@ namespace ChronosDescent.Scripts.UI;
 
 /// <summary>
 ///     Button for displaying and selecting a blessing in the reward room
+///     NOTE: This is kept for backward compatibility. New implementations should use BlessingItem.
 /// </summary>
 [GlobalClass]
 public partial class BlessingButton : Button
@@ -111,5 +112,8 @@ public partial class BlessingButton : Button
 
         // Emit blessing selected signal
         EmitSignal(SignalName.BlessingSelected, _blessing);
+        
+        // Also publish global event for compatibility with new system
+        GlobalEventBus.Instance.Publish(GlobalEventVariant.BlessingSelected, _blessing);
     }
 }

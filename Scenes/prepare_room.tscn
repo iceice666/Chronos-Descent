@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dcy71y73jm4gs"]
 
-[ext_resource type="Script" path="res://Scripts/UI/PrepareRoomController.cs" id="1_16l5d"]
+[ext_resource type="Script" uid="uid://bly4oq26vq3lc" path="res://Scripts/Dungeon/Room/PrepareRoomController.cs" id="1_16l5d"]
 
 [node name="PrepareRoom" type="Control"]
 layout_mode = 3

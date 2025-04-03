@@ -18,12 +18,21 @@ public partial class RoomDoor : Node2D
     private Area2D _area2D;
 
     [Export] private DoorType _doorType;
+    private Sprite2D _sprite;
+
+    public Texture2D Icon
+    {
+        get => _sprite.Texture;
+        set => _sprite.Texture = value;
+    }
+
 
     public override void _Ready()
     {
         _animationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
         _animatedSprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
         _area2D = GetNode<Area2D>("Area2D");
+        _sprite = GetNode<Sprite2D>("Sprite2D");
 
         _area2D.BodyEntered += OnEntityEntered;
     }

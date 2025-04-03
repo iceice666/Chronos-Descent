@@ -44,12 +44,12 @@ public partial class DungeonManager : Node
 
     private void OnRoomCleared()
     {
-        if (DungeonMap.Type is RoomType.BossRoom)
+        if (DungeonMap.Type is RoomType.EndRoom)
         {
             MoveToNextLevel();
             return;
         }
-        
+
         CurrentRoom.GetNodeOrNull("Doors")?
             .GetChildren().Cast<RoomDoor>().ToList()
             .ForEach(door => door.Open());
@@ -65,7 +65,7 @@ public partial class DungeonManager : Node
                 DungeonMap = _dungeonGenerator.Generate(Level);
             }
 
-            if (DungeonMap.NextNodes[0].Type == RoomType.ShopRoom) break;
+            if (DungeonMap.NextNodes[0].Type == RoomType.RewardRoom) break;
 
             DungeonMap = DungeonMap.NextNodes[0];
         }
@@ -91,7 +91,6 @@ public partial class DungeonManager : Node
 
     public void MoveToNextRoom(bool isLeft)
     {
-
         DungeonMap = DungeonMap.NextNodes.Count == 1 || isLeft ? DungeonMap.NextNodes[0] : DungeonMap.NextNodes[1];
 
         if (DungeonMap.Type is RoomType.EndRoom)
@@ -133,20 +132,69 @@ public partial class DungeonManager : Node
         {
             AddChild(CurrentRoom);
 
-            if (DungeonMap.Type is not (RoomType.BossRoom or RoomType.MiniBossRoom or RoomType.CombatRoom))
-                CurrentRoom.GetNodeOrNull("Doors")?
-                    .GetChildren().Cast<RoomDoor>().ToList()
-                    .ForEach(door => door.Open());
+            var nextNodes = DungeonMap.NextNodes;
+
+            var doorNodes = CurrentRoom.GetNodeOrNull("Doors")?.GetChildren();
+            if (doorNodes == null) return;
+
+            var doors = doorNodes
+                .OfType<RoomDoor>()
+                .ToList();
+
+            if (doors.Count == 0) return;
+
+            // First door - guaranteed to exist and have a valid NextNodes[0]
+            var firstDoor = doors[0];
+            firstDoor.Icon = GetRoomIcon(nextNodes[0].Type);
+            GD.Print($"Left door: {nextNodes[0].Type}");
+
+
+            // Handle second door if it exists
+            if (doors.Count > 1)
+            {
+                var secondDoor = doors[1];
+                var t = nextNodes.Count == 1 ? nextNodes[0].Type : nextNodes[1].Type;
+                secondDoor.Icon = GetRoomIcon(t);
+                GD.Print($"Right door: {t}");
+            }
+
+            // Check room type and handle door opening
+            if (DungeonMap.Type is RoomType.BossRoom
+                or RoomType.MiniBossRoom
+                or RoomType.CombatRoom) return;
+
+            firstDoor.Open();
+            if (doors.Count > 1)
+            {
+                doors[1].Open();
+            }
         }).CallDeferred();
 
 
         _player.GlobalPosition = CurrentRoom.GetNodeOrNull<Node2D>("EnterPoint")?.GlobalPosition ?? Vector2.Zero;
 
-        Callable.From(()=> GlobalEventBus.Instance.Publish(GlobalEventVariant.RoomEntered)).CallDeferred();
+        Callable.From(() => GlobalEventBus.Instance.Publish(GlobalEventVariant.RoomEntered)).CallDeferred();
 
         await ToSignal(GetTree().CreateTimer(0.5f), "timeout");
-        
+
         _player.Moveable = true;
         LoadingScreen.Visible = false;
+    }
+
+
+    private static Texture2D GetRoomIcon(RoomType roomType)
+    {
+        return roomType switch
+        {
+            RoomType.BossRoom => GD.Load<Texture2D>("res://Assets/icons/boss.png"),
+            RoomType.MiniBossRoom => GD.Load<Texture2D>("res://Assets/icons/mini_boss.png"),
+            RoomType.CombatRoom => GD.Load<Texture2D>("res://Assets/icons/combat.png"),
+            RoomType.RewardRoom => GD.Load<Texture2D>("res://Assets/icons/reward.png"),
+            RoomType.EventRoom => GD.Load<Texture2D>("res://Assets/icons/event.png"),
+            RoomType.ShopRoom => GD.Load<Texture2D>("res://Assets/icons/shop.png"),
+            RoomType.StartRoom => null,
+            RoomType.EndRoom => null,
+            _ => null
+        };
     }
 }

@@ -1,66 +1,59 @@
 using System.Collections.Generic;
 using System.Linq;
 using ChronosDescent.Scripts.Core.Blessing;
-using ChronosDescent.Scripts.Dungeon;
 using ChronosDescent.Scripts.Entities;
+using ChronosDescent.Scripts.Items;
 using Godot;
 
-namespace ChronosDescent.Scripts.UI;
+namespace ChronosDescent.Scripts.Dungeon.Room;
 
 /// <summary>
 ///     Controller for the Temporal Blessing reward room
 /// </summary>
 [GlobalClass]
-public partial class BlessingRewardRoomController : Control
+public partial class BlessingRewardRoomController : Node
 {
     // Standard setup is 3 blessings to choose from
     private const int StandardBlessingCount = 3;
-    private Control _blessingContainer;
 
     private List<Blessing> _currentBlessings = [];
     private TimeDeity _currentDeity;
     private Label _deityLabel;
+    private int _collectedBlessings = 0;
 
     private Player _player;
-    private Label _titleLabel;
-    [Export] public PackedScene BlessingButtonScene { get; set; }
 
-    [Export]
-    public NodePath BlessingContainerPath { get; set; } =
-        "CenterContainer/Panel/MarginContainer/VBoxContainer/BlessingContainer";
-
-    [Export]
-    public NodePath TitleLabelPath { get; set; } = 
-        "CenterContainer/Panel/MarginContainer/VBoxContainer/TitleLabel";
-
-    [Export]
-    public NodePath DeityLabelPath { get; set; } = 
-        "CenterContainer/Panel/MarginContainer/VBoxContainer/DeityLabel";
+    public PackedScene BlessingItemScene { get; set; } = GD.Load<PackedScene>("res://Scenes/items/blessing_item.tscn");
+    [Export] public Node2D[] BlessingPositions { get; set; } = [];
 
     public override void _Ready()
     {
-        // Get UI nodes
-        _blessingContainer = GetNode<Control>(BlessingContainerPath);
-        _titleLabel = GetNode<Label>(TitleLabelPath);
-        _deityLabel = GetNode<Label>(DeityLabelPath);
-
         // Get player reference
         _player = GetNode<Player>("/root/Dungeon/Player");
 
-        // Subscribe to room start event
+        // Get the deity label
+        _deityLabel = GetNode<Label>("DeityLabel");
+
+        // Find blessing positions
+        var positions = GetTree().GetNodesInGroup("BlessingPosition").Cast<Node2D>().ToArray();
+
+
+        // Subscribe to events
         GlobalEventBus.Instance.Subscribe(GlobalEventVariant.RoomEntered, OnRoomEntered);
+        GlobalEventBus.Instance.Subscribe<Blessing>(GlobalEventVariant.BlessingSelected, OnBlessingSelected);
     }
 
     public override void _ExitTree()
     {
         // Unsubscribe from events
         GlobalEventBus.Instance.Unsubscribe(GlobalEventVariant.RoomEntered, OnRoomEntered);
+        GlobalEventBus.Instance.Unsubscribe<Blessing>(GlobalEventVariant.BlessingSelected, OnBlessingSelected);
     }
 
     private void OnRoomEntered()
     {
-        // Clear any previous blessings
-        ClearBlessingOptions();
+        // Reset collected blessings count
+        _collectedBlessings = 0;
 
         // Select a random deity to offer blessings from
         SelectRandomDeity();
@@ -75,14 +68,20 @@ public partial class BlessingRewardRoomController : Control
         GlobalEventBus.Instance.Publish(GlobalEventVariant.BlessingOfferStarted, _currentDeity);
     }
 
-    /// <summary>
-    ///     Clear all blessing options from the container
-    /// </summary>
-    private void ClearBlessingOptions()
+    private void OnBlessingSelected(Blessing blessing)
     {
-        foreach (var child in _blessingContainer.GetChildren()) child.QueueFree();
+        // Increment counter
+        _collectedBlessings++;
 
-        _currentBlessings.Clear();
+        // If player has collected at least one blessing, allow them to leave
+        if (_collectedBlessings < 1) return;
+        // Show notification
+        GlobalEventBus.Instance.Publish(
+            GlobalEventVariant.BoardcastTitle,
+            "Blessing received. Proceed to the next room.");
+
+        // Allow room to be completed
+        GlobalEventBus.Instance.Publish(GlobalEventVariant.RoomCleared);
     }
 
     /// <summary>
@@ -128,13 +127,18 @@ public partial class BlessingRewardRoomController : Control
     /// </summary>
     private void GenerateBlessingOptions()
     {
+        // Clear any existing blessing items
+        foreach (var child in GetChildren().Where(c => c is BlessingItem).ToList())
+        {
+            child.QueueFree();
+        }
+
+        _currentBlessings.Clear();
+
         // Get dungeon level to adjust blessing rarity
-        var dungeonLevel = 1; // Default if not found
-        if (DungeonManager.Instance != null) dungeonLevel = DungeonManager.Instance.Level;
+        var dungeonLevel = DungeonManager.Instance.Level;
 
         // Get blessings from registry
-        // We can either get from a specific deity or random ones
-
         // 70% chance to offer deity-specific blessings
         if (GD.Randf() < 0.7f && Registry.Instance != null)
             _currentBlessings = Registry.Instance.GetBlessingsByDeity(_currentDeity, StandardBlessingCount);
@@ -145,8 +149,17 @@ public partial class BlessingRewardRoomController : Control
         // If registry isn't available, create some sample blessings
         if (_currentBlessings.Count == 0) CreateSampleBlessings();
 
-        // Create blessing buttons
-        foreach (var blessing in _currentBlessings) CreateBlessingButton(blessing);
+        // Calculate the number of blessing items to place
+        var blessingCount = Mathf.Min(_currentBlessings.Count, BlessingPositions?.Length ?? 0);
+
+        if (blessingCount == 0) return;
+
+       
+        // Create blessing items at the positions
+        for (var i = 0; i < blessingCount; i++)
+        {
+            CreateBlessingItem(_currentBlessings[i], BlessingPositions![i].GlobalPosition);
+        }
     }
 
     /// <summary>
@@ -161,22 +174,18 @@ public partial class BlessingRewardRoomController : Control
     }
 
     /// <summary>
-    ///     Create a button for a blessing option
+    ///     Create an interactive blessing item
     /// </summary>
-    private void CreateBlessingButton(Blessing blessing)
+    private void CreateBlessingItem(Blessing blessing, Vector2 position)
     {
-        // If we have a custom button scene, use it
-        var button = BlessingButtonScene != null
-            ? BlessingButtonScene.Instantiate<BlessingButton>()
-            : new BlessingButton();
+        // Use custom blessing item scene if available, otherwise create simple node
 
-        _blessingContainer.AddChild(button);
+        var item = BlessingItemScene != null ? BlessingItemScene.Instantiate<BlessingItem>() : new BlessingItem();
 
-        // Configure the button with blessing
-        button.SetBlessing(blessing);
-
-        // Connect to blessing selected event
-        button.BlessingSelected += OnBlessingSelected;
+        
+        item.GlobalPosition = position;
+        item.SetBlessing(blessing);
+        AddChild(item);
     }
 
     /// <summary>
@@ -184,10 +193,8 @@ public partial class BlessingRewardRoomController : Control
     /// </summary>
     private void UpdateUI()
     {
-        // Set title
-        _titleLabel.Text = "Temporal Blessings";
-
-        // Set deity label
+        // Set deity label if available
+        if (_deityLabel == null) return;
         _deityLabel.Text = Blessing.GetDeityName(_currentDeity);
 
         // Set deity color
@@ -210,26 +217,5 @@ public partial class BlessingRewardRoomController : Control
         }
 
         _deityLabel.Modulate = deityTheme;
-    }
-
-    /// <summary>
-    ///     Handle blessing selection
-    /// </summary>
-    private void OnBlessingSelected(Blessing blessing)
-    {
-        // Apply the blessing to the player
-        _player.BlessingManager.AddBlessing(blessing);
-
-        // Notify the system about selection
-        GlobalEventBus.Instance.Publish(GlobalEventVariant.BlessingSelected, blessing);
-
-        // Close the blessing selection UI
-        Visible = false;
-
-        // Allow the player to move and open doors
-        _player.Moveable = true;
-
-        // Open doors by triggering a room cleared event
-        GlobalEventBus.Instance.Publish(GlobalEventVariant.RoomCleared);
     }
 }

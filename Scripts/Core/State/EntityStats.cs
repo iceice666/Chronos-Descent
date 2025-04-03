@@ -116,6 +116,9 @@ public class Manager : ISystem
                 case StatFieldSpecifier.MoveSpeed:
                     CurrentStats.MoveSpeed *= value;
                     break;
+                case StatFieldSpecifier.AttackSpeed:
+                    CurrentStats.AttackSpeed *= value;
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -141,6 +144,9 @@ public class Manager : ISystem
                     break;
                 case StatFieldSpecifier.MoveSpeed:
                     CurrentStats.MoveSpeed += value;
+                    break;
+                case StatFieldSpecifier.AttackSpeed:
+                    CurrentStats.AttackSpeed *= value;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

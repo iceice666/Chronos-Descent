@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://c4qs1gp5ofawk" path="res://Scenes/room/type1_combat_1.tscn" id="2_in4v5"]
 [ext_resource type="PackedScene" uid="uid://bysapd5tp68si" path="res://Scenes/room/type1_empty.tscn" id="3_bydhy"]
 [ext_resource type="PackedScene" uid="uid://kjeckkcekn3t" path="res://Scenes/room/type1_event_1.tscn" id="4_nr317"]
-[ext_resource type="PackedScene" uid="uid://bvxrk34c2gp1n" path="res://Scenes/room/test_blessing_reward.tscn" id="5_4ukpo"]
+[ext_resource type="PackedScene" uid="uid://c8d1hk0wnu0vm" path="res://Scenes/room/blessing_room.tscn" id="4_siren"]
 [ext_resource type="PackedScene" uid="uid://cgp5esmjj5hqj" path="res://Scenes/room/type1_shop_1.tscn" id="6_6hfjq"]
 
 [resource]
@@ -14,7 +14,7 @@ EndRooms = Array[PackedScene]([ExtResource("3_bydhy")])
 BossRooms = Array[PackedScene]([ExtResource("2_in4v5")])
 MiniBossRooms = Array[PackedScene]([ExtResource("2_in4v5")])
 CombatRooms = Array[PackedScene]([ExtResource("2_in4v5")])
-RewardRooms = Array[PackedScene]([ExtResource("5_4ukpo")])
+RewardRooms = Array[PackedScene]([ExtResource("4_siren")])
 EventRooms = Array[PackedScene]([ExtResource("4_nr317")])
 ShopRooms = Array[PackedScene]([ExtResource("6_6hfjq")])
 metadata/_custom_type_script = "uid://bbixn7vgkkaal"

@@ -49,17 +49,15 @@ public class Manager : ISystem
         if (_blessings.TryGetValue(blessingId, out var existingBlessing))
         {
             // If stackable and not at max level, level it up
-            if (existingBlessing.IsStackable && existingBlessing.CurrentLevel < existingBlessing.MaxLevel)
-            {
-                existingBlessing.CurrentLevel++;
-                existingBlessing.OnLevelUp();
+            if (!existingBlessing.IsStackable || existingBlessing.CurrentLevel >= existingBlessing.MaxLevel) return;
+            existingBlessing.CurrentLevel++;
+            existingBlessing.OnLevelUp();
 
-                // Mark stats as dirty if this blessing modifies stats
-                if (existingBlessing.HasStatModifiers) _statsAreDirty = true;
+            // Mark stats as dirty if this blessing modifies stats
+            if (existingBlessing.HasStatModifiers) _statsAreDirty = true;
 
-                // Notify UI
-                GlobalEventBus.Instance.Publish(GlobalEventVariant.BlessingUpgraded, existingBlessing);
-            }
+            // Notify UI
+            GlobalEventBus.Instance.Publish(GlobalEventVariant.BlessingUpgraded, existingBlessing);
         }
         else
         {
@@ -103,7 +101,7 @@ public class Manager : ISystem
 
     public Blessing GetBlessing(string blessingId)
     {
-        return _blessings.TryGetValue(blessingId, out var blessing) ? blessing : null;
+        return _blessings.GetValueOrDefault(blessingId);
     }
 
     public IEnumerable<Blessing> GetAllBlessings()
@@ -135,7 +133,7 @@ public class Manager : ISystem
             // Process additive modifiers
             foreach (var (stat, value) in blessing.AdditiveModifiers)
             {
-                if (!additiveTotal.ContainsKey(stat)) additiveTotal[stat] = 0;
+                additiveTotal.TryAdd(stat, 0);
 
                 // Apply level scaling for stackable blessings
                 additiveTotal[stat] += value * blessing.CurrentLevel;
@@ -144,7 +142,7 @@ public class Manager : ISystem
             // Process multiplicative modifiers
             foreach (var (stat, value) in blessing.MultiplicativeModifiers)
             {
-                if (!multiplicativeTotal.ContainsKey(stat)) multiplicativeTotal[stat] = 1.0;
+                multiplicativeTotal.TryAdd(stat, 1.0);
 
                 // Apply compounding for multiplicative modifiers with level
                 for (var i = 0; i < blessing.CurrentLevel; i++) multiplicativeTotal[stat] *= value;
