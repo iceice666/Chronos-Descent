@@ -150,7 +150,7 @@ public partial class PrepareMenu : Control
     {
         // Store selections in the GameManager singleton
         var gameManager = GetNode<GameManager>("/root/GameManager");
-        gameManager.SelectedWeapon = TranslationManager.Tr(_selectedWeaponKey);
-        gameManager.SelectedAbility = TranslationManager.Tr(_selectedAbilityKey);
+        gameManager.SelectedWeapon = _selectedWeaponKey;
+        gameManager.SelectedAbility = _selectedAbilityKey;
     }
 }

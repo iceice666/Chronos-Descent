@@ -17,6 +17,7 @@ public partial class TranslationManager : Node
     {
         { "English", "en" },
         { "繁體中文", "zh_TW" },
+        { "Temporean", "tmp" },
         // Add more languages as needed
     };
     

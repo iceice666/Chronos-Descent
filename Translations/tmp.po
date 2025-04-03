@@ -1,0 +1,259 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Chronos Descent\n"
+"Last-Translator: Temporean Translator\n"
+"Language-Team: none\n"
+"Language: tmp\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+# Title screen
+msgid "Title_NewRun"
+msgstr "Vhrae Kynthul"
+
+msgid "Title_Quit"
+msgstr "Temnix"
+
+msgid "Title_Settings"
+msgstr "Zhantul Vektrix"
+
+# Settings screen
+msgid "Settings_Language"
+msgstr "Ethvyral Kronvyl"
+
+msgid "Settings_MusicVolume"
+msgstr "Aevernum Zephyros"
+
+msgid "Settings_SfxVolume"
+msgstr "Tempul Zephyros"
+
+msgid "Settings_WindowMode"
+msgstr "Nathuum Vynthos"
+
+msgid "Settings_Apply"
+msgstr "Vhrae Ethra"
+
+msgid "Settings_Reset"
+msgstr "Kairoshe Zhimex"
+
+msgid "Settings_Close"
+msgstr "Tempul Nyx"
+
+msgid "Settings_General"
+msgstr "Aevernum Vektryx"
+
+msgid "Settings_Audio"
+msgstr "Kairosys Zephyros"
+
+msgid "Settings_Video"
+msgstr "Luxvae Ethvyn"
+
+msgid "Settings_WindowMode_Windowed"
+msgstr "Nathuum Vektryx"
+
+msgid "Settings_WindowMode_Fullscreen"
+msgstr "Kronvyl Luxvae"
+
+msgid "Settings_WindowMode_Maximized"
+msgstr "Zhiklar Luxvae"
+
+# Weapon/Ability
+
+msgid "LifeSaving_Dash"
+msgstr "Nyxven Tempul"
+
+msgid "LifeSaving_TimeRewind"
+msgstr "Kronvyl Ek'tharae"
+
+msgid "LifeSaving_Heal"
+msgstr "Aevernum Zhyx"
+
+msgid "Weapon_Bow"
+msgstr "Vektryx Zhantor"
+
+msgid "Weapon_Claymore"
+msgstr "Vektryx Nyveum"
+
+# Prepare room
+msgid "Prepare_Title"
+msgstr "Tempul Vynthul Kairosys"
+
+msgid "Prepare_Weapon_Title"
+msgstr "Ethra Vektryx Zhantul"
+
+msgid "Prepare_Ability_Title"
+msgstr "Ethra Nyxvenis Kynthul"
+
+msgid "Prepare_Bow_Desc"
+msgstr "Vektryx zhantor eth'vra tempul nyxvenis, ethra zhimex kronvyl nyveum."
+
+msgid "Prepare_Claymore_Desc"
+msgstr "Vektryx nyveum temnix vrae'khorvae, ethra zhantul vek'thar nyxven."
+
+msgid "Prepare_Dash_Desc"
+msgstr "Nyxven tempul kronvyl ethra'naxis, zhantor vek'thar nathuum."
+
+msgid "Prepare_TimeRewind_Desc"
+msgstr "Kronvyl ek'tharae zhimex, vhrae tempul nyxvenis aevernum zhyx."
+
+msgid "Prepare_Heal_Desc"
+msgstr "Aevernum zhyx nathuum vrek'thos ethvyn kairosys."
+
+# General
+msgid "UI_Restart"
+msgstr "Kairoshe Vyn'thul"
+
+msgid "UI_Quit"
+msgstr "Temnix"
+
+msgid "UI_Resume"
+msgstr "Vhrae Kynthul"
+
+# Dead screen
+msgid "Dead_Title"
+msgstr "KRONVYL ETHVYN NATHUUM"
+
+msgid "Dead_Stats"
+msgstr "Zhantul Vek'thar Nyxven"
+
+msgid "Dead_EnemiesDefeated"
+msgstr "Nathuum Ethvyn:"
+
+msgid "Dead_DamageCaused"
+msgstr "Temnix Vrae'khorvae:"
+
+msgid "Dead_LevelReached"
+msgstr "Zhantul Nyxvenis:"
+
+msgid "Dead_TimePlayed"
+msgstr "Kronvyl Ethvyn:"
+
+# Pause menu
+msgid "Pause_Title"
+msgstr "KRONVYL NATHUUM"
+
+# Defensive Blessings
+msgid "Blessing_TemporalShield"
+msgstr "Tempul Vhrae Nathuum"
+
+msgid "Blessing_TemporalShield_Desc"
+msgstr "Vhrae tempul nyxvenis aevernum zhyx nathuum vrek'thos ethvyn kairosys {0}% zhantul vek'thar."
+
+msgid "Blessing_ProbabilityField"
+msgstr "Kairosys Temnix"
+
+msgid "Blessing_ProbabilityField_Desc"
+msgstr "Vhrae {0}% tempul nyxvenis aevernum zhyx nathuum."
+
+msgid "Blessing_WoundReversal"
+msgstr "Ethvyn Kronvyl Vek'thar"
+
+msgid "Blessing_WoundReversal_Desc"
+msgstr "Aevernum zhyx {0}% nathuum vrek'thos ethvyn kairosys kronvyl ek'tharae."
+
+msgid "Blessing_TimelineDiversion"
+msgstr "Kronvyl Ethvyn Temnix"
+
+msgid "Blessing_TimelineDiversion_Desc"
+msgstr "Vhrae tempul nyxvenis {0}% aevernum zhyx {1}% nathuum vrek'thos ethvyn."
+
+msgid "Notification_TemporalShield_Activated"
+msgstr "Tempul Vhrae Nathuum Ethvyn!"
+
+msgid "Notification_Damage_Avoided"
+msgstr "Temnix Vrae'khorvae Nyxven!"
+
+msgid "Notification_WoundReversal"
+msgstr "Ethvyn Kronvyl Vek'thar: +{0} Aevernum"
+
+msgid "Notification_DamageDiverted"
+msgstr "Temnix Vrae'khorvae Zhantul: {0}"
+
+msgid "Notification_TemporalInsight_Revealed"
+msgstr "Zhantul vek'thar nyxven Kairosys Vynthul!"
+
+# Offensive Blessings
+msgid "Blessing_TemporalEcho"
+msgstr "Kronvyl Zhantul Ethra"
+
+msgid "Blessing_TemporalEcho_Desc"
+msgstr "Vynthul kairosys {0}% vek'thar nyxven kronvyl zhantul ethra."
+
+msgid "Blessing_TimeAcceleratedStrikes"
+msgstr "Kronvyl Temnix Vrae'khorvae"
+
+msgid "Blessing_TimeAcceleratedStrikes_Desc"
+msgstr "Vhrae tempul nyxvenis {0}% aevernum zhyx nathuum {1} vrek'thos, ethvyn kairosys {2} temnix."
+
+msgid "Blessing_EntropyBuildup"
+msgstr "Nathuum Vrek'thos Ethvyn"
+
+msgid "Blessing_EntropyBuildup_Desc"
+msgstr "Kronvyl zhantul ethra {0}% vynthul kairosys vek'thar nyxven {1}% temnix."
+
+msgid "Blessing_ParadoxDamage"
+msgstr "Ethvyn Kairosys Vynthul"
+
+msgid "Blessing_ParadoxDamage_Desc"
+msgstr "Temnix vrae'khorvae {0}% zhantul {1}% vek'thar nyxven kronvyl zhantul ethra."
+
+# Utility Blessings
+msgid "Blessing_ChronoHarvester"
+msgstr "Kronvyl Zhantul Nyxvenis"
+
+msgid "Blessing_ChronoHarvester_Desc"
+msgstr "Nathuum vrek'thos ethvyn kairosys {0}% tempul vhrae tempul nyxvenis."
+
+msgid "Blessing_TimelineEfficiency"
+msgstr "Kronvyl Vynthul Kairosys"
+
+msgid "Blessing_TimelineEfficiency_Desc"
+msgstr "Vek'thar nyxven kronvyl zhantul ethra {0}% tempul."
+
+msgid "Blessing_TemporalInsight"
+msgstr "Kronvyl Zhantul Vynthul"
+
+msgid "Blessing_TemporalInsight_Desc"
+msgstr "Vhrae tempul nyxvenis aevernum zhyx nathuum vrek'thos ethvyn kairosys {0}."
+
+msgid "Blessing_TemporalInsight_LineOfSight"
+msgstr "vynthul kairosys vek'thar nyxven"
+
+msgid "Blessing_TemporalInsight_ThroughWalls"
+msgstr "kronvyl zhantul ethra tempul"
+
+msgid "Blessing_ResourceRecursion"
+msgstr "Nathuum Aevernum Zhyx"
+
+msgid "Blessing_ResourceRecursion_Desc"
+msgstr "Vhrae {0}% tempul nyxvenis aevernum zhyx nathuum vrek'thos."
+
+# Movement Blessings
+msgid "Blessing_PhaseShifting"
+msgstr "Kronvyl Ethvyn Nyxvenis"
+
+msgid "Blessing_PhaseShifting_Desc"
+msgstr "Nyxven tempul kronvyl ethra'naxis vhrae tempul nyxvenis.{0}"
+
+msgid "Blessing_PhaseShifting_Damage"
+msgstr " Temnix vrae'khorvae zhantul vek'thar nyxven."
+
+msgid "Blessing_TimeSlipstream"
+msgstr "Kronvyl Vhrae Tempul"
+
+msgid "Blessing_TimeSlipstream_Desc"
+msgstr "Nyxvenis aevernum zhyx {0}% nathuum vrek'thos ethvyn {1} kairosys."
+
+msgid "Blessing_SpacetimeCompression"
+msgstr "Nathuum Kronvyl Ethvyn"
+
+msgid "Blessing_SpacetimeCompression_Desc"
+msgstr "Zhantul vek'thar nyxven kronvyl zhantul {0}% tempul vhrae nyxvenis."
+
+msgid "Blessing_TemporalWake"
+msgstr "Kronvyl Vynthul Temnix"
+
+msgid "Blessing_TemporalWake_Desc"
+msgstr "Vhrae tempul nyxvenis aevernum zhyx nathuum vrek'thos. Ethvyn kairosys {0} temnix vrae'khorvae."
