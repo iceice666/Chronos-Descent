@@ -22,8 +22,11 @@ config/icon="uid://3e85i6qn22hr"
 [autoload]
 
 Autoload="*res://Scenes/autoload.tscn"
+TranslationManager="*res://Scripts/Core/TranslationManager.cs"
 BlessingRegistry="*res://Scenes/autoload/blessing_registry.tscn"
 GameManager="*res://Scripts/GameManager.cs"
+GlobalEventBus="*res://Scripts/GlobalEventBus.cs"
+SettingsScreen="*res://Scenes/ui/settings_screen.tscn"
 
 [display]
 

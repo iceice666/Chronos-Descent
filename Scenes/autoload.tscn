@@ -1,13 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://b1tyahwcajxk3"]
-
-[ext_resource type="Script" uid="uid://cfocs6hhx77fx" path="res://Scripts/GlobalEventBus.cs" id="4_xk5ld"]
+[gd_scene format=3 uid="uid://b1tyahwcajxk3"]
 
 [node name="Autoload" type="Node"]
 
 [node name="Projectiles" type="Node" parent="."]
-
-[node name="GlobalEventBus" type="Node" parent="."]
-script = ExtResource("4_xk5ld")
-metadata/_custom_type_script = "uid://cfocs6hhx77fx"
 
 [node name="Entities" type="Node" parent="."]

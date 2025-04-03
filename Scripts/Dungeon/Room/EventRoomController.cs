@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ChronosDescent.Scripts.Core;
 using ChronosDescent.Scripts.Core.Damage;
 using ChronosDescent.Scripts.Core.Effect;
-using ChronosDescent.Scripts.Core.Entity;
 using ChronosDescent.Scripts.Entities;
 using Godot;
 

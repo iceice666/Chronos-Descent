@@ -39,10 +39,10 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 48
 text = "New Run"
 
-[node name="LangButton" type="Button" parent="VBoxContainer"]
+[node name="SettingsButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 48
-text = "Language"
+text = "Settings"
 
 [node name="QuitButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2

@@ -1,0 +1,185 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Chronos Descent\n"
+"POT-Creation-Date: 2025-04-03 12:00+0000\n"
+"PO-Revision-Date: 2025-04-03 12:00+0000\n"
+"Last-Translator: Claude <auto@anthropic.com>\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid "New Run"
+msgstr "新游戏"
+
+msgid "Settings"
+msgstr "设置"
+
+msgid "Quit"
+msgstr "退出"
+
+msgid "Resume"
+msgstr "继续"
+
+msgid "Restart"
+msgstr "重新开始"
+
+msgid "Enemies Defeated"
+msgstr "已击败敌人"
+
+msgid "Damage Caused"
+msgstr "造成伤害"
+
+msgid "Level Reached"
+msgstr "到达关卡"
+
+msgid "Time Played"
+msgstr "游戏时间"
+
+msgid "Level %d"
+msgstr "关卡 %d"
+
+msgid "Offensive"
+msgstr "攻击型"
+
+msgid "Defensive"
+msgstr "防御型"
+
+msgid "Utility"
+msgstr "工具型"
+
+msgid "Movement"
+msgstr "移动型"
+
+msgid "%s (%s)\n%s"
+msgstr "%s（%s）\n%s"
+
+msgid "Common"
+msgstr "普通"
+
+msgid "Uncommon"
+msgstr "非凡"
+
+msgid "Rare"
+msgstr "稀有"
+
+msgid "Epic"
+msgstr "史诗"
+
+msgid "Legendary"
+msgstr "传说"
+
+msgid "Chronos, Keeper of Balance"
+msgstr "克洛诺斯，平衡守护者"
+
+msgid "Aion, Master of Cycles"
+msgstr "艾恩，循环大师"
+
+msgid "Kairos, Lord of Opportunity"
+msgstr "凯罗斯，机遇之主"
+
+msgid "Aevum, Guardian of Eternity"
+msgstr "埃文姆，永恒守护者"
+
+msgid "Unknown Deity"
+msgstr "未知神明"
+
+msgid "Language"
+msgstr "语言"
+
+msgid "Music Volume"
+msgstr "音乐音量"
+
+msgid "SFX Volume"
+msgstr "音效音量"
+
+msgid "Fullscreen"
+msgstr "全屏"
+
+msgid "Apply"
+msgstr "应用"
+
+msgid "Reset to Default"
+msgstr "恢复默认"
+
+msgid "General"
+msgstr "通用"
+
+msgid "Audio"
+msgstr "音频"
+
+msgid "Video"
+msgstr "视频"
+
+msgid "Starting Room"
+msgstr "起始房间"
+
+msgid "Exit"
+msgstr "出口"
+
+msgid "Boss Room"
+msgstr "首领房间"
+
+msgid "Mini-Boss Room"
+msgstr "小首领房间"
+
+msgid "Combat Room"
+msgstr "战斗房间"
+
+msgid "Reward Room"
+msgstr "奖励房间"
+
+msgid "Event Room"
+msgstr "事件房间"
+
+msgid "Shop"
+msgstr "商店"
+
+msgid "Slowed by temporal distortion."
+msgstr "被时间扭曲减速。"
+
+msgid "Deal damage"
+msgstr "造成伤害"
+
+msgid "Create a separated snapshot, damage the snapshot received will return to the origin."
+msgstr "创建分离的时间快照，快照所受伤害将返回至源头。"
+
+msgid "Quickly dash in a direction"
+msgstr "朝一个方向快速冲刺"
+
+msgid "Rewind Time"
+msgstr "时间回溯"
+
+msgid "Rewind time by %d seconds, reversing position and health"
+msgstr "回溯时间%d秒，恢复位置和生命值"
+
+msgid "Heal"
+msgstr "治疗"
+
+msgid "Restore %d health points"
+msgstr "恢复%d点生命值"
+
+msgid "Dash"
+msgstr "冲刺"
+
+msgid "Quickly dash in the direction you're facing"
+msgstr "朝面对的方向快速冲刺"
+
+msgid "Claymore Normal Attack"
+msgstr "大剑普通攻击"
+
+msgid "Claymore Special Attack"
+msgstr "大剑特殊攻击"
+
+msgid "Claymore Ultimate"
+msgstr "大剑终极技能"
+
+msgid "Shoot an arrow that deals damage based on charge time"
+msgstr "射出一支箭，根据蓄力时间造成伤害"
+
+msgid "Fire multiple arrows in a spread pattern"
+msgstr "以扇形发射多支箭矢"
+
+msgid "Fire a powerful arrow that bounces between targets"
+msgstr "发射一支能在目标间弹射的强力箭矢"
