@@ -65,7 +65,7 @@ public partial class DungeonManager : Node
                 DungeonMap = _dungeonGenerator.Generate(Level);
             }
 
-            if (DungeonMap.NextNodes[0].Type == RoomType.RewardRoom) break;
+            if (DungeonMap.NextNodes[0].Type == RoomType.EventRoom) break;
 
             DungeonMap = DungeonMap.NextNodes[0];
         }

@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://bbixn7vgkkaal" path="res://Scripts/Dungeon/Room/RoomRegistryResource.cs" id="1_pkpn6"]
 [ext_resource type="PackedScene" uid="uid://c4qs1gp5ofawk" path="res://Scenes/room/type1_combat_1.tscn" id="2_in4v5"]
 [ext_resource type="PackedScene" uid="uid://bysapd5tp68si" path="res://Scenes/room/type1_empty.tscn" id="3_bydhy"]
-[ext_resource type="PackedScene" uid="uid://kjeckkcekn3t" path="res://Scenes/room/type1_event_1.tscn" id="4_nr317"]
+[ext_resource type="PackedScene" uid="uid://cwddbvqqylqyk" path="res://Scenes/room/event_room.tscn" id="4_nr317"]
 [ext_resource type="PackedScene" uid="uid://c8d1hk0wnu0vm" path="res://Scenes/room/blessing_room.tscn" id="4_siren"]
 [ext_resource type="PackedScene" uid="uid://cgp5esmjj5hqj" path="res://Scenes/room/type1_shop_1.tscn" id="6_6hfjq"]
 

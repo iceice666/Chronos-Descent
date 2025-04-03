@@ -87,6 +87,29 @@ public abstract class BaseAbility
             Caster.EventBus.Publish(EventVariant.AbilityCooldownChange, this);
         }
     }
+    
+    /// <summary>
+    /// Reduces the cooldown of this ability by the specified amount
+    /// </summary>
+    /// <param name="amount">Amount to reduce (in seconds)</param>
+    public void ReduceCooldown(double amount)
+    {
+        if (State != AbilityState.Cooldown || amount <= 0)
+            return;
+            
+        CurrentCooldown = Math.Max(0, CurrentCooldown - amount);
+        
+        if (CurrentCooldown <= 0)
+        {
+            CurrentCooldown = 0;
+            State = AbilityState.Idle;
+            Caster?.EventBus.Publish(EventVariant.AbilityCooldownFinished, this);
+        }
+        else
+        {
+            Caster?.EventBus.Publish(EventVariant.AbilityCooldownChange, this);
+        }
+    }
 
     #endregion
 }
