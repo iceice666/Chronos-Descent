@@ -1,4 +1,3 @@
-using System;
 using ChronosDescent.Scripts.Core;
 using ChronosDescent.Scripts.Core.Entity;
 using Godot;
@@ -117,15 +116,8 @@ public partial class DeathScreen : Control
         };
 
         foreach (var pair in pathKeyPairs)
-        {
             if (pair.Type == typeof(Label))
-            {
                 GetNode<Label>(pair.Path).Text = Tr(pair.Key);
-            }
-            else if (pair.Type == typeof(Button))
-            {
-                GetNode<Button>(pair.Path).Text = Tr(pair.Key);
-            }
-        }
+            else if (pair.Type == typeof(Button)) GetNode<Button>(pair.Path).Text = Tr(pair.Key);
     }
 }

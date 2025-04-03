@@ -80,7 +80,7 @@ public partial class PauseMenu : Control
     {
         GetTree().Quit();
     }
-    
+
     private void ApplyTranslation()
     {
         var pathKeyPairs = new[]
@@ -92,15 +92,8 @@ public partial class PauseMenu : Control
         };
 
         foreach (var pair in pathKeyPairs)
-        {
             if (pair.Type == typeof(Label))
-            {
                 GetNode<Label>(pair.Path).Text = Tr(pair.Key);
-            }
-            else if (pair.Type == typeof(Button))
-            {
-                GetNode<Button>(pair.Path).Text = Tr(pair.Key);
-            }
-        }
+            else if (pair.Type == typeof(Button)) GetNode<Button>(pair.Path).Text = Tr(pair.Key);
     }
 }

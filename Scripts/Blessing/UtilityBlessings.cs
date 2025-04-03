@@ -9,6 +9,13 @@ namespace ChronosDescent.Scripts.Core.Blessing;
 [GlobalClass]
 public partial class ChronoHarvesterBlessing : Blessing
 {
+    public ChronoHarvesterBlessing()
+    {
+        // Format description with current values
+        Description =
+            TranslationManager.TrFormat("Blessing_ChronoHarvester_Desc", ChronoshardBoostPercent * CurrentLevel);
+    }
+
     public override string Id { get; protected set; } = "chrono_harvester";
     public override string Title { get; protected set; } = TranslationManager.Tr("Blessing_ChronoHarvester");
     public override string Description { get; protected set; }
@@ -27,10 +34,6 @@ public partial class ChronoHarvesterBlessing : Blessing
 
     public override void OnApply()
     {
-        // Format description with current values
-        Description =
-            TranslationManager.TrFormat("Blessing_ChronoHarvester_Desc", ChronoshardBoostPercent * CurrentLevel);
-
         // Register for enemy death events
         GlobalEventBus.Instance.Subscribe<BaseEntity>(GlobalEventVariant.EntityDied, OnEntityDied);
     }
@@ -71,6 +74,16 @@ public partial class ChronoHarvesterBlessing : Blessing
 [GlobalClass]
 public partial class TimelineEfficiencyBlessing : Blessing
 {
+    // Cooldown reduction is implemented at the ability level in real usage
+    // This blessing would provide a global modifier that ability cooldowns check against
+
+    public TimelineEfficiencyBlessing()
+    {
+        // Format description with current values
+        Description =
+            TranslationManager.TrFormat("Blessing_TimelineEfficiency_Desc", CooldownReductionPercent * CurrentLevel);
+    }
+
     public override string Id { get; protected set; } = "timeline_efficiency";
     public override string Title { get; protected set; } = TranslationManager.Tr("Blessing_TimelineEfficiency");
     public override string Description { get; protected set; }
@@ -83,16 +96,6 @@ public partial class TimelineEfficiencyBlessing : Blessing
 
     public override bool IsStackable { get; protected set; } = true;
     public override int MaxLevel { get; protected set; } = 2;
-
-    // Cooldown reduction is implemented at the ability level in real usage
-    // This blessing would provide a global modifier that ability cooldowns check against
-
-    public override void OnApply()
-    {
-        // Format description with current values
-        Description =
-            TranslationManager.TrFormat("Blessing_TimelineEfficiency_Desc", CooldownReductionPercent * CurrentLevel);
-    }
 
     public override void OnLevelUp()
     {
@@ -114,6 +117,13 @@ public partial class TimelineEfficiencyBlessing : Blessing
 [GlobalClass]
 public partial class TemporalInsightBlessing : Blessing
 {
+    public TemporalInsightBlessing()
+    {
+        Description = TranslationManager.TrFormat("Blessing_TemporalInsight_Desc",
+            TranslationManager.Tr("Blessing_TemporalInsight_LineOfSight"));
+        RevealsThroughWalls = false;
+    }
+
     public override string Id { get; protected set; } = "temporal_insight";
     public override string Title { get; protected set; } = TranslationManager.Tr("Blessing_TemporalInsight");
 
@@ -131,20 +141,6 @@ public partial class TemporalInsightBlessing : Blessing
 
     public override void OnApply()
     {
-        // Format description based on level
-        if (CurrentLevel == 1)
-        {
-            Description = TranslationManager.TrFormat("Blessing_TemporalInsight_Desc",
-                TranslationManager.Tr("Blessing_TemporalInsight_LineOfSight"));
-            RevealsThroughWalls = false;
-        }
-        else
-        {
-            Description = TranslationManager.TrFormat("Blessing_TemporalInsight_Desc",
-                TranslationManager.Tr("Blessing_TemporalInsight_ThroughWalls"));
-            RevealsThroughWalls = true;
-        }
-
         // Subscribe to room entered event to reveal layout
         GlobalEventBus.Instance.Subscribe(GlobalEventVariant.RoomEntered, OnRoomEntered);
     }
@@ -168,48 +164,5 @@ public partial class TemporalInsightBlessing : Blessing
         // Simplified notification
         GlobalEventBus.Instance.Publish(GlobalEventVariant.BoardcastTitle,
             TranslationManager.Tr("Notification_TemporalInsight_Revealed"));
-    }
-}
-
-/// <summary>
-///     Resource Recursion: Chance to not consume consumable items
-/// </summary>
-[GlobalClass]
-public partial class ResourceRecursionBlessing : Blessing
-{
-    public override string Id { get; protected set; } = "resource_recursion";
-    public override string Title { get; protected set; } = TranslationManager.Tr("Blessing_ResourceRecursion");
-    public override string Description { get; protected set; }
-
-    [Export] public override BlessingRarity Rarity { get; set; } = BlessingRarity.Epic;
-    [Export] public override BlessingCategory Category { get; set; } = BlessingCategory.Utility;
-    [Export] public override TimeDeity Deity { get; set; } = TimeDeity.Kairos;
-
-    [Export] public double RecursionChancePercent { get; set; } = 25.0; // 25% chance to not consume
-
-    public override bool IsStackable { get; protected set; } = true;
-    public override int MaxLevel { get; protected set; } = 2;
-
-    public override void OnApply()
-    {
-        // Format description with current values
-        Description =
-            TranslationManager.TrFormat("Blessing_ResourceRecursion_Desc", RecursionChancePercent * CurrentLevel);
-
-        // In a full implementation, we would subscribe to item use events
-    }
-
-    public override void OnLevelUp()
-    {
-        // Update description with new values
-        Description =
-            TranslationManager.TrFormat("Blessing_ResourceRecursion_Desc", RecursionChancePercent * CurrentLevel);
-    }
-
-    // Method to check if an item should be consumed
-    public bool ShouldConsumeItem()
-    {
-        // Roll for non-consumption
-        return GD.RandRange(0, 100) >= RecursionChancePercent * CurrentLevel;
     }
 }

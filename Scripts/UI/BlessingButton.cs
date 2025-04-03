@@ -112,7 +112,7 @@ public partial class BlessingButton : Button
 
         // Emit blessing selected signal
         EmitSignal(SignalName.BlessingSelected, _blessing);
-        
+
         // Also publish global event for compatibility with new system
         GlobalEventBus.Instance.Publish(GlobalEventVariant.BlessingSelected, _blessing);
     }

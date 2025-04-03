@@ -1,27 +1,29 @@
-using Godot;
 using ChronosDescent.Scripts.Core;
+using Godot;
 
 namespace ChronosDescent.Scripts.UI;
 
 [GlobalClass]
 public partial class SettingsScreen : Control
 {
+    [Signal]
+    public delegate void SettingsClosedEventHandler();
+
+    private Button _applyButton;
+    private Button _closeButton;
+    private string _currentLanguage;
+
+    private bool _fullscreen;
+
     // UI Elements
     private OptionButton _languageDropdown;
-    private HSlider _musicVolumeSlider;
-    private HSlider _sfxVolumeSlider;
-    private OptionButton _windowMode;
-    private Button _closeButton;
-    private Button _applyButton;
 
     // Settings values
     private float _musicVolume = 1.0f;
+    private HSlider _musicVolumeSlider;
     private float _sfxVolume = 1.0f;
-    private bool _fullscreen = false;
-    private string _currentLanguage;
-
-    [Signal]
-    public delegate void SettingsClosedEventHandler();
+    private HSlider _sfxVolumeSlider;
+    private OptionButton _windowMode;
 
     public override void _Ready()
     {
@@ -77,10 +79,7 @@ public partial class SettingsScreen : Control
             _languageDropdown.AddItem(language, index);
 
             // Set current language as selected
-            if (language == TranslationManager.Instance.CurrentLanguage)
-            {
-                selectedIndex = index;
-            }
+            if (language == TranslationManager.Instance.CurrentLanguage) selectedIndex = index;
 
             index++;
         }
@@ -117,7 +116,7 @@ public partial class SettingsScreen : Control
         tabContainer.SetTabTitle(0, TranslationManager.Tr("Settings_General"));
         tabContainer.SetTabTitle(1, TranslationManager.Tr("Settings_Audio"));
         tabContainer.SetTabTitle(2, TranslationManager.Tr("Settings_Video"));
-        
+
         // Translate window mode options
         _windowMode.SetItemText(0, TranslationManager.Tr("Settings_WindowMode_Windowed"));
         _windowMode.SetItemText(1, TranslationManager.Tr("Settings_WindowMode_Fullscreen"));
@@ -153,8 +152,6 @@ public partial class SettingsScreen : Control
                 DisplayServer.WindowSetMode(DisplayServer.WindowMode.Maximized);
                 break;
         }
-
-        
     }
 
     private void OnClosePressed()

@@ -7,13 +7,13 @@ namespace ChronosDescent.Scripts.Dungeon.Generation;
 
 public class DungeonGenerator
 {
-    private readonly Random _random;
-    private readonly PathGenerator _pathGenerator;
     private readonly BranchManager _branchManager;
+    private readonly PathGenerator _pathGenerator;
+    private readonly Random _random;
     private readonly RoomBalancer _roomBalancer;
 
     /// <summary>
-    /// Initializes a new instance of the DungeonGenerator with customizable parameters.
+    ///     Initializes a new instance of the DungeonGenerator with customizable parameters.
     /// </summary>
     /// <param name="seed">Optional seed for reproducible random generation.</param>
     /// <param name="branchProbability">Probability of adding a branch from a node (0.0 to 1.0).</param>
@@ -39,7 +39,7 @@ public class DungeonGenerator
     }
 
     /// <summary>
-    /// Generates a dungeon structure as a directed acyclic graph.
+    ///     Generates a dungeon structure as a directed acyclic graph.
     /// </summary>
     /// <param name="level">The dungeon level, affecting size and difficulty.</param>
     /// <returns>The starting node of the dungeon.</returns>
@@ -87,9 +87,7 @@ public class DungeonGenerator
             {
                 var endRoom = endNodes[_random.Next(endNodes.Count)];
                 if (!DungeonUtils.IsReachable(deadEnd, endRoom) && !DungeonUtils.WouldCreateCycle(deadEnd, endRoom))
-                {
                     DungeonUtils.ConnectNodes(deadEnd, endRoom);
-                }
             }
         }
     }

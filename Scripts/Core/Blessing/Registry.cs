@@ -62,7 +62,6 @@ public partial class Registry : Node
         RegisterBlessing(new ChronoHarvesterBlessing());
         RegisterBlessing(new TimelineEfficiencyBlessing());
         RegisterBlessing(new TemporalInsightBlessing());
-        RegisterBlessing(new ResourceRecursionBlessing());
 
         // Movement Blessings
         RegisterBlessing(new PhaseShiftingBlessing());

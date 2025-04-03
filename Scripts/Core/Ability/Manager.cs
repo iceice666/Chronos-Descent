@@ -162,24 +162,21 @@ public class Manager : ISystem
     }
 
     /// <summary>
-    /// Get all active abilities currently equipped
+    ///     Get all active abilities currently equipped
     /// </summary>
     public List<BaseAbility> GetAllAbilities()
     {
         var abilities = new List<BaseAbility>();
-        
+
         // Check each slot for an ability
         foreach (AbilitySlotType slot in Enum.GetValues(typeof(AbilitySlotType)))
         {
             if (slot == AbilitySlotType.Unknown) continue;
-            
+
             var ability = GetAbility(slot);
-            if (ability != null)
-            {
-                abilities.Add(ability);
-            }
+            if (ability != null) abilities.Add(ability);
         }
-        
+
         return abilities;
     }
 

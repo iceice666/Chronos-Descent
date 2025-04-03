@@ -11,9 +11,9 @@ namespace ChronosDescent.Scripts.Dungeon;
 [GlobalClass]
 public partial class DungeonManager : Node
 {
+    private readonly DungeonGenerator _dungeonGenerator = new();
     private Player _player;
     public static DungeonManager Instance { get; private set; }
-    private DungeonGenerator _dungeonGenerator = new();
 
     [Export] public RoomRegistryResource RoomRegistry { get; set; }
     public int Level { get; private set; }
@@ -65,7 +65,7 @@ public partial class DungeonManager : Node
                 DungeonMap = _dungeonGenerator.Generate(Level);
             }
 
-            if (DungeonMap.NextNodes[0].Type == RoomType.EventRoom) break;
+            if (DungeonMap.NextNodes[0].Type == RoomType.RewardRoom) break;
 
             DungeonMap = DungeonMap.NextNodes[0];
         }
@@ -164,10 +164,7 @@ public partial class DungeonManager : Node
                 or RoomType.CombatRoom) return;
 
             firstDoor.Open();
-            if (doors.Count > 1)
-            {
-                doors[1].Open();
-            }
+            if (doors.Count > 1) doors[1].Open();
         }).CallDeferred();
 
 

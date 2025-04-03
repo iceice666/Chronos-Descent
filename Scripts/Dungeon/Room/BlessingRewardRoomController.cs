@@ -15,11 +15,11 @@ public partial class BlessingRewardRoomController : Node
 {
     // Standard setup is 3 blessings to choose from
     private const int StandardBlessingCount = 3;
+    private int _collectedBlessings;
 
     private List<Blessing> _currentBlessings = [];
     private TimeDeity _currentDeity;
     private Label _deityLabel;
-    private int _collectedBlessings = 0;
 
     private Player _player;
 
@@ -128,10 +128,7 @@ public partial class BlessingRewardRoomController : Node
     private void GenerateBlessingOptions()
     {
         // Clear any existing blessing items
-        foreach (var child in GetChildren().Where(c => c is BlessingItem).ToList())
-        {
-            child.QueueFree();
-        }
+        foreach (var child in GetChildren().Where(c => c is BlessingItem).ToList()) child.QueueFree();
 
         _currentBlessings.Clear();
 
@@ -154,12 +151,10 @@ public partial class BlessingRewardRoomController : Node
 
         if (blessingCount == 0) return;
 
-       
+
         // Create blessing items at the positions
         for (var i = 0; i < blessingCount; i++)
-        {
             CreateBlessingItem(_currentBlessings[i], BlessingPositions![i].GlobalPosition);
-        }
     }
 
     /// <summary>
@@ -182,7 +177,7 @@ public partial class BlessingRewardRoomController : Node
 
         var item = BlessingItemScene != null ? BlessingItemScene.Instantiate<BlessingItem>() : new BlessingItem();
 
-        
+
         item.GlobalPosition = position;
         item.SetBlessing(blessing);
         AddChild(item);

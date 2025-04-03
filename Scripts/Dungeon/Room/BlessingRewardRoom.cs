@@ -9,10 +9,10 @@ namespace ChronosDescent.Scripts.Dungeon.Room;
 [GlobalClass]
 public partial class BlessingRewardRoom : Node2D
 {
-    private BlessingRewardRoomController _roomController;
     private Node _doors;
     private Node2D _enterPoint;
-    
+    private BlessingRewardRoomController _roomController;
+
     [Export] public NodePath EnterPointPath { get; set; } = "EnterPoint";
     [Export] public NodePath DoorsPath { get; set; } = "Doors";
     [Export] public NodePath RoomControllerPath { get; set; } = "BlessingRoomController";
@@ -45,7 +45,7 @@ public partial class BlessingRewardRoom : Node2D
     {
         // Close doors when entering the room
         CloseDoors();
-        
+
         // Room controller will handle initializing the blessing items automatically
     }
 
@@ -57,7 +57,7 @@ public partial class BlessingRewardRoom : Node2D
         // Play blessing effect and sound
         PlayBlessingSound(blessing);
     }
-    
+
     /// <summary>
     ///     Handle room cleared event
     /// </summary>
@@ -97,7 +97,7 @@ public partial class BlessingRewardRoom : Node2D
             roomDoor.Open();
         }
     }
-    
+
     /// <summary>
     ///     Close doors when entering the room
     /// </summary>

@@ -36,7 +36,6 @@ public enum GlobalEventVariant
     GameOver
 }
 
-
 public partial class GlobalEventBus : Node
 {
     // Dictionary of event types to event instances

@@ -10,13 +10,13 @@ namespace ChronosDescent.Scripts.Items;
 [GlobalClass]
 public partial class BlessingItem : Node2D
 {
-    
-  
-
     private Label _categoryLabel;
     private Label _descriptionLabel;
-    private Area2D _interactionArea;
+
+    // The color to use for the blessing's glow effect
+    private Color _glowColor = Colors.White;
     private TextureRect _iconSprite;
+    private Area2D _interactionArea;
 
     // Visual components
     private Label _nameLabel;
@@ -28,9 +28,6 @@ public partial class BlessingItem : Node2D
     [Export] public Blessing Blessing { get; set; }
     [Export] public float HoverDistance { get; set; } = 5.0f;
     [Export] public float HoverSpeed { get; set; } = 3.0f;
-    
-    // The color to use for the blessing's glow effect
-    private Color _glowColor = Colors.White;
 
     public override void _Ready()
     {
@@ -44,10 +41,7 @@ public partial class BlessingItem : Node2D
         _originalPosition = GlobalPosition;
 
         // Setup blessing info if available
-        if (Blessing != null)
-        {
-            SetupBlessingVisuals();
-        }
+        if (Blessing != null) SetupBlessingVisuals();
 
         // Connect signals
         _interactionArea.BodyEntered += OnBodyEntered;
@@ -60,7 +54,6 @@ public partial class BlessingItem : Node2D
         _interactionArea.BodyEntered -= OnBodyEntered;
         _interactionArea.BodyExited -= OnBodyExited;
         GlobalEventBus.Instance.Unsubscribe<Blessing>(GlobalEventVariant.BlessingSelected, OnBlessingSelected);
-
     }
 
     public void SetBlessing(Blessing blessing)
@@ -68,13 +61,13 @@ public partial class BlessingItem : Node2D
         Blessing = blessing;
         SetupBlessingVisuals();
     }
-    
+
     private void SetupBlessingVisuals()
     {
         if (_nameLabel != null) _nameLabel.Text = Blessing.Title;
         if (_descriptionLabel != null) _descriptionLabel.Text = Blessing.Description;
         if (_categoryLabel != null) _categoryLabel.Text = Blessing.Category.ToString();
-        
+
         // Set icon if available
         if (_iconSprite != null && Blessing.Icon != null)
         {
@@ -98,15 +91,12 @@ public partial class BlessingItem : Node2D
                     _glowColor = new Color(0.2f, 0.9f, 0.5f); // Green
                     break;
             }
-            
+
             _iconSprite.Modulate = _glowColor;
         }
-        
+
         // Set nameLabel color based on rarity
-        if (_nameLabel != null)
-        {
-            _nameLabel.Modulate = Blessing.GetRarityColor();
-        }
+        if (_nameLabel != null) _nameLabel.Modulate = Blessing.GetRarityColor();
     }
 
     public override void _Process(double delta)
@@ -116,10 +106,7 @@ public partial class BlessingItem : Node2D
         GlobalPosition = _originalPosition + new Vector2(0, Mathf.Sin(_time) * HoverDistance);
 
         // Check for interaction key press when player is in range
-        if ( Input.IsActionJustPressed("interact") && PlayerInRange != null )
-        {
-            CollectBlessing();
-        }
+        if (Input.IsActionJustPressed("interact") && PlayerInRange != null) CollectBlessing();
     }
 
     private void OnBodyEntered(Node2D body)
@@ -160,27 +147,27 @@ public partial class BlessingItem : Node2D
 
         // Create visual effect
         CreateBlessingEffect();
-        
+
         // Publish global event
         GlobalEventBus.Instance.Publish(GlobalEventVariant.BlessingSelected, Blessing);
     }
-    
+
     private void CreateBlessingEffect()
     {
         // Create particles for visual feedback
         var particles = new GpuParticles2D();
-        
+
         // Set up particles material
         var material = new ParticleProcessMaterial();
         material.Color = _glowColor;
-        
+
         // Configure particles
         particles.ProcessMaterial = material;
         particles.Emitting = true;
         particles.OneShot = true;
         particles.Amount = 16;
         particles.Lifetime = 1.0f;
-        
+
         // Add to scene
         AddChild(particles);
     }

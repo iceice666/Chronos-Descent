@@ -10,6 +10,12 @@ namespace ChronosDescent.Scripts.Core.Blessing;
 [GlobalClass]
 public partial class PhaseShiftingBlessing : Blessing
 {
+    public PhaseShiftingBlessing()
+    {
+        Description = TranslationManager.TrFormat("Blessing_PhaseShifting_Desc", "");
+        DealsDamage = false;
+    }
+
     public override string Id { get; protected set; } = "phase_shifting";
     public override string Title { get; protected set; } = TranslationManager.Tr("Blessing_PhaseShifting");
 
@@ -24,22 +30,6 @@ public partial class PhaseShiftingBlessing : Blessing
 
     public override bool IsStackable { get; protected set; } = true;
     public override int MaxLevel { get; protected set; } = 2;
-
-    public override void OnApply()
-    {
-        // Set description based on level
-        if (CurrentLevel == 1)
-        {
-            Description = TranslationManager.TrFormat("Blessing_PhaseShifting_Desc", "");
-            DealsDamage = false;
-        }
-        else
-        {
-            Description = TranslationManager.TrFormat("Blessing_PhaseShifting_Desc", 
-                TranslationManager.Tr("Blessing_PhaseShifting_Damage"));
-            DealsDamage = true;
-        }
-    }
 
     public override void OnLevelUp()
     {
@@ -82,6 +72,18 @@ public partial class TimeSlipstreamBlessing : Blessing
     private bool _boostActive;
 
     private double _boostTimer;
+
+    public TimeSlipstreamBlessing()
+    {
+        // Set up multiplicative modifier for move speed
+        MultiplicativeModifiers = new Dictionary<StatFieldSpecifier, double>();
+
+        // Format description with current values
+        Description = TranslationManager.TrFormat("Blessing_TimeSlipstream_Desc",
+            SpeedBoostPercent * CurrentLevel,
+            BoostDuration);
+    }
+
     public override string Id { get; protected set; } = "time_slipstream";
     public override string Title { get; protected set; } = TranslationManager.Tr("Blessing_TimeSlipstream");
 
@@ -96,17 +98,6 @@ public partial class TimeSlipstreamBlessing : Blessing
 
     public override bool IsStackable { get; protected set; } = true;
     public override int MaxLevel { get; protected set; } = 3;
-
-    public override void OnApply()
-    {
-        // Set up multiplicative modifier for move speed
-        MultiplicativeModifiers = new Dictionary<StatFieldSpecifier, double>();
-
-        // Format description with current values
-        Description = TranslationManager.TrFormat("Blessing_TimeSlipstream_Desc",
-            SpeedBoostPercent * CurrentLevel,
-            BoostDuration);
-    }
 
     public override void OnLevelUp()
     {
@@ -170,6 +161,16 @@ public partial class TimeSlipstreamBlessing : Blessing
 [GlobalClass]
 public partial class SpacetimeCompressionBlessing : Blessing
 {
+    // This blessing would affect dungeon generation parameters
+    // In a real implementation, it would modify the DungeonGenerator
+
+    public SpacetimeCompressionBlessing()
+    {
+        // Format description with current values
+        Description =
+            TranslationManager.TrFormat("Blessing_SpacetimeCompression_Desc", RoomReductionPercent * CurrentLevel);
+    }
+
     public override string Id { get; protected set; } = "spacetime_compression";
     public override string Title { get; protected set; } = TranslationManager.Tr("Blessing_SpacetimeCompression");
     public override string Description { get; protected set; }
@@ -183,19 +184,11 @@ public partial class SpacetimeCompressionBlessing : Blessing
     public override bool IsStackable { get; protected set; } = true;
     public override int MaxLevel { get; protected set; } = 2;
 
-    // This blessing would affect dungeon generation parameters
-    // In a real implementation, it would modify the DungeonGenerator
-
-    public override void OnApply()
-    {
-        // Format description with current values
-        Description = TranslationManager.TrFormat("Blessing_SpacetimeCompression_Desc", RoomReductionPercent * CurrentLevel);
-    }
-
     public override void OnLevelUp()
     {
         // Update description with new values
-        Description = TranslationManager.TrFormat("Blessing_SpacetimeCompression_Desc", RoomReductionPercent * CurrentLevel);
+        Description =
+            TranslationManager.TrFormat("Blessing_SpacetimeCompression_Desc", RoomReductionPercent * CurrentLevel);
     }
 
     // Method for DungeonGenerator to query room reduction
@@ -217,6 +210,13 @@ public partial class TemporalWakeBlessing : Blessing
     private Vector2 _lastPosition = Vector2.Zero;
 
     private double _trailTimer;
+
+    public TemporalWakeBlessing()
+    {
+        // Format description with current values
+        Description = TranslationManager.TrFormat("Blessing_TemporalWake_Desc", WakeDamagePerSecond * CurrentLevel);
+    }
+
     public override string Id { get; protected set; } = "temporal_wake";
     public override string Title { get; protected set; } = TranslationManager.Tr("Blessing_TemporalWake");
 
@@ -234,9 +234,6 @@ public partial class TemporalWakeBlessing : Blessing
 
     public override void OnApply()
     {
-        // Format description with current values
-        Description = TranslationManager.TrFormat("Blessing_TemporalWake_Desc", WakeDamagePerSecond * CurrentLevel);
-
         // Initialize last position
         if (Owner != null) _lastPosition = Owner.GlobalPosition;
     }

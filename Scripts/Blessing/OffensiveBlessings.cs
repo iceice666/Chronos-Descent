@@ -12,6 +12,13 @@ public partial class TemporalEchoBlessing : Blessing
 {
     private double _lastDamageDealt;
     private double _lastEchoTime;
+
+    // Format description with current echo chance
+    public TemporalEchoBlessing()
+    {
+        Description = TranslationManager.TrFormat("Blessing_TemporalEcho_Desc", EchoChance * CurrentLevel);
+    }
+
     public override string Id { get; protected set; } = "temporal_echo";
     public override string Title { get; protected set; } = TranslationManager.Tr("Blessing_TemporalEcho");
 
@@ -28,12 +35,6 @@ public partial class TemporalEchoBlessing : Blessing
 
     public override bool IsStackable { get; protected set; } = true;
     public override int MaxLevel { get; protected set; } = 3;
-
-    // Format description with current echo chance
-    public override void OnApply()
-    {
-        Description = TranslationManager.TrFormat("Blessing_TemporalEcho_Desc", EchoChance * CurrentLevel);
-    }
 
     public override void OnLevelUp()
     {
@@ -90,6 +91,19 @@ public partial class TimeAcceleratedStrikesBlessing : Blessing
     // Runtime tracking
     private int _currentStacks;
     private double _stackTimer;
+
+    public TimeAcceleratedStrikesBlessing()
+    {
+        // Set up multiplicative modifier for attack speed
+        MultiplicativeModifiers = new Dictionary<StatFieldSpecifier, double>();
+
+        // Format description with current values
+        Description = TranslationManager.TrFormat("Blessing_TimeAcceleratedStrikes_Desc",
+            AttackSpeedBoostPerStack * CurrentLevel,
+            StackDuration,
+            MaxStacks);
+    }
+
     public override string Id { get; protected set; } = "time_accelerated_strikes";
     public override string Title { get; protected set; } = TranslationManager.Tr("Blessing_TimeAcceleratedStrikes");
 
@@ -105,18 +119,6 @@ public partial class TimeAcceleratedStrikesBlessing : Blessing
 
     public override bool IsStackable { get; protected set; } = true;
     public override int MaxLevel { get; protected set; } = 3;
-
-    public override void OnApply()
-    {
-        // Set up multiplicative modifier for attack speed
-        MultiplicativeModifiers = new Dictionary<StatFieldSpecifier, double>();
-
-        // Format description with current values
-        Description = TranslationManager.TrFormat("Blessing_TimeAcceleratedStrikes_Desc",
-            AttackSpeedBoostPerStack * CurrentLevel,
-            StackDuration,
-            MaxStacks);
-    }
 
     public override void OnLevelUp()
     {
@@ -188,6 +190,15 @@ public partial class EntropyBuildupBlessing : Blessing
     // Runtime tracking
     private ulong _lastTargetId;
     private double _resetTimer;
+
+    public EntropyBuildupBlessing()
+    {
+        // Format description with current values
+        Description = TranslationManager.TrFormat("Blessing_EntropyBuildup_Desc",
+            DamageIncreasePerHit * CurrentLevel,
+            MaxDamageIncrease * CurrentLevel);
+    }
+
     public override string Id { get; protected set; } = "entropy_buildup";
     public override string Title { get; protected set; } = TranslationManager.Tr("Blessing_EntropyBuildup");
 
@@ -203,14 +214,6 @@ public partial class EntropyBuildupBlessing : Blessing
 
     public override bool IsStackable { get; protected set; } = true;
     public override int MaxLevel { get; protected set; } = 3;
-
-    public override void OnApply()
-    {
-        // Format description with current values
-        Description = TranslationManager.TrFormat("Blessing_EntropyBuildup_Desc",
-            DamageIncreasePerHit * CurrentLevel,
-            MaxDamageIncrease * CurrentLevel);
-    }
 
     public override void OnLevelUp()
     {
@@ -279,6 +282,14 @@ public partial class EntropyBuildupBlessing : Blessing
 [GlobalClass]
 public partial class ParadoxDamageBlessing : Blessing
 {
+    public ParadoxDamageBlessing()
+    {
+        // Format description with current values
+        Description = TranslationManager.TrFormat("Blessing_ParadoxDamage_Desc",
+            ParadoxChance * CurrentLevel,
+            ParadoxDamagePercent);
+    }
+
     public override string Id { get; protected set; } = "paradox_damage";
     public override string Title { get; protected set; } = TranslationManager.Tr("Blessing_ParadoxDamage");
 
@@ -293,14 +304,6 @@ public partial class ParadoxDamageBlessing : Blessing
 
     public override bool IsStackable { get; protected set; } = true;
     public override int MaxLevel { get; protected set; } = 2;
-
-    public override void OnApply()
-    {
-        // Format description with current values
-        Description = TranslationManager.TrFormat("Blessing_ParadoxDamage_Desc",
-            ParadoxChance * CurrentLevel,
-            ParadoxDamagePercent);
-    }
 
     public override void OnLevelUp()
     {

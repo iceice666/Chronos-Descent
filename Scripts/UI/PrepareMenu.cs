@@ -44,7 +44,7 @@ public partial class PrepareMenu : Control
         _startRunButton.Pressed += OnStartRunPressed;
         _weaponList.ItemSelected += OnWeaponSelected;
         _abilityList.ItemSelected += OnAbilitySelected;
-        
+
         GetNode<Label>("Title").SetTextTr("Prepare_Title");
         GetNode<Label>("WeaponSelection/Label").SetTextTr("Prepare_Weapon_Title");
         GetNode<Label>("AbilitySelection/Label").SetTextTr("Prepare_Ability_Title");
@@ -56,7 +56,7 @@ public partial class PrepareMenu : Control
     {
         // Populate weapon list
         _weaponList.Clear();
-        foreach (var weaponKey in _weapons.Keys) 
+        foreach (var weaponKey in _weapons.Keys)
         {
             _weaponList.AddItem(TranslationManager.Tr(weaponKey));
             // Store the key as metadata
@@ -74,7 +74,7 @@ public partial class PrepareMenu : Control
 
         // Populate ability list
         _abilityList.Clear();
-        foreach (var abilityKey in _lifeSavingAbilities.Keys) 
+        foreach (var abilityKey in _lifeSavingAbilities.Keys)
         {
             _abilityList.AddItem(TranslationManager.Tr(abilityKey));
             // Store the key as metadata

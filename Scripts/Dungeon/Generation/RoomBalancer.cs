@@ -8,7 +8,7 @@ namespace ChronosDescent.Scripts.Dungeon.Generation;
 public class RoomBalancer(Dictionary<RoomType, (double min, double max)> roomDistribution)
 {
     /// <summary>
-    /// Balances the distribution of room types across the dungeon.
+    ///     Balances the distribution of room types across the dungeon.
     /// </summary>
     /// <param name="startNode">The starting node of the dungeon.</param>
     /// <param name="random">The random number generator.</param>
@@ -19,10 +19,7 @@ public class RoomBalancer(Dictionary<RoomType, (double min, double max)> roomDis
         var modifiableNodes = allNodes.Where(n => !fixedRoomTypes.Contains(n.Type)).ToList();
 
         // Reset modifiable nodes to CombatRoom
-        foreach (var node in modifiableNodes)
-        {
-            node.Type = RoomType.CombatRoom;
-        }
+        foreach (var node in modifiableNodes) node.Type = RoomType.CombatRoom;
 
         var targetCounts = CalculateTargetRoomCounts(modifiableNodes.Count, random);
         PlaceMiniBossRooms(modifiableNodes, targetCounts[RoomType.MiniBossRoom], random);
@@ -50,10 +47,7 @@ public class RoomBalancer(Dictionary<RoomType, (double min, double max)> roomDis
         if (assignedRooms == totalRooms) return targetCounts;
         var difference = totalRooms - assignedRooms;
         targetCounts[RoomType.CombatRoom] += difference; // CombatRoom absorbs the difference
-        if (targetCounts[RoomType.CombatRoom] < 0)
-        {
-            targetCounts[RoomType.CombatRoom] = 0; // Ensure non-negative
-        }
+        if (targetCounts[RoomType.CombatRoom] < 0) targetCounts[RoomType.CombatRoom] = 0; // Ensure non-negative
 
         return targetCounts;
     }
@@ -71,10 +65,7 @@ public class RoomBalancer(Dictionary<RoomType, (double min, double max)> roomDis
             var targetDepth = (int)Math.Round(i * spacing);
             var closestGroup = nodesByDepth.OrderBy(g => Math.Abs(g.Key - targetDepth)).First();
             var candidates = closestGroup.Where(n => n.Type == RoomType.CombatRoom).ToList();
-            if (candidates.Any())
-            {
-                candidates[random.Next(candidates.Count)].Type = RoomType.MiniBossRoom;
-            }
+            if (candidates.Any()) candidates[random.Next(candidates.Count)].Type = RoomType.MiniBossRoom;
         }
     }
 
@@ -96,10 +87,7 @@ public class RoomBalancer(Dictionary<RoomType, (double min, double max)> roomDis
         foreach (var roomType in new[] { RoomType.RewardRoom, RoomType.EventRoom, RoomType.ShopRoom })
         {
             var count = roomsToAdd[roomType];
-            for (var i = 0; i < count && index < availableNodes.Count; i++)
-            {
-                availableNodes[index++].Type = roomType;
-            }
+            for (var i = 0; i < count && index < availableNodes.Count; i++) availableNodes[index++].Type = roomType;
         }
     }
 

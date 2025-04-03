@@ -6,7 +6,7 @@ namespace ChronosDescent.Scripts.Dungeon.Generation;
 public class PathGenerator
 {
     /// <summary>
-    /// Generates the main path of the dungeon from the start room.
+    ///     Generates the main path of the dungeon from the start room.
     /// </summary>
     /// <param name="startRoom">The starting node of the dungeon.</param>
     /// <param name="dungeonSize">The target size of the dungeon.</param>
@@ -27,7 +27,10 @@ public class PathGenerator
         // Generate the main path nodes
         for (var i = 1; i < mainPathLength; i++)
         {
-            var roomType = Array.IndexOf(bossPositions, i) >= 0 ? RoomType.BossRoom : RoomType.CombatRoom; // Default, balanced later
+            var roomType =
+                Array.IndexOf(bossPositions, i) >= 0
+                    ? RoomType.BossRoom
+                    : RoomType.CombatRoom; // Default, balanced later
 
             var newNode = new DungeonNode(roomType, i);
             DungeonUtils.ConnectNodes(current, newNode);

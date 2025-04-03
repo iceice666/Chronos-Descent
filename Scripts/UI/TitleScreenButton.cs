@@ -1,16 +1,15 @@
 using Godot;
-using ChronosDescent.Scripts.Core;
 
 namespace ChronosDescent.Scripts.UI;
 
 public partial class TitleScreenButton : VBoxContainer
 {
-    private Button _settingsButton;
     private Button _newRunButton;
     private Button _quitButton;
+    private Button _settingsButton;
+    private Control _settingsScreen;
 
     private PackedScene _settingsScreenScene;
-    private Control _settingsScreen;
 
     public override void _Ready()
     {
@@ -67,16 +66,11 @@ public partial class TitleScreenButton : VBoxContainer
 
             // Connect to the settings closed signal
             if (_settingsScreen is SettingsScreen settingsScreenScript)
-            {
                 settingsScreenScript.SettingsClosed += OnSettingsClosed;
-            }
 
             // Add close button functionality directly
             var closeButton = _settingsScreen.GetNode<Button>("%CloseButton");
-            if (closeButton != null)
-            {
-                closeButton.Pressed += OnSettingsClosed;
-            }
+            if (closeButton != null) closeButton.Pressed += OnSettingsClosed;
         }
         else
         {
@@ -96,15 +90,10 @@ public partial class TitleScreenButton : VBoxContainer
 
         // Disconnect signals
         if (_settingsScreen is SettingsScreen settingsScreenScript)
-        {
             settingsScreenScript.SettingsClosed -= OnSettingsClosed;
-        }
 
         var closeButton = _settingsScreen.GetNode<Button>("%CloseButton");
-        if (closeButton != null)
-        {
-            closeButton.Pressed -= OnSettingsClosed;
-        }
+        if (closeButton != null) closeButton.Pressed -= OnSettingsClosed;
 
         // Hide and destroy the settings screen
         _settingsScreen.QueueFree();
