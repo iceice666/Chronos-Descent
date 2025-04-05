@@ -1,11 +1,10 @@
-[gd_scene load_steps=8 format=4 uid="uid://cl47uhfqqg0td"]
+[gd_scene load_steps=7 format=4 uid="uid://cl47uhfqqg0td"]
 
 [ext_resource type="PackedScene" uid="uid://de4usjehraevn" path="res://Scenes/entity/player.tscn" id="1_lt7kh"]
 [ext_resource type="Script" uid="uid://do8mdwl8bdlaw" path="res://Scripts/Dungeon/DungeonManager.cs" id="2_dakn4"]
 [ext_resource type="Resource" uid="uid://daiqvj28xkkhm" path="res://Resources/Type1Rooms.tres" id="3_lt7kh"]
 [ext_resource type="TileSet" uid="uid://p22bjuwqt0y8" path="res://Scenes/room/tileset.tres" id="4_l3tba"]
 [ext_resource type="PackedScene" uid="uid://m2gapyvjm1kt" path="res://Scenes/ui/ui.tscn" id="5_iqbxe"]
-[ext_resource type="Script" uid="uid://dmc6r0tb4iafn" path="res://Scripts/ActionManager/UserInputManager.cs" id="7_203el"]
 [ext_resource type="Script" uid="uid://dn58ytevo8umt" path="res://Scripts/Camera.cs" id="7_dcl0p"]
 
 [node name="Dungeon" type="Node2D"]
@@ -25,14 +24,6 @@ tile_set = ExtResource("4_l3tba")
 zoom = Vector2(2, 2)
 script = ExtResource("7_dcl0p")
 metadata/_custom_type_script = "uid://dn58ytevo8umt"
-
-[node name="UserInputManager" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-script = ExtResource("7_203el")
-metadata/_custom_type_script = "uid://dmc6r0tb4iafn"
 
 [node name="Player" parent="." instance=ExtResource("1_lt7kh")]
 z_index = 100
