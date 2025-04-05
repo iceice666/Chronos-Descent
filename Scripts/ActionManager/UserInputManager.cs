@@ -141,7 +141,7 @@ public partial class UserInputManager : Control, IActionManager
     private bool IsControllerActive()
     {
         // Check for any controller button press
-        for (int button = 0; button <= (int)JoyButton.Max; button++)
+        for (var button = 0; button <= (int)JoyButton.Max; button++)
         {
             if (Input.IsJoyButtonPressed(_controllerIndex, (JoyButton)button))
             {
@@ -150,9 +150,9 @@ public partial class UserInputManager : Control, IActionManager
         }
         
         // Check for any joystick movement
-        for (int axis = 0; axis <= 5; axis++) // Check all common axes (left stick, right stick, triggers)
+        for (var axis = 0; axis <= 5; axis++) // Check all common axes (left stick, right stick, triggers)
         {
-            float value = Input.GetJoyAxis(_controllerIndex, axis);
+            var value = Input.GetJoyAxis(_controllerIndex, (JoyAxis) axis);
             if (Mathf.Abs(value) > 0.25f) // Higher threshold to prevent false detection
             {
                 return true;

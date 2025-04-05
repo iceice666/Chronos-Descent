@@ -9,6 +9,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+focus_mode = 2
 script = ExtResource("1_16l5d")
 
 [node name="Background" type="ColorRect" parent="."]
@@ -45,6 +46,8 @@ offset_right = 400.0
 offset_bottom = 150.0
 grow_vertical = 2
 focus_neighbor_right = NodePath("../AbilitySelection")
+focus_neighbor_bottom = NodePath("../StartRunButton")
+focus_mode = 2
 
 [node name="Label" type="Label" parent="WeaponSelection"]
 layout_mode = 2
@@ -80,6 +83,8 @@ offset_bottom = 150.0
 grow_horizontal = 0
 grow_vertical = 2
 focus_neighbor_left = NodePath("../WeaponSelection")
+focus_neighbor_bottom = NodePath("../StartRunButton")
+focus_mode = 2
 
 [node name="Label" type="Label" parent="AbilitySelection"]
 layout_mode = 2
@@ -115,5 +120,8 @@ offset_right = 100.0
 offset_bottom = -50.0
 grow_horizontal = 2
 grow_vertical = 0
+focus_neighbor_left = NodePath("../WeaponSelection")
+focus_neighbor_top = NodePath("../WeaponSelection")
+focus_neighbor_right = NodePath("../AbilitySelection")
 theme_override_font_sizes/font_size = 20
 text = "Start Run"
