@@ -73,7 +73,7 @@ public partial class PauseMenu : Control
         GetTree().Paused = false;
 
         // Reset and restart the game
-        GetTree().ChangeSceneToFile("res://Scenes/prepare_room.tscn");
+        GetTree().ChangeSceneToFile("res://Scenes/ui/prepare_room.tscn");
     }
 
     private void OnQuitPressed()

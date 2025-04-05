@@ -21,8 +21,12 @@ public partial class UserInputManager : Control, IActionManager
 
     private int _controllerIndex;
 
-    private VirtualJoystick _leftVirtualJoystick;
-    private VirtualJoystick _rightVirtualJoystick;
+    [Export] private VirtualJoystick _moveJoystick;
+    [Export] private VirtualJoystick _normalAttackJoystick;
+    [Export] private VirtualJoystick _specialAttackJoystick;
+    [Export] private VirtualJoystick _ultimateJoystick;
+    [Export] private VirtualJoystick _lifeSavingJoystick;
+    [Export] private Button _interactButton;
 
     // References to UI components
     private Control _virtualInputContainer;
@@ -35,6 +39,7 @@ public partial class UserInputManager : Control, IActionManager
     public Vector2 MoveDirection { get; set; } = Vector2.Zero;
     public Vector2 LookDirection { get; set; } = Vector2.Zero;
 
+
     public override void _Ready()
     {
         // Initialize the input source based on device capabilities
@@ -45,9 +50,10 @@ public partial class UserInputManager : Control, IActionManager
         GD.Print($"Current Input Source: {CurrentInputSource}");
 
         // Get reference to virtual input container using the node path
-        _virtualInputContainer = GetNode<Control>("../UI/VirtualInput");
-        _leftVirtualJoystick = _virtualInputContainer.GetNode<VirtualJoystick>("LeftJoystick");
-        _rightVirtualJoystick = _virtualInputContainer.GetNode<VirtualJoystick>("RightJoystick");
+        _virtualInputContainer = GetNode<Control>("../VirtualInput");
+
+        // Setup virtual buttons
+        SetupVirtualButtons();
 
         // Set initial visibility
         UpdateVirtualInputVisibility();
@@ -70,7 +76,7 @@ public partial class UserInputManager : Control, IActionManager
             SwitchInputSource(InputSource.Controller);
         // Check if using touch/virtual joystick
         else if (DisplayServer.IsTouchscreenAvailable() &&
-                 (_leftVirtualJoystick.IsPressed || _rightVirtualJoystick.IsPressed))
+                 (_moveJoystick.IsPressed || _normalAttackJoystick.IsPressed))
             SwitchInputSource(InputSource.VirtualJoystick);
         // Check if using keyboard/mouse
         else if (IsAnyKeyboardInputActive() ||
@@ -84,8 +90,10 @@ public partial class UserInputManager : Control, IActionManager
     /// </summary>
     private bool IsControllerActive()
     {
-        return Input.GetConnectedJoypads().Count != 0 &&
-               Input.IsJoyButtonPressed(_controllerIndex, JoyButton.Start);
+        return Input.IsJoyButtonPressed(_controllerIndex, JoyButton.A)
+               || Input.IsJoyButtonPressed(_controllerIndex, JoyButton.B)
+               || Input.IsJoyButtonPressed(_controllerIndex, JoyButton.X)
+               || Input.IsJoyButtonPressed(_controllerIndex, JoyButton.Y);
     }
 
     /// <summary>
@@ -116,7 +124,7 @@ public partial class UserInputManager : Control, IActionManager
     private void ProcessMovementInput()
     {
         MoveDirection = CurrentInputSource == InputSource.VirtualJoystick
-            ? _leftVirtualJoystick.Output
+            ? _moveJoystick.Output
             : Input.GetVector(
                 "move_left", "move_right", "move_up", "move_down"
             );
@@ -136,12 +144,33 @@ public partial class UserInputManager : Control, IActionManager
                 break;
             }
             case InputSource.Controller:
-                LookDirection = Input.GetVector(
+                var output = Input.GetVector(
                     "aim_left", "aim_right", "aim_up", "aim_down"
                 );
+                if (output != Vector2.Zero) LookDirection = output;
                 break;
             case InputSource.VirtualJoystick:
-                LookDirection = _rightVirtualJoystick.Output;
+                if (_normalAttackJoystick.IsPressed)
+                {
+                    LookDirection = _normalAttackJoystick.Output;
+                }
+                else if (_specialAttackJoystick.IsPressed)
+                {
+                    LookDirection = _specialAttackJoystick.Output;
+                }
+                else if (_ultimateJoystick.IsPressed)
+                {
+                    LookDirection = _ultimateJoystick.Output;
+                }
+                else if (_lifeSavingJoystick.IsPressed)
+                {
+                    LookDirection = _lifeSavingJoystick.Output;
+                }
+                else
+                {
+                    LookDirection = _normalAttackJoystick.Output;
+                }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -155,5 +184,27 @@ public partial class UserInputManager : Control, IActionManager
     private static bool IsAnyKeyboardInputActive()
     {
         return Input.IsKeyPressed(Key.Space) || Input.IsKeyPressed(Key.Escape);
+    }
+
+    private void OnInteractPressed()
+    {
+        Input.ActionPress("interact");
+    }
+
+    private void OnInteractReleased()
+    {
+        Input.ActionRelease("interact");
+    }
+
+    private void SetupVirtualButtons()
+    {
+        _interactButton.ButtonDown += OnInteractPressed;
+        _interactButton.ButtonUp += OnInteractReleased;
+    }
+
+    public override void _ExitTree()
+    {
+        _interactButton.ButtonDown -= OnInteractPressed;
+        _interactButton.ButtonUp -= OnInteractReleased;
     }
 }

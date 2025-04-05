@@ -49,7 +49,7 @@ public partial class Player : BaseEntity
 
         _sprite = GetNode<Sprite2D>("Sprite2D");
         _hurtbox = GetNode<Hurtbox>("Hurtbox");
-        ActionManager = GetNode<UserInputManager>("../UserInputManager");
+        ActionManager = GetNode<UserInputManager>("../UI/UserInputManager");
         _weaponMountPoint = GetNode<Node2D>("WeaponMountPoint");
         WeaponAnimationPlayer = GetNode<AnimationPlayer>("WeaponAnimationPlayer");
         _collision = GetNode<CollisionShape2D>("CollisionShape2D");
