@@ -32,20 +32,39 @@ offset_left = 52.0
 offset_top = 182.0
 offset_right = 316.0
 offset_bottom = 361.0
+focus_mode = 2
 script = ExtResource("2_ekrfg")
 
 [node name="NewRunButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
+focus_neighbor_left = NodePath("../QuitButton")
+focus_neighbor_top = NodePath("../QuitButton")
+focus_neighbor_right = NodePath("../SettingsButton")
+focus_neighbor_bottom = NodePath("../SettingsButton")
+focus_next = NodePath("../SettingsButton")
+focus_previous = NodePath("../QuitButton")
 theme_override_font_sizes/font_size = 48
 text = "New Run"
 
 [node name="SettingsButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
+focus_neighbor_left = NodePath("../NewRunButton")
+focus_neighbor_top = NodePath("../NewRunButton")
+focus_neighbor_right = NodePath("../QuitButton")
+focus_neighbor_bottom = NodePath("../QuitButton")
+focus_next = NodePath("../QuitButton")
+focus_previous = NodePath("../NewRunButton")
 theme_override_font_sizes/font_size = 48
 text = "Settings"
 
 [node name="QuitButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
+focus_neighbor_left = NodePath("../SettingsButton")
+focus_neighbor_top = NodePath("../SettingsButton")
+focus_neighbor_right = NodePath("../NewRunButton")
+focus_neighbor_bottom = NodePath("../NewRunButton")
+focus_next = NodePath("../NewRunButton")
+focus_previous = NodePath("../SettingsButton")
 theme_override_font_sizes/font_size = 48
 text = "Quit
 "

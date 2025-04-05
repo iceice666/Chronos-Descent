@@ -43,9 +43,30 @@ public partial class UserInputManager : Control, IActionManager
     public override void _Ready()
     {
         // Initialize the input source based on device capabilities
-        if (DisplayServer.IsTouchscreenAvailable()) CurrentInputSource = InputSource.VirtualJoystick;
-        else if (Input.GetConnectedJoypads().Count > 0) CurrentInputSource = InputSource.Controller;
-        else CurrentInputSource = InputSource.KeyboardMouse;
+        if (DisplayServer.IsTouchscreenAvailable()) 
+        {
+            CurrentInputSource = InputSource.VirtualJoystick;
+        }
+        else if (Input.GetConnectedJoypads().Count > 0) 
+        {
+            CurrentInputSource = InputSource.Controller;
+            
+            // Set the controller index to the first connected controller
+            var connectedJoypads = Input.GetConnectedJoypads();
+            if (connectedJoypads.Count > 0)
+            {
+                _controllerIndex = connectedJoypads[0];
+                GD.Print($"Using controller index: {_controllerIndex}");
+            }
+            
+            // Initialize look direction to prevent it from being zero
+            // This ensures we have a valid initial direction for aiming
+            LookDirection = new Vector2(1, 0);
+        }
+        else 
+        {
+            CurrentInputSource = InputSource.KeyboardMouse;
+        }
 
         GD.Print($"Current Input Source: {CurrentInputSource}");
 
@@ -57,6 +78,35 @@ public partial class UserInputManager : Control, IActionManager
 
         // Set initial visibility
         UpdateVirtualInputVisibility();
+        
+        // Connect to joypad connection events
+        Input.JoyConnectionChanged += OnJoyConnectionChanged;
+    }
+    
+    private void OnJoyConnectionChanged(long device, bool connected)
+    {
+        GD.Print($"Controller {device} {(connected ? "connected" : "disconnected")}");
+        
+        // Update controller index when a new controller is connected
+        if (connected)
+        {
+            _controllerIndex = (int)device;
+            SwitchInputSource(InputSource.Controller);
+        }
+        // If the current controller was disconnected, find another one
+        else if (device == _controllerIndex)
+        {
+            var connectedJoypads = Input.GetConnectedJoypads();
+            if (connectedJoypads.Count > 0)
+            {
+                _controllerIndex = connectedJoypads[0];
+            }
+            else
+            {
+                // No controllers left, switch to keyboard
+                SwitchInputSource(InputSource.KeyboardMouse);
+            }
+        }
     }
 
     public override void _Process(double delta)
@@ -90,10 +140,26 @@ public partial class UserInputManager : Control, IActionManager
     /// </summary>
     private bool IsControllerActive()
     {
-        return Input.IsJoyButtonPressed(_controllerIndex, JoyButton.A)
-               || Input.IsJoyButtonPressed(_controllerIndex, JoyButton.B)
-               || Input.IsJoyButtonPressed(_controllerIndex, JoyButton.X)
-               || Input.IsJoyButtonPressed(_controllerIndex, JoyButton.Y);
+        // Check for any controller button press
+        for (int button = 0; button <= (int)JoyButton.Max; button++)
+        {
+            if (Input.IsJoyButtonPressed(_controllerIndex, (JoyButton)button))
+            {
+                return true;
+            }
+        }
+        
+        // Check for any joystick movement
+        for (int axis = 0; axis <= 5; axis++) // Check all common axes (left stick, right stick, triggers)
+        {
+            float value = Input.GetJoyAxis(_controllerIndex, axis);
+            if (Mathf.Abs(value) > 0.25f) // Higher threshold to prevent false detection
+            {
+                return true;
+            }
+        }
+        
+        return false;
     }
 
     /// <summary>
@@ -147,7 +213,21 @@ public partial class UserInputManager : Control, IActionManager
                 var output = Input.GetVector(
                     "aim_left", "aim_right", "aim_up", "aim_down"
                 );
-                if (output != Vector2.Zero) LookDirection = output;
+                
+                // Apply a more appropriate deadzone for controller right stick
+                if (output.LengthSquared() > 0.1f) // Lower deadzone threshold for more sensitivity
+                {
+                    // Apply better stick normalization (prevents small diagonals from being too fast)
+                    if (output.LengthSquared() > 1.0f)
+                    {
+                        output = output.Normalized();
+                    }
+                    
+                    // Update the look direction with the processed stick input
+                    LookDirection = output;
+                }
+                // If no input is detected but we previously had a direction, maintain it
+                // This prevents the focus/aim from resetting when the stick returns to center
                 break;
             case InputSource.VirtualJoystick:
                 if (_normalAttackJoystick.IsPressed)
@@ -204,7 +284,11 @@ public partial class UserInputManager : Control, IActionManager
 
     public override void _ExitTree()
     {
+        // Disconnect button events
         _interactButton.ButtonDown -= OnInteractPressed;
         _interactButton.ButtonUp -= OnInteractReleased;
+        
+        // Disconnect joypad connection events
+        Input.JoyConnectionChanged -= OnJoyConnectionChanged;
     }
 }
