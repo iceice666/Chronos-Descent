@@ -120,6 +120,15 @@ jobs:
       - name: Run build for ${{ matrix.platform }}
         run: |
           mkdir -p build
+          
+          # Ensure the exclude filter is set for Android build to prevent duplicate lib errors
+          if [ "${{ matrix.platform }}" == "Android" ]; then
+            grep -q "exclude_filter=\"lib/arm64-v8a/libCoverageInstrumentationMethod.so\"" export_presets.cfg || \
+            sed -i 's/exclude_filter=""/exclude_filter="lib\/arm64-v8a\/libCoverageInstrumentationMethod.so"/g' export_presets.cfg
+            
+            # Also ensure Gradle build is enabled
+            sed -i 's/gradle_build\/use_gradle_build=false/gradle_build\/use_gradle_build=true/g' export_presets.cfg
+          fi
 
           if [ "${{ matrix.build_type }}" == "debug" ]; then
             docker run --rm -v ${{ github.workspace }}:/project -v ${{ github.workspace }}/build:/project/build chronos-descent-builder:latest ${{ matrix.platform }}

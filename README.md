@@ -59,7 +59,7 @@ and use your ability to manipulate time to overcome seemingly impossible situati
 - [Godot 4 Virtual Joystick Tutoria](https://www.youtube.com/watch?v=3YQxT3CepXU)
 - [Dungeon tileset for Floor 1](https://snowhex.itch.io/dungeon-gathering)
 
-<!-- ## 💻 Getting Started
+## 💻 Getting Started
 
 ### Prerequisites
 - Godot Engine (latest version)
@@ -70,9 +70,16 @@ and use your ability to manipulate time to overcome seemingly impossible situati
 2. Open the project in Godot Engine
 3. Build and run the game
 
+### Building for Android
+When building for Android, ensure these settings are applied in your export preset:
+- Add `lib/arm64-v8a/libCoverageInstrumentationMethod.so` to the exclude filter
+- Enable Gradle build with compression of native libraries
+
+These settings prevent the duplicate library error: "Multiple ZIP entries with the same name: lib/arm64-v8a/libCoverageInstrumentationMethod.so" (I don't know why this will happend)
+
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request. -->
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 <!-- ## 📜 License
 
