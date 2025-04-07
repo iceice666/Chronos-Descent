@@ -146,15 +146,17 @@ public partial class Player : BaseEntity
             Velocity = ActionManager.MoveDirection * (float)StatsManager.MoveSpeed;
             MoveAndSlide();
         }
-
-
+    }
+    
+    public override void _UnhandledInput(InputEvent @event)
+    {
         foreach (var slotType in _abilitySlots)
         {
             var slotName = slotType.GetSlotName();
 
-            if (Input.IsActionJustPressed(slotName))
+            if (@event.IsActionPressed(slotName))
                 ActivateAbility(slotType);
-            else if (Input.IsActionJustReleased(slotName))
+            else if (@event.IsActionReleased(slotName))
                 ReleaseAbility(slotType);
         }
     }
