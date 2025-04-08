@@ -76,7 +76,7 @@ offset_bottom = 60.0
 grow_vertical = 0
 scale = Vector2(0.4, 0.4)
 
-[node name="Button" type="Button" parent="."]
+[node name="InteractButton" type="Button" parent="."]
 layout_mode = 0
 offset_left = 83.0
 offset_top = -122.0

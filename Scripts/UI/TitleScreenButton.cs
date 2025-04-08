@@ -28,6 +28,8 @@ public partial class TitleScreenButton : VBoxContainer
         _newRunButton.SetTextTr("Title_NewRun");
         _quitButton.SetTextTr("Title_Quit");
         _settingsButton.SetTextTr("Title_Settings");
+        
+        _newRunButton.GrabFocus();
     }
 
 
