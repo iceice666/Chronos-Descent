@@ -50,8 +50,8 @@ public partial class UserInputManager : Control, IActionManager
         _ultimateJoystick = _virtualInputContainer.GetNode<VirtualJoystick>("UltimateJoystick");
         _lifeSavingJoystick = _virtualInputContainer.GetNode<VirtualJoystick>("LifeSavingJoystick");
         _interactButton = _virtualInputContainer.GetNode<Button>("InteractButton");
-        
-        
+
+
         // Initialize the input source based on device capabilities
         if (DisplayServer.IsTouchscreenAvailable())
         {
@@ -197,11 +197,22 @@ public partial class UserInputManager : Control, IActionManager
     /// </summary>
     private void ProcessMovementInput()
     {
-        MoveDirection = CurrentInputSource == InputSource.VirtualJoystick
-            ? _moveJoystick.Output
-            : Input.GetVector(
-                "move_left", "move_right", "move_up", "move_down"
-            );
+        if (CurrentInputSource == InputSource.VirtualJoystick)
+        {
+            MoveDirection = _moveJoystick.Output;
+            return;
+        }
+
+        var value = Input.GetVector(
+            "move_left", "move_right", "move_up", "move_down"
+        );
+
+        MoveDirection = value;
+
+        if (CurrentInputSource == InputSource.Controller)
+        {
+            LookDirection = value;
+        }
     }
 
     /// <summary>
@@ -218,25 +229,6 @@ public partial class UserInputManager : Control, IActionManager
                 break;
             }
             case InputSource.Controller:
-                var output = Input.GetVector(
-                    "aim_left", "aim_right", "aim_up", "aim_down"
-                );
-
-                // Apply a more appropriate deadzone for controller right stick
-                if (output.LengthSquared() > 0.1f) // Lower deadzone threshold for more sensitivity
-                {
-                    // Apply better stick normalization (prevents small diagonals from being too fast)
-                    if (output.LengthSquared() > 1.0f)
-                    {
-                        output = output.Normalized();
-                    }
-
-                    // Update the look direction with the processed stick input
-                    LookDirection = output;
-                }
-
-                // If no input is detected but we previously had a direction, maintain it
-                // This prevents the focus/aim from resetting when the stick returns to center
                 break;
             case InputSource.VirtualJoystick:
                 if (_normalAttackJoystick.IsPressed)

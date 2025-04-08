@@ -50,24 +50,23 @@ public partial class PrepareMenu : Control
         GetNode<Label>("AbilitySelection/Label").SetTextTr("Prepare_Ability_Title");
 
         InitializeLists();
-        
     }
 
     private void InitializeLists()
     {
         // Populate weapon list
         _weaponList.Clear();
-        
+
         foreach (var weaponKey in _weapons.Keys)
         {
             // Extract weapon name from the key (e.g., "Weapon_Bow" -> "bow")
             var weaponName = weaponKey.Split('_')[1].ToLower();
-            
+
             // Load weapon icon with error handling
             var iconPath = $"res://Assets/icons/{weaponName}.png";
             Texture2D icon;
-            
-            try 
+
+            try
             {
                 if (ResourceLoader.Exists(iconPath))
                     icon = GD.Load<Texture2D>(iconPath);
@@ -82,7 +81,7 @@ public partial class PrepareMenu : Control
                 GD.PushError($"Error loading weapon icon {iconPath}: {ex.Message}");
                 icon = null;
             }
-            
+
             // Add item with icon (or without if icon failed to load)
             if (icon != null)
             {
@@ -95,7 +94,7 @@ public partial class PrepareMenu : Control
             {
                 _weaponList.AddItem(TranslationManager.Tr(weaponKey));
             }
-            
+
             // Store the key as metadata
             _weaponList.SetItemMetadata(_weaponList.ItemCount - 1, weaponKey);
         }
@@ -111,59 +110,23 @@ public partial class PrepareMenu : Control
 
         // Populate ability list
         _abilityList.Clear();
-        Texture2D missingIconTexture = null;
-        
-        try 
-        {
-            if (ResourceLoader.Exists("res://Assets/Ability/MissingIcon.png"))
-                missingIconTexture = GD.Load<Texture2D>("res://Assets/Ability/MissingIcon.png");
-        }
-        catch (Exception ex)
-        {
-            GD.PushError($"Error loading missing icon texture: {ex.Message}");
-        }
-        
+
         foreach (var abilityKey in _lifeSavingAbilities.Keys)
         {
             // Extract ability name from the key (e.g., "LifeSaving_Dash" -> "dash")
             var abilityName = abilityKey.Split('_')[1].ToLower();
-            
+
             // Try to load ability icon, fallback to missing icon if not found
-            Texture2D icon = null;
-            var iconPath = $"res://Assets/Ability/{abilityName}.png";
-            
-            try
-            {
-                if (ResourceLoader.Exists(iconPath))
-                    icon = GD.Load<Texture2D>(iconPath);
-                else if (missingIconTexture != null)
-                {
-                    GD.PushWarning($"Ability icon not found: {iconPath}, using missing icon texture");
-                    icon = missingIconTexture;
-                }
-                else
-                {
-                    GD.PushWarning($"Ability icon not found: {iconPath} and missing icon texture not available");
-                }
-            }
-            catch (Exception ex)
-            {
-                GD.PushError($"Error loading ability icon {iconPath}: {ex.Message}");
-            }
-            
-            // Add item with icon if available
-            if (icon != null)
-            {
-                _abilityList.AddItem(
-                    TranslationManager.Tr(abilityKey),
-                    icon
-                );
-            }
-            else
-            {
-                _abilityList.AddItem(TranslationManager.Tr(abilityKey));
-            }
-            
+            var icon = GD.Load<Texture2D>($"res://Assets/icons/{abilityName}.png");
+
+
+            // Add item with icon
+            _abilityList.AddItem(
+                TranslationManager.Tr(abilityKey),
+                icon
+            );
+
+
             // Store the key as metadata
             _abilityList.SetItemMetadata(_abilityList.ItemCount - 1, abilityKey);
         }
@@ -176,6 +139,9 @@ public partial class PrepareMenu : Control
                 UpdateAbilityDescription(_selectedAbilityKey);
                 break;
             }
+        
+        
+        _weaponList.GrabFocus();
     }
 
     private void OnWeaponSelected(long index)
