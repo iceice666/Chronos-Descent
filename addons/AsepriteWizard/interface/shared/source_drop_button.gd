@@ -3,6 +3,7 @@ extends Button
 
 signal aseprite_file_dropped(path)
 
+
 func _can_drop_data(_pos, data):
 	if data.type == "files":
 		var extension = data.files[0].get_extension()

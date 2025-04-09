@@ -12,8 +12,6 @@ namespace ChronosDescent.Scripts.ActionManager;
 [GlobalClass]
 public partial class UserInputManager : Control, IActionManager
 {
-    public static UserInputManager Instance { get; private set; }
-
     // Input sources enum
     public enum InputSource
     {
@@ -24,18 +22,19 @@ public partial class UserInputManager : Control, IActionManager
 
     private int _controllerIndex;
 
+    // Current active input source
+    private InputSource _currentInputSource;
+    private Button _interactButton;
+    private VirtualJoystick _lifeSavingJoystick;
+
     private VirtualJoystick _moveJoystick;
     private VirtualJoystick _normalAttackJoystick;
     private VirtualJoystick _specialAttackJoystick;
     private VirtualJoystick _ultimateJoystick;
-    private VirtualJoystick _lifeSavingJoystick;
-    private Button _interactButton;
 
     // References to UI components
     private Control _virtualInputContainer;
-
-    // Current active input source
-    private InputSource _currentInputSource;
+    public static UserInputManager Instance { get; private set; }
 
     public InputSource CurrentInputSource
     {
@@ -125,14 +124,10 @@ public partial class UserInputManager : Control, IActionManager
         {
             var connectedJoypads = Input.GetConnectedJoypads();
             if (connectedJoypads.Count > 0)
-            {
                 _controllerIndex = connectedJoypads[0];
-            }
             else
-            {
                 // No controllers left, switch to keyboard
                 CurrentInputSource = InputSource.KeyboardMouse;
-            }
         }
     }
 
@@ -167,27 +162,19 @@ public partial class UserInputManager : Control, IActionManager
     {
         // Check for any controller button press
         for (var button = 0; button <= (int)JoyButton.Max; button++)
-        {
             if (Input.IsJoyButtonPressed(_controllerIndex, (JoyButton)button))
-            {
                 return true;
-            }
-        }
 
         // Check for any joystick movement
         for (var axis = 0; axis <= 5; axis++) // Check all common axes (left stick, right stick, triggers)
         {
             var value = Input.GetJoyAxis(_controllerIndex, (JoyAxis)axis);
             if (Mathf.Abs(value) > 0.25f) // Higher threshold to prevent false detection
-            {
                 return true;
-            }
         }
 
         return false;
     }
-
-
 
 
     /// <summary>
@@ -207,10 +194,7 @@ public partial class UserInputManager : Control, IActionManager
 
         MoveDirection = value;
 
-        if (CurrentInputSource == InputSource.Controller && value != Vector2.Zero)
-        {
-            LookDirection = value;
-        }
+        if (CurrentInputSource == InputSource.Controller && value != Vector2.Zero) LookDirection = value;
     }
 
     /// <summary>
@@ -232,21 +216,12 @@ public partial class UserInputManager : Control, IActionManager
                 var newValue = Vector2.Zero;
 
                 if (_normalAttackJoystick.IsPressed)
-                {
                     newValue = _normalAttackJoystick.Output;
-                }
                 else if (_specialAttackJoystick.IsPressed)
-                {
                     newValue = _specialAttackJoystick.Output;
-                }
                 else if (_ultimateJoystick.IsPressed)
-                {
                     newValue = _ultimateJoystick.Output;
-                }
-                else if (_lifeSavingJoystick.IsPressed)
-                {
-                    newValue = _lifeSavingJoystick.Output;
-                }
+                else if (_lifeSavingJoystick.IsPressed) newValue = _lifeSavingJoystick.Output;
 
                 if (newValue != Vector2.Zero) LookDirection = newValue;
 

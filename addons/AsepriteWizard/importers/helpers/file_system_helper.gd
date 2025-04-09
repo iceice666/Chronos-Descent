@@ -2,8 +2,9 @@
 extends Node
 
 const WAIT_TIME_IN_SECONDS := 0.8
-var _time_left := 0.0
-var _scheduled := false
+var _time_left             := 0.0
+var _scheduled             := false
+
 
 ## Schedule a file system scan. This method works like a debouncer
 ## postponing the scan until no more calls are being made

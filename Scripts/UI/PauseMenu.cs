@@ -26,7 +26,7 @@ public partial class PauseMenu : Control
         Visible = false;
         _isPaused = false;
     }
-    
+
 
     public override void _Input(InputEvent @event)
     {
@@ -43,7 +43,7 @@ public partial class PauseMenu : Control
             GetTree().Paused = true;
             GameStats.Instance.PauseTimer();
             Visible = true;
-            
+
             _resumeButton.GrabFocus();
         }
         else

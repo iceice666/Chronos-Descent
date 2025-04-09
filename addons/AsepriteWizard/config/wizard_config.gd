@@ -1,9 +1,9 @@
 @tool
 extends RefCounted
 
-const WIZARD_CONFIG_META_NAME = "_aseprite_wizard_config_"
+const WIZARD_CONFIG_META_NAME           = "_aseprite_wizard_config_"
 const WIZARD_INTERFACE_CONFIG_META_NAME = "_aseprite_wizard_interface_config_"
-const SOURCE_FILE_HASH_META_NAME = "_aseprite_wizard_source_file_hash_"
+const SOURCE_FILE_HASH_META_NAME        = "_aseprite_wizard_source_file_hash_"
 
 
 static func load_config(node: Object):
@@ -27,7 +27,7 @@ static func load_interface_config(node: Node, default: Dictionary = {}) -> Dicti
 	return default
 
 
-static func save_interface_config(node: Node, cfg:Dictionary) -> void:
+static func save_interface_config(node: Node, cfg: Dictionary) -> void:
 	node.set_meta(WIZARD_INTERFACE_CONFIG_META_NAME, cfg)
 
 

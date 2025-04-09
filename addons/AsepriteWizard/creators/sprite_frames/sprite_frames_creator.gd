@@ -6,6 +6,7 @@ enum {
 	LAYERS_EXPORT_MODE
 }
 
+
 ###
 ### Create SpriteFrames from aseprite files and insert
 ### them to the animated_sprite node
@@ -51,15 +52,16 @@ func _create_sprite_frames(data: Dictionary, options: Dictionary) -> Dictionary:
 		return aseprite_resources
 
 	var resource = _create_sprite_frames_with_animations(
-		aseprite_resources.content.metadata,
-		aseprite_resources.content.texture,
-		options,
-	)
+					   aseprite_resources.content.metadata,
+					   aseprite_resources.content.texture,
+					   options,
+				   )
 
 	return result_code.result({
 		"resource": resource,
 		"extra_gen_files": aseprite_resources.content.extra_gen_files
 	})
+
 
 func _load_aseprite_resources(aseprite_data: Dictionary, options: Dictionary) -> Dictionary:
 	var content_result = _aseprite_file_exporter.load_json_content(aseprite_data.data_file)
@@ -104,14 +106,14 @@ func save_resources(resources: Array) -> int:
 
 func _save_resource(resource, source_path: String) -> int:
 	var save_path = "%s.%s" % [source_path.get_basename(), "res"]
-	var code = ResourceSaver.save(resource, save_path, ResourceSaver.FLAG_REPLACE_SUBRESOURCE_PATHS)
+	var code      = ResourceSaver.save(resource, save_path, ResourceSaver.FLAG_REPLACE_SUBRESOURCE_PATHS)
 	resource.take_over_path(save_path)
 	return code
 
 
 func _create_sprite_frames_with_animations(content: Dictionary, texture, options: Dictionary) -> SpriteFrames:
-	var frame_cache = {}
-	var frames = _aseprite.get_content_frames(content)
+	var frame_cache   =  {}
+	var frames        =  _aseprite.get_content_frames(content)
 	var sprite_frames := SpriteFrames.new()
 	sprite_frames.remove_animation("default")
 
@@ -131,7 +133,7 @@ func _create_sprite_frames_with_animations(content: Dictionary, texture, options
 				selected_frames,
 				texture,
 				frame_rect,
-				{ "should_round_fps": options.get("should_round_fps", true) },
+					{ "should_round_fps": options.get("should_round_fps", true) },
 				tag.direction,
 				int(tag.get("repeat", -1)),
 				frame_cache
@@ -154,7 +156,7 @@ func _add_animation_frames(
 	frame_cache = {}
 ):
 	var animation_name := anim_name
-	var is_loopable = _config.is_default_animation_loop_enabled()
+	var is_loopable    =  _config.is_default_animation_loop_enabled()
 
 	var loop_prefix = _config.get_animation_loop_exception_prefix()
 	if animation_name.begins_with(loop_prefix):
@@ -164,7 +166,7 @@ func _add_animation_frames(
 	sprite_frames.add_animation(animation_name)
 
 	var min_duration = _get_min_duration(frames)
-	var fps = _calculate_fps(min_duration, options.should_round_fps)
+	var fps          = _calculate_fps(min_duration, options.should_round_fps)
 
 	if direction == "reverse" or direction == "pingpong_reverse":
 		frames.reverse()
@@ -235,8 +237,8 @@ func _add_to_sprite_frames(
 	frame_cache: Dictionary,
 	frame_rect: Variant,
 ):
-	var atlas : AtlasTexture = _create_atlastexture_from_frame(texture, frame, sprite_frames, frame_cache, frame_rect)
-	var duration = frame.duration / min_duration
+	var atlas: AtlasTexture = _create_atlastexture_from_frame(texture, frame, sprite_frames, frame_cache, frame_rect)
+	var duration            = frame.duration / min_duration
 	sprite_frames.add_frame(animation_name, atlas, duration)
 
 
@@ -247,7 +249,7 @@ func _create_atlastexture_from_frame(
 	frame_cache: Dictionary,
 	frame_rect: Variant,
 ) -> AtlasTexture:
-	var frame = frame_data.frame
+	var frame  =  frame_data.frame
 	var region := Rect2(frame.x, frame.y, frame.w, frame.h)
 
 	# this is to manually set the slice
@@ -257,8 +259,8 @@ func _create_atlastexture_from_frame(
 		region.size.x = frame_rect.size.x
 		region.size.y = frame_rect.size.y
 
-	var key := "%s_%s_%s_%s" % [frame.x, frame.y, frame.w, frame.h]
-	var texture = frame_cache.get(key)
+	var key     := "%s_%s_%s_%s" % [frame.x, frame.y, frame.w, frame.h]
+	var texture =  frame_cache.get(key)
 
 	if texture != null and texture.atlas == image:
 		return texture

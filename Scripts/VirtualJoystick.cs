@@ -6,17 +6,18 @@ namespace ChronosDescent.Scripts;
 
 public partial class VirtualJoystick : Control
 {
-    [Export] public AbilitySlotType AbilitySlot ;
-
     private Vector2 _centerPosition;
     private Sprite2D _knob;
     private float _maxRadius;
+
+    private bool _prevIsPressed;
 
     // References to child nodes
     private Sprite2D _ring;
 
     // Touch tracking
     private int _touchIndex = -1;
+    [Export] public AbilitySlotType AbilitySlot;
 
     // Joystick deadzone threshold
     [Export] public float JoystickDeadzone { get; set; } = 0.2f;
@@ -37,8 +38,6 @@ public partial class VirtualJoystick : Control
         // Make sure this control can receive input events
         MouseFilter = MouseFilterEnum.Stop;
     }
-
-    private bool _prevIsPressed;
 
 
     public override void _Notification(int what)
@@ -87,7 +86,7 @@ public partial class VirtualJoystick : Control
                 // Start tracking this touch
                 _touchIndex = touchEvent.Index;
                 IsPressed = true;
-                
+
                 Player.Instance.ActivateAbility(AbilitySlot);
 
                 // Update knob position based on touch position

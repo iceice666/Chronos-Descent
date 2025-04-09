@@ -36,7 +36,7 @@ public partial class Player : BaseEntity
     private Node2D _weaponMountPoint;
 
     public static Player Instance { get; private set; }
-    
+
     public Label StateLabel { get; private set; }
 
 
@@ -50,7 +50,7 @@ public partial class Player : BaseEntity
     public override void _Ready()
     {
         Instance = this;
-        
+
         AddToGroup("Entity");
         AddToGroup("Player");
 

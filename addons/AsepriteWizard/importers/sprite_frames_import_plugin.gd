@@ -2,10 +2,9 @@
 extends EditorImportPlugin
 
 const result_codes = preload("../config/result_codes.gd")
-
-var config = preload("../config/config.gd").new()
-var _aseprite_file_exporter = preload("../aseprite/file_exporter.gd").new()
-var _sf_creator = preload("../creators/sprite_frames/sprite_frames_creator.gd").new()
+var config                        = preload("../config/config.gd").new()
+var _aseprite_file_exporter       = preload("../aseprite/file_exporter.gd").new()
+var _sf_creator                   = preload("../creators/sprite_frames/sprite_frames_creator.gd").new()
 var file_system: EditorFileSystem = EditorInterface.get_resource_filesystem()
 
 
@@ -48,7 +47,7 @@ func _get_import_order():
 func _get_import_options(_path, _i):
 	return [
 		{"name": "layer/exclude_layers_pattern", "default_value": config.get_default_exclusion_pattern()},
-		{"name": "layer/only_visible_layers",    "default_value": false},
+		{"name": "layer/only_visible_layers", "default_value": false},
 		{
 			"name": "sheet/sheet_type",
 			"default_value": "packed",
@@ -69,21 +68,21 @@ func _get_option_visibility(path, option, options):
 
 func _import(source_file, save_path, options, platform_variants, gen_files):
 	var absolute_source_file = ProjectSettings.globalize_path(source_file)
-	var absolute_save_path = ProjectSettings.globalize_path(save_path)
+	var absolute_save_path   = ProjectSettings.globalize_path(save_path)
 
-	var source_path = source_file.get_base_dir()
+	var source_path     = source_file.get_base_dir()
 	var source_basename = source_file.substr(source_path.length()+1, -1)
 	source_basename = source_basename.substr(0, source_basename.rfind('.'))
 
 	var aseprite_opts = {
-		"export_mode": _sf_creator.FILE_EXPORT_MODE,
-		"exception_pattern": options['layer/exclude_layers_pattern'],
-		"only_visible_layers": options['layer/only_visible_layers'],
-		"output_filename": '',
-		"output_folder": source_path,
-		"sheet_type": options["sheet/sheet_type"],
-		"sheet_columns": options["sheet/sheet_columns"],
-	}
+							"export_mode": _sf_creator.FILE_EXPORT_MODE,
+							"exception_pattern": options['layer/exclude_layers_pattern'],
+							"only_visible_layers": options['layer/only_visible_layers'],
+							"output_filename": '',
+							"output_folder": source_path,
+							"sheet_type": options["sheet/sheet_type"],
+							"sheet_columns": options["sheet/sheet_columns"],
+						}
 
 	var source_files = _aseprite_file_exporter.generate_aseprite_files(absolute_source_file, aseprite_opts)
 	if not source_files.is_ok:
@@ -103,11 +102,11 @@ func _import(source_file, save_path, options, platform_variants, gen_files):
 	var resource: Dictionary = resources.content[0]
 	resource.resource.set_meta("imported_via_aw", true)
 	var resource_path = "%s.res" % save_path
-	var exit_code = ResourceSaver.save(resource.resource, resource_path)
+	var exit_code     = ResourceSaver.save(resource.resource, resource_path)
 	resource.resource.take_over_path(resource_path)
 
 	#for extra_file in resource.extra_gen_files:
-		#gen_files.push_back(extra_file)
+	#gen_files.push_back(extra_file)
 
 	if config.should_remove_source_files():
 		_remove_source_files(source_files.content)

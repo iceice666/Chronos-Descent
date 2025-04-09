@@ -3,41 +3,35 @@ extends RefCounted
 
 # GLOBAL SETTINGS
 const _CONFIG_SECTION_KEY = 'aseprite'
-const _COMMAND_KEY = 'aseprite/general/command_path'
-
+const _COMMAND_KEY        = 'aseprite/general/command_path'
 # PROJECT SETTINGS
 
 # animation import defaults
 const _DEFAULT_EXCLUSION_PATTERN_KEY = 'aseprite/animation/layers/exclusion_pattern'
-const _DEFAULT_ONLY_VISIBLE_LAYERS = 'aseprite/animation/layers/only_include_visible_layers_by_default'
-const _DEFAULT_LOOP_EX_PREFIX = '_'
-const _LOOP_ENABLED = 'aseprite/animation/loop/enabled'
-const _LOOP_EXCEPTION_PREFIX = 'aseprite/animation/loop/exception_prefix'
-
+const _DEFAULT_ONLY_VISIBLE_LAYERS   = 'aseprite/animation/layers/only_include_visible_layers_by_default'
+const _DEFAULT_LOOP_EX_PREFIX        = '_'
+const _LOOP_ENABLED                  = 'aseprite/animation/loop/enabled'
+const _LOOP_EXCEPTION_PREFIX         = 'aseprite/animation/loop/exception_prefix'
 # cleanup
-const _REMOVE_SOURCE_FILES_KEY = 'aseprite/import/cleanup/remove_json_file'
+const _REMOVE_SOURCE_FILES_KEY         = 'aseprite/import/cleanup/remove_json_file'
 const _SET_VISIBLE_TRACK_AUTOMATICALLY = 'aseprite/import/cleanup/automatically_hide_sprites_not_in_animation'
-
 # automatic importer
-const _IMPORTER_ENABLE_KEY = 'aseprite/import/import_plugin/enable_automatic_importer'
+const _IMPORTER_ENABLE_KEY  = 'aseprite/import/import_plugin/enable_automatic_importer'
 const _DEFAULT_IMPORTER_KEY = 'aseprite/import/import_plugin/default_automatic_importer'
-
-const IMPORTER_SPRITEFRAMES_NAME = "SpriteFrames"
-const IMPORTER_SPRITEFRAMES_SPLIT_NAME = "SpriteFrames (Split By Layer)"
-const IMPORTER_NOOP_NAME = "No Import"
-const IMPORTER_TILESET_TEXTURE_NAME = "Tileset Texture"
-const IMPORTER_STATIC_TEXTURE_NAME = "Static Texture"
+const IMPORTER_SPRITEFRAMES_NAME         = "SpriteFrames"
+const IMPORTER_SPRITEFRAMES_SPLIT_NAME   = "SpriteFrames (Split By Layer)"
+const IMPORTER_NOOP_NAME                 = "No Import"
+const IMPORTER_TILESET_TEXTURE_NAME      = "Tileset Texture"
+const IMPORTER_STATIC_TEXTURE_NAME       = "Static Texture"
 const IMPORTER_STATIC_TEXTURE_SPLIT_NAME = "Static Texture (Split By Layer)"
-
 # wizard history
-const _WIZARD_HISTORY = "wizard_history"
-const _HISTORY_MAX_ENTRIES = 'aseprite/wizard/history/max_history_entries'
+const _WIZARD_HISTORY              = "wizard_history"
+const _HISTORY_MAX_ENTRIES         = 'aseprite/wizard/history/max_history_entries'
 const _HISTORY_DEFAULT_MAX_ENTRIES = 100
-
 # SpriteFrames import last config
 const _STANDALONE_SPRITEFRAMES_LAST_IMPORT_CFG = "standalone_sf_last_import_cfg"
-
 var _editor_settings: EditorSettings = EditorInterface.get_editor_settings()
+
 
 #######################################################
 # GLOBAL CONFIGS
@@ -114,6 +108,7 @@ func save_import_history(history: Array):
 func get_standalone_spriteframes_last_import_config() -> Dictionary:
 	return get_plugin_metadata(_STANDALONE_SPRITEFRAMES_LAST_IMPORT_CFG, {})
 
+
 ## Set config for last import done via standalone SpriteFrames import dock
 func set_standalone_spriteframes_last_import_config(data: Dictionary) -> void:
 	set_plugin_metadata(_STANDALONE_SPRITEFRAMES_LAST_IMPORT_CFG, data)
@@ -147,12 +142,12 @@ func initialize_project_settings():
 		TYPE_STRING,
 		PROPERTY_HINT_ENUM,
 		",".join([
-			IMPORTER_NOOP_NAME,
-			IMPORTER_SPRITEFRAMES_NAME,
-			IMPORTER_SPRITEFRAMES_SPLIT_NAME,
-			IMPORTER_TILESET_TEXTURE_NAME,
-			IMPORTER_STATIC_TEXTURE_NAME,
-			IMPORTER_STATIC_TEXTURE_SPLIT_NAME
+		IMPORTER_NOOP_NAME,
+		IMPORTER_SPRITEFRAMES_NAME,
+		IMPORTER_SPRITEFRAMES_SPLIT_NAME,
+		IMPORTER_TILESET_TEXTURE_NAME,
+		IMPORTER_STATIC_TEXTURE_NAME,
+		IMPORTER_STATIC_TEXTURE_SPLIT_NAME
 		])
 	)
 
@@ -167,15 +162,15 @@ func initialize_project_settings():
 
 func clear_project_settings():
 	var _all_settings = [
-		_DEFAULT_EXCLUSION_PATTERN_KEY,
-		_LOOP_ENABLED,
-		_LOOP_EXCEPTION_PREFIX,
-		_REMOVE_SOURCE_FILES_KEY,
-		_DEFAULT_IMPORTER_KEY,
-		_HISTORY_MAX_ENTRIES,
-		_SET_VISIBLE_TRACK_AUTOMATICALLY,
-		_DEFAULT_ONLY_VISIBLE_LAYERS,
-	]
+						_DEFAULT_EXCLUSION_PATTERN_KEY,
+						_LOOP_ENABLED,
+						_LOOP_EXCEPTION_PREFIX,
+						_REMOVE_SOURCE_FILES_KEY,
+						_DEFAULT_IMPORTER_KEY,
+						_HISTORY_MAX_ENTRIES,
+						_SET_VISIBLE_TRACK_AUTOMATICALLY,
+						_DEFAULT_ONLY_VISIBLE_LAYERS,
+						]
 	for key in _all_settings:
 		ProjectSettings.clear(key)
 	ProjectSettings.save()

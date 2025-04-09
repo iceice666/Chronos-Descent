@@ -2,31 +2,25 @@
 extends Panel
 
 const wizard_config = preload("../../config/wizard_config.gd")
-
 var _import_helper = preload("./import_helper.gd").new()
 
 @onready var _tree_container = $MarginContainer/VBoxContainer/HSplitContainer/tree
 @onready var _resource_tree = _tree_container.get_resource_tree()
 @onready var _details = $MarginContainer/VBoxContainer/HSplitContainer/MarginContainer/VBoxContainer
-
 @onready var _nothing_container = $MarginContainer/VBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/nothing
 @onready var _single_item_container = $MarginContainer/VBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/single_item
 @onready var _multiple_items_container = $MarginContainer/VBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/multiple_items
-
 @onready var _confirmation_warning_container = $MarginContainer/VBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/confirmation_warning
-
 const supported_types = [
-	"Sprite2D",
-	"Sprite3D",
-	"AnimatedSprite2D",
-	"AnimatedSprite3D",
-	"TextureRect",
-]
-
+						"Sprite2D",
+						"Sprite3D",
+						"AnimatedSprite2D",
+						"AnimatedSprite3D",
+						"TextureRect",
+						]
 var _selection_count = 0
 var _current_buttons_container
 var _resources_to_process
-
 var _should_save_in = 0
 
 
@@ -49,7 +43,7 @@ func _process(delta):
 
 func _get_file_tree(base_path: String, dir_name: String = "") -> Dictionary:
 	var dir_path = base_path.path_join(dir_name)
-	var dir = DirAccess.open(dir_path)
+	var dir      = DirAccess.open(dir_path)
 	var dir_data = { "path": dir_path, "name": dir_name, "children": [], "type": "dir", }
 	if not dir:
 		return dir_data
@@ -64,7 +58,7 @@ func _get_file_tree(base_path: String, dir_name: String = "") -> Dictionary:
 				dir_data.children.push_back(child_data)
 		elif file_name.ends_with(".tscn"):
 			var file_path = dir_path.path_join(file_name)
-			var metadata = _get_aseprite_metadata(file_path)
+			var metadata  = _get_aseprite_metadata(file_path)
 			if not metadata.is_empty():
 				dir_data.children.push_back({
 					"name": file_name,
@@ -112,16 +106,16 @@ func _add_items_to_tree(root: TreeItem, children: Array):
 
 func _get_aseprite_metadata(file_path: String) -> Array:
 	var scene: PackedScene = load(file_path)
-	var root = scene.instantiate()
-	var state = scene.get_state()
+	var root               = scene.instantiate()
+	var state              = scene.get_state()
 
 	var resources = []
 	for i in range(state.get_node_count()):
 		var node_type = state.get_node_type(i)
 		if _is_supported_type(node_type):
-			var node_path = state.get_node_path(i)
+			var node_path   = state.get_node_path(i)
 			var target_node = root.get_node(node_path)
-			var meta = wizard_config.load_config(target_node)
+			var meta        = wizard_config.load_config(target_node)
 			if meta != null:
 				resources.push_back({
 					"type": "resource",
@@ -210,8 +204,8 @@ func _set_item_details(item: TreeItem) -> void:
 
 
 func _on_multiple_items_import_triggered():
-	var selected_item = _resource_tree.get_next_selected(null)
-	var all_resources = []
+	var selected_item  = _resource_tree.get_next_selected(null)
+	var all_resources  = []
 	var scenes_to_open = 0
 
 	while selected_item != null:
@@ -224,7 +218,7 @@ func _on_multiple_items_import_triggered():
 
 func _on_single_item_import_triggered():
 	var selected = _resource_tree.get_selected()
-	var meta = selected.get_meta("node")
+	var meta     = selected.get_meta("node")
 
 	if meta.type == "resource":
 		await _trigger_import(_resource_tree.get_selected().get_meta("node"))
@@ -232,8 +226,8 @@ func _on_single_item_import_triggered():
 		_single_item_container.hide_source_change_warning()
 		EditorInterface.save_scene()
 	else:
-		var selected_item = _resource_tree.get_selected()
-		var all_resources = []
+		var selected_item  = _resource_tree.get_selected()
+		var all_resources  = []
 		var scenes_to_open = _set_all_resources(selected_item.get_meta("node"), all_resources)
 		_resources_to_process = all_resources
 		_show_confirmation_message(scenes_to_open, all_resources.size())
@@ -241,7 +235,7 @@ func _on_single_item_import_triggered():
 
 func _on_single_item_open_scene_triggered():
 	var selected_item = _resource_tree.get_selected()
-	var meta = selected_item.get_meta("node")
+	var meta          = selected_item.get_meta("node")
 	if meta.type == "file":
 		EditorInterface.open_scene_from_path(meta.path)
 	else:

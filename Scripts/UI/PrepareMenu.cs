@@ -69,7 +69,9 @@ public partial class PrepareMenu : Control
             try
             {
                 if (ResourceLoader.Exists(iconPath))
+                {
                     icon = GD.Load<Texture2D>(iconPath);
+                }
                 else
                 {
                     GD.PushWarning($"Weapon icon not found: {iconPath}, using blank texture");
@@ -84,16 +86,12 @@ public partial class PrepareMenu : Control
 
             // Add item with icon (or without if icon failed to load)
             if (icon != null)
-            {
                 _weaponList.AddItem(
                     TranslationManager.Tr(weaponKey),
                     icon
                 );
-            }
             else
-            {
                 _weaponList.AddItem(TranslationManager.Tr(weaponKey));
-            }
 
             // Store the key as metadata
             _weaponList.SetItemMetadata(_weaponList.ItemCount - 1, weaponKey);
@@ -139,8 +137,8 @@ public partial class PrepareMenu : Control
                 UpdateAbilityDescription(_selectedAbilityKey);
                 break;
             }
-        
-        
+
+
         _weaponList.GrabFocus();
     }
 

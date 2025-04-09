@@ -3,46 +3,41 @@ extends VBoxContainer
 
 signal import_triggered
 signal open_scene_triggered
-
 @onready var _name = $GridContainer/name_value
 @onready var _type = $GridContainer/type_value
 @onready var _path = $GridContainer/path_value
-
 @onready var _source_label = $GridContainer/source_file_label
 @onready var _source = $GridContainer/source_file_value
 @onready var _layer_label = $GridContainer/layer_label
 @onready var _layer = $GridContainer/layer_value
 @onready var _slice_label = $GridContainer/slice_label
 @onready var _slice = $GridContainer/slice_value
-
 @onready var _o_name_label = $GridContainer/o_name_label
 @onready var _o_name = $GridContainer/o_name_value
 @onready var _o_folder_label = $GridContainer/o_folder_label
 @onready var _o_folder_value = $GridContainer/o_folder_value
-
-
 @onready var _resource_buttons = $resource_buttons
 @onready var _dir_buttons = $dir_buttons
 @onready var _scene_buttons = $scene_buttons
-
 @onready var _source_change_warning = $source_changed_warning
 
 @onready var _resource_only_fields = [
-	_source_label,
-	_source,
-	_layer_label,
-	_layer,
-	_slice_label,
-	_slice,
-	_o_name_label,
-	_o_name,
-	_o_folder_label,
-	_o_folder_value,
-	_source_change_warning,
-]
+									 _source_label,
+									 _source,
+									 _layer_label,
+									 _layer,
+									 _slice_label,
+									 _slice,
+									 _o_name_label,
+									 _o_name,
+									 _o_folder_label,
+									 _o_folder_value,
+									 _source_change_warning,
+									 ]
 
-var _current_resource_type = "resource"
+var _current_resource_type       = "resource"
 var _resource_config: Dictionary = {}
+
 
 func _ready():
 	_source_change_warning.set_text("Source file changed since last import")
@@ -80,7 +75,7 @@ func set_resource_details(resource_details: Dictionary) -> void:
 			_layer.text = "All" if meta.get("layer", "") == "" else meta.layer
 			_slice.text = "All" if meta.get("slice", "") == "" else meta.slice
 
-			var folder = resource_details.scene_path.get_base_dir() if meta.get("o_folder", "") == "" else meta.o_folder
+			var folder    = resource_details.scene_path.get_base_dir() if meta.get("o_folder", "") == "" else meta.o_folder
 			var file_name = "" if meta.get("o_name", "") == "" else meta.o_name
 
 			if _layer.text != "All":

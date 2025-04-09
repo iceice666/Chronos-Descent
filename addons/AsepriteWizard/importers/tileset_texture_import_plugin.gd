@@ -6,10 +6,9 @@ extends EditorImportPlugin
 ## Imports Aseprite tileset layers as an AtlasTexture
 ##
 
-const result_codes = preload("../config/result_codes.gd")
+const result_codes          = preload("../config/result_codes.gd")
 var _aseprite_file_exporter = preload("../aseprite/file_exporter.gd").new()
-
-var config = preload("../config/config.gd").new()
+var config                        = preload("../config/config.gd").new()
 var file_system: EditorFileSystem = EditorInterface.get_resource_filesystem()
 
 
@@ -52,7 +51,7 @@ func _get_import_order():
 func _get_import_options(_path, _i):
 	return [
 		{"name": "layer/exclude_layers_pattern", "default_value": config.get_default_exclusion_pattern()},
-		{"name": "layer/only_visible_layers",    "default_value": false},
+		{"name": "layer/only_visible_layers", "default_value": false},
 		{
 			"name": "sheet/sheet_type",
 			"default_value": "columns",
@@ -65,25 +64,26 @@ func _get_import_options(_path, _i):
 		},
 	]
 
+
 func _get_option_visibility(path, option, options):
 	return true
 
 
 func _import(source_file, save_path, options, platform_variants, gen_files):
 	var absolute_source_file = ProjectSettings.globalize_path(source_file)
-	var absolute_save_path = ProjectSettings.globalize_path(save_path)
-	var source_path = source_file.get_base_dir()
-	var source_basename = source_file.substr(source_path.length()+1, -1)
+	var absolute_save_path   = ProjectSettings.globalize_path(save_path)
+	var source_path          = source_file.get_base_dir()
+	var source_basename      = source_file.substr(source_path.length()+1, -1)
 	source_basename = source_basename.substr(0, source_basename.rfind('.'))
 
 	var aseprite_opts = {
-		"exception_pattern": options['layer/exclude_layers_pattern'],
-		"only_visible_layers": options['layer/only_visible_layers'],
-		"output_filename": '',
-		"output_folder": source_path,
-		"sheet_type": options["sheet/sheet_type"],
-		"sheet_columns": options["sheet/sheet_columns"],
-	}
+							"exception_pattern": options['layer/exclude_layers_pattern'],
+							"only_visible_layers": options['layer/only_visible_layers'],
+							"output_filename": '',
+							"output_folder": source_path,
+							"sheet_type": options["sheet/sheet_type"],
+							"sheet_columns": options["sheet/sheet_columns"],
+						}
 
 	var result = _generate_texture(absolute_source_file, aseprite_opts)
 
@@ -92,7 +92,7 @@ func _import(source_file, save_path, options, platform_variants, gen_files):
 		return FAILED
 
 	var sprite_sheet = result.content.sprite_sheet
-	var data = result.content.data
+	var data         = result.content.data
 
 	return _save_resource(sprite_sheet, save_path, result.content.data_file, data.meta.size)
 

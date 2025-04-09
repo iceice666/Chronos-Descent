@@ -1,12 +1,11 @@
 @tool
 extends Node
 
-const wizard_meta = preload("../../../config/wizard_config.gd")
-const result_code = preload("../../../config/result_codes.gd")
+const wizard_meta           = preload("../../../config/wizard_config.gd")
+const result_code           = preload("../../../config/result_codes.gd")
 var _aseprite_file_exporter = preload("../../../aseprite/file_exporter.gd").new()
-var _sf_creator = preload("../../../creators/sprite_frames/sprite_frames_creator.gd").new()
-var _config = preload("../../../config/config.gd").new()
-
+var _sf_creator             = preload("../../../creators/sprite_frames/sprite_frames_creator.gd").new()
+var _config                 = preload("../../../config/config.gd").new()
 var _file_system: EditorFileSystem = EditorInterface.get_resource_filesystem()
 
 
@@ -21,19 +20,19 @@ var _file_system: EditorFileSystem = EditorInterface.get_resource_filesystem()
 # "should_round_fps"
 func import_and_create_resources(aseprite_file: String, fields: Dictionary) -> int:
 	var export_mode = _aseprite_file_exporter.LAYERS_EXPORT_MODE if fields.split_layers else _aseprite_file_exporter.FILE_EXPORT_MODE
-	var options = {
-		"export_mode": export_mode,
-		"exception_pattern": fields.layer_exclusion_pattern,
-		"only_visible_layers": fields.only_visible_layers,
-		"output_filename": fields.output_name,
-		"do_not_create_resource": fields.do_not_create_resource,
-		"output_folder": fields.output_location,
-	}
+	var options     = {
+						  "export_mode": export_mode,
+						  "exception_pattern": fields.layer_exclusion_pattern,
+						  "only_visible_layers": fields.only_visible_layers,
+						  "output_filename": fields.output_name,
+						  "do_not_create_resource": fields.do_not_create_resource,
+						  "output_folder": fields.output_location,
+					  }
 
 	var aseprite_output = _aseprite_file_exporter.generate_aseprite_files(
-		ProjectSettings.globalize_path(aseprite_file),
-		options
-	)
+							  ProjectSettings.globalize_path(aseprite_file),
+							  options
+						  )
 
 	if not aseprite_output.is_ok:
 		return aseprite_output.code
@@ -58,7 +57,7 @@ func import_and_create_resources(aseprite_file: String, fields: Dictionary) -> i
 
 func _add_metadata(resources: Array, aseprite_file: String, fields: Dictionary, options: Dictionary) -> void:
 	var source_hash = FileAccess.get_md5(aseprite_file)
-	var group = str(ResourceUID.create_id()) if options.export_mode == _aseprite_file_exporter.LAYERS_EXPORT_MODE else ""
+	var group       = str(ResourceUID.create_id()) if options.export_mode == _aseprite_file_exporter.LAYERS_EXPORT_MODE else ""
 
 	for r in resources:
 		wizard_meta.set_source_hash(r.resource, source_hash)

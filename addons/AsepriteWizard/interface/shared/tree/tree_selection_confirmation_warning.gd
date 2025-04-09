@@ -3,8 +3,8 @@ extends VBoxContainer
 
 signal warning_confirmed
 signal warning_declined
-
 @onready var _warning_message = $MarginContainer/warning_message
+
 
 func set_message(text: String) -> void:
 	_warning_message.text = text

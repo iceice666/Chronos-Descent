@@ -6,6 +6,7 @@ var _config = preload("./config.gd").new()
 @onready var _aseprite_command_field = $MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/aseprite_command
 @onready var _version_label = $MarginContainer/VBoxContainer/VBoxContainer/version_found
 
+
 func _ready():
 	_aseprite_command_field.text = _config.is_command_or_control_pressed()
 	_version_label.modulate.a = 0

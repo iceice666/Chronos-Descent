@@ -1,38 +1,33 @@
 @tool
 extends PanelContainer
 
-const wizard_config = preload("../../config/wizard_config.gd")
-const result_code = preload("../../config/result_codes.gd")
+const wizard_config         = preload("../../config/wizard_config.gd")
+const result_code           = preload("../../config/result_codes.gd")
 var _aseprite_file_exporter = preload("../../aseprite/file_exporter.gd").new()
-var config = preload("../../config/config.gd").new()
-
+var config                  = preload("../../config/config.gd").new()
 var scene: Node
 var target_node: Node
 var file_system: EditorFileSystem = EditorInterface.get_resource_filesystem()
-
-var _slice: String = ""
-var _source: String = ""
+var _slice: String      =  ""
+var _source: String     =  ""
 var _file_dialog_aseprite: EditorFileDialog
 var _output_folder_dialog: EditorFileDialog
-var _importing := false
-var _output_folder := ""
+var _importing          := false
+var _output_folder      := ""
 var _out_folder_default := "[Same as scene]"
-var _layer_default := "[all]"
-
-var _output_filename_text := "File Name"
+var _layer_default      := "[all]"
+var _output_filename_text        := "File Name"
 var _output_filename_prefix_text := "File Name Prefix"
-
 var _interface_section_state
 
 @onready var _section_title := $dock_fields/VBoxContainer/title as Button
-
 # general
 @onready var _source_field := $dock_fields/VBoxContainer/source/button as Button
 # layers
 @onready var _layer_section_header := $dock_fields/VBoxContainer/extra/sections/layers/section_header as Button
 @onready var _layer_section_container := $dock_fields/VBoxContainer/extra/sections/layers/section_content as MarginContainer
 @onready var _layer_field := $dock_fields/VBoxContainer/extra/sections/layers/section_content/content/layer/options as VBoxContainer
-@onready var _visible_layers_field :=  $dock_fields/VBoxContainer/extra/sections/layers/section_content/content/visible_layers/CheckBox as CheckBox
+@onready var _visible_layers_field := $dock_fields/VBoxContainer/extra/sections/layers/section_content/content/visible_layers/CheckBox as CheckBox
 @onready var _ex_pattern_field := $dock_fields/VBoxContainer/extra/sections/layers/section_content/content/ex_pattern/LineEdit as LineEdit
 # slice
 @onready var _slice_section_header := $dock_fields/VBoxContainer/extra/sections/slices/section_header as Button
@@ -43,29 +38,25 @@ var _interface_section_state
 @onready var _output_section_container := $dock_fields/VBoxContainer/extra/sections/output/section_content as MarginContainer
 @onready var _out_folder_field := $dock_fields/VBoxContainer/extra/sections/output/section_content/content/out_folder/button as Button
 @onready var _out_folder_container := $dock_fields/VBoxContainer/extra/sections/output/section_content/content/out_folder as HBoxContainer
-
 @onready var _out_filename_field := $dock_fields/VBoxContainer/extra/sections/output/section_content/content/out_filename/LineEdit as LineEdit
 @onready var _out_filename_label := $dock_fields/VBoxContainer/extra/sections/output/section_content/content/out_filename/Label as Label
 @onready var _out_filename_container := $dock_fields/VBoxContainer/extra/sections/output/section_content/content/out_filename as HBoxContainer
-
 @onready var _embed_label := $dock_fields/VBoxContainer/extra/sections/output/section_content/content/embed/Label as Label
-@onready var _embed_field :=  $dock_fields/VBoxContainer/extra/sections/output/section_content/content/embed/CheckBox as CheckBox
-
+@onready var _embed_field := $dock_fields/VBoxContainer/extra/sections/output/section_content/content/embed/CheckBox as CheckBox
 @onready var _import_button := $dock_fields/VBoxContainer/import as Button
-
-const INTERFACE_SECTION_KEY_LAYER = "layer_section"
-const INTERFACE_SECTION_KEY_SLICE = "slice_section"
+const INTERFACE_SECTION_KEY_LAYER  = "layer_section"
+const INTERFACE_SECTION_KEY_SLICE  = "slice_section"
 const INTERFACE_SECTION_KEY_OUTPUT = "output_section"
 
 @onready var _expandable_sections = {
-	INTERFACE_SECTION_KEY_LAYER: { "header": _layer_section_header, "content": _layer_section_container},
-	INTERFACE_SECTION_KEY_SLICE: { "header": _slice_section_header, "content": _slice_section_container},
-	INTERFACE_SECTION_KEY_OUTPUT: { "header": _output_section_header, "content": _output_section_container},
-}
+										INTERFACE_SECTION_KEY_LAYER: { "header": _layer_section_header, "content": _layer_section_container},
+										INTERFACE_SECTION_KEY_SLICE: { "header": _slice_section_header, "content": _slice_section_container},
+										INTERFACE_SECTION_KEY_OUTPUT: { "header": _output_section_header, "content": _output_section_container},
+									}
 
 const PENDING_CHANGES_KEY := "pending_changes"
-
 var _do_not_update_pending := false
+
 
 func _ready():
 	_pre_setup()
@@ -91,7 +82,7 @@ func _check_for_changes():
 
 
 func _check_for_field_changes():
-	var cfg = wizard_config.load_config(target_node)
+	var cfg     = wizard_config.load_config(target_node)
 	var changed = _get_changed_config(cfg)
 
 	if changed == null or changed.is_empty():
@@ -142,7 +133,7 @@ func _setup_interface():
 
 
 func _load_persisted_config() -> Dictionary:
-	var cfg = wizard_config.load_config(target_node)
+	var cfg       = wizard_config.load_config(target_node)
 	var persisted = {}
 	if cfg == null:
 		persisted = {}
@@ -194,7 +185,7 @@ func _load_common_config(cfg):
 	_out_filename_field.text = cfg.get("o_name", "")
 	_visible_layers_field.button_pressed = cfg.get("only_visible", false)
 	_ex_pattern_field.text = cfg.get("o_ex_p", "")
-	
+
 	_embed_field.button_pressed = cfg.get("embed_tex", false)
 
 	_load_config(cfg)
@@ -235,7 +226,7 @@ func _toggle_section_visibility(key: String) -> void:
 
 
 func _adjust_section_visibility(key: String) -> void:
-	var section = _expandable_sections[key]
+	var section    = _expandable_sections[key]
 	var is_visible = _interface_section_state.get(key, false)
 	_adjust_icon(section.header, is_visible)
 	section.content.visible = is_visible
@@ -264,7 +255,7 @@ func _setup_field_listeners():
 	_out_folder_field.pressed.connect(_on_out_folder_pressed)
 
 	_import_button.pressed.connect(_on_import_pressed)
-	
+
 	_embed_field.pressed.connect(_on_embed_button_pressed)
 
 
@@ -313,7 +304,7 @@ func _on_slice_button_down():
 		_show_message("Please, select source file first.")
 		return
 
-	var slices = _get_available_slices(ProjectSettings.globalize_path(_source))
+	var slices  = _get_available_slices(ProjectSettings.globalize_path(_source))
 	var current = 0
 	_slice_field.clear()
 	_slice_field.add_item(_layer_default)
@@ -336,15 +327,15 @@ func _get_current_config():
 	var child_config = _get_current_field_values()
 
 	var cfg := {
-		"source": _source,
-		"layers": _layer_field.get_selected_layers(),
-		"slice": _slice,
-		"o_folder": _output_folder,
-		"o_name": _out_filename_field.text,
-		"only_visible": _visible_layers_field.button_pressed,
-		"o_ex_p": _ex_pattern_field.text,
-		"embed_tex": _embed_field.button_pressed,
-	}
+				   "source": _source,
+				   "layers": _layer_field.get_selected_layers(),
+				   "slice": _slice,
+				   "o_folder": _output_folder,
+				   "o_name": _out_filename_field.text,
+				   "only_visible": _visible_layers_field.button_pressed,
+				   "o_ex_p": _ex_pattern_field.text,
+				   "embed_tex": _embed_field.button_pressed,
+			   }
 
 	for c in child_config:
 		cfg[c] = child_config[c]
@@ -384,8 +375,8 @@ func _create_aseprite_file_selection():
 	var file_dialog = EditorFileDialog.new()
 	file_dialog.file_mode = EditorFileDialog.FILE_MODE_OPEN_FILE
 	file_dialog.access = EditorFileDialog.ACCESS_FILESYSTEM
-	file_dialog.connect("file_selected",Callable(self,"_on_aseprite_file_selected"))
-	file_dialog.set_filters(PackedStringArray(["*.ase","*.aseprite"]))
+	file_dialog.connect("file_selected", Callable(self, "_on_aseprite_file_selected"))
+	file_dialog.set_filters(PackedStringArray(["*.ase", "*.aseprite"]))
 	return file_dialog
 
 
@@ -428,7 +419,7 @@ func _create_output_folder_selection():
 	var file_dialog = EditorFileDialog.new()
 	file_dialog.file_mode = EditorFileDialog.FILE_MODE_OPEN_DIR
 	file_dialog.access = EditorFileDialog.ACCESS_RESOURCES
-	file_dialog.connect("dir_selected",Callable(self,"_on_output_folder_selected"))
+	file_dialog.connect("dir_selected", Callable(self, "_on_output_folder_selected"))
 	return file_dialog
 
 
@@ -502,7 +493,6 @@ func _on_import_pressed():
 	_importing = false
 	$dock_fields.hide_source_change_warning()
 	EditorInterface.save_scene()
-
 
 
 # This is a little bit leaky as this base scene contains fields only relevant to animation players.

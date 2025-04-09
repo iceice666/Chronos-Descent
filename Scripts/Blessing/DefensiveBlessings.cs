@@ -17,12 +17,6 @@ public partial class TemporalShieldBlessing : Blessing
         Description = TranslationManager.TrFormat("Blessing_TemporalShield_Desc", HealthRestoredPercent * CurrentLevel);
     }
 
-    public override void OnApply()
-    {
-        // Reset availability when entering a new room
-        GlobalEventBus.Instance.Subscribe(GlobalEventVariant.RoomEntered, OnRoomStarted);
-    }
-
     public override string Id { get; protected set; } = "Blessing_TemporalShield";
     public override string Title { get; protected set; } = TranslationManager.Tr("Blessing_TemporalShield");
 
@@ -36,6 +30,12 @@ public partial class TemporalShieldBlessing : Blessing
 
     public override bool IsStackable { get; protected set; } = true;
     public override int MaxLevel { get; protected set; } = 2;
+
+    public override void OnApply()
+    {
+        // Reset availability when entering a new room
+        GlobalEventBus.Instance.Subscribe(GlobalEventVariant.RoomEntered, OnRoomStarted);
+    }
 
     public override void OnRemove()
     {

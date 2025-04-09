@@ -2,12 +2,12 @@
 extends RefCounted
 
 var result_code = preload("../config/result_codes.gd")
-var _aseprite = preload("aseprite.gd").new()
-
+var _aseprite   = preload("aseprite.gd").new()
 enum {
 	FILE_EXPORT_MODE,
 	LAYERS_EXPORT_MODE
 }
+
 
 ##
 ## Generate Aseprite spritesheet and data files for source.
@@ -75,7 +75,6 @@ func generate_aseprite_file(source_file: String, options: Dictionary) -> Diction
 		output = _aseprite.export_file_with_layers(source_file, options.layers, options.output_folder, options)
 	else:
 		output = _aseprite.export_file(source_file, options.output_folder, options)
-
 
 	if output.is_empty():
 		return result_code.error(result_code.ERR_ASEPRITE_EXPORT_FAILED)

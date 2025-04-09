@@ -3,52 +3,37 @@ extends PanelContainer
 
 signal close_requested
 signal import_success(file_settings)
-
 const result_code = preload("../../../config/result_codes.gd")
-var _config = preload("../../../config/config.gd").new()
-
+var _config       = preload("../../../config/config.gd").new()
 var _import_helper = preload("./wizard_import_helper.gd").new()
-
 var _file_system: EditorFileSystem = EditorInterface.get_resource_filesystem()
-
 var _file_dialog_aseprite: EditorFileDialog
 var _output_folder_dialog: EditorFileDialog
 var _warning_dialog: AcceptDialog
 
 @onready var _layer_section_btn: Button = $container/options/layer_section/header/section_header
 @onready var _layer_section_content: MarginContainer = $container/options/layer_section/section_content
-
 @onready var _animation_section_btn: Button = $container/options/animation_section/header/section_header
 @onready var _animation_section_content: MarginContainer = $container/options/animation_section/section_content
-
 @onready var _output_section_btn: Button = $container/options/output_section/header/section_header
 @onready var _output_section_content: MarginContainer = $container/options/output_section/section_content
-
 @onready var _file_location_field: LineEdit = $container/options/file_location/HBoxContainer/file_location_path
-
 @onready var _output_folder_field: LineEdit = $container/options/output_section/section_content/items/output_folder/HBoxContainer/file_location_path
-
 @onready var _exception_pattern_field: LineEdit = $container/options/layer_section/section_content/items/exclude_pattern/pattern
-
 @onready var _split_mode_field: CheckBox = $container/options/layer_section/section_content/items/split_layers/field
-
 @onready var _only_visible_layers_field: CheckBox = $container/options/layer_section/section_content/items/visible_layers/field
-
 @onready var _custom_name_field: LineEdit = $container/options/output_section/section_content/items/custom_filename/pattern
-
 @onready var _round_fps_field: CheckBox = $container/options/animation_section/section_content/items/round_fps/field
-
 @onready var _do_not_create_res_field: CheckBox = $container/options/output_section/section_content/items/disable_resource_creation/field
-
-const INTERFACE_SECTION_KEY_LAYER = "layer_section"
+const INTERFACE_SECTION_KEY_LAYER     = "layer_section"
 const INTERFACE_SECTION_KEY_ANIMATION = "animation_section"
-const INTERFACE_SECTION_KEY_OUTPUT = "output_section"
+const INTERFACE_SECTION_KEY_OUTPUT    = "output_section"
 
 @onready var _expandable_sections = {
-	INTERFACE_SECTION_KEY_LAYER: { "header": _layer_section_btn, "content": _layer_section_content},
-	INTERFACE_SECTION_KEY_ANIMATION: { "header": _animation_section_btn, "content": _animation_section_content},
-	INTERFACE_SECTION_KEY_OUTPUT: { "header": _output_section_btn, "content": _output_section_content},
-}
+										INTERFACE_SECTION_KEY_LAYER: { "header": _layer_section_btn, "content": _layer_section_content},
+										INTERFACE_SECTION_KEY_ANIMATION: { "header": _animation_section_btn, "content": _animation_section_content},
+										INTERFACE_SECTION_KEY_OUTPUT: { "header": _output_section_btn, "content": _output_section_content},
+									}
 
 var _interface_section_state = {}
 
@@ -158,7 +143,7 @@ func _create_aseprite_file_selection():
 	file_dialog.file_mode = EditorFileDialog.FILE_MODE_OPEN_FILE
 	file_dialog.access = EditorFileDialog.ACCESS_FILESYSTEM
 	file_dialog.connect("file_selected", _on_aseprite_file_selected)
-	file_dialog.set_filters(PackedStringArray(["*.ase","*.aseprite"]))
+	file_dialog.set_filters(PackedStringArray(["*.ase", "*.aseprite"]))
 	return file_dialog
 
 
@@ -181,8 +166,8 @@ func _on_output_folder_selected(path):
 
 func _on_next_btn_up():
 	var aseprite_file = _file_location_field.text
-	var fields = _get_field_values()
-	var exit_code = await _import_helper.import_and_create_resources(aseprite_file, _get_field_values())
+	var fields        = _get_field_values()
+	var exit_code     = await _import_helper.import_and_create_resources(aseprite_file, _get_field_values())
 
 	if exit_code != OK:
 		_show_error(exit_code)
@@ -238,7 +223,7 @@ func _configure_sections():
 
 
 func _adjust_section_visibility(key: String) -> void:
-	var section = _expandable_sections[key]
+	var section    = _expandable_sections[key]
 	var is_visible = _interface_section_state.get(key, true)
 	_adjust_icon(section.header, is_visible)
 	section.content.visible = is_visible
@@ -263,7 +248,7 @@ func _on_output_section_header_button_down():
 
 
 func _on_animation_header_button_down() -> void:
-		_toggle_section_visibility(INTERFACE_SECTION_KEY_ANIMATION)
+	_toggle_section_visibility(INTERFACE_SECTION_KEY_ANIMATION)
 
 
 func _load_last_import_cfg() -> Dictionary:

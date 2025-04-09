@@ -2,11 +2,10 @@
 extends LineEdit
 
 signal change_finished(text: String)
-
 @export var debounce_time_in_seconds: float = 0.3
 
 var _time_since_last_change: float = 0.0
-var _has_pending_changes: bool = false
+var _has_pending_changes: bool     = false
 
 
 func _process(delta: float) -> void:

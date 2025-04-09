@@ -1,6 +1,5 @@
 extends "animation_creator.gd"
 
-
 func _setup_texture(sprite: Node, texture: Texture2D, content: Dictionary, context: Dictionary, is_importing_slice: bool):
 	sprite.texture = texture
 
@@ -26,16 +25,15 @@ func _get_props_to_cleanup() -> Array[String]:
 	return ["frame", "region_rect", "visible"]
 
 
-
-func _get_frame_key(sprite:  Node, frame: Dictionary, context: Dictionary, slice_info: Variant):
+func _get_frame_key(sprite: Node, frame: Dictionary, context: Dictionary, slice_info: Variant):
 	if slice_info != null:
 		return _create_slice_rect(frame, slice_info)
-	return _calculate_frame_index(sprite,frame)
+	return _calculate_frame_index(sprite, frame)
 
 
 func _calculate_frame_index(sprite: Node, frame: Dictionary) -> int:
 	var column = floor(frame.frame.x * sprite.hframes / sprite.texture.get_width())
-	var row = floor(frame.frame.y * sprite.vframes / sprite.texture.get_height())
+	var row    = floor(frame.frame.y * sprite.vframes / sprite.texture.get_height())
 	return (row * sprite.hframes) + column
 
 

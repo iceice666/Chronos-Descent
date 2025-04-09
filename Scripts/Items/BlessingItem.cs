@@ -24,8 +24,8 @@ public partial class BlessingItem : Node2D
     // Visual components
     private Label _nameLabel;
     private Vector2 _originalPosition;
-    private float _time;
     private Node2D _promptNode;
+    private float _time;
 
     // State tracking
     protected Player PlayerInRange;
@@ -51,7 +51,8 @@ public partial class BlessingItem : Node2D
         _interactionArea.AreaEntered += OnBodyEntered;
         _interactionArea.AreaExited += OnBodyExited;
         GlobalEventBus.Instance.Subscribe<Blessing>(GlobalEventVariant.BlessingSelected, OnBlessingSelected);
-        GlobalEventBus.Instance.Subscribe<UserInputManager.InputSource>(GlobalEventVariant.InputSourceChanged, UpdatePromptNode);
+        GlobalEventBus.Instance.Subscribe<UserInputManager.InputSource>(GlobalEventVariant.InputSourceChanged,
+            UpdatePromptNode);
 
 
         UpdatePromptNode(UserInputManager.Instance.CurrentInputSource);
@@ -62,12 +63,14 @@ public partial class BlessingItem : Node2D
         _interactionArea.AreaEntered -= OnBodyEntered;
         _interactionArea.AreaExited -= OnBodyExited;
         GlobalEventBus.Instance.Unsubscribe<Blessing>(GlobalEventVariant.BlessingSelected, OnBlessingSelected);
-        GlobalEventBus.Instance.Unsubscribe<UserInputManager.InputSource>(GlobalEventVariant.InputSourceChanged, UpdatePromptNode);
+        GlobalEventBus.Instance.Unsubscribe<UserInputManager.InputSource>(GlobalEventVariant.InputSourceChanged,
+            UpdatePromptNode);
     }
-    
-    private void UpdatePromptNode(UserInputManager.InputSource src)  {
-        var prevState =_promptNode is { Visible: true };
-            
+
+    private void UpdatePromptNode(UserInputManager.InputSource src)
+    {
+        var prevState = _promptNode is { Visible: true };
+
         switch (src)
         {
             case UserInputManager.InputSource.KeyboardMouse:
@@ -96,7 +99,7 @@ public partial class BlessingItem : Node2D
 
 
                 break;
-           
+
             case UserInputManager.InputSource.VirtualJoystick:
                 _promptNode = GetNode<Node2D>("/root/Dungeon/UI/VirtualInput/InteractButtonNode");
                 break;
@@ -162,8 +165,8 @@ public partial class BlessingItem : Node2D
 
     private void OnBodyEntered(Area2D area)
     {
-        if (area is not Hurtbox) return; 
-        PlayerInRange = (Player) area.Owner;
+        if (area is not Hurtbox) return;
+        PlayerInRange = (Player)area.Owner;
 
         // Show "can interact" indicator
         ShowInteractionPrompt(true);
@@ -183,8 +186,8 @@ public partial class BlessingItem : Node2D
     private void ShowInteractionPrompt(bool show)
     {
         if (_promptNode == null) return;
-            _promptNode.Visible = show;
-            Player.Instance.StateLabel.Text = show.ToString();
+        _promptNode.Visible = show;
+        Player.Instance.StateLabel.Text = show.ToString();
     }
 
     private void CollectBlessing()

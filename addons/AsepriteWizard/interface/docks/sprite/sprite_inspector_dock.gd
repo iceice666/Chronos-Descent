@@ -1,33 +1,28 @@
 @tool
 extends "../base_inspector_dock.gd"
 
-const AnimationCreator = preload("../../../creators/animation_player/animation_creator.gd")
-const SpriteAnimationCreator = preload("../../../creators/animation_player/sprite_animation_creator.gd")
+const AnimationCreator            = preload("../../../creators/animation_player/animation_creator.gd")
+const SpriteAnimationCreator      = preload("../../../creators/animation_player/sprite_animation_creator.gd")
 const TextureRectAnimationCreator = preload("../../../creators/animation_player/texture_rect_animation_creator.gd")
-const StaticTextureCreator = preload("../../../creators/static_texture/texture_creator.gd")
-
+const StaticTextureCreator        = preload("../../../creators/static_texture/texture_creator.gd")
 enum ImportMode {
 	ANIMATION = 0,
 	IMAGE = 1
 }
-
 var animation_creator: AnimationCreator
 var static_texture_creator: StaticTextureCreator
-
 var _import_mode = -1
 var _animation_player_path: String
 
 @onready var _import_mode_options_field := $dock_fields/VBoxContainer/modes/options as OptionButton
 @onready var _animation_player_field := $dock_fields/VBoxContainer/animation_player/options as OptionButton
 @onready var _animation_player_container := $dock_fields/VBoxContainer/animation_player as HBoxContainer
-
 # animation
 @onready var _animation_section := $dock_fields/VBoxContainer/extra/sections/animation as VBoxContainer
 @onready var _animation_section_header := $dock_fields/VBoxContainer/extra/sections/animation/section_header as Button
 @onready var _animation_section_container := $dock_fields/VBoxContainer/extra/sections/animation/section_content as MarginContainer
-@onready var _cleanup_hide_unused_nodes :=  $dock_fields/VBoxContainer/extra/sections/animation/section_content/content/auto_visible_track/CheckBox as CheckBox
-@onready var _keep_length :=  $dock_fields/VBoxContainer/extra/sections/animation/section_content/content/keep_length/CheckBox as CheckBox
-
+@onready var _cleanup_hide_unused_nodes := $dock_fields/VBoxContainer/extra/sections/animation/section_content/content/auto_visible_track/CheckBox as CheckBox
+@onready var _keep_length := $dock_fields/VBoxContainer/extra/sections/animation/section_content/content/keep_length/CheckBox as CheckBox
 const INTERFACE_SECTION_KEY_ANIMATION = "animation_section"
 
 
@@ -101,7 +96,7 @@ func _on_animation_player_button_down():
 
 func _refresh_animation_players():
 	var animation_players = []
-	var root = get_tree().get_edited_scene_root()
+	var root              = get_tree().get_edited_scene_root()
 	_find_animation_players(root, root, animation_players)
 
 	var current = 0
@@ -140,6 +135,7 @@ func _do_import():
 
 	await _import_for_animation_player()
 
+
 ##
 ## Import aseprite animations to target AnimationPlayer and set
 ## spritesheet as the node's texture
@@ -168,11 +164,11 @@ func _import_for_animation_player():
 	await file_system.filesystem_changed
 
 	var anim_options = {
-		"keep_anim_length": _keep_length.button_pressed,
-		"cleanup_hide_unused_nodes": _cleanup_hide_unused_nodes.button_pressed,
-		"slice": _slice,
-		"should_create_portable_texture": _embed_field.button_pressed,
-	}
+						   "keep_anim_length": _keep_length.button_pressed,
+						   "cleanup_hide_unused_nodes": _cleanup_hide_unused_nodes.button_pressed,
+						   "slice": _slice,
+						   "should_create_portable_texture": _embed_field.button_pressed,
+					   }
 
 	animation_creator.create_animations(target_node, root.get_node(_animation_player_path), aseprite_output.content, anim_options)
 	_importing = false
@@ -180,12 +176,13 @@ func _import_for_animation_player():
 	wizard_config.set_source_hash(target_node, FileAccess.get_md5(source_path))
 	_handle_cleanup(aseprite_output.content, _embed_field.button_pressed)
 
+
 ##
 ## Import first frame from aseprite file as node texture
 ##
 func _import_static():
 	var source_path = ProjectSettings.globalize_path(_source)
-	var root = get_tree().get_edited_scene_root()
+	var root        = get_tree().get_edited_scene_root()
 
 	var options = _get_import_options(root.scene_file_path.get_base_dir())
 	options["first_frame_only"] = true
@@ -213,10 +210,10 @@ func _import_static():
 
 func _get_current_field_values() -> Dictionary:
 	var cfg := {
-		"i_mode": _import_mode,
-		"player": _animation_player_path,
-		"keep_anim_length": _keep_length.button_pressed,
-	}
+				   "i_mode": _import_mode,
+				   "player": _animation_player_path,
+				   "keep_anim_length": _keep_length.button_pressed,
+			   }
 
 	if _cleanup_hide_unused_nodes.button_pressed != config.is_set_visible_track_automatically_enabled():
 		cfg["set_vis_track"] = _cleanup_hide_unused_nodes.button_pressed

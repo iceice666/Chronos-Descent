@@ -2,14 +2,13 @@
 extends RefCounted
 
 const wizard_config = preload("../../config/wizard_config.gd")
-const result_code = preload("../../config/result_codes.gd")
-
-var _sprite_animation_creator = preload("../../creators/animation_player/sprite_animation_creator.gd").new()
+const result_code   = preload("../../config/result_codes.gd")
+var _sprite_animation_creator       = preload("../../creators/animation_player/sprite_animation_creator.gd").new()
 var _texture_rect_animation_creator = preload("../../creators/animation_player/texture_rect_animation_creator.gd").new()
-var _static_texture_creator = preload("../../creators/static_texture/texture_creator.gd").new()
-var _sprite_frames_creator = preload("../../creators/sprite_frames/sprite_frames_creator.gd").new()
-var _aseprite_file_exporter = preload("../../aseprite/file_exporter.gd").new()
-var _config = preload("../../config/config.gd").new()
+var _static_texture_creator         = preload("../../creators/static_texture/texture_creator.gd").new()
+var _sprite_frames_creator          = preload("../../creators/sprite_frames/sprite_frames_creator.gd").new()
+var _aseprite_file_exporter         = preload("../../aseprite/file_exporter.gd").new()
+var _config                         = preload("../../config/config.gd").new()
 
 
 func import_node(root_node: Node, meta: Dictionary) -> void:
@@ -31,7 +30,7 @@ func _sprite_frames_import(node: Node, resource_config: Dictionary) -> void:
 		printerr("Node config missing information.")
 		return
 
-	var source = ProjectSettings.globalize_path(config.source)
+	var source  = ProjectSettings.globalize_path(config.source)
 	var options = _parse_import_options(config, resource_config.scene_path.get_base_dir())
 
 	var aseprite_output = _aseprite_file_exporter.generate_aseprite_file(source, options)
@@ -66,8 +65,8 @@ func _animation_import(node: Node, root_node: Node, resource_config: Dictionary)
 
 
 func _import_to_animation_player(node: Node, root: Node, resource_config: Dictionary) -> void:
-	var config = resource_config.meta
-	var source = ProjectSettings.globalize_path(config.source)
+	var config  = resource_config.meta
+	var source  = ProjectSettings.globalize_path(config.source)
 	var options = _parse_import_options(config, resource_config.scene_path.get_base_dir())
 
 	var aseprite_output = _aseprite_file_exporter.generate_aseprite_file(source, options)
@@ -78,12 +77,12 @@ func _import_to_animation_player(node: Node, root: Node, resource_config: Dictio
 	EditorInterface.get_resource_filesystem().scan()
 	await EditorInterface.get_resource_filesystem().filesystem_changed
 
-	var anim_options = {
-		"keep_anim_length": config.keep_anim_length,
-		"cleanup_hide_unused_nodes": config.get("set_vis_track"),
-		"slice": config.get("slice", ""),
-		"should_create_portable_texture": config.get("embed_tex", false),
-	}
+	var anim_options      = {
+								"keep_anim_length": config.keep_anim_length,
+								"cleanup_hide_unused_nodes": config.get("set_vis_track"),
+								"slice": config.get("slice", ""),
+								"should_create_portable_texture": config.get("embed_tex", false),
+							}
 	var animation_creator = _texture_rect_animation_creator if node is TextureRect else _sprite_animation_creator
 
 	animation_creator.create_animations(node, root.get_node(config.player), aseprite_output.content, anim_options)
@@ -93,8 +92,8 @@ func _import_to_animation_player(node: Node, root: Node, resource_config: Dictio
 
 
 func _import_static(node: Node, resource_config: Dictionary) -> void:
-	var config = resource_config.meta
-	var source = ProjectSettings.globalize_path(config.source)
+	var config  = resource_config.meta
+	var source  = ProjectSettings.globalize_path(config.source)
 	var options = _parse_import_options(config, resource_config.scene_path.get_base_dir())
 	options["first_frame_only"] = true
 

@@ -3,7 +3,6 @@ extends VBoxContainer
 
 @onready var _details_btn = $label
 @onready var _details_container = $MarginContainer/GridContainer
-
 @onready var _split_layers_field = $MarginContainer/GridContainer/split_layers
 @onready var _only_visible_layers = $MarginContainer/GridContainer/only_visible_layers
 @onready var _layer_exclusion_pattern = $MarginContainer/GridContainer/layer_exclusion_pattern
@@ -11,6 +10,7 @@ extends VBoxContainer
 @onready var _do_not_create_resource = $MarginContainer/GridContainer/do_not_create_resource
 
 var _entry
+
 
 func _ready():
 	_adjust_icon(false)

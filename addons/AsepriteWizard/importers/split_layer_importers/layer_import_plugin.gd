@@ -2,9 +2,8 @@
 extends EditorImportPlugin
 
 const result_codes = preload("../../config/result_codes.gd")
-
-var config = preload("../../config/config.gd").new()
-var _aseprite = preload("../../aseprite/aseprite.gd").new()
+var config      = preload("../../config/config.gd").new()
+var _aseprite   = preload("../../aseprite/aseprite.gd").new()
 var _sf_creator = preload("../../creators/sprite_frames/sprite_frames_creator.gd").new()
 
 
@@ -59,24 +58,24 @@ func _import(source_file, save_path, options, platform_variants, gen_files):
 	var source_path = source_file.get_base_dir()
 
 	var absolute_source_file = ProjectSettings.globalize_path(data.import_options.source)
-	
+
 	var export_options = {
-		"sheet_type": data.import_options.sheet_type,
-		"sheet_columns": data.import_options.sheet_columns,
-		"should_round_fps": data.import_options.should_round_fps,
-	}
-	
+							 "sheet_type": data.import_options.sheet_type,
+							 "sheet_columns": data.import_options.sheet_columns,
+							 "should_round_fps": data.import_options.should_round_fps,
+						 }
+
 	var source_files = _aseprite.export_file_with_layers(
-		absolute_source_file,
-		[data.layer],
-		source_path,
-		export_options,
-	)
+						   absolute_source_file,
+							   [data.layer],
+						   source_path,
+						   export_options,
+					   )
 
 	if source_files.is_empty():
 		printerr("ERROR - Could not import aseprite file. Layer not found.")
 		return FAILED
-#
+	#
 	var resources = _sf_creator.create_resources([source_files], {
 		"should_round_fps": data.import_options.should_round_fps,
 		"should_create_portable_texture": true,
@@ -91,12 +90,12 @@ func _import(source_file, save_path, options, platform_variants, gen_files):
 	resource.resource.set_meta("imported_via_aw", true)
 
 	var resource_path = "%s.res" % save_path
-	var exit_code = ResourceSaver.save(resource.resource, resource_path)
+	var exit_code     = ResourceSaver.save(resource.resource, resource_path)
 	resource.resource.take_over_path(resource_path)
 
 	for extra_file in resource.extra_gen_files:
 		gen_files.push_back(extra_file)
-#
+	#
 	if config.should_remove_source_files():
 		_remove_source_files(source_files)
 

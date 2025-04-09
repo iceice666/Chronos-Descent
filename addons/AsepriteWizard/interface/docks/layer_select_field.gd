@@ -5,13 +5,14 @@ signal add_pressed
 signal removed_pressed
 signal data_requested
 signal value_changed(value: String)
+var _value: String =  ""
+var is_only_field  := false
 
-var _value: String = ""
-var is_only_field := false
 
 func _ready():
 	$add_btn.icon = get_theme_icon("Add", "EditorIcons")
 	$remove_btn.icon = get_theme_icon("Remove", "EditorIcons")
+
 
 func set_add_button(visibility: bool) -> void:
 	$add_btn.visible = visibility

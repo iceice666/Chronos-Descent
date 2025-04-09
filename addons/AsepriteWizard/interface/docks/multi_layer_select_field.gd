@@ -2,10 +2,9 @@
 extends VBoxContainer
 
 const LayerField = preload("./layer_select_field.tscn")
-
 signal value_changed
-
 var data_fetcher: Callable
+
 
 func set_selected_layers(layers: Array):
 	for c in get_children():
@@ -72,9 +71,9 @@ func _on_add_pressed(field: Control) -> void:
 
 
 func _on_removed_pressed(field: Control) -> void:
-	var count := get_child_count()
-	var node_position := field.get_index()
-	var should_notify_change: bool = field.get_value() != ""
+	var count                      := get_child_count()
+	var node_position              := field.get_index()
+	var should_notify_change: bool =  field.get_value() != ""
 
 	remove_child(field)
 	field.queue_free()

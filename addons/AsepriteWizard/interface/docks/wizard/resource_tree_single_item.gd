@@ -2,50 +2,45 @@
 extends VBoxContainer
 
 signal import_triggered
-
 @onready var _file_name = $GridContainer/file_name_value
 @onready var _type = $GridContainer/type_value
 @onready var _path = $GridContainer/path_value
-
 @onready var _source_label = $GridContainer/source_file_label
 @onready var _source = $GridContainer/source_file_value
 @onready var _only_visible_layers_label = $GridContainer/only_visible_layers_label
 @onready var _only_visible_layers = $GridContainer/only_visible_layers_value
 @onready var _layer_ex_pattern_label = $GridContainer/layer_ex_patt_label
 @onready var _layer_ex_pattern = $GridContainer/layer_ex_patt_value
-
 @onready var _o_name_label = $GridContainer/o_name_label
 @onready var _o_name = $GridContainer/o_name_value
 @onready var _o_folder_label = $GridContainer/o_folder_label
 @onready var _o_folder_value = $GridContainer/o_folder_value
-
 @onready var _resource_list_label = $GridContainer/resource_list_label
 @onready var _resource_list = $GridContainer/resource_list
 @onready var _resource_list_separator_1 = $GridContainer/HSeparator3
 @onready var _resource_list_separator_2 = $GridContainer/HSeparator4
-
 @onready var _resource_buttons = $resource_buttons
 @onready var _dir_buttons = $dir_buttons
 @onready var _group_buttons = $group_buttons
-
 @onready var _source_change_warning = $source_changed_warning
 
 @onready var _resource_only_fields = [
-	_source_label,
-	_source,
-	_only_visible_layers_label,
-	_only_visible_layers,
-	_layer_ex_pattern_label,
-	_layer_ex_pattern,
-	_o_name_label,
-	_o_name,
-	_o_folder_label,
-	_o_folder_value,
-	_source_change_warning,
-]
+									 _source_label,
+									 _source,
+									 _only_visible_layers_label,
+									 _only_visible_layers,
+									 _layer_ex_pattern_label,
+									 _layer_ex_pattern,
+									 _o_name_label,
+									 _o_name,
+									 _o_folder_label,
+									 _o_folder_value,
+									 _source_change_warning,
+									 ]
 
-var _current_resource_type = "resource"
+var _current_resource_type       = "resource"
 var _resource_config: Dictionary = {}
+
 
 func _ready():
 	_source_change_warning.set_text("Source file changed since last import")

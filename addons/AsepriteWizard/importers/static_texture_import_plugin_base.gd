@@ -1,9 +1,8 @@
 @tool
 extends EditorImportPlugin
 
-const result_codes = preload("../config/result_codes.gd")
+const result_codes          = preload("../config/result_codes.gd")
 var _aseprite_file_exporter = preload("../aseprite/file_exporter.gd").new()
-
 var config = preload("../config/config.gd").new()
 
 
@@ -38,7 +37,7 @@ func _generate_texture(absolute_source_file: String, options: Dictionary) -> Dic
 		return result
 
 	var sprite_sheet = result.content.sprite_sheet
-	var data_result = _aseprite_file_exporter.load_json_content(result.content.data_file)
+	var data_result  = _aseprite_file_exporter.load_json_content(result.content.data_file)
 
 	if not data_result.is_ok:
 		return data_result
@@ -57,7 +56,7 @@ func _save_resource(sprite_sheet: String, save_path: String, data_file_path: Str
 
 	var tex := PortableCompressedTexture2D.new()
 	tex.create_from_image(image, PortableCompressedTexture2D.COMPRESSION_MODE_LOSSLESS)
-#
+	#
 	var exit_code = ResourceSaver.save(tex, "%s.%s" % [save_path, _get_save_extension()])
 
 	if config.should_remove_source_files():

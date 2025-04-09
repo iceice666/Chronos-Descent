@@ -3,24 +3,21 @@ extends PanelContainer
 
 signal request_edit(import_cfg)
 signal request_import(import_cfg)
-
 const SourcePathField = preload("./wizard_nodes/source_path.tscn")
 const OutputPathField = preload("./wizard_nodes/output_path.tscn")
 const ImportDateField = preload("./wizard_nodes/import_date.tscn")
-const ItemActions = preload("./wizard_nodes/list_actions.tscn")
-const DetailsField = preload("./wizard_nodes/details.tscn")
-
-const SORT_BY_DATE := 0
-const SORT_BY_PATH := 1
+const ItemActions     = preload("./wizard_nodes/list_actions.tscn")
+const DetailsField    = preload("./wizard_nodes/details.tscn")
+const SORT_BY_DATE       := 0
+const SORT_BY_PATH       := 1
 const INITIAL_GRID_INDEX := 4
-
-var _config = preload("../../../config/config.gd").new()
+var _config               =  preload("../../../config/config.gd").new()
 var _history: Array
-var _history_nodes := {}
-var _history_nodes_list := []
-var _is_busy := false
+var _history_nodes        := {}
+var _history_nodes_list   := []
+var _is_busy              := false
 var _import_requested_for := -1
-var _sort_by = SORT_BY_DATE
+var _sort_by              =  SORT_BY_DATE
 
 @onready var grid = $MarginContainer/VBoxContainer/ScrollContainer/GridContainer
 @onready var loading_warning = $MarginContainer/VBoxContainer/loading_warning
@@ -64,10 +61,9 @@ func _create_nodes(entry: Dictionary, index: int) -> Dictionary:
 
 	var actions = ItemActions.instantiate()
 	actions.history_index = index
-	actions.connect("import_clicked",Callable(self,"_on_entry_reimport_clicked"))
-	actions.connect("edit_clicked",Callable(self,"_on_entry_edit_clicked"))
-	actions.connect("removed_clicked",Callable(self,"_on_entry_remove_clicked"))
-
+	actions.connect("import_clicked", Callable(self, "_on_entry_reimport_clicked"))
+	actions.connect("edit_clicked", Callable(self, "_on_entry_edit_clicked"))
+	actions.connect("removed_clicked", Callable(self, "_on_entry_remove_clicked"))
 
 	grid.get_child(INITIAL_GRID_INDEX).add_sibling(import_date)
 	import_date.add_sibling(source_path)
@@ -97,16 +93,16 @@ func _add_to_node_list(entry: Dictionary, node: Dictionary):
 func add_entry(file_settings: Dictionary):
 	if _history == null:
 		reload()
-#
+	#
 	var dt = Time.get_datetime_dict_from_system()
 	file_settings["import_date"] = "%04d-%02d-%02d %02d:%02d:%02d" % [dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second]
-#
+	#
 	if _import_requested_for != -1:
 		_remove_item(_import_requested_for)
 		_import_requested_for = -1
 	elif _history.size() > _config.get_history_max_entries():
 		_remove_entries(_history[0].source_file, 0)
-#
+	#
 	_history.push_back(file_settings)
 	_config.save_import_history(_history)
 	_create_node_list_entry(file_settings, _history.size() - 1)
@@ -157,7 +153,7 @@ func _remove_item(entry_index: int):
 # removes nodes and entry from history. If entry_index is not provided, all
 # entries for path are removed.
 func _remove_entries(source_file_path: String, entry_index: int = -1):
-	var files_entries = _history_nodes[source_file_path]
+	var files_entries     = _history_nodes[source_file_path]
 	var indexes_to_remove = []
 
 	for f in files_entries:
@@ -212,9 +208,9 @@ func _on_SortOptions_item_selected(index):
 
 func _trigger_sort(sort_type: int = _sort_by):
 	if sort_type == SORT_BY_DATE:
-		_history_nodes_list.sort_custom(Callable(self,"_sort_by_date"))
+		_history_nodes_list.sort_custom(Callable(self, "_sort_by_date"))
 	else:
-		_history_nodes_list.sort_custom(Callable(self,"_sort_by_path"))
+		_history_nodes_list.sort_custom(Callable(self, "_sort_by_path"))
 	_reorganise_nodes()
 	_sort_by = sort_type
 

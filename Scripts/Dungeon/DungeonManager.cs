@@ -24,7 +24,6 @@ public partial class DungeonManager : Node
 
     public override void _Ready()
     {
-        
         Instance = this;
 
         LoadingScreen = GetNode<Control>("../UI/Loading");

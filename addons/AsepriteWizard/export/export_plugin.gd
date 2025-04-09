@@ -5,6 +5,7 @@ extends EditorExportPlugin
 
 const wizard_config = preload("../config/wizard_config.gd")
 
+
 func _get_name():
 	return "aseprite_wizard_metadata_export_plugin"
 
@@ -18,14 +19,14 @@ func _export_file(path: String, type: String, features: PackedStringArray) -> vo
 
 
 func _cleanup_scene(path: String, type: String):
-	var scene : PackedScene =  ResourceLoader.load(path, type, ResourceLoader.CACHE_MODE_IGNORE)
-	var scene_changed := false
-	var root_node := scene.instantiate(PackedScene.GEN_EDIT_STATE_INSTANCE)
-	var nodes := [root_node]
+	var scene: PackedScene =  ResourceLoader.load(path, type, ResourceLoader.CACHE_MODE_IGNORE)
+	var scene_changed      := false
+	var root_node          := scene.instantiate(PackedScene.GEN_EDIT_STATE_INSTANCE)
+	var nodes              := [root_node]
 
 	#remove_at metadata from scene
 	while not nodes.is_empty():
-		var node : Node = nodes.pop_front()
+		var node: Node = nodes.pop_front()
 
 		for child in node.get_children():
 			nodes.push_back(child)
@@ -55,18 +56,19 @@ func _remove_meta(node: Object) -> bool:
 	return false
 
 
-func _get_scene_content(path:String, scene:PackedScene) -> PackedByteArray:
+func _get_scene_content(path: String, scene: PackedScene) -> PackedByteArray:
 	var tmp_path = OS.get_cache_dir()  + "tmp_scene." + path.get_extension()
 	ResourceSaver.save(scene, tmp_path)
 
-	var tmp_file = FileAccess.open(tmp_path, FileAccess.READ)
-	var content : PackedByteArray = tmp_file.get_buffer(tmp_file.get_length())
+	var tmp_file                 = FileAccess.open(tmp_path, FileAccess.READ)
+	var content: PackedByteArray = tmp_file.get_buffer(tmp_file.get_length())
 	tmp_file.close()
 
 	if FileAccess.file_exists(tmp_path):
 		DirAccess.remove_absolute(tmp_path)
 
 	return content
+
 
 ## As of today, Godot only includes in the export the resources
 ## directly referenced by the import plugin.
@@ -78,7 +80,7 @@ func _import_extra_textures(node: SpriteFrames):
 		return
 
 	var animations = node.get_animation_names()
-	var textures = []
+	var textures   = []
 	for animation in animations:
 		var frame_count = node.get_frame_count(animation)
 		for idx in range(frame_count):
@@ -92,13 +94,13 @@ func _import_extra_textures(node: SpriteFrames):
 				textures.push_back(tex.resource_path)
 
 	for texture_path in textures:
-		var file = FileAccess.open(texture_path, FileAccess.READ)
-		var content : PackedByteArray = file.get_buffer(file.get_length())
+		var file                     = FileAccess.open(texture_path, FileAccess.READ)
+		var content: PackedByteArray = file.get_buffer(file.get_length())
 		add_file(texture_path, content, false)
 
 
 func _handle_spriteframes(path: String, type: String):
-	var resource : SpriteFrames = ResourceLoader.load(path, type, ResourceLoader.CACHE_MODE_IGNORE)
+	var resource: SpriteFrames = ResourceLoader.load(path, type, ResourceLoader.CACHE_MODE_IGNORE)
 	_import_extra_textures(resource)
 	if _remove_meta(resource):
 		var content := _create_temp_resource(path, resource)
@@ -109,8 +111,8 @@ func _create_temp_resource(path: String, resource: SpriteFrames) -> PackedByteAr
 	var tmp_path = OS.get_cache_dir() + "tmp_spriteframes_resource." + path.get_extension()
 	ResourceSaver.save(resource, tmp_path)
 
-	var tmp_file = FileAccess.open(tmp_path, FileAccess.READ)
-	var content : PackedByteArray = tmp_file.get_buffer(tmp_file.get_length())
+	var tmp_file                 = FileAccess.open(tmp_path, FileAccess.READ)
+	var content: PackedByteArray = tmp_file.get_buffer(tmp_file.get_length())
 	tmp_file.close()
 
 	if FileAccess.file_exists(tmp_path):

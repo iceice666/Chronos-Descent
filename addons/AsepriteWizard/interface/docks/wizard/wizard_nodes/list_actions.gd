@@ -4,7 +4,6 @@ extends HBoxContainer
 signal import_clicked(index)
 signal edit_clicked(index)
 signal removed_clicked(index)
-
 var history_index = -1
 
 

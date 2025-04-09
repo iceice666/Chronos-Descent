@@ -3,12 +3,10 @@ extends MarginContainer
 
 signal revert_changes_requested
 signal field_changed
-
 @onready
 var _source_changed_warning_container = $VBoxContainer/source_changed_warning
 @onready
 var _source_changed_warning_icon = $VBoxContainer/source_changed_warning/MarginContainer/HBoxContainer/Icon
-
 @onready
 var _fields_changed_warning_container = $VBoxContainer/fields_changed_warning
 @onready
@@ -16,8 +14,9 @@ var _fields_changed_warning_icon = $VBoxContainer/fields_changed_warning/MarginC
 
 var disable_change_notification := false
 
+
 func _ready():
-	var sb = _source_changed_warning_container.get_theme_stylebox("panel")
+	var sb    = _source_changed_warning_container.get_theme_stylebox("panel")
 	var color = EditorInterface.get_editor_settings().get_setting("interface/theme/accent_color")
 	color.a = 0.2
 	sb.bg_color = color

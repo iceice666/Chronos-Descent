@@ -1,6 +1,5 @@
 extends "animation_creator.gd"
 
-
 func _setup_texture(target_node: Node, texture: Texture2D, content: Dictionary, context: Dictionary, _is_importing_slice: bool):
 	context["base_texture"] = texture
 

@@ -2,9 +2,9 @@
 extends "../base_sprite_resource_creator.gd"
 
 func load_texture(target_node: Node, aseprite_files: Dictionary, options: Dictionary) -> void:
-	var source_file = aseprite_files.data_file
+	var source_file  = aseprite_files.data_file
 	var sprite_sheet = aseprite_files.sprite_sheet
-	var data = _aseprite_file_exporter.load_json_content(source_file)
+	var data         = _aseprite_file_exporter.load_json_content(source_file)
 	var texture
 
 	if options.get("should_create_portable_texture", false):
@@ -19,7 +19,7 @@ func load_texture(target_node: Node, aseprite_files: Dictionary, options: Dictio
 	if options.slice == "":
 		target_node.texture = texture
 	else:
-		var region = _aseprite.get_slice_rect(data.content, options.slice)
+		var region        =  _aseprite.get_slice_rect(data.content, options.slice)
 		var atlas_texture := AtlasTexture.new()
 		atlas_texture.atlas = texture
 		atlas_texture.region = region

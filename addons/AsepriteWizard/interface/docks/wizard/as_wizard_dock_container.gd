@@ -2,8 +2,8 @@
 extends TabContainer
 
 signal close_requested
-
 const WizardWindow = preload("./as_wizard_window.tscn")
+
 
 func _ready():
 	$Import.close_requested.connect(emit_signal.bind("close_requested"))

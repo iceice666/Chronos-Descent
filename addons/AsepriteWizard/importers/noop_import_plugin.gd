@@ -8,6 +8,7 @@ extends EditorImportPlugin
 
 var config = preload("../config/config.gd").new()
 
+
 func _get_importer_name():
 	return "aseprite_wizard.plugin.noop"
 

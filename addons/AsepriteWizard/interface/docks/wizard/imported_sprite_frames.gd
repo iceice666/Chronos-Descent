@@ -2,10 +2,9 @@
 extends PanelContainer
 
 signal import_success(fields)
-
-const result_code = preload("../../../config/result_codes.gd")
+const result_code   = preload("../../../config/result_codes.gd")
 const wizard_config = preload("../../../config/wizard_config.gd")
-var _import_helper = preload("./wizard_import_helper.gd").new()
+var _import_helper  = preload("./wizard_import_helper.gd").new()
 
 @onready var _tree_container = $MarginContainer/HSplitContainer/tree
 @onready var _resource_tree = _tree_container.get_resource_tree()
@@ -15,13 +14,11 @@ var _import_helper = preload("./wizard_import_helper.gd").new()
 @onready var _confirmation_warning_container = $MarginContainer/HSplitContainer/MarginContainer/VBoxContainer/confirmation_warning
 
 var _selection_count = 0
-
-var _current_container = null
+var _current_container    = null
 var _resources_to_process = null
-
 var _is_loaded = false
-
 var _groups = {}
+
 
 func init_resources():
 	if _is_loaded:
@@ -33,7 +30,7 @@ func init_resources():
 
 func _get_file_tree(base_path: String, dir_name: String = "") -> Dictionary:
 	var dir_path = base_path.path_join(dir_name)
-	var dir = DirAccess.open(dir_path)
+	var dir      = DirAccess.open(dir_path)
 	var dir_data = { "path": dir_path, "name": dir_name, "children": [], "type": "dir", }
 	if not dir:
 		return dir_data
@@ -48,10 +45,10 @@ func _get_file_tree(base_path: String, dir_name: String = "") -> Dictionary:
 				dir_data.children.push_back(child_data)
 		elif file_name.ends_with(".res"):
 			var resource_path = dir_path.path_join(file_name)
-			var resource = ResourceLoader.load(resource_path)
+			var resource      = ResourceLoader.load(resource_path)
 			if resource is SpriteFrames:
 				if resource.has_meta(wizard_config.WIZARD_CONFIG_META_NAME):
-					var meta = resource.get_meta(wizard_config.WIZARD_CONFIG_META_NAME)
+					var meta        = resource.get_meta(wizard_config.WIZARD_CONFIG_META_NAME)
 					var parent_node = dir_data
 
 					if meta.group != "":
@@ -111,7 +108,7 @@ func _add_items_to_tree(root: TreeItem, children: Array):
 			"dir":
 				item.set_icon(0, get_theme_icon("Folder", "EditorIcons"))
 				_add_items_to_tree(item, node.children)
-#
+			#
 			"group":
 				item.set_icon(0, get_theme_icon("CompressedTexture2D", "EditorIcons"))
 				_add_items_to_tree(item, node.children)
@@ -132,7 +129,7 @@ func _add_items_to_tree(root: TreeItem, children: Array):
 
 func _has_source_changes(resource: Object, meta: Dictionary) -> bool:
 	var current_hash = FileAccess.get_md5(meta.fields.source_file)
-	var saved_hash = wizard_config.get_source_hash(resource)
+	var saved_hash   = wizard_config.get_source_hash(resource)
 
 	return saved_hash != current_hash
 
@@ -166,16 +163,16 @@ func _on_tree_multi_selected(item: TreeItem, column: int, selected: bool):
 	_resources_to_process = null
 	if _current_container != null:
 		_current_container.show_buttons()
-#
+	#
 	if selected:
 		_selection_count += 1
 	else:
 		_selection_count -= 1
-#
+	#
 	_nothing_container.hide()
 	_single_item_container.hide()
 	_multiple_items_container.hide()
-#
+	#
 	match _selection_count:
 		0:
 			_nothing_container.show()
@@ -198,12 +195,12 @@ func _set_item_details(item: TreeItem) -> void:
 
 func _on_single_item_import_triggered():
 	var selected = _resource_tree.get_selected()
-	var meta = selected.get_meta("node")
+	var meta     = selected.get_meta("node")
 
 	match meta.type:
 		"dir":
-			var selected_item = _resource_tree.get_selected()
-			var all_resources = []
+			var selected_item  = _resource_tree.get_selected()
+			var all_resources  = []
 			var scenes_to_open = _set_all_resources(selected_item.get_meta("node"), all_resources)
 			_resources_to_process = all_resources
 			_show_confirmation_message(all_resources.size())
@@ -215,7 +212,7 @@ func _on_single_item_import_triggered():
 				EditorInterface.get_resource_filesystem().scan()
 		"group":
 			var first_item = meta.children[0]
-			var code = await _do_import(first_item.path, first_item.meta)
+			var code       = await _do_import(first_item.path, first_item.meta)
 			_set_tree_item_as_saved(selected)
 			_single_item_container.hide_source_change_warning()
 			if code == OK:

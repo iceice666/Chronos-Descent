@@ -3,8 +3,8 @@ extends VBoxContainer
 
 signal refresh_triggered
 signal multi_selected(item: TreeItem, column: int, selected: bool)
-
 @onready var _tree: Tree = $Tree
+
 
 func _on_tree_filter_change_finished(text):
 	var tree_root: TreeItem = _tree.get_root()

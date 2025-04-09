@@ -1,7 +1,6 @@
 @tool
 extends "./multiple_import_plugin_base.gd"
 
-
 func _get_importer_name():
 	return "aseprite_wizard.plugin.static-texture-split"
 
@@ -17,7 +16,7 @@ func _get_priority():
 func _get_import_options(_path, _i):
 	return [
 		{"name": "layer/exclude_layers_pattern", "default_value": config.get_default_exclusion_pattern()},
-		{"name": "layer/only_visible_layers",    "default_value": false},
+		{"name": "layer/only_visible_layers", "default_value": false},
 		{
 			"name": "output/layers_resources_folder",
 			"default_value": "",

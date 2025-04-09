@@ -2,45 +2,40 @@
 extends EditorPlugin
 
 # importers
-const NoopImportPlugin = preload("importers/noop_import_plugin.gd")
-const SpriteFramesImportPlugin = preload("importers/sprite_frames_import_plugin.gd")
+const NoopImportPlugin              = preload("importers/noop_import_plugin.gd")
+const SpriteFramesImportPlugin      = preload("importers/sprite_frames_import_plugin.gd")
 const SpriteFramesSplitImportPlugin = preload("res://addons/AsepriteWizard/importers/sprite_frames_multiple_import_plugin.gd")
-const TilesetTextureImportPlugin = preload("importers/tileset_texture_import_plugin.gd")
-const TextureImportPlugin = preload("importers/static_texture_import_plugin.gd")
-const TextureSplitImportPlugin = preload("res://addons/AsepriteWizard/importers/static_texture_multiple_import_plugin.gd")
+const TilesetTextureImportPlugin    = preload("importers/tileset_texture_import_plugin.gd")
+const TextureImportPlugin           = preload("importers/static_texture_import_plugin.gd")
+const TextureSplitImportPlugin      = preload("res://addons/AsepriteWizard/importers/static_texture_multiple_import_plugin.gd")
 const LayerSpriteFramesImportPlugin = preload("res://addons/AsepriteWizard/importers/split_layer_importers/layer_import_plugin.gd")
-const LayerTextureImportPlugin = preload("res://addons/AsepriteWizard/importers/split_layer_importers/layer_texture_import_plugin.gd")
-const FileSystemHelper = preload("importers/helpers/file_system_helper.gd")
+const LayerTextureImportPlugin      = preload("res://addons/AsepriteWizard/importers/split_layer_importers/layer_texture_import_plugin.gd")
+const FileSystemHelper              = preload("importers/helpers/file_system_helper.gd")
 # export
 const ExportPlugin = preload("export/export_plugin.gd")
 # interface
-const ConfigDialog = preload('config/config_dialog.tscn')
-const WizardWindow = preload("interface/docks/wizard/as_wizard_dock_container.tscn")
+const ConfigDialog              = preload('config/config_dialog.tscn')
+const WizardWindow              = preload("interface/docks/wizard/as_wizard_dock_container.tscn")
 const AsepriteDockImportsWindow = preload('interface/imports_manager/aseprite_imports_manager.tscn')
-const ImportsManagerPanels = preload('interface/imports_manager/import_panels.tscn')
-
+const ImportsManagerPanels      = preload('interface/imports_manager/import_panels.tscn')
 const AnimatedSpriteInspectorPlugin = preload("interface/docks/animated_sprite/inspector_plugin.gd")
-const SpriteInspectorPlugin = preload("interface/docks/sprite/inspector_plugin.gd")
-
-const tool_menu_name = "Aseprite Wizard"
-const menu_item_name = "Spritesheet Wizard Dock..."
+const SpriteInspectorPlugin         = preload("interface/docks/sprite/inspector_plugin.gd")
+const tool_menu_name        = "Aseprite Wizard"
+const menu_item_name        = "Spritesheet Wizard Dock..."
 const config_menu_item_name = "Config..."
 const import_menu_item_name = "Imports Manager..."
-
 var config = preload("config/config.gd").new()
 var window: TabContainer
 var config_window: PopupPanel
 var imports_list_window: Window
 var imports_list_panel: MarginContainer
-var export_plugin : EditorExportPlugin
+var export_plugin: EditorExportPlugin
 var sprite_inspector_plugin: EditorInspectorPlugin
 var animated_sprite_inspector_plugin: EditorInspectorPlugin
-
 var file_system_helper
-
 var _importers = []
-
 var _is_import_list_docked = false
+
 
 func _enter_tree():
 	_load_config()
@@ -85,14 +80,14 @@ func _setup_importer():
 	add_child(file_system_helper)
 
 	_importers = [
-		NoopImportPlugin.new(),
-		SpriteFramesImportPlugin.new(),
-		SpriteFramesSplitImportPlugin.new(file_system_helper),
-		TilesetTextureImportPlugin.new(),
-		TextureImportPlugin.new(),
-		TextureSplitImportPlugin.new(file_system_helper),
-		LayerSpriteFramesImportPlugin.new(),
-		LayerTextureImportPlugin.new(),
+	NoopImportPlugin.new(),
+	SpriteFramesImportPlugin.new(),
+	SpriteFramesSplitImportPlugin.new(file_system_helper),
+	TilesetTextureImportPlugin.new(),
+	TextureImportPlugin.new(),
+	TextureSplitImportPlugin.new(file_system_helper),
+	LayerSpriteFramesImportPlugin.new(),
+	LayerTextureImportPlugin.new(),
 	]
 
 	for i in _importers:
@@ -145,7 +140,7 @@ func _open_window():
 		return
 
 	window = WizardWindow.instantiate()
-	window.connect("close_requested",Callable(self,"_on_window_closed"))
+	window.connect("close_requested", Callable(self, "_on_window_closed"))
 	add_control_to_bottom_panel(window, "Aseprite Wizard")
 	make_bottom_panel_item_visible(window)
 

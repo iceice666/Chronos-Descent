@@ -29,7 +29,7 @@ public partial class SpecialButton : Button
             if (ie is not InputEventJoypadButton iej) continue;
             if (iej.ButtonIndex != e.ButtonIndex) continue;
             if (iej.IsReleased()) continue;
-            
+
             OnPressed();
             break;
         }

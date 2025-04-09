@@ -2,11 +2,10 @@
 extends EditorImportPlugin
 
 const result_codes = preload("../config/result_codes.gd")
-
-var config = preload("../config/config.gd").new()
+var config    = preload("../config/config.gd").new()
 var _aseprite = preload("../aseprite/aseprite.gd").new()
-
 var file_system_helper
+
 
 func _init(fs_helper) -> void:
 	file_system_helper = fs_helper
@@ -41,17 +40,17 @@ func _get_option_visibility(path, option, options):
 
 
 func _import(source_file, save_path, options, platform_variants, gen_files):
-	var old_data = _load_old_data(source_file)
-	var exception_pattern = options.get('layer/exclude_layers_pattern', "")
+	var old_data                     = _load_old_data(source_file)
+	var exception_pattern            = options.get('layer/exclude_layers_pattern', "")
 	var should_include_only_visibles = options.get('layer/only_visible_layers', false)
 
 	var absolute_source_file = ProjectSettings.globalize_path(source_file)
 
 	var layers = _aseprite.list_valid_layers(
-		absolute_source_file,
-		exception_pattern,
-		should_include_only_visibles
-	)
+					 absolute_source_file,
+					 exception_pattern,
+					 should_include_only_visibles
+				 )
 
 	var layers_resources_folder = options["output/layers_resources_folder"]
 
@@ -59,19 +58,19 @@ func _import(source_file, save_path, options, platform_variants, gen_files):
 	import_options["source"] = source_file
 
 	var base_name = source_file.get_basename()
-	
+
 	if layers_resources_folder != "":
 		if not DirAccess.dir_exists_absolute(layers_resources_folder):
 			DirAccess.make_dir_recursive_absolute(layers_resources_folder)
 		base_name = "%s/%s" % [layers_resources_folder, base_name.get_file()]
 
 	var data_to_save = {
-		"layers": {}
-	}
+						   "layers": {}
+					   }
 
 	for layer in layers:
 		var layer_save_path = "%s_l_%s.%s" % [base_name, layer, _layer_extension()]
-		var file = FileAccess.open(layer_save_path, FileAccess.WRITE)
+		var file            = FileAccess.open(layer_save_path, FileAccess.WRITE)
 		file.store_string(JSON.stringify({
 			"layer": layer,
 			"import_options": import_options,
@@ -92,6 +91,7 @@ func _import(source_file, save_path, options, platform_variants, gen_files):
 
 func _layer_extension() -> String:
 	return ""
+
 
 func _get_base_import_options(options: Dictionary):
 	return {}

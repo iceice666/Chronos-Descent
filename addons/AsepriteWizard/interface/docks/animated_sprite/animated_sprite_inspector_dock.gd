@@ -6,8 +6,8 @@ var sprite_frames_creator = preload("../../../creators/sprite_frames/sprite_fram
 @onready var _animation_section := $dock_fields/VBoxContainer/extra/sections/animation_sf as VBoxContainer
 @onready var _animation_section_header := $dock_fields/VBoxContainer/extra/sections/animation_sf/section_header as Button
 @onready var _animation_section_container := $dock_fields/VBoxContainer/extra/sections/animation_sf/section_content as MarginContainer
-@onready var _round_fps :=  $dock_fields/VBoxContainer/extra/sections/animation_sf/section_content/content/round_fps/CheckBox as CheckBox
-const INTERFACE_SECTION_KEY_ANIMATION = "animation_section"
+@onready var _round_fps               := $dock_fields/VBoxContainer/extra/sections/animation_sf/section_content/content/round_fps/CheckBox as CheckBox
+const INTERFACE_SECTION_KEY_ANIMATION =  "animation_section"
 
 
 func _pre_setup():
@@ -34,7 +34,7 @@ func _do_import():
 	var root = get_tree().get_edited_scene_root()
 
 	var source_path = ProjectSettings.globalize_path(_source)
-	var options = _get_import_options(root.scene_file_path.get_base_dir())
+	var options     = _get_import_options(root.scene_file_path.get_base_dir())
 
 	_save_config()
 
