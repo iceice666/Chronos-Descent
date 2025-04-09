@@ -109,7 +109,7 @@ msgstr "Restart"
 msgid "UI_Quit"
 msgstr "Quit"
 msgid "UI_Resume"
-msgstr "Reset"
+msgstr "Resume"
 
 
 # Dead screen

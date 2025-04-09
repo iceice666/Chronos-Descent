@@ -6,19 +6,19 @@ namespace ChronosDescent.Scripts.UI;
 public partial class PauseMenu : Control
 {
     private bool _isPaused;
-    private Button _quitButton;
-    private Button _restartButton;
-    private Button _resumeButton;
+    private SpecialButton _quitButton;
+    private SpecialButton _restartButton;
+    private SpecialButton _resumeButton;
 
     public override void _Ready()
     {
-        _resumeButton = GetNode<Button>("Panel/ButtonContainer/ResumeButton");
-        _restartButton = GetNode<Button>("Panel/ButtonContainer/RestartButton");
-        _quitButton = GetNode<Button>("Panel/ButtonContainer/QuitButton");
+        _resumeButton = GetNode<SpecialButton>("Panel/ButtonContainer/ResumeButton");
+        _restartButton = GetNode<SpecialButton>("Panel/ButtonContainer/RestartButton");
+        _quitButton = GetNode<SpecialButton>("Panel/ButtonContainer/QuitButton");
 
-        _resumeButton.Pressed += OnResumePressed;
-        _restartButton.Pressed += OnRestartPressed;
-        _quitButton.Pressed += OnQuitPressed;
+        _resumeButton.Init(OnResumePressed);
+        _restartButton.Init(OnRestartPressed);
+        _quitButton.Init(OnQuitPressed);
 
         ApplyTranslation();
 
@@ -26,22 +26,16 @@ public partial class PauseMenu : Control
         Visible = false;
         _isPaused = false;
     }
-
-    public override void _ExitTree()
-    {
-        _resumeButton.Pressed -= OnResumePressed;
-        _restartButton.Pressed -= OnRestartPressed;
-        _quitButton.Pressed -= OnQuitPressed;
-    }
+    
 
     public override void _Input(InputEvent @event)
     {
         if (@event.IsActionPressed("ui_cancel")) TogglePause();
     }
 
-    private void TogglePause()
+    public void TogglePause(bool? state = null)
     {
-        _isPaused = !_isPaused;
+        _isPaused = state ?? !_isPaused;
 
         if (_isPaused)
         {
@@ -49,6 +43,8 @@ public partial class PauseMenu : Control
             GetTree().Paused = true;
             GameStats.Instance.PauseTimer();
             Visible = true;
+            
+            _resumeButton.GrabFocus();
         }
         else
         {
@@ -73,7 +69,7 @@ public partial class PauseMenu : Control
         GetTree().Paused = false;
 
         // Reset and restart the game
-        GetTree().ChangeSceneToFile("res://Scenes/ui/prepare_room.tscn");
+        GetTree().ChangeSceneToFile("res://Scenes/ui/prepare_menu.tscn");
     }
 
     private void OnQuitPressed()

@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://dcy71y73jm4gs"]
+[gd_scene load_steps=3 format=3 uid="uid://dcy71y73jm4gs"]
 
 [ext_resource type="Script" uid="uid://bly4oq26vq3lc" path="res://Scripts/UI/PrepareMenu.cs" id="1_16l5d"]
+[ext_resource type="Script" uid="uid://bae21t8v71b4b" path="res://Scripts/UI/SpecialButton.cs" id="2_vm8v7"]
 
 [node name="PrepareMenu" type="Control"]
 layout_mode = 3
@@ -124,3 +125,5 @@ focus_neighbor_left = NodePath("../WeaponSelection/WeaponList")
 focus_neighbor_right = NodePath("../AbilitySelection/AbilityList")
 theme_override_font_sizes/font_size = 20
 text = "Start Run"
+script = ExtResource("2_vm8v7")
+metadata/_custom_type_script = "uid://bae21t8v71b4b"

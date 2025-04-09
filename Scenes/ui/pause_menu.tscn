@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://c2nyfvlm2yupr"]
+[gd_scene load_steps=5 format=3 uid="uid://c2nyfvlm2yupr"]
 
 [ext_resource type="Script" uid="uid://br5tt0wu4q0f5" path="res://Scripts/UI/PauseMenu.cs" id="1_gicou"]
+[ext_resource type="Script" uid="uid://bae21t8v71b4b" path="res://Scripts/UI/SpecialButton.cs" id="2_36lgw"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ycjx3"]
 bg_color = Color(0.117647, 0.117647, 0.117647, 0.8)
@@ -94,13 +95,19 @@ alignment = 1
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_viqgu")
 text = "Resume Game"
+script = ExtResource("2_36lgw")
+metadata/_custom_type_script = "uid://bae21t8v71b4b"
 
 [node name="RestartButton" type="Button" parent="Panel/ButtonContainer"]
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_viqgu")
 text = "Restart Game"
+script = ExtResource("2_36lgw")
+metadata/_custom_type_script = "uid://bae21t8v71b4b"
 
 [node name="QuitButton" type="Button" parent="Panel/ButtonContainer"]
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_viqgu")
 text = "Quit Game"
+script = ExtResource("2_36lgw")
+metadata/_custom_type_script = "uid://bae21t8v71b4b"

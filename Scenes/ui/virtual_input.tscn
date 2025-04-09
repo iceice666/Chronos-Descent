@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://hjntikmrhjkq"]
+[gd_scene load_steps=4 format=3 uid="uid://hjntikmrhjkq"]
 
 [ext_resource type="PackedScene" uid="uid://cd2h1i3ubv7yh" path="res://Scenes/ui/virtual_joystick.tscn" id="1_4onpc"]
+[ext_resource type="Texture2D" uid="uid://cmrdjga84v1ff" path="res://Assets/icons/pause_btn.png" id="2_jax02"]
+[ext_resource type="Script" uid="uid://bflnj6ntii6iy" path="res://Scripts/UI/PauseBtn.cs" id="3_shwxq"]
 
 [node name="VirtualInput" type="Control"]
 layout_mode = 3
@@ -20,13 +22,14 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -465.0
-offset_top = -160.0
-offset_right = -273.0
-offset_bottom = 32.0
+offset_left = -456.0
+offset_top = -238.0
+offset_right = -264.0
+offset_bottom = -46.0
 grow_horizontal = 0
 grow_vertical = 0
-scale = Vector2(0.75, 0.75)
+scale = Vector2(1.15, 1.15)
+AbilitySlot = -1
 
 [node name="NormalJoystick" parent="." instance=ExtResource("1_4onpc")]
 layout_mode = 1
@@ -51,6 +54,7 @@ offset_right = 559.0
 offset_bottom = -112.0
 grow_vertical = 0
 scale = Vector2(0.4, 0.4)
+AbilitySlot = 2
 
 [node name="SpecialJoystick" parent="." instance=ExtResource("1_4onpc")]
 layout_mode = 1
@@ -63,6 +67,7 @@ offset_right = 447.0
 offset_bottom = -51.0
 grow_vertical = 0
 scale = Vector2(0.4, 0.4)
+AbilitySlot = 1
 
 [node name="LifeSavingJoystick" parent="." instance=ExtResource("1_4onpc")]
 layout_mode = 1
@@ -75,11 +80,23 @@ offset_right = 398.0
 offset_bottom = 60.0
 grow_vertical = 0
 scale = Vector2(0.4, 0.4)
+AbilitySlot = 3
 
-[node name="InteractButton" type="Button" parent="."]
+[node name="PauseButton" type="Button" parent="."]
 layout_mode = 0
+offset_left = 422.0
+offset_top = -445.0
+offset_right = 462.0
+offset_bottom = -405.0
+icon = ExtResource("2_jax02")
+script = ExtResource("3_shwxq")
+
+[node name="InteractButtonNode" type="Node2D" parent="."]
+visible = false
+
+[node name="InteractButton" type="Button" parent="InteractButtonNode"]
 offset_left = 83.0
 offset_top = -122.0
-offset_right = 151.0
+offset_right = 176.0
 offset_bottom = -54.0
 text = "Interact"

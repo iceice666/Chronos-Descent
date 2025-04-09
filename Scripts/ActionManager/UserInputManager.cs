@@ -1,5 +1,6 @@
 using System;
 using ChronosDescent.Scripts.Core.Entity;
+using ChronosDescent.Scripts.Entities;
 using Godot;
 
 namespace ChronosDescent.Scripts.ActionManager;
@@ -11,6 +12,8 @@ namespace ChronosDescent.Scripts.ActionManager;
 [GlobalClass]
 public partial class UserInputManager : Control, IActionManager
 {
+    public static UserInputManager Instance { get; private set; }
+
     // Input sources enum
     public enum InputSource
     {
@@ -32,7 +35,23 @@ public partial class UserInputManager : Control, IActionManager
     private Control _virtualInputContainer;
 
     // Current active input source
-    public InputSource CurrentInputSource { get; private set; }
+    private InputSource _currentInputSource;
+
+    public InputSource CurrentInputSource
+    {
+        get => _currentInputSource;
+        private set
+        {
+            if (_currentInputSource == value) return;
+
+            GD.Print($"Input Source changed: {value}");
+            if (Player.Instance != null) Player.Instance.StateLabel.Text = value.ToString();
+
+            _virtualInputContainer.Visible = value == InputSource.VirtualJoystick;
+            GlobalEventBus.Instance.Publish(GlobalEventVariant.InputSourceChanged, value);
+            _currentInputSource = value;
+        }
+    }
 
 
     // Input vectors for movement and aiming
@@ -42,6 +61,8 @@ public partial class UserInputManager : Control, IActionManager
 
     public override void _Ready()
     {
+        Instance = this;
+
         // Get reference to virtual input container
         _virtualInputContainer = GetNode<Control>("../VirtualInput");
         _moveJoystick = _virtualInputContainer.GetNode<VirtualJoystick>("MoveJoystick");
@@ -49,7 +70,7 @@ public partial class UserInputManager : Control, IActionManager
         _specialAttackJoystick = _virtualInputContainer.GetNode<VirtualJoystick>("SpecialJoystick");
         _ultimateJoystick = _virtualInputContainer.GetNode<VirtualJoystick>("UltimateJoystick");
         _lifeSavingJoystick = _virtualInputContainer.GetNode<VirtualJoystick>("LifeSavingJoystick");
-        _interactButton = _virtualInputContainer.GetNode<Button>("InteractButton");
+        _interactButton = _virtualInputContainer.GetNode<Button>("InteractButtonNode/InteractButton");
 
 
         // Initialize the input source based on device capabilities
@@ -78,13 +99,12 @@ public partial class UserInputManager : Control, IActionManager
             CurrentInputSource = InputSource.KeyboardMouse;
         }
 
-        GD.Print($"Current Input Source: {CurrentInputSource}");
 
         // Setup virtual buttons
         SetupVirtualButtons();
 
         // Set initial visibility
-        UpdateVirtualInputVisibility();
+        _virtualInputContainer.Visible = _currentInputSource == InputSource.VirtualJoystick;
 
         // Connect to joypad connection events
         Input.JoyConnectionChanged += OnJoyConnectionChanged;
@@ -98,7 +118,7 @@ public partial class UserInputManager : Control, IActionManager
         if (connected)
         {
             _controllerIndex = (int)device;
-            SwitchInputSource(InputSource.Controller);
+            CurrentInputSource = InputSource.Controller;
         }
         // If the current controller was disconnected, find another one
         else if (device == _controllerIndex)
@@ -111,7 +131,7 @@ public partial class UserInputManager : Control, IActionManager
             else
             {
                 // No controllers left, switch to keyboard
-                SwitchInputSource(InputSource.KeyboardMouse);
+                CurrentInputSource = InputSource.KeyboardMouse;
             }
         }
     }
@@ -130,16 +150,14 @@ public partial class UserInputManager : Control, IActionManager
     {
         // Check if using controller (optimization: early returns)
         if (IsControllerActive())
-            SwitchInputSource(InputSource.Controller);
+            CurrentInputSource = InputSource.Controller;
         // Check if using touch/virtual joystick
         else if (DisplayServer.IsTouchscreenAvailable() &&
                  (_moveJoystick.IsPressed || _normalAttackJoystick.IsPressed))
-            SwitchInputSource(InputSource.VirtualJoystick);
-        // Check if using keyboard/mouse
-        else if (IsAnyKeyboardInputActive() ||
-                 Input.IsMouseButtonPressed(MouseButton.Left) ||
-                 Input.IsMouseButtonPressed(MouseButton.Right))
-            SwitchInputSource(InputSource.KeyboardMouse);
+            CurrentInputSource = InputSource.VirtualJoystick;
+        // Check if using keyboard
+        else if (IsAnyKeyboardInputActive())
+            CurrentInputSource = InputSource.KeyboardMouse;
     }
 
     /// <summary>
@@ -169,28 +187,8 @@ public partial class UserInputManager : Control, IActionManager
         return false;
     }
 
-    /// <summary>
-    ///     Switches the current input source and updates UI accordingly
-    /// </summary>
-    private void SwitchInputSource(InputSource newSource)
-    {
-        if (CurrentInputSource == newSource) return;
 
-        GD.Print($"Input Source changed: {newSource}");
-        GetNode<Label>("Label").Text = newSource.ToString();
 
-        CurrentInputSource = newSource;
-        UpdateVirtualInputVisibility();
-        GlobalEventBus.Instance.Publish(GlobalEventVariant.InputSourceChanged, newSource);
-    }
-
-    /// <summary>
-    ///     Updates visibility of virtual joystick based on the current input source
-    /// </summary>
-    private void UpdateVirtualInputVisibility()
-    {
-        _virtualInputContainer.Visible = CurrentInputSource == InputSource.VirtualJoystick;
-    }
 
     /// <summary>
     ///     Processes movement input from current input source
@@ -209,7 +207,7 @@ public partial class UserInputManager : Control, IActionManager
 
         MoveDirection = value;
 
-        if (CurrentInputSource == InputSource.Controller)
+        if (CurrentInputSource == InputSource.Controller && value != Vector2.Zero)
         {
             LookDirection = value;
         }
@@ -231,26 +229,26 @@ public partial class UserInputManager : Control, IActionManager
             case InputSource.Controller:
                 break;
             case InputSource.VirtualJoystick:
+                var newValue = Vector2.Zero;
+
                 if (_normalAttackJoystick.IsPressed)
                 {
-                    LookDirection = _normalAttackJoystick.Output;
+                    newValue = _normalAttackJoystick.Output;
                 }
                 else if (_specialAttackJoystick.IsPressed)
                 {
-                    LookDirection = _specialAttackJoystick.Output;
+                    newValue = _specialAttackJoystick.Output;
                 }
                 else if (_ultimateJoystick.IsPressed)
                 {
-                    LookDirection = _ultimateJoystick.Output;
+                    newValue = _ultimateJoystick.Output;
                 }
                 else if (_lifeSavingJoystick.IsPressed)
                 {
-                    LookDirection = _lifeSavingJoystick.Output;
+                    newValue = _lifeSavingJoystick.Output;
                 }
-                else
-                {
-                    LookDirection = _normalAttackJoystick.Output;
-                }
+
+                if (newValue != Vector2.Zero) LookDirection = newValue;
 
                 break;
             default:

@@ -14,6 +14,9 @@
 
 [node name="UI" type="CanvasLayer"]
 
+[node name="VirtualInput" parent="." instance=ExtResource("2_11pln")]
+visible = false
+
 [node name="UserInputManager" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
@@ -21,18 +24,6 @@ offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("1_11pln")
 metadata/_custom_type_script = "uid://dmc6r0tb4iafn"
-
-[node name="Label" type="Label" parent="UserInputManager"]
-layout_mode = 0
-offset_left = 114.0
-offset_top = 2.0
-offset_right = 370.0
-offset_bottom = 48.0
-theme_override_font_sizes/font_size = 20
-text = "input source"
-
-[node name="VirtualInput" parent="." instance=ExtResource("2_11pln")]
-visible = false
 
 [node name="BoardcastTitle" parent="." instance=ExtResource("4_atbq8")]
 text = ""

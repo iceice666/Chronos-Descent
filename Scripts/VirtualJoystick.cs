@@ -1,9 +1,13 @@
+using ChronosDescent.Scripts.Core.Ability;
+using ChronosDescent.Scripts.Entities;
 using Godot;
 
 namespace ChronosDescent.Scripts;
 
 public partial class VirtualJoystick : Control
 {
+    [Export] public AbilitySlotType AbilitySlot ;
+
     private Vector2 _centerPosition;
     private Sprite2D _knob;
     private float _maxRadius;
@@ -33,6 +37,9 @@ public partial class VirtualJoystick : Control
         // Make sure this control can receive input events
         MouseFilter = MouseFilterEnum.Stop;
     }
+
+    private bool _prevIsPressed;
+
 
     public override void _Notification(int what)
     {
@@ -80,11 +87,13 @@ public partial class VirtualJoystick : Control
                 // Start tracking this touch
                 _touchIndex = touchEvent.Index;
                 IsPressed = true;
+                
+                Player.Instance.ActivateAbility(AbilitySlot);
 
                 // Update knob position based on touch position
                 UpdateKnobPosition(touchEvent.Position);
 
-
+                AcceptEvent();
                 break;
             // If it's a touch release, and it's the touch we're tracking
             case false when touchEvent.Index == _touchIndex:
@@ -93,10 +102,13 @@ public partial class VirtualJoystick : Control
                 _touchIndex = -1;
                 IsPressed = false;
 
+                Player.Instance.ReleaseAbility(AbilitySlot);
+
                 // Reset knob position and output
                 _knob.Position = _centerPosition;
                 Output = Vector2.Zero;
 
+                AcceptEvent();
                 break;
         }
     }
@@ -109,7 +121,10 @@ public partial class VirtualJoystick : Control
 
         // Update knob position based on drag position
         UpdateKnobPosition(dragEvent.Position);
+
+        AcceptEvent();
     }
+
 
     private void UpdateKnobPosition(Vector2 position)
     {

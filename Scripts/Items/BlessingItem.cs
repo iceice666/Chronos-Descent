@@ -1,4 +1,7 @@
+using System;
+using ChronosDescent.Scripts.ActionManager;
 using ChronosDescent.Scripts.Core.Blessing;
+using ChronosDescent.Scripts.Core.Damage;
 using ChronosDescent.Scripts.Entities;
 using Godot;
 
@@ -22,6 +25,7 @@ public partial class BlessingItem : Node2D
     private Label _nameLabel;
     private Vector2 _originalPosition;
     private float _time;
+    private Node2D _promptNode;
 
     // State tracking
     protected Player PlayerInRange;
@@ -44,16 +48,63 @@ public partial class BlessingItem : Node2D
         if (Blessing != null) SetupBlessingVisuals();
 
         // Connect signals
-        _interactionArea.BodyEntered += OnBodyEntered;
-        _interactionArea.BodyExited += OnBodyExited;
+        _interactionArea.AreaEntered += OnBodyEntered;
+        _interactionArea.AreaExited += OnBodyExited;
         GlobalEventBus.Instance.Subscribe<Blessing>(GlobalEventVariant.BlessingSelected, OnBlessingSelected);
+        GlobalEventBus.Instance.Subscribe<UserInputManager.InputSource>(GlobalEventVariant.InputSourceChanged, UpdatePromptNode);
+
+
+        UpdatePromptNode(UserInputManager.Instance.CurrentInputSource);
     }
 
     public override void _ExitTree()
     {
-        _interactionArea.BodyEntered -= OnBodyEntered;
-        _interactionArea.BodyExited -= OnBodyExited;
+        _interactionArea.AreaEntered -= OnBodyEntered;
+        _interactionArea.AreaExited -= OnBodyExited;
         GlobalEventBus.Instance.Unsubscribe<Blessing>(GlobalEventVariant.BlessingSelected, OnBlessingSelected);
+        GlobalEventBus.Instance.Unsubscribe<UserInputManager.InputSource>(GlobalEventVariant.InputSourceChanged, UpdatePromptNode);
+    }
+    
+    private void UpdatePromptNode(UserInputManager.InputSource src)  {
+        var prevState =_promptNode is { Visible: true };
+            
+        switch (src)
+        {
+            case UserInputManager.InputSource.KeyboardMouse:
+            case UserInputManager.InputSource.Controller:
+                _promptNode = GetNodeOrNull<Node2D>("%InteractPrompt");
+
+                var actionName = InputMap.ActionGetEvents("interact");
+
+
+                foreach (var ie in actionName)
+                {
+                    if (UserInputManager.Instance.CurrentInputSource == UserInputManager.InputSource.Controller &&
+                        ie is InputEventJoypadButton e)
+                    {
+                        _promptNode.GetNode<Label>("Panel/Label").Text = e.GetButtonIndex().ToString();
+                        break;
+                    }
+
+                    if (UserInputManager.Instance.CurrentInputSource == UserInputManager.InputSource.KeyboardMouse &&
+                        ie is InputEventKey ee)
+                    {
+                        _promptNode.GetNode<Label>("Panel/Label").Text = ee.PhysicalKeycode.ToString();
+                        break;
+                    }
+                }
+
+
+                break;
+           
+            case UserInputManager.InputSource.VirtualJoystick:
+                _promptNode = GetNode<Node2D>("/root/Dungeon/UI/VirtualInput/InteractButtonNode");
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(src), src, null);
+        }
+
+        _promptNode.Visible = prevState;
     }
 
     public void SetBlessing(Blessing blessing)
@@ -109,18 +160,18 @@ public partial class BlessingItem : Node2D
         if (Input.IsActionJustPressed("interact") && PlayerInRange != null) CollectBlessing();
     }
 
-    private void OnBodyEntered(Node2D body)
+    private void OnBodyEntered(Area2D area)
     {
-        if (body is not Player player) return;
-        PlayerInRange = player;
+        if (area is not Hurtbox) return; 
+        PlayerInRange = (Player) area.Owner;
 
         // Show "can interact" indicator
         ShowInteractionPrompt(true);
     }
 
-    private void OnBodyExited(Node2D body)
+    private void OnBodyExited(Area2D area)
     {
-        if (body is Player && PlayerInRange != null)
+        if (area is Hurtbox && PlayerInRange != null)
         {
             PlayerInRange = null;
 
@@ -131,8 +182,9 @@ public partial class BlessingItem : Node2D
 
     private void ShowInteractionPrompt(bool show)
     {
-        var prompt = GetNodeOrNull<Node2D>("%InteractPrompt");
-        if (prompt != null) prompt.Visible = show;
+        if (_promptNode == null) return;
+            _promptNode.Visible = show;
+            Player.Instance.StateLabel.Text = show.ToString();
     }
 
     private void CollectBlessing()

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using ChronosDescent.Scripts.Abilities;
 using ChronosDescent.Scripts.ActionManager;
 using ChronosDescent.Scripts.Core;
@@ -34,6 +35,10 @@ public partial class Player : BaseEntity
 
     private Node2D _weaponMountPoint;
 
+    public static Player Instance { get; private set; }
+    
+    public Label StateLabel { get; private set; }
+
 
     public override bool Collision
     {
@@ -44,6 +49,8 @@ public partial class Player : BaseEntity
 
     public override void _Ready()
     {
+        Instance = this;
+        
         AddToGroup("Entity");
         AddToGroup("Player");
 
@@ -53,6 +60,7 @@ public partial class Player : BaseEntity
         _weaponMountPoint = GetNode<Node2D>("WeaponMountPoint");
         WeaponAnimationPlayer = GetNode<AnimationPlayer>("WeaponAnimationPlayer");
         _collision = GetNode<CollisionShape2D>("CollisionShape2D");
+        StateLabel = GetNode<Label>("State");
 
 
         StatsManager.Initialize(this);
@@ -147,9 +155,21 @@ public partial class Player : BaseEntity
             MoveAndSlide();
         }
     }
-    
+
     public override void _UnhandledInput(InputEvent @event)
     {
+        if (Input.IsActionJustPressed("lock_enemy"))
+        {
+            var closestEnemy = GetTree().GetNodesInGroup("Enemy").Select(node => node as Node2D).OrderBy(
+                node => GlobalPosition.DistanceSquaredTo(node!.GlobalPosition)
+            ).First();
+
+            var lookDirection = GlobalPosition.DirectionTo(closestEnemy.GlobalPosition).Normalized();
+            ActionManager.LookDirection = lookDirection;
+
+            return;
+        }
+
         foreach (var slotType in _abilitySlots)
         {
             var slotName = slotType.GetSlotName();

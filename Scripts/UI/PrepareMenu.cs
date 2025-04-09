@@ -29,7 +29,7 @@ public partial class PrepareMenu : Control
     private string _selectedAbilityKey = "LifeSaving_Dash";
 
     private string _selectedWeaponKey = "Weapon_Bow";
-    private Button _startRunButton;
+    private SpecialButton _startRunButton;
     private Label _weaponDescription;
     private ItemList _weaponList;
 
@@ -39,9 +39,9 @@ public partial class PrepareMenu : Control
         _abilityList = GetNode<ItemList>("AbilitySelection/AbilityList");
         _weaponDescription = GetNode<Label>("WeaponSelection/WeaponDescription");
         _abilityDescription = GetNode<Label>("AbilitySelection/AbilityDescription");
-        _startRunButton = GetNode<Button>("StartRunButton");
+        _startRunButton = GetNode<SpecialButton>("StartRunButton");
 
-        _startRunButton.Pressed += OnStartRunPressed;
+        _startRunButton.Init(OnStartRunPressed);
         _weaponList.ItemSelected += OnWeaponSelected;
         _abilityList.ItemSelected += OnAbilitySelected;
 

@@ -495,6 +495,8 @@ libraries = {
 [node name="WeaponMountPoint" type="Node2D" parent="."]
 
 [node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 0
 script = ExtResource("3_258nv")
 metadata/_custom_type_script = "uid://b0asgk1npwhss"
 metadata/_edit_lock_ = true
@@ -503,3 +505,11 @@ metadata/_edit_lock_ = true
 scale = Vector2(0.25, 0.25)
 shape = SubResource("CapsuleShape2D_4fuip")
 debug_color = Color(0.238251, 0.625841, 0.346228, 0.42)
+
+[node name="State" type="Label" parent="."]
+offset_left = -54.0
+offset_top = -89.0
+offset_right = 56.0
+offset_bottom = -20.0
+text = "State"
+horizontal_alignment = 1

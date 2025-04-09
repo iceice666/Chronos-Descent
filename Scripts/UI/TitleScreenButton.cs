@@ -4,41 +4,37 @@ namespace ChronosDescent.Scripts.UI;
 
 public partial class TitleScreenButton : VBoxContainer
 {
-    private Button _newRunButton;
-    private Button _quitButton;
-    private Button _settingsButton;
+    private SpecialButton _newRunButton;
+    private SpecialButton _quitButton;
+    private SpecialButton _settingsButton;
     private Control _settingsScreen;
 
     private PackedScene _settingsScreenScene;
 
     public override void _Ready()
     {
-        _newRunButton = GetNode<Button>("NewRunButton");
-        _quitButton = GetNode<Button>("QuitButton");
-        _settingsButton = GetNode<Button>("SettingsButton");
+        _newRunButton = GetNode<SpecialButton>("NewRunButton");
+        _quitButton = GetNode<SpecialButton>("QuitButton");
+        _settingsButton = GetNode<SpecialButton>("SettingsButton");
 
         // Load the settings screen scene
         _settingsScreenScene = GD.Load<PackedScene>("res://Scenes/ui/settings_screen.tscn");
 
-        _newRunButton.Pressed += OnNewRunPressed;
-        _quitButton.Pressed += OnQuitPressed;
-        _settingsButton.Pressed += OnSettingsButtonPressed;
+        _newRunButton.Init(OnNewRunPressed);
+        _quitButton.Init(OnQuitPressed);
+        _settingsButton.Init(OnSettingsButtonPressed);
 
         // Apply translations to button texts
         _newRunButton.SetTextTr("Title_NewRun");
         _quitButton.SetTextTr("Title_Quit");
         _settingsButton.SetTextTr("Title_Settings");
-        
+
         _newRunButton.GrabFocus();
     }
 
 
     public override void _ExitTree()
     {
-        _newRunButton.Pressed -= OnNewRunPressed;
-        _quitButton.Pressed -= OnQuitPressed;
-        _settingsButton.Pressed -= OnSettingsButtonPressed;
-
         // Free the settings screen if it exists
         _settingsScreen?.QueueFree();
     }
