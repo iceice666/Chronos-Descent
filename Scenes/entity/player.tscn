@@ -459,6 +459,7 @@ texture_filter = 1
 texture = SubResource("PortableCompressedTexture2D_23hx6")
 hframes = 4
 vframes = 3
+frame = 2
 metadata/_aseprite_wizard_interface_config_ = {
 "pending_changes": {}
 }
@@ -507,6 +508,7 @@ shape = SubResource("CapsuleShape2D_4fuip")
 debug_color = Color(0.238251, 0.625841, 0.346228, 0.42)
 
 [node name="State" type="Label" parent="."]
+visible = false
 offset_left = -54.0
 offset_top = -89.0
 offset_right = 56.0

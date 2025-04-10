@@ -44,8 +44,7 @@ public partial class UserInputManager : Control, IActionManager
             if (_currentInputSource == value) return;
 
             GD.Print($"Input Source changed: {value}");
-            if (Player.Instance != null) Player.Instance.StateLabel.Text = value.ToString();
-
+          
             _virtualInputContainer.Visible = value == InputSource.VirtualJoystick;
             GlobalEventBus.Instance.Publish(GlobalEventVariant.InputSourceChanged, value);
             _currentInputSource = value;
