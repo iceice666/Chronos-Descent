@@ -64,10 +64,10 @@ public partial class Registry : Node
         RegisterBlessing(new TemporalInsightBlessing());
 
         // Movement Blessings
-        RegisterBlessing(new PhaseShiftingBlessing());
-        RegisterBlessing(new TimeSlipstreamBlessing());
-        RegisterBlessing(new SpacetimeCompressionBlessing());
-        RegisterBlessing(new TemporalWakeBlessing());
+        // RegisterBlessing(new PhaseShiftingBlessing());
+        // RegisterBlessing(new TimeSlipstreamBlessing());
+        // RegisterBlessing(new SpacetimeCompressionBlessing());
+        // RegisterBlessing(new TemporalWakeBlessing());
     }
 
     /// <summary>
